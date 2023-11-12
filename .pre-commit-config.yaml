@@ -1,0 +1,17 @@
+repos:
+  # Black
+  - repo: https://github.com/psf/black
+    rev: 23.10.1
+    hooks:
+      - id: black
+  # Ruff
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.1.2
+    hooks:
+      - id: ruff
+  # Mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.6.1
+    hooks:
+      - id: mypy
+

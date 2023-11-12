@@ -1,0 +1,35 @@
+[project]
+authors = [{ name = "James O'Claire" }]
+name = "app-track"
+description = "Tracking for apps and attribution"
+version = "0.0.1"
+
+[project.optional-dependencies]
+dev = ["pre-commit",  "psycopg2-binary"]
+
+dependencies = [
+    'pandas',
+    'sqlalchemy',
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+
+
+[tool.ruff]
+# Enable flake8-bugbear (`B`) rules.
+select = ["E", "W", "F", "B", "I", "N", "UP"]
+
+ignore = ["E501", # line length
+"W291" # trailing space at end of line
+]
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+fixable = ["I", "F"]
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
