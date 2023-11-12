@@ -1,7 +1,6 @@
+from litestar import Controller, get
 
 from config import get_logger
-
-from litestar import Controller, get
 
 logger = get_logger(__name__)
 
@@ -9,7 +8,6 @@ logger = get_logger(__name__)
 /impressions/
 /clicks/
 """
-
 
 
 class PostbackController(Controller):
@@ -31,5 +29,3 @@ class PostbackController(Controller):
 
         logger.info(f"{self.path} return")
         return
-
-    
