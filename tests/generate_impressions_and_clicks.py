@@ -10,7 +10,6 @@ from config.dimensions import (
     LINK_CAMPAIGN,
     LINK_IFA,
     LINK_NETWORK,
-    LINK_STORE_ID,
 )
 
 logger = get_logger(__name__)
@@ -36,7 +35,7 @@ def make_request(
         LINK_NETWORK: mynetwork,
         LINK_AD: myad,
     }
-    url = ENDPOINT + f"/{mytype}/{LINK_STORE_ID}={myapp}"
+    url = ENDPOINT + f"/{mytype}/{myapp}"
     requests.get(url, params=params)
     logger.info(f"{url=} with {params=}")
     return

@@ -5,7 +5,7 @@ LINK_NETWORK = "network"
 LINK_CAMPAIGN = "c"
 LINK_CAMPAIGN_ID = "cid"
 LINK_AD = "ad"
-LINK_CAMPAIGN_ID = "adid"
+LINK_AD_ID = "adid"
 LINK_IFA = "ifa"
 
 

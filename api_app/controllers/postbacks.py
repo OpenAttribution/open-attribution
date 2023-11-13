@@ -1,8 +1,10 @@
 import json
+from typing import Annotated
 
 from confluent_kafka import KafkaException, Producer
 from litestar import Controller, Request, get
 from litestar.exceptions import HTTPException
+from litestar.params import Parameter
 
 from config import get_logger
 from config.dimensions import (
@@ -17,6 +19,12 @@ from config.dimensions import (
     DB_IFA,
     DB_NETWORK,
     DB_STORE_ID,
+    LINK_AD,
+    LINK_AD_ID,
+    LINK_CAMPAIGN,
+    LINK_CAMPAIGN_ID,
+    LINK_IFA,
+    LINK_NETWORK,
 )
 
 logger = get_logger(__name__)
@@ -33,17 +41,23 @@ producer = Producer(pconfig)
 class PostbackController(Controller):
     path = "collect"
 
-    @get(path="impression/{app:str}")
+    @get(path="impressions/{app:str}")
     async def impressions(
         self,
         request: Request,
         app: str,
-        source: str,
-        c: str,
-        c_id: str | None = None,
-        ad: str | None = None,
-        ad_id: str | None = None,
-        ifa: str | None = None,
+        source: Annotated[str, Parameter(str, query=LINK_NETWORK)],
+        c: Annotated[str, Parameter(str, query=LINK_CAMPAIGN)],
+        c_id: Annotated[
+            str | None, Parameter(str, query=LINK_CAMPAIGN_ID, required=False)
+        ] = None,
+        ad: Annotated[str | None, Parameter(str, query=LINK_AD, required=False)] = None,
+        ad_id: Annotated[
+            str | None, Parameter(str, query=LINK_AD_ID, required=False)
+        ] = None,
+        ifa: Annotated[
+            str | None, Parameter(str, query=LINK_IFA, required=False)
+        ] = None,
     ) -> None:
         """
         Handles a GET request for a list of apps
@@ -78,17 +92,23 @@ class PostbackController(Controller):
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
 
-    @get(path="click/{app:str}")
+    @get(path="clicks/{app:str}")
     async def clicks(
         self,
         request: Request,
         app: str,
-        source: str,
-        c: str,
-        c_id: str | None = None,
-        ad: str | None = None,
-        ad_id: str | None = None,
-        ifa: str | None = None,
+        source: Annotated[str, Parameter(str, query=LINK_NETWORK)],
+        c: Annotated[str, Parameter(str, query=LINK_CAMPAIGN)],
+        c_id: Annotated[
+            str | None, Parameter(str, query=LINK_CAMPAIGN_ID, required=False)
+        ] = None,
+        ad: Annotated[str | None, Parameter(str, query=LINK_AD, required=False)] = None,
+        ad_id: Annotated[
+            str | None, Parameter(str, query=LINK_AD_ID, required=False)
+        ] = None,
+        ifa: Annotated[
+            str | None, Parameter(str, query=LINK_IFA, required=False)
+        ] = None,
     ) -> None:
         """
         Handles a GET request for a list of apps
