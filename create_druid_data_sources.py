@@ -8,7 +8,7 @@ SHARED_DIMENSIONS = [
           "campaign_id"
           "ad_name",
           "ad_id",
-		      "advertising_id",
+		      "ifa",
           "client_ip",
         ]
 

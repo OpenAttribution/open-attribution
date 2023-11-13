@@ -36,7 +36,7 @@ class PostbackController(Controller):
     path = "collect"
 
     @get(path="impression/{app:str}")
-    async def impressions(self, request:Request, app: str, source:str, c:str, c_id:str | None = None, ad:str | None = None, idfa:str|None=None) -> None:
+    async def impressions(self, request:Request, app: str, source:str, c:str, c_id:str | None = None, ad:str | None = None, ifa:str|None=None) -> None:
         """
         Handles a GET request for a list of apps
 
@@ -63,7 +63,7 @@ class PostbackController(Controller):
             raise HTTPException(status_code=500, detail=ex.args[0].str())
 
     @get(path="click/{app:str}")
-    async def clicks(self, request:Request, app: str, source:str, c:str, c_id:str | None = None, ad:str | None = None, idfa:str|None =None) -> None:
+    async def clicks(self, request:Request, app: str, source:str, c:str, c_id:str | None = None, ad:str | None = None, ifa:str|None =None) -> None:
         """
         Handles a GET request for a list of apps
 
