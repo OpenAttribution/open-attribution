@@ -17,15 +17,6 @@ pconfig = {"bootstrap.servers": "localhost:9092"}
 producer = Producer(pconfig)
 
 
-def delivery_report(err, msg):
-    """Called once for each message produced to indicate delivery result.
-    Triggered by poll() or flush()."""
-    if err is not None:
-        print("Message delivery failed: {}".format(err))
-    else:
-        print("Message delivered to {} [{}]".format(msg.topic(), msg.partition()))
-
-
 class PostbackController(Controller):
     path = "collect"
 
@@ -64,13 +55,12 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            logger.info(f"data={enc_data}")
             producer.produce("impressions", value=enc_data)
             producer.poll(0)
-            logger.info(f"data={enc_data} success!")
+            logger.info("insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
-            raise HTTPException(status_code=500, detail=ex.args[0].str())
+            raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
 
     @get(path="click/{app:str}")
     async def clicks(
@@ -107,10 +97,9 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            logger.info(f"data={enc_data}")
             producer.produce("clicks", value=enc_data)
             producer.poll(0)
-            logger.info(f"data={enc_data} success!")
+            logger.info(f"data={enc_data.decode()} success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
-            raise HTTPException(status_code=500, detail=ex.args[0].str())
+            raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
