@@ -50,6 +50,7 @@ class PostbackController(Controller):
             "campaign_name": c,
             "campaign_id": c_id,
             "ad": ad,
+            "ifa": ifa,
             "client_ip": client_host,
         }
 
@@ -92,6 +93,7 @@ class PostbackController(Controller):
             "campaign_name": c,
             "campaign_id": c_id,
             "ad": ad,
+            "ifa": ifa,
             "client_ip": client_host,
         }
 
@@ -100,6 +102,47 @@ class PostbackController(Controller):
             producer.produce("clicks", value=enc_data)
             producer.poll(0)
             logger.info(f"data={enc_data.decode()} success!")
+        except KafkaException as ex:
+            logger.error({"status": "error", "message": str(ex)})
+            raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
+
+    @get(path="events/{app:str}")
+    async def events(
+        self,
+        request: Request,
+        app: str,
+        event_id: str,
+        event_time: str,
+        ifa: str | None = None,
+        revenue: str | None = None,
+    ) -> None:
+        """
+        Handles a GET request to send postback for an app install, event or revenue
+
+        Args:
+            app:app
+
+        Returns:
+            A dictionary representation of the list of apps for homepage
+        """
+        logger.info(f"{self.path} start")
+
+        client_host = request.client.host
+
+        data = {
+            "app": app,
+            "event": event_id,
+            "event_time": event_time,
+            "ifa": ifa,
+            "revenue": revenue,
+            "client_ip": client_host,
+        }
+
+        try:
+            enc_data = json.dumps(data).encode("utf-8")
+            producer.produce("impressions", value=enc_data)
+            producer.poll(0)
+            logger.info("insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
