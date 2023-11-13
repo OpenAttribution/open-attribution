@@ -8,7 +8,7 @@ ROW_LIMIT = 5000
 # Alternatively you can set it with `SUPERSET_SECRET_KEY` environment variable.
 # You MUST set this for production environments or the server will not refuse
 # to start and you will see an error in the logs accordingly.
-SECRET_KEY = 'Mub5QPSdu10uAEjBRdsiEFYd+XQjACQ26u1Od5oNxwNo6tsIhq/I+mMy'
+SECRET_KEY = "Mub5QPSdu10uAEjBRdsiEFYd+XQjACQ26u1Od5oNxwNo6tsIhq/I+mMy"
 
 # The SQLAlchemy connection string to your database backend
 # This connection defines the path to the database that stores your
@@ -17,7 +17,9 @@ SECRET_KEY = 'Mub5QPSdu10uAEjBRdsiEFYd+XQjACQ26u1Od5oNxwNo6tsIhq/I+mMy'
 # you want to explore are managed directly in the web UI
 # The check_same_thread=false property ensures the sqlite client does not attempt
 # to enforce single-threaded access, which may be problematic in some edge cases
-SQLALCHEMY_DATABASE_URI = 'sqlite:////home/james/app-track/superset/superset.db?check_same_thread=false'
+SQLALCHEMY_DATABASE_URI = (
+    "sqlite:////home/james/app-track/superset/superset.db?check_same_thread=false"
+)
 
 # Flask-WTF flag for CSRF
 WTF_CSRF_ENABLED = True
@@ -27,4 +29,4 @@ WTF_CSRF_EXEMPT_LIST = []
 WTF_CSRF_TIME_LIMIT = 60 * 60 * 24 * 365
 
 # Set this API key to enable Mapbox visualizations
-MAPBOX_API_KEY = ''
+MAPBOX_API_KEY = ""
