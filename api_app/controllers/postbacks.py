@@ -5,6 +5,19 @@ from litestar import Controller, Request, get
 from litestar.exceptions import HTTPException
 
 from config import get_logger
+from config.dimensions import (
+    APP_EVENT_ID,
+    APP_EVENT_REV,
+    APP_EVENT_TIME,
+    DB_AD_ID,
+    DB_AD_NAME,
+    DB_C,
+    DB_C_ID,
+    DB_CLIENT_IP,
+    DB_IFA,
+    DB_NETWORK,
+    DB_STORE_ID,
+)
 
 logger = get_logger(__name__)
 
@@ -29,6 +42,7 @@ class PostbackController(Controller):
         c: str,
         c_id: str | None = None,
         ad: str | None = None,
+        ad_id: str | None = None,
         ifa: str | None = None,
     ) -> None:
         """
@@ -45,13 +59,14 @@ class PostbackController(Controller):
         client_host = request.client.host
 
         data = {
-            "source": source,
-            "app": app,
-            "campaign_name": c,
-            "campaign_id": c_id,
-            "ad": ad,
-            "ifa": ifa,
-            "client_ip": client_host,
+            DB_NETWORK: source,
+            DB_STORE_ID: app,
+            DB_C: c,
+            DB_C_ID: c_id,
+            DB_AD_NAME: ad,
+            DB_AD_ID: ad_id,
+            DB_IFA: ifa,
+            DB_CLIENT_IP: client_host,
         }
 
         try:
@@ -72,6 +87,7 @@ class PostbackController(Controller):
         c: str,
         c_id: str | None = None,
         ad: str | None = None,
+        ad_id: str | None = None,
         ifa: str | None = None,
     ) -> None:
         """
@@ -88,13 +104,14 @@ class PostbackController(Controller):
         client_host = request.client.host
 
         data = {
-            "source": source,
-            "app": app,
-            "campaign_name": c,
-            "campaign_id": c_id,
-            "ad": ad,
-            "ifa": ifa,
-            "client_ip": client_host,
+            DB_NETWORK: source,
+            DB_STORE_ID: app,
+            DB_C: c,
+            DB_C_ID: c_id,
+            DB_AD_NAME: ad,
+            DB_AD_ID: ad_id,
+            DB_IFA: ifa,
+            DB_CLIENT_IP: client_host,
         }
 
         try:
@@ -130,12 +147,12 @@ class PostbackController(Controller):
         client_host = request.client.host
 
         data = {
-            "app": app,
-            "event": event_id,
-            "event_time": event_time,
-            "ifa": ifa,
-            "revenue": revenue,
-            "client_ip": client_host,
+            DB_STORE_ID: app,
+            APP_EVENT_ID: event_id,
+            APP_EVENT_TIME: event_time,
+            DB_IFA: ifa,
+            APP_EVENT_REV: revenue,
+            DB_CLIENT_IP: client_host,
         }
 
         try:

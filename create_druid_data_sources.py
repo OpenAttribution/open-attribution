@@ -2,20 +2,13 @@ import json
 
 import requests
 
-SHARED_DIMENSIONS = [
-    "app",
-    "source",
-    "campaign_name",
-    "campaign_id" "ad_name",
-    "ad_id",
-    "ifa",
-    "client_ip",
-]
+from config.dimensions import MY_SCHEMAS
 
 
 # Define a function to create a Kafka Ingestion Spec for Druid
 def create_kafka_ingest(
     topic_name: str,
+    dimensions: list[str],
     bootstrap_servers: str = "localhost:9092",
     druid_host: str = "http://localhost:8081/druid/indexer/v1/supervisor",
 ) -> None:
@@ -35,7 +28,7 @@ def create_kafka_ingest(
                 "dataSchema": {
                     "dataSource": topic_name,
                     "timestampSpec": {"column": "kafka.timestamp", "format": "millis"},
-                    "dimensionsSpec": {"dimensions": SHARED_DIMENSIONS},
+                    "dimensionsSpec": {"dimensions": dimensions},
                     "granularitySpec": {
                         "queryGranularity": "none",
                         "rollup": False,
@@ -65,6 +58,5 @@ def create_kafka_ingest(
 
 
 if __name__ == "__main__":
-    my_topics = ["impressions", "clicks"]
-    for topic in my_topics:
-        create_kafka_ingest(topic_name=topic)
+    for topic, dimensions in MY_SCHEMAS.items():
+        create_kafka_ingest(topic_name=topic, dimensions=dimensions)
