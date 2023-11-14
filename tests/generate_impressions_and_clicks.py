@@ -41,29 +41,59 @@ def make_request(
     return
 
 
+def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> None:
+    params = {
+        event_id: event_id,
+        LINK_IFA: myifa,
+    }
+    url = ENDPOINT + f"/{mytype}/{myapp}"
+    requests.get(url, params=params)
+    logger.info(f"{url=} with {params=}")
+    return
+
+
 def main() -> None:
-    for network in NETWORKS:
-        for app in APPS:
-            for campaign in CAMPAIGNS:
-                ifa = str(uuid.uuid4())
-                for ad in ADS:
-                    make_request(
-                        mytype="impressions",
+    while True:
+        for network in NETWORKS:
+            for app in APPS:
+                if random.random() < 0.1:
+                    # Simulate organic install and return
+                    ifa = str(uuid.uuid4())
+                    make_inapp_request(
+                        mytype="events",
+                        event_id="app_open",
                         myapp=app,
-                        mycampaign=campaign,
-                        mynetwork=network,
                         myifa=ifa,
-                        myad=ad,
                     )
-                    # Decide if a click should be generated
-                    if random.random() < 0.03:  # 3% chance for a click
-                        time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
+                    continue
+                for campaign in CAMPAIGNS:
+                    ifa = str(uuid.uuid4())
+                    for ad in ADS:
                         make_request(
-                            mytype="clicks",
+                            mytype="impressions",
                             myapp=app,
                             mycampaign=campaign,
                             mynetwork=network,
                             myifa=ifa,
                             myad=ad,
                         )
-                    time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
+                        # Decide if a click should be generated
+                        if random.random() < 0.03:  # 3% chance for a click
+                            time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
+                            make_request(
+                                mytype="clicks",
+                                myapp=app,
+                                mycampaign=campaign,
+                                mynetwork=network,
+                                myifa=ifa,
+                                myad=ad,
+                            )
+                            if random.random() < 0.5:
+                                time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
+                                make_inapp_request(
+                                    mytype="event",
+                                    event_id="app_open",
+                                    myapp=app,
+                                    myifa=ifa,
+                                )
+                        time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
