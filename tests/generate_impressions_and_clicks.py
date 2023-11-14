@@ -7,6 +7,7 @@ import requests
 from config import get_logger
 from config.dimensions import (
     LINK_AD,
+    LINK_APP_EVENT_ID,
     LINK_CAMPAIGN,
     LINK_IFA,
     LINK_NETWORK,
@@ -43,7 +44,7 @@ def make_request(
 
 def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> None:
     params = {
-        event_id: event_id,
+        LINK_APP_EVENT_ID: event_id,
         LINK_IFA: myifa,
     }
     url = ENDPOINT + f"/{mytype}/{myapp}"

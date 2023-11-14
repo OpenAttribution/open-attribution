@@ -7,6 +7,7 @@ LINK_CAMPAIGN_ID = "cid"
 LINK_AD = "ad"
 LINK_AD_ID = "adid"
 LINK_IFA = "ifa"
+LINK_APP_EVENT_ID = "event_id"
 
 
 # values for kafka -> druid columns
