@@ -80,15 +80,14 @@ def create_kafka_ingest(
         )
         # Raise an exception if the request was unsuccessful
         kafka_supervisor_post.raise_for_status()
+        print(kafka_supervisor_post.text)
         kafka_supervisor_post = requests.post(
             druid_host, agg_kafka_ingestion_spec, headers=headers
         )
         kafka_supervisor_post.raise_for_status()
+        print(kafka_supervisor_post.text)
     except Exception as e:
         print("Something went wrong with the request:", e)
-
-    # Print the response
-    print(kafka_supervisor_post.text)
 
 
 if __name__ == "__main__":

@@ -148,10 +148,14 @@ class PostbackController(Controller):
         self,
         request: Request,
         app: str,
-        event_id: str,
-        event_time: str,
-        ifa: str | None = None,
-        revenue: str | None = None,
+        event_id: Annotated[str, Parameter(str, query=APP_EVENT_ID)],
+        event_time: Annotated[str, Parameter(str, query=APP_EVENT_TIME)],
+        ifa: Annotated[
+            str | None, Parameter(str, query=LINK_IFA, required=False)
+        ] = None,
+        revenue: Annotated[
+            str | None, Parameter(str, query=APP_EVENT_REV, required=False)
+        ] = None,
     ) -> None:
         """
         Handles a GET request to send postback for an app install, event or revenue
@@ -177,7 +181,7 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            producer.produce("impressions", value=enc_data)
+            producer.produce("events", value=enc_data)
             producer.poll(0)
             logger.info("insert success!")
         except KafkaException as ex:

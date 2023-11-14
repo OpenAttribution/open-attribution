@@ -92,7 +92,7 @@ def main() -> None:
                             if random.random() < 0.5:
                                 time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
                                 make_inapp_request(
-                                    mytype="event",
+                                    mytype="events",
                                     event_id="app_open",
                                     myapp=app,
                                     myifa=ifa,

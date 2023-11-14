@@ -6,6 +6,7 @@
 # Kafka 
 `./bin/kafka-topics.sh --create --topic impressions --bootstrap-server localhost:9092`
 `./bin/kafka-topics.sh --create --topic clicks --bootstrap-server localhost:9092`
+`./bin/kafka-topics.sh --create --topic events --bootstrap-server localhost:9092`
 
 https://druid.apache.org/docs/latest/tutorials/
 
