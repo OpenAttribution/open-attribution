@@ -1,3 +1,4 @@
+import datetime
 import random
 import time
 import uuid
@@ -6,6 +7,7 @@ import requests
 
 from config import get_logger
 from config.dimensions import (
+    APP_EVENT_TIME,
     LINK_AD,
     LINK_APP_EVENT_ID,
     LINK_CAMPAIGN,
@@ -46,6 +48,7 @@ def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> No
     params = {
         LINK_APP_EVENT_ID: event_id,
         LINK_IFA: myifa,
+        APP_EVENT_TIME: datetime.datetime.now(datetime.timezone.utc),
     }
     url = ENDPOINT + f"/{mytype}/{myapp}"
     requests.get(url, params=params)

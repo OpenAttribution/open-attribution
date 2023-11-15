@@ -87,7 +87,7 @@ class PostbackController(Controller):
             enc_data = json.dumps(data).encode("utf-8")
             producer.produce("impressions", value=enc_data)
             producer.poll(0)
-            logger.info("insert success!")
+            logger.info("kafka insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -138,7 +138,7 @@ class PostbackController(Controller):
             enc_data = json.dumps(data).encode("utf-8")
             producer.produce("clicks", value=enc_data)
             producer.poll(0)
-            logger.info(f"data={enc_data.decode()} success!")
+            logger.info("kafka insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -183,7 +183,7 @@ class PostbackController(Controller):
             enc_data = json.dumps(data).encode("utf-8")
             producer.produce("events", value=enc_data)
             producer.poll(0)
-            logger.info("insert success!")
+            logger.info("kafka insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
