@@ -1,31 +1,19 @@
+# Open Attribution
 
-# Druid
+Open attribution is a project to help developers control their data without resorting to third party control. Our goal is to give developers back control of their app advertising data.
 
-## Druid: Setup
+## True ownership of your mobile app's data
 
-# Kafka 
-`./bin/kafka-topics.sh --create --topic impressions --bootstrap-server localhost:9092`
-`./bin/kafka-topics.sh --create --topic clicks --bootstrap-server localhost:9092`
-`./bin/kafka-topics.sh --create --topic events --bootstrap-server localhost:9092`
+Paying someone else to hold and manage your app's data takes power away from app creators. Open Attribution is a suite of open source tools so that you can manage your advertising data ownership.
 
-https://druid.apache.org/docs/latest/tutorials/
+## Open Source Community
 
-## Druid: User (admin)
+Open Attribution is committed to building a community of developers who work together to build a secure ecosystem.
 
-https://druid.apache.org/docs/latest/operations/security-overview
+## Ready?
 
-# Superset
+Head to [Getting Started](https://ddxv.github.io/app-track/getting_started/installation) to learn more.
 
-## Superset: Setup
+### Why do apps NEED attribution?
 
-`pip install superset pydruid`
-
-set `export FLASK_APP=superset`
-set `export SUPERSET_CONFIG_PATH=superset/superset_config.py`
-
-`superset db upgrade`
-`superset fab create-admin` > Setup your username and password for the superset admin login
-`superset init`
-`superset run -p 8088 --with-threads --reload`
-
-1. Add database `druid://admin:password1@localhost:8888/druid/v2/sql`
+If you want to do in-app advertisements attribution a technical requirement, not a business option. Apps cannot use regular HTTP Urls to connect users, deep links are too limited. Historically MMPs stepped in to help solve this complex problem but by doing so became the arbiters of large amounts of data that some apps may wish to maintain control over. Read more about the [historical background here](https://ddxv.github.io/app-track/about/history).
