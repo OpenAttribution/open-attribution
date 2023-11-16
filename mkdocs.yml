@@ -6,9 +6,15 @@ theme:
   features:
     - header.autohide
       - content.code.copy
+    - navigation.tabs
+    - navigation.expand
+    - navigation.sections
+    - navigation.footer
   palette:
     scheme: slate
     primary: black
+extra:
+  generator: false
 
 markdown_extensions:
   - attr_list
@@ -22,3 +28,5 @@ markdown_extensions:
   - pymdownx.superfences
 
 repo_url: https://github.com/OpenAttribution/open-attribution
+
+copyright: Copyright &copy; 2023 - Open Attribution LLC
