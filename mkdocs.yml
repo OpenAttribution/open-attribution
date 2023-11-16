@@ -7,8 +7,6 @@ theme:
     - header.autohide
       - content.code.copy
     - navigation.tabs
-    - navigation.expand
-    - navigation.sections
     - navigation.footer
   palette:
     scheme: slate

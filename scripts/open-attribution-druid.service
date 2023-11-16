@@ -1,0 +1,16 @@
+[Unit]
+Description=Open Attribution Druid service
+After=network.target
+
+[Service]
+User=james
+Group=james
+EnvironmentFile=-/home/james/open-attribution/druid.conf
+ExecStart=${DRUID_DIR}
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+KillMode=mixed
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
