@@ -1,3 +1,7 @@
 site_name: Open Attribution
 theme:
   name: material
+  icon:
+    repo: fontawesome/brands/github
+
+repo_url: https://github.com/ddxv/app-track
