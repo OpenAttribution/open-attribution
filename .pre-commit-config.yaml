@@ -1,18 +1,28 @@
 repos:
   # Black
   - repo: https://github.com/psf/black
-    rev: 23.10.1
+    rev: 23.11.0
     hooks:
       - id: black
   # Ruff
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.1.2
+    rev: v0.1.5
     hooks:
       - id: ruff
         args: [--fix]
   # Mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.6.1
+    rev: v1.7.0
     hooks:
       - id: mypy
         additional_dependencies: ["types-requests"]
+  # SHELL
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.7.0-3
+    hooks:
+      - id: shfmt
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+    - id: shellcheck
+      args: ["-x"]

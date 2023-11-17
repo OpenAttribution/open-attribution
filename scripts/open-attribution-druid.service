@@ -5,12 +5,12 @@ After=network.target
 [Service]
 User=james
 Group=james
-EnvironmentFile=-/home/james/open-attribution/druid.conf
-ExecStart=${DRUID_DIR}
-ExecReload=/bin/kill -s HUP $MAINPID
+ExecStart=/home/james/apache-druid-27.0.0/bin/start-druid
+ExecReload=/bin/kill -s HUP 
 Restart=on-failure
 KillMode=mixed
 PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
+
