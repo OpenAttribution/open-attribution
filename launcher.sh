@@ -1,14 +1,23 @@
 #!/bin/bash
 
 # Warning: set -e can make debugging tricky
-set -e
+set -Ee
 set -u
 set -o pipefail
+#set -x
+
+function __error_handing__() {
+	local last_status_code=$1
+	local error_line_number=$2
+	echo 1>&2 "Error - exited with status $last_status_code at line $error_line_number"
+	perl -slne 'if($.+5 >= $ln && $.-4 <= $ln){ $_="$. $_"; s/$ln/">" x length($ln)/eg; s/^\D+.*?$/\e[1;31m$&\e[0m/g;  print}' -- -ln="$error_line_number" "$0"
+}
+
+trap '__error_handing__ $? $LINENO' ERR
 
 source ./local.conf
 
 app_dir=$(pwd)
-home_dir=$HOME
 
 if ! source ./local.conf; then
 	echo "Error: Unable to source local.conf. Check you are in open-attribution directory. Copy with: cp example_local.conf local.conf"
@@ -67,7 +76,7 @@ EOF
 function start-kafka {
 	echo "Start kafka service"
 	echo "kafka_dir: $KAFKA_DIR"
-	setfacl -R -m u:druid:rwx $KAFKA_DIR
+	setfacl -R -m u:kafka:rwx $KAFKA_DIR
 	cat <<EOF >/etc/systemd/system/open-attribution-kafka.service
 [Unit]
 Description=Open Attribution Kafka service
@@ -102,8 +111,8 @@ After=network.target
 [Service]
 RuntimeDirectory=gunicorn
 WorkingDirectory=${app_dir}
-Environment=${home_dir}/venvs/open-attribution-env/bin
-ExecStart=${home_dir}/venvs/open-attribution-env/bin/gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 127.0.0.1:8000 -m 007 app:app
+Environment=${PYTHON_ENV_DIR}/bin
+ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 127.0.0.1:8000 -m 007 app:app
 ExecReload=/bin/kill -s HUP \$MAINPID
 Restart=on-failure
 KillMode=mixed
@@ -143,19 +152,35 @@ function check-service() {
 		echo "service added ${my_service_file}"
 	fi
 
-	status=$(systemctl is-active open-attribution-"$my_service".service)
-	echo "open-attribution-${my_service} status:${status}"
-	if [ "$status" = "active" ]; then
-		echo "open-attribution-${my_service} is running normally. check http://localhost:8888"
-	elif [ "$status" = "inactive" ]; then
-		echo "open-attribution-${my_service}.service is not running (inactive)."
-		journalctl -u open-attribution-"${my_service}".service | tail -n 10
-	elif [ "$status" = "failed" ]; then
-		echo "open-attribution-${my_service} encountered an error (failed)."
-		journalctl -u open-attribution-"${my_service}".service | tail -n 10
-	else
-		echo "Status check ${my_service} returned an unexpected status code: $status"
-	fi
+	sleep 2
+
+	while true; do
+		status=$(systemctl is-active open-attribution-"$my_service".service)
+
+		if [ -z "$status" ]; then
+			echo "Error: Unable to retrieve status for open-attribution-${my_service}.service"
+			exit 1
+		fi
+
+		echo "open-attribution-${my_service} status:${status}"
+		if [ "$status" = "activating" ]; then
+			echo "open-attribution-${my_service} is activating, sleep 1"
+			sleep 1
+		elif [ "$status" = "active" ]; then
+			echo "open-attribution-${my_service} is running normally. check http://localhost:8888"
+			break
+		elif [ "$status" = "inactive" ]; then
+			echo "open-attribution-${my_service}.service is not running (inactive)."
+			journalctl -u open-attribution-"${my_service}".service | tail -n 10
+			break
+		elif [ "$status" = "failed" ]; then
+			echo "open-attribution-${my_service} encountered an error (failed)."
+			journalctl -u open-attribution-"${my_service}".service | tail -n 10
+			break
+		else
+			echo "Status check ${my_service} returned an unexpected status code: $status"
+		fi
+	done
 
 }
 
