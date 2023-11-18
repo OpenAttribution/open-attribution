@@ -1,23 +1,17 @@
 #!/bin/bash
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#  								#
+#  options:							#
+#  	--stop ALL services stopped: druid, kafka & API         #
+#  	--status prints tail journal logs for services          #
+#								#
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 # Warning: set -e can make debugging tricky
-set -Ee
+#set -Ee
 set -u
 set -o pipefail
 #set -x
-
-function __error_handing__() {
-	local last_status_code=$1
-	local error_line_number=$2
-	echo 1>&2 "Error - exited with status $last_status_code at line $error_line_number"
-	perl -slne 'if($.+5 >= $ln && $.-4 <= $ln){ $_="$. $_"; s/$ln/">" x length($ln)/eg; s/^\D+.*?$/\e[1;31m$&\e[0m/g;  print}' -- -ln="$error_line_number" "$0"
-}
-
-trap '__error_handing__ $? $LINENO' ERR
-
-source ./local.conf
-
-app_dir=$(pwd)
 
 if ! source ./local.conf; then
 	echo "Error: Unable to source local.conf. Check you are in open-attribution directory. Copy with: cp example_local.conf local.conf"
@@ -29,6 +23,76 @@ if [ "$EUID" -ne 0 ]; then
 	echo "Please run as root"
 	exit
 fi
+
+# Function to stop systemd services
+stop_services() {
+	echo "Stopping all managed systemd services..."
+	systemctl stop open-attribution-api.service
+	systemctl stop open-attribution-kafka.service
+	systemctl stop open-attribution-druid.service
+	exit
+}
+
+# Function to echo systemd status
+echo_status() {
+	# Add command to display status here
+	echo "++++++++++++++++++++++++"
+	echo "Systemd services status:"
+	echo "++++++++++++++++++++++++"
+	echo ""
+	echo "++++++++++++++++++++++++"
+	echo "Systemd services status: druid"
+	echo "++++++++++++++++++++++++"
+	systemctl status open-attribution-druid.service
+	#journalctl -u open-attribution-druid.service | tail -n 10
+	echo "++++++++++++++++++++++++"
+	echo ""
+	echo "++++++++++++++++++++++++"
+	echo "Systemd services status: kafka"
+	echo "++++++++++++++++++++++++"
+	systemctl status open-attribution-kafka.service
+	#journalctl -u open-attribution-kafka.service | tail -n 10
+	echo "++++++++++++++++++++++++"
+	echo ""
+	echo "++++++++++++++++++++++++"
+	echo "Systemd services status: python api"
+	echo "++++++++++++++++++++++++"
+	systemctl status open-attribution-api.service
+	#journalctl -u open-attribution-api.service | tail -n 10
+	echo "++++++++++++++++++++++++"
+	exit
+}
+
+# Print and handle error
+function __error_handing__() {
+	local last_status_code=$1
+	local error_line_number=$2
+	echo 1>&2 "Error - exited with status $last_status_code at line $error_line_number"
+	perl -slne 'if($.+5 >= $ln && $.-4 <= $ln){ $_="$. $_"; s/$ln/">" x length($ln)/eg; s/^\D+.*?$/\e[1;31m$&\e[0m/g;  print}' -- -ln="$error_line_number" "$0"
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+	case $1 in
+	-s | --stop)
+		stop_services
+		;;
+	-i | --status)
+		echo_status
+		;;
+	*)
+		echo "Unknown option: $1"
+		exit 1
+		;;
+	esac
+	#shift
+done
+
+trap '__error_handing__ $? $LINENO' ERR
+
+source ./local.conf
+
+app_dir=$(pwd)
 
 # Check & create users: druid, kafka
 if ! id "druid" &>/dev/null; then

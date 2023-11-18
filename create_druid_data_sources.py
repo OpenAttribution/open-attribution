@@ -1,9 +1,26 @@
 import json
 import time
 
+from config import get_logger
+
+logger = get_logger(__name__)
+
 import requests
 
 from config.dimensions import DB_CLIENT_IP, DB_IFA, MY_SCHEMAS
+
+DRUID_HOST: str = "http://localhost:8081/druid/indexer/v1/supervisor"
+
+
+# Define a function to create a Kafka Ingestion Spec for Druid
+def stop_kafka_ingest(
+    topic_name: str,
+) -> None:
+    response = requests.post(DRUID_HOST + f"/{topic_name}/shutdown")
+    logger.info(f"Druid shutown ingest: {topic_name=} response: {response.status_code}")
+    topic_name = f"{topic_name}_stats"
+    response_agg = requests.post(DRUID_HOST + f"/{topic_name}/shutdown")
+    logger.info(f"Druid shutown ingest: {topic_name=} response: {response.status_code}")
 
 
 # Define a function to create a Kafka Ingestion Spec for Druid
@@ -11,7 +28,6 @@ def create_kafka_ingest(
     topic_name: str,
     dimensions: list[str],
     bootstrap_servers: str = "localhost:9092",
-    druid_host: str = "http://localhost:8081/druid/indexer/v1/supervisor",
 ) -> None:
     # Create the Kafka Ingestion Spec in JSON format
     raw_data_schema = {
@@ -48,7 +64,10 @@ def create_kafka_ingest(
                     "inputFormat": {"type": "kafka", "valueFormat": {"type": "json"}},
                     "useEarliestOffset": True,
                 },
-                "tuningConfig": {"type": "kafka"},
+                "tuningConfig": {
+                    "type": "kafka",
+                    "resetOffsetAutomatically": True,
+                },
                 "dataSchema": raw_data_schema,
             },
         }
@@ -64,7 +83,10 @@ def create_kafka_ingest(
                     "inputFormat": {"type": "kafka", "valueFormat": {"type": "json"}},
                     "useEarliestOffset": True,
                 },
-                "tuningConfig": {"type": "kafka"},
+                "tuningConfig": {
+                    "type": "kafka",
+                    "resetOffsetAutomatically": True,
+                },
                 "dataSchema": agg_data_schema,
             },
         }
@@ -72,25 +94,30 @@ def create_kafka_ingest(
     # Set headers for the post request
     headers = {"Content-Type": "application/json"}
 
-    print(f"Creating Kafka ingestion spec for {topic_name}")
     try:
         # Make a post request to Druid with the Kafka ingestion spec
-        kafka_supervisor_post = requests.post(
-            druid_host, raw_kafka_ingestion_spec, headers=headers
-        )
+        response = requests.post(DRUID_HOST, raw_kafka_ingestion_spec, headers=headers)
         # Raise an exception if the request was unsuccessful
-        kafka_supervisor_post.raise_for_status()
-        print(kafka_supervisor_post.text)
-        kafka_supervisor_post = requests.post(
-            druid_host, agg_kafka_ingestion_spec, headers=headers
+        response.raise_for_status()
+        logger.info(
+            f"Druid create ingest: {topic_name=} response: {response.status_code} {response.text}"
         )
-        kafka_supervisor_post.raise_for_status()
-        print(kafka_supervisor_post.text)
+        response_agg = requests.post(
+            DRUID_HOST, agg_kafka_ingestion_spec, headers=headers
+        )
+        # Aggregated create
+        response_agg.raise_for_status()
+        logger.info(
+            f"Druid create ingest: {topic_name=} response: {response_agg.status_code} {response_agg.text}"
+        )
     except Exception as e:
-        print("Something went wrong with the request:", e)
+        logger.info(
+            f"Druid create ingest: {topic_name=} something wrong with request:", e
+        )
 
 
 if __name__ == "__main__":
     for topic, dimensions in MY_SCHEMAS.items():
+        stop_kafka_ingest(topic_name=topic)
         create_kafka_ingest(topic_name=topic, dimensions=dimensions)
         time.sleep(2)

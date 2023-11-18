@@ -39,8 +39,8 @@ def make_request(
         LINK_AD: myad,
     }
     url = ENDPOINT + f"/{mytype}/{myapp}"
-    requests.get(url, params=params)
-    logger.info(f"{url=} with {params=}")
+    response = requests.get(url, params=params)
+    logger.info(f"GET {response.status_code} {url=} ")
     return
 
 
@@ -51,8 +51,8 @@ def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> No
         APP_EVENT_TIME: datetime.datetime.now(datetime.timezone.utc),
     }
     url = ENDPOINT + f"/{mytype}/{myapp}"
-    requests.get(url, params=params)
-    logger.info(f"{url=} with {params=}")
+    response = requests.get(url, params=params)
+    logger.info(f"GET {response.status_code} {url=} ")
     return
 
 
@@ -83,7 +83,7 @@ def main() -> None:
                         )
                         # Decide if a click should be generated
                         if random.random() < 0.03:  # 3% chance for a click
-                            time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
+                            time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
                             make_request(
                                 mytype="clicks",
                                 myapp=app,
@@ -93,11 +93,10 @@ def main() -> None:
                                 myad=ad,
                             )
                             if random.random() < 0.5:
-                                time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
+                                time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
                                 make_inapp_request(
                                     mytype="events",
                                     event_id="app_open",
                                     myapp=app,
                                     myifa=ifa,
                                 )
-                        time.sleep(random.uniform(0.5, 2.0))  # Simulate delay
