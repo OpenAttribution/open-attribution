@@ -167,7 +167,11 @@ function check-service() {
 			echo "open-attribution-${my_service} is activating, sleep 1"
 			sleep 1
 		elif [ "$status" = "active" ]; then
-			echo "open-attribution-${my_service} is running normally. check http://localhost:8888"
+			dash_address=" "
+			if [ "$my_service" = "druid" ]; then
+				dash_address="http://localhost:8888"
+			fi
+			echo "open-attribution-${my_service} is running normally. ${dash_address}"
 			break
 		elif [ "$status" = "inactive" ]; then
 			echo "open-attribution-${my_service}.service is not running (inactive)."
