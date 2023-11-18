@@ -1,6 +1,6 @@
 # Open Attribution
 
-Open attribution is a project to help developers control their data without resorting to third party control. Our goal is to give developers back control of their app advertising data.
+Control your app's data without resorting to third party control. Our goal is to give developers back control of their app advertising data.
 
 ## True ownership of your mobile app's data
 

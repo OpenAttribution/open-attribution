@@ -4,9 +4,6 @@ name: ci
 on:
   push:
     branches:
-      - master 
-
-
       - main
 permissions:
   contents: write
@@ -24,7 +21,6 @@ jobs:
           python-version: 3.x
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
 
-
       - uses: actions/cache@v3
         with:
           key: mkdocs-material-${{ env.cache_id }}
@@ -32,6 +28,4 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material 
-
-
       - run: mkdocs gh-deploy --force
