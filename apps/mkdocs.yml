@@ -1,0 +1,32 @@
+site_name: Open Attribution
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - header.autohide
+      - content.code.copy
+    - navigation.tabs
+    - navigation.footer
+  palette:
+    scheme: slate
+    primary: black
+extra:
+  generator: false
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+repo_url: https://github.com/OpenAttribution/open-attribution
+
+docs_dir: /apps/docs
+
+copyright: Copyright &copy; 2023 - Open Attribution LLC
