@@ -82,7 +82,7 @@ def main() -> None:
                             myad=ad,
                         )
                         # Decide if a click should be generated
-                        if random.random() < 0.03:  # 3% chance for a click
+                        if random.random() < 0.5:  # 3% chance for a click
                             time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
                             make_request(
                                 mytype="clicks",
