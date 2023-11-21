@@ -3,8 +3,33 @@ from dataclasses import dataclass
 from pyflink.common.serialization import SimpleStringSchema
 from pyflink.common.typeinfo import Types
 from pyflink.datastream import StreamExecutionEnvironment, TimeCharacteristic
-from pyflink.datastream.connectors.kafka import FlinkKafkaConsumer
+
+from pyflink.datastream.connectors.hybrid_source import HybridSource
+
+from pyflink.datastream.connectors.kafka import FlinkKafkaConsumer, KafkaSource, KafkaOffsetsInitializer
+
 from pyflink.table import StreamTableEnvironment
+
+import pandas as pd
+from pydruid.db import connect
+
+# Establish a connection to Druid
+conn = connect(host="localhost", port=8082, path="/druid/v2/sql/", scheme="http")
+
+# Read and format the SQL file
+with open("druid_query_impressions.sql") as file:
+    sql_query = file.read()
+
+imp_df = pd.read_sql(sql_query, con=conn)
+
+impressions_switch_timestamp= int(pd.to_datetime(imp_df.__time.max()).timestamp())
+
+
+
+
+import datetime
+
+
 
 
 @dataclass(frozen=True)
@@ -39,16 +64,26 @@ print("stream table env set")
 env.add_jars("file:///home/james/test-flink/flink-sql-connector-kafka-3.0.1-1.18.jar")
 
 print("create kafka connector")
+# FlinkKafkaConsumer is for regular streaming
 imp_kafka_consumer = FlinkKafkaConsumer(
     topics="impressions",
     deserialization_schema=SimpleStringSchema(),
     properties={"bootstrap.servers": "localhost:9092"},
 )
+
+
+# KafkaSource is for hybrid file+streaming
+imp_kafka_consumer = KafkaSource.builder().set_bootstrap_servers('localhost:9092').set_topics('impressions').set_value_only_deserializer(SimpleStringSchema()).set_starting_offsets(KafkaOffsetsInitializer.timestamp(impressions_switch_timestamp)).build()
+
+
+
 evt_kafka_consumer = FlinkKafkaConsumer(
     topics="events",
     deserialization_schema=SimpleStringSchema(),
     properties={"bootstrap.servers": "localhost:9092"},
 )
+
+
 print("create kafka connector done")
 
 print("stream env connector add_source")
@@ -74,19 +109,12 @@ evt_ds.print(sink_identifier="event: ")
 #    impressions_table_sql = sql_template.format(**config_values)
 # t_env.execute_sql(impressions_table_sql)
 
-import pandas as pd
-from pydruid.db import connect
+impressions_table = t_env.from_pandas(imp_df)
 
-# Establish a connection to Druid
-conn = connect(host="localhost", port=8082, path="/druid/v2/sql/", scheme="http")
 
-# Read and format the SQL file
-with open("druid_query_impressions.sql") as file:
-    sql_query = file.read()
 
-df = pd.read_sql(sql_query, con=conn)
 
-impressions_table = t_env.from_pandas(df)
+
 imp_type_info = Types.ROW(
     [
         Types.STRING(),
@@ -106,6 +134,11 @@ ds_hist_imps = t_env.to_append_stream(impressions_table, type_info=imp_type_info
 
 imp_ds = imp_ds.union(ds_hist_imps)
 
+mycsv=imp_df.to_csv(index=None)
+
+hybrid_source = HybridSource.builder(mycsv)
+
+.add_source(imp_kafka_consumer).build()
 
 print("executed table create")
 
