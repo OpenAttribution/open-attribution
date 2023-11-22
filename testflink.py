@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 
+import pandas as pd
+from pydruid.db import connect
 from pyflink.common.serialization import SimpleStringSchema
 from pyflink.common.typeinfo import Types
 from pyflink.datastream import StreamExecutionEnvironment, TimeCharacteristic
-
 from pyflink.datastream.connectors.hybrid_source import HybridSource
-
-from pyflink.datastream.connectors.kafka import FlinkKafkaConsumer, KafkaSource, KafkaOffsetsInitializer
-
+from pyflink.datastream.connectors.kafka import (
+    FlinkKafkaConsumer,
+    KafkaOffsetsInitializer,
+    KafkaSource,
+)
 from pyflink.table import StreamTableEnvironment
-
-import pandas as pd
-from pydruid.db import connect
 
 # Establish a connection to Druid
 conn = connect(host="localhost", port=8082, path="/druid/v2/sql/", scheme="http")
@@ -22,14 +22,7 @@ with open("druid_query_impressions.sql") as file:
 
 imp_df = pd.read_sql(sql_query, con=conn)
 
-impressions_switch_timestamp= int(pd.to_datetime(imp_df.__time.max()).timestamp())
-
-
-
-
-import datetime
-
-
+impressions_switch_timestamp = int(pd.to_datetime(imp_df.__time.max()).timestamp())
 
 
 @dataclass(frozen=True)
@@ -73,8 +66,16 @@ imp_kafka_consumer = FlinkKafkaConsumer(
 
 
 # KafkaSource is for hybrid file+streaming
-imp_kafka_consumer = KafkaSource.builder().set_bootstrap_servers('localhost:9092').set_topics('impressions').set_value_only_deserializer(SimpleStringSchema()).set_starting_offsets(KafkaOffsetsInitializer.timestamp(impressions_switch_timestamp)).build()
-
+imp_kafka_consumer = (
+    KafkaSource.builder()
+    .set_bootstrap_servers("localhost:9092")
+    .set_topics("impressions")
+    .set_value_only_deserializer(SimpleStringSchema())
+    .set_starting_offsets(
+        KafkaOffsetsInitializer.timestamp(impressions_switch_timestamp)
+    )
+    .build()
+)
 
 
 evt_kafka_consumer = FlinkKafkaConsumer(
@@ -112,9 +113,6 @@ evt_ds.print(sink_identifier="event: ")
 impressions_table = t_env.from_pandas(imp_df)
 
 
-
-
-
 imp_type_info = Types.ROW(
     [
         Types.STRING(),
@@ -134,11 +132,18 @@ ds_hist_imps = t_env.to_append_stream(impressions_table, type_info=imp_type_info
 
 imp_ds = imp_ds.union(ds_hist_imps)
 
-mycsv=imp_df.to_csv(index=None)
+mycsv = imp_df.to_csv(index=None)
 
+
+# Using SQL UNION ALL?
+"create view t1(s) as values ('c'), ('a'), ('b'), ('b'), ('c');"
+"create view t2(s) as values ('d'), ('e'), ('a'), ('b'), ('b');"
+"(SELECT s FROM t1) UNION ALL (SELECT s FROM t2);"
+
+# This doesn't work yet
 hybrid_source = HybridSource.builder(mycsv)
 
-.add_source(imp_kafka_consumer).build()
+# .add_source(imp_kafka_consumer).build()
 
 print("executed table create")
 
