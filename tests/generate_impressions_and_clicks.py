@@ -60,7 +60,7 @@ def main() -> None:
     while True:
         for network in NETWORKS:
             for app in APPS:
-                if random.random() < 0.1:
+                if random.random() < 0.3:
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
                     make_inapp_request(
@@ -82,7 +82,7 @@ def main() -> None:
                             myad=ad,
                         )
                         # Decide if a click should be generated
-                        if random.random() < 0.5:  # 3% chance for a click
+                        if random.random() < 0.5:  # % chance for a click
                             time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
                             make_request(
                                 mytype="clicks",
