@@ -1,7 +1,7 @@
 
-# Druid
+# Python environment
+Create your python environment for open-attribution using Python 3.11.
 
-## Druid: Setup
 
 # Kafka
 
@@ -13,13 +13,19 @@
 
 https://druid.apache.org/docs/latest/tutorials/
 
-## Druid: User (admin)
+# Druid: User (admin)
+
+Create your druid data sources:
+`python create_druid_data_sources.py` 
 
 https://druid.apache.org/docs/latest/operations/security-overview
 
 # Superset
 
 ## Superset: Setup
+Based on: https://superset.apache.org/docs/installation/installing-superset-from-scratch
+
+Note you'll need go do the configuration to get it running from scratch.
 
 ```sh
 pip install superset pydruid
