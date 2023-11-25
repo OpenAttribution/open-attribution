@@ -1,6 +1,6 @@
 # Open Attribution
 
-Own your company's advertising data without resorting to third party control. Our goal is to give developers back control of their app advertising data.
+Own your company's advertising data without resorting to third party control. Our goal is to give developers control of their app advertising data rather than a third party.
 
 ## True ownership of your mobile app's data
 
