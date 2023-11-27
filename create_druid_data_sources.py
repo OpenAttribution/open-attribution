@@ -1,13 +1,12 @@
 import json
 import time
 
-from config import get_logger
-
-logger = get_logger(__name__)
-
 import requests
 
+from config import get_logger
 from config.dimensions import DB_CLIENT_IP, DB_IFA, MY_SCHEMAS
+
+logger = get_logger(__name__)
 
 DRUID_HOST: str = "http://localhost:8081/druid/indexer/v1/supervisor"
 
@@ -20,7 +19,9 @@ def stop_kafka_ingest(
     logger.info(f"Druid shutown ingest: {topic_name=} response: {response.status_code}")
     topic_name = f"{topic_name}_stats"
     response_agg = requests.post(DRUID_HOST + f"/{topic_name}/shutdown")
-    logger.info(f"Druid shutown ingest: {topic_name=} response: {response.status_code}")
+    logger.info(
+        f"Druid shutown ingest: {topic_name=} response: {response_agg.status_code}"
+    )
 
 
 # Define a function to create a Kafka Ingestion Spec for Druid

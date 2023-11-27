@@ -12,6 +12,10 @@ Open Attribution is committed to building a community of developers who work tog
 
 ## Ready?
 
+!!! warning
+
+    This project is very early stage. I am writing the documentation early to help myself plan where the project should be. That means that many features are not yet built and are a work in progress. If you are interested in the project, please feel free to reach out. For now the project is not appropriate for production ad tracking.
+
 Head to [Getting Started](getting_started/installation.md) to learn more.
 
 
