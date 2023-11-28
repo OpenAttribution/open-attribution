@@ -1,4 +1,21 @@
 site_name: Open Attribution Docs
+
+site_url: https://openattribution.com/
+
+nav:
+  - Home: index.md
+  - TODO and Roadmap: 
+    - TODOs: ./todo/todos.md
+    - Data Flow: ./todo/data_flow.md
+    - Database Overview: ./todo/database_overview.md
+  - Getting Started: 
+    - Installation: ./getting_started/installation.md
+    - Running after Installation: ./getting_started/running.md
+    - Develop Locally: ./getting_started/develop_locally.md
+  - About: 
+    - History: ./about/history.md
+    - Target Use Cases: ./about/example_use_cases.md
+
 theme:
   name: material
   icon:
@@ -8,6 +25,9 @@ theme:
       - content.code.copy
     - navigation.tabs
     - navigation.footer
+      #- navigation.sections
+    - toc.integrate
+    - navigation.expand
   palette:
     scheme: slate
     primary: black
@@ -28,6 +48,8 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 
 repo_url: https://github.com/OpenAttribution/open-attribution
