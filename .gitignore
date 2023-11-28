@@ -197,5 +197,7 @@ tags
 # Persistent undo
 [._]*.un~
 
+# Obsidian files
+*.obsidian/*
 
 
