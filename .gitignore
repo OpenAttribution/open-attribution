@@ -198,6 +198,6 @@ tags
 [._]*.un~
 
 # Obsidian files
-*.obsidian/*
+**/.obsidian/
 
 
