@@ -1,4 +1,4 @@
-
+	
 !!! note
 	The self-hosted cost targets are some very aggressive and possibly wishful thinking benchmarks to hit, but should be the goals. The numbers here will also be adjusted over time as the Open Attribution progresses. To be clear, these are not the future pricing of Open Attribution for hosted MMP services but are targets for cloud costs for developers who self-host on their existing cloud provider. 
 
