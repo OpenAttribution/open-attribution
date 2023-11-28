@@ -1,16 +1,15 @@
 <script lang="ts">
 	import NavTabs from '$lib/NavTabs.svelte';
-import '../app.postcss';
+	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 </script>
 
 <!-- App Shell -->
 <AppShell>
-	
 	<!-- Large only header -->
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
-			<AppBar
+		<AppBar
 			gridColumns="grid-cols-[1fr_0_1fr] md:grid-cols-[0.4fr_1fr_0.3fr]"
 			slotLead="p-2"
 			slotTrail="p-2"
@@ -18,14 +17,12 @@ import '../app.postcss';
 			padding="p-0"
 		>
 			<svelte:fragment slot="lead">
-			<strong class=" ml-4 text-xl md:text-2xl uppercase">Open Attribution</strong>
+				<strong class=" ml-4 text-xl md:text-2xl uppercase">Open Attribution</strong>
 			</svelte:fragment>
 
-
 			<div class="hidden lg:inline-flex">
-				<NavTabs></NavTabs>
+				<NavTabs />
 			</div>
-
 
 			<svelte:fragment slot="trail">
 				<a
@@ -37,9 +34,6 @@ import '../app.postcss';
 					GitHub
 				</a>
 			</svelte:fragment>
-
-
-
 		</AppBar>
 	</svelte:fragment>
 
@@ -65,6 +59,3 @@ import '../app.postcss';
 	<!-- Page Route Content -->
 	<slot />
 </AppShell>
-
-
-

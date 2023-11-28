@@ -26,3 +26,44 @@ repos:
     hooks:
     - id: shellcheck
       args: ["-x"]
+ ## JS ##
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.3
+    hooks:
+      - id: prettier
+        args: ['--config', 'apps/www/.prettierrc', '--ignore-unknown', '--write', '--check']
+        language: node
+        entry: apps/www/node_modules/.bin/prettier
+        require_serial: true
+        files: ^apps/www/.*\.(js|jsx|ts|tsx|css|svelte)$
+        additional_dependencies:
+          - prettier@2.8.8
+          - prettier-plugin-svelte@2.10.1
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.52.0
+    hooks:
+      - id: eslint
+        name: eslint
+        language: node
+        entry: apps/www/node_modules/eslint/bin/eslint.js
+        #args: ['--fix'] #lets wait before using this
+        require_serial: true
+        files: \.(js|ts|svelte|css)$
+        additional_dependencies:
+          - eslint
+          - svelte
+          - typescript
+          - eslint-plugin-svelte
+          - "@typescript-eslint/eslint-plugin"
+          - "@typescript-eslint/parser"
+          - svelte-eslint-parser
+  - repo: local
+    hooks:
+      - id: svelte-check
+        name: Svelte check
+        language: system
+        entry: npx svelte-check --fail-on-warnings
+        files: \.(js|ts|svelte)$
+        pass_filenames: false
+        require_serial: true
+
