@@ -1,3 +1,12 @@
+<script type="ts">
+    import { goto } from '$app/navigation';
+
+    function redirectToDocs() {
+        // goto('/docs');
+        window.location.href = '/docs/index.html';
+    }
+</script>
+
 <div class="p-2">
 	<div class="card mx-8 lg:mx-96 my-12 lg:my-24 flex items-center justify-center text-center">
 		<div class="py-12">
@@ -13,7 +22,7 @@
 				<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
 					>Learn More</button
 				>
-				<button type="button" class="btn variant-outline-primary">Documentation</button>
+				<button type="button" class="btn variant-outline-primary" on:click={redirectToDocs}>Documentation</button>
 			</div>
 		</div>
 	</div>
