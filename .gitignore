@@ -200,4 +200,7 @@ tags
 # Obsidian files
 **/.obsidian/
 
+# Static Rendered HTML docs
+apps/wwww/static/docs/
+
 
