@@ -33,5 +33,43 @@
 		</div>
 	</div>
 </div>
+
 <div class="p-4" />
-<div class="card p-4">Basic</div>
+<div class="grid grid-cols-2 gap-4 lg:gap-16 p-4 lg:p-48">
+	<div class="card p-4">
+		<div class="card-header"><h2 class="h3">Full Ownership & Privacy</h2></div>
+		<div class="card-footer">
+			<p>Self-hosted means that your data isn't being mined for value by other companies.</p>
+		</div>
+	</div>
+
+	<div class="card p-4">
+		<div class="card-header"><h2 class="h3">Data Pipeline & Storage</h2></div>
+		<div class="card-footer">
+			<p>
+				Data processing pipelines efficiently store raw data and aggregate for fast dash queries.
+			</p>
+			<p>Analytics</p>
+		</div>
+	</div>
+
+	<div class="card p-4">
+		<div class="card-header"><h2 class="h3">Attribution Models</h2></div>
+		<div class="card-footer">
+			<p>
+				You control your attribution models. Last click too old? Try new multi-touch models or
+				modern CTV models.
+			</p>
+		</div>
+	</div>
+
+	<div class="card p-4">
+		<div class="card-header"><h2 class="h3">Full MMP Analytics Dashboard</h2></div>
+		<div class="card-footer">
+			<p>
+				A full MMP dashboard for your team. User permissions, apps, network settings and ad campaign
+				analytics.
+			</p>
+		</div>
+	</div>
+</div>
