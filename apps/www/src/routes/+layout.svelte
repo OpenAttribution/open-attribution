@@ -2,6 +2,7 @@
 	import NavTabs from '$lib/NavTabs.svelte';
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import githubIcon from '$lib/assets/github-mark-white.svg?raw';
 </script>
 
 <!-- App Shell -->
@@ -17,7 +18,7 @@
 			padding="p-0"
 		>
 			<svelte:fragment slot="lead">
-				<strong class=" ml-4 text-xl md:text-2xl uppercase">Open Attribution</strong>
+				<strong class=" ml-4 text- xl md:text-2xl uppercase">Open Attribution</strong>
 			</svelte:fragment>
 
 			<div class="hidden lg:inline-flex">
@@ -31,7 +32,10 @@
 					target="_blank"
 					rel="noreferrer"
 				>
-					GitHub
+					<div class="inline-flex items-center">
+						{@html githubIcon}
+						<h6 class="h6 p-2 justify-center text-center">Open Source on GitHub</h6>
+					</div>
 				</a>
 			</svelte:fragment>
 		</AppBar>
