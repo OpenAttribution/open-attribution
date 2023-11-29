@@ -18,6 +18,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: overrides
   icon:
     repo: fontawesome/brands/github
   features:
@@ -26,6 +27,7 @@ theme:
     - navigation.tabs
     - navigation.footer
       #- navigation.sections
+    - content.action.edit
     - toc.integrate
     - navigation.expand
   palette:
@@ -53,5 +55,6 @@ markdown_extensions:
 
 
 repo_url: https://github.com/OpenAttribution/open-attribution
+edit_uri: edit/main/apps/docs/
 
 copyright: Copyright &copy; 2023 - Open Attribution LLC
