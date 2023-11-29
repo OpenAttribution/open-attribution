@@ -1,16 +1,25 @@
 <script type="ts">
 	import { goto } from '$app/navigation';
+	import myWarningTriangle from '$lib/assets/triangle-warning.svg?raw'
 	function redirectToProduct() {
 		goto('/product');
 	}
 	function redirectToDocs() {
-		// goto('/docs');
 		window.location.href = '/docs/index.html';
 	}
 </script>
 
-<div class="p-2">
-	<div class="card mx-8 lg:mx-96 my-12 lg:my-24 flex items-center justify-center text-center">
+
+<aside class="alert variant-filled-secondary p-4 mx-8 lg:mx-96 mt-8">
+	{@html myWarningTriangle}
+	<div class="alert-message">
+		<h3 class="h3">Early Alpha</h3>
+		<p>This open source project is in the very early alpha stages. If you're interested please reach out on GitHub, LinkedIn or Discord</p>
+	</div>
+</aside>
+
+
+	<div class="card mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center">
 		<div class="py-12">
 			<h1 class="h1 text-center">Own Your Data</h1>
 			<h1 class="h1 text-center text-secondary-500">Control Your Ad Attribution</h1>
@@ -32,10 +41,8 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="p-4" />
-<div class="grid grid-cols-2 gap-4 lg:gap-16 p-4 lg:p-48">
+<div class="grid grid-cols-2 gap-4 lg:gap-16 p-4 lg:px-48">
 	<div class="card p-4">
 		<div class="card-header"><h2 class="h3">Full Ownership & Privacy</h2></div>
 		<div class="card-footer">
