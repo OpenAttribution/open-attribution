@@ -14,11 +14,11 @@ nav:
     - Develop Locally: ./getting_started/develop_locally.md
   - About: 
     - History: ./about/history.md
-    - Target Use Cases: ./about/example_use_cases.md
+    - Target Use Cases: ./about/target_use_cases.md
 
 theme:
   name: material
-  custom_dir: overrides
+  custom_dir: docs/overrides
   icon:
     repo: fontawesome/brands/github
   features:

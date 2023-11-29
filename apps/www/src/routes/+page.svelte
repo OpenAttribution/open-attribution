@@ -1,10 +1,10 @@
 <script type="ts">
-    import { goto } from '$app/navigation';
+	import { goto } from '$app/navigation';
 
-    function redirectToDocs() {
-        // goto('/docs');
-        window.location.href = '/docs/index.html';
-    }
+	function redirectToDocs() {
+		// goto('/docs');
+		window.location.href = '/docs/index.html';
+	}
 </script>
 
 <div class="p-2">
@@ -22,7 +22,9 @@
 				<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
 					>Learn More</button
 				>
-				<button type="button" class="btn variant-outline-primary" on:click={redirectToDocs}>Documentation</button>
+				<button type="button" class="btn variant-outline-primary" on:click={redirectToDocs}
+					>Documentation</button
+				>
 			</div>
 		</div>
 	</div>
