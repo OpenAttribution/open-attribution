@@ -1,6 +1,8 @@
 <script type="ts">
 	import { goto } from '$app/navigation';
-
+	function redirectToProduct() {
+		goto('/product');
+	}
 	function redirectToDocs() {
 		// goto('/docs');
 		window.location.href = '/docs/index.html';
@@ -19,8 +21,10 @@
 			</h4>
 
 			<div class="flex justify-center gap-2">
-				<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
-					>Learn More</button
+				<button
+					type="button"
+					class="btn variant-outline-secondary mr-4 justify-center"
+					on:click={redirectToProduct}>Learn More</button
 				>
 				<button type="button" class="btn variant-outline-primary" on:click={redirectToDocs}
 					>Documentation</button
