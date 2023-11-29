@@ -201,6 +201,6 @@ tags
 **/.obsidian/
 
 # Static Rendered HTML docs
-apps/wwww/static/docs/
+apps/www/static/docs/
 
 
