@@ -11,6 +11,7 @@ from config.dimensions import (
     LINK_AD,
     LINK_APP_EVENT_ID,
     LINK_CAMPAIGN,
+    LINK_EVENT_TIME,
     LINK_IFA,
     LINK_NETWORK,
 )
@@ -37,6 +38,9 @@ def make_request(
         LINK_IFA: myifa,
         LINK_NETWORK: mynetwork,
         LINK_AD: myad,
+        LINK_EVENT_TIME: round(
+            datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000
+        ),
     }
     url = ENDPOINT + f"/{mytype}/{myapp}"
     response = requests.get(url, params=params)
@@ -48,7 +52,9 @@ def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> No
     params = {
         LINK_APP_EVENT_ID: event_id,
         LINK_IFA: myifa,
-        APP_EVENT_TIME: str(datetime.datetime.now(datetime.timezone.utc)),
+        APP_EVENT_TIME: round(
+            datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000
+        ),
     }
     url = ENDPOINT + f"/{mytype}/{myapp}"
     response = requests.get(url, params=params)

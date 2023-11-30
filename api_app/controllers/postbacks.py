@@ -23,6 +23,7 @@ from config.dimensions import (
     LINK_AD_ID,
     LINK_CAMPAIGN,
     LINK_CAMPAIGN_ID,
+    LINK_EVENT_TIME,
     LINK_IFA,
     LINK_NETWORK,
 )
@@ -109,6 +110,7 @@ class PostbackController(Controller):
         ifa: Annotated[
             str | None, Parameter(str, query=LINK_IFA, required=False)
         ] = None,
+        event_time: Annotated[str | None, Parameter(int, query=LINK_EVENT_TIME)] = None,
     ) -> None:
         """
         Handles a GET request for a list of apps
@@ -124,6 +126,7 @@ class PostbackController(Controller):
         client_host = request.client.host
 
         data = {
+            "event_time": event_time,
             DB_NETWORK: source,
             DB_STORE_ID: app,
             DB_C: c,

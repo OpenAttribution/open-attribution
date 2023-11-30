@@ -8,6 +8,7 @@ LINK_AD = "ad"
 LINK_AD_ID = "adid"
 LINK_IFA = "ifa"
 LINK_APP_EVENT_ID = "event_id"
+LINK_EVENT_TIME = "event_time"
 
 
 # values for kafka -> druid columns
