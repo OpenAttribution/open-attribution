@@ -30,6 +30,7 @@ stop_services() {
 	systemctl stop open-attribution-api.service
 	systemctl stop open-attribution-kafka.service
 	systemctl stop open-attribution-druid.service
+	systemctl stop clickhouse-server.service
 	exit
 }
 
@@ -38,6 +39,13 @@ echo_status() {
 	# Add command to display status here
 	echo "++++++++++++++++++++++++"
 	echo "Systemd services status:"
+	echo "++++++++++++++++++++++++"
+	echo ""
+	echo "++++++++++++++++++++++++"
+	echo "Systemd services status: clickhouse"
+	echo "++++++++++++++++++++++++"
+	systemctl status clickhouse-server.service
+	#journalctl -u open-attribution-clickhouse.service | tail -n 10
 	echo "++++++++++++++++++++++++"
 	echo ""
 	echo "++++++++++++++++++++++++"
@@ -135,6 +143,12 @@ EOF
 
 }
 
+# This function assembles the clickhouse systemd service file and starts it
+# using systemctl.
+function start-clickhouse {
+	sudo service clickhouse-server start
+}
+
 # This function assembles the kafka systemd service file and starts it
 # using systemctl.
 function start-kafka {
@@ -194,6 +208,8 @@ function start-service() {
 	local my_service=$1
 	if [ "$my_service" == "kafka" ]; then
 		start-kafka
+	elif [ "$my_service" == "clickhouse" ]; then
+		start-clickhouse
 	elif [ "$my_service" == "druid" ]; then
 		start-druid
 	elif [ "$my_service" == "api" ]; then
@@ -252,6 +268,7 @@ function check-service() {
 
 }
 
-check-service druid
+#check-service druid
+check-service clickhouse
 check-service kafka
 check-service api

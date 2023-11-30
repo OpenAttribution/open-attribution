@@ -4,10 +4,7 @@ app=$2
 
 session="openattribution"
 
-WAYDROID_LOG_FILE=/var/lib/waydroid/waydroid.log
-
-sudo systemctl stop waydroid-container.service
-sudo systemctl start waydroid-container.service
+sudo ./launcher.sh
 
 if [[ -n $(pgrep tmux) ]]; then
 	tmuxrunning=true
@@ -40,20 +37,19 @@ if [ "$dolaunchsess" = true ]; then
 	# Set up your session
 	tmux new-session -d -s $session
 	# Initial: Top Left
-	tmux send-keys -t $session "waydroid session start" Enter
+	tmux send-keys -t $session "vim" Enter
 	# Top Right
 	tmux split-window -h -t $session
-	tmux send-keys -t $session "proxysetup.sh $port -w " Enter
+	tmux send-keys -t $session "sudo tail -f /var/log/clickhouse-server/clickhouse-server.log" Enter
 	# Bottom Right
-	#tmux split-window -v -p 50 -t $session
+	tmux split-window -v -p 50 -t $session
+	tmux send-keys -t $session "tail -f som-log-fil" Enter
 	# Bottom Left
 	tmux select-pane -t $session:0.0
 	tmux split-window -v -p 50 -t $session
-	tmux send-keys -t $session "sleep 1" Enter
-	tmux send-keys -t $session "tail -f ${WAYDROID_LOG_FILE} | grep --line-buffered 'user 0 is ready' | while read ; do check_app.sh -s  && echo 'Launch Waydroid UI..'. && waydroid app launch $app ; done" Enter
-	tmux send-keys -t $session "/app-spy/check_app.sh -s $app" Enter
-	# Put cursor to proxy pane which will ask for sudo
-	tmux select-pane -t $session:0.2
+	tmux send-keys -t $session "source ~/venv/open-attribution-env/bin/activate && python run_data_generation.py" Enter
+	# Put cursor back on first pane
+	tmux select-pane -t $session:0.0
 else
 	echo "Attach existing new session"
 fi
