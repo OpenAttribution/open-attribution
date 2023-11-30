@@ -1,6 +1,6 @@
 CREATE TABLE impressions
 (
-    __time DateTime,
+    event_time DateTime64(3, 'UTC'),
     store_id LowCardinality(String),
     network LowCardinality(String),
     campaign_name LowCardinality(String),
