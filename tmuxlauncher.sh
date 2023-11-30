@@ -1,6 +1,4 @@
 #!/bin/bash
-port=$1
-app=$2
 
 session="openattribution"
 

@@ -20,7 +20,7 @@ for my_table in my_tables:
     table_exists = client.command(f"EXISTS TABLE {my_table}")
     if not table_exists:
         print(f"{my_table=} create table")
-        with open(f"sql/ch_create_table_{my_table}.sql", "r") as file:
+        with open(f"sql/ch_create_table_{my_table}.sql") as file:
             create_impressions_table_query = file.read()
         client.command(create_impressions_table_query)
     else:
