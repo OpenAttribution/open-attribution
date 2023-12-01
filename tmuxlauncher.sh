@@ -41,7 +41,7 @@ if [ "$dolaunchsess" = true ]; then
 	tmux send-keys -t $session "sudo tail -f /var/log/clickhouse-server/clickhouse-server.log" Enter
 	# Bottom Right
 	tmux split-window -v -p 50 -t $session
-	tmux send-keys -t $session "tail -f som-log-fil" Enter
+	tmux send-keys -t $session "sudo tail -f /var/log/clickhouse-server/clickhouse-server.err.log" Enter
 	# Bottom Left
 	tmux select-pane -t $session:0.0
 	tmux split-window -v -p 50 -t $session

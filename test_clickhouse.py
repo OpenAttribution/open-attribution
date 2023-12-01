@@ -27,5 +27,3 @@ for my_table in my_tables:
         client.command(create_impressions_table_query)
     else:
         print(f"{my_table=} exists")
-
-
