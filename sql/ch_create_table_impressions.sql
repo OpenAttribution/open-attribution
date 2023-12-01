@@ -9,5 +9,5 @@ CREATE TABLE impressions
     ad_id LowCardinality(String),
     ifa UUID,
     client_ip String,
-) ENGINE = MergeTree ORDER BY (store_id, network, __time)
+) ENGINE = MergeTree ORDER BY (store_id, network, event_time)
 

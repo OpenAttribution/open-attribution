@@ -1,7 +1,6 @@
 CREATE TABLE events_queue
 (
-    __time DateTime,
-    event_time DateTime,
+    event_time DateTime64(3, 'UTC'),
     store_id LowCardinality(String),
     event_id LowCardinality(String),
     revenue Nullable(Decimal32(4)),

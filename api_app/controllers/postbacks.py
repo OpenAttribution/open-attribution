@@ -154,7 +154,7 @@ class PostbackController(Controller):
         request: Request,
         app: str,
         event_id: Annotated[str, Parameter(str, query=APP_EVENT_ID)],
-        event_time: Annotated[str, Parameter(str, query=APP_EVENT_TIME)],
+        event_time: Annotated[int, Parameter(int, query=APP_EVENT_TIME)],
         ifa: Annotated[
             str | None, Parameter(str, query=LINK_IFA, required=False)
         ] = None,
