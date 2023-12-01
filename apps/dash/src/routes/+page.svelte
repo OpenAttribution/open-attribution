@@ -1,17 +1,32 @@
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<script lang="ts">
+	import { embedDashboard } from "@superset-ui/embedded-sdk";
+	import { onMount } from 'svelte';
 
-<div class="container h-full mx-auto flex justify-center items-center">
-	<div class="space-y-5">
-		<h1 class="h1">Let's get cracking bones!</h1>
-		<p>Start by exploring:</p>
-		<ul>
-			<li><code class="code">/src/routes/+layout.svelte</code> - barebones layout</li>
-			<li><code class="code">/src/app.postcss</code> - app wide css</li>
-			<li>
-				<code class="code">/src/routes/+page.svelte</code> - this page, you can replace the contents
-			</li>
-		</ul>
-	</div>
+	const myToken: Promise<string> = new Promise((resolve, reject) => {
+    // Simulate async operation with setTimeout
+    setTimeout(() => {
+        resolve('hello!');
+    }, 2000);
+	});
+
+	onMount(() => {
+	embedDashboard({
+  	id: "d7012462-5f39-48f1-96b4-fee1d7b2b3ac", // given by the Superset embedding UI
+  	supersetDomain: "http://localhost:8088",
+  	mountPoint: document.getElementById("my-superset-container"), // any html element that can contain an iframe
+  	fetchGuestToken: () => myToken,
+  	dashboardUiConfig: { // dashboard UI config: hideTitle, hideTab, hideChartControls, filters.visible, filters.expanded (optional)
+      	hideTitle: true,
+      	filters: {
+          	expanded: true,
+      	}
+  	},
+	});
+})
+</script>
+<h1 class='h1'>hi</h1>
+
+<div id="my-superset-container">
+<!-- <iframe id="my-superset-container" src="localhost:8088/superset/dashboard/5/?standalone=true"></iframe> -->
 </div>
 
-<iframe src="http://localhost:8088?standalone=true"></iframe>

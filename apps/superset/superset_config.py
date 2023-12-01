@@ -30,3 +30,13 @@ WTF_CSRF_TIME_LIMIT: int = 60 * 60 * 24 * 365
 MAPBOX_API_KEY: str = ""
 
 HTTP_HEADERS = {"X-Frame-Options": "ALLOWALL"}
+
+FEATURE_FLAGS = {"EMBEDDED_SUPERSET": True}
+
+
+CORS_OPTIONS = {
+    "supports_credentials": True,
+    "allow_headers": ["*"],
+    "resources": ["*"],
+    "origins": ["http://localhost:8088", "http://localhost:8888", "*"],
+}
