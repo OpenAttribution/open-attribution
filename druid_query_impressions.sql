@@ -1,4 +1,0 @@
-SELECT 
-*
-FROM impressions
-WHERE __time > TIMESTAMPADD(DAY, -5, CURRENT_TIMESTAMP)
