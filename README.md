@@ -12,7 +12,7 @@ Open Attribution is committed to building a community of developers who work tog
 
 ## Ready?
 
-Head to [Getting Started](https://openattribution.github.io/open-attribution/getting_started/installation) to learn more.
+This project is just starting, so if you're interested in using it please reach out before putting it into production. To learn more head to [Getting Started](https://openattribution.github.io/open-attribution/getting_started/installation) to learn more.
 
 ### Why do apps NEED attribution?
 
