@@ -1,5 +1,9 @@
 # Open Attribution
 
+🏗️ Under Construction 🏗️
+If you're insterested in this project please feel free to reach out!
+[Join Discord](https://discord.gg/k2XCaXa9)
+
 Own your company's advertising data without resorting to third party control. Our goal is to give developers control of their app advertising data rather than a third party.
 
 ## True ownership of your mobile app's data
