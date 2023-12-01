@@ -12,6 +12,8 @@ my_tables = [
     "events",
     "events_queue",
     "events_mv",
+    "attributed_events",
+    "attributed_events_mv",
 ]
 
 
@@ -25,3 +27,5 @@ for my_table in my_tables:
         client.command(create_impressions_table_query)
     else:
         print(f"{my_table=} exists")
+
+
