@@ -13,3 +13,5 @@
 		</ul>
 	</div>
 </div>
+
+<iframe src="http://localhost:8088?standalone=true"></iframe>

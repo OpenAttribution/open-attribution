@@ -17,9 +17,7 @@ SECRET_KEY = "Mub5QPSdu10uAEjBRdsiEFYd+XQjACQ26u1Od5oNxwNo6tsIhq/I+mMy"
 # you want to explore are managed directly in the web UI
 # The check_same_thread=false property ensures the sqlite client does not attempt
 # to enforce single-threaded access, which may be problematic in some edge cases
-SQLALCHEMY_DATABASE_URI: str = (
-    "sqlite:////home/james/app-track/superset/superset.db?check_same_thread=false"
-)
+SQLALCHEMY_DATABASE_URI: str = "sqlite:////home/james/open-attribution/apps/superset/superset.db?check_same_thread=false"
 
 # Flask-WTF flag for CSRF
 WTF_CSRF_ENABLED: bool = True
@@ -30,3 +28,5 @@ WTF_CSRF_TIME_LIMIT: int = 60 * 60 * 24 * 365
 
 # Set this API key to enable Mapbox visualizations
 MAPBOX_API_KEY: str = ""
+
+HTTP_HEADERS = {"X-Frame-Options": "ALLOWALL"}
