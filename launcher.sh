@@ -101,36 +101,6 @@ if ! id "kafka" &>/dev/null; then
 	echo "User 'kafka' created."
 fi
 
-# Assemble Druid systemd service file and starts it
-# NOTE: Currently not using, in future can remove if still not used
-function start-druid {
-	echo "Start druid service"
-	echo "druid_dir: $DRUID_DIR"
-	setfacl -R -m u:druid:rwx $DRUID_DIR
-	cat <<EOF >/etc/systemd/system/open-attribution-druid.service
-[Unit]
-Description=Open Attribution Druid service
-After=network.target
-
-[Service]
-User=druid
-Group=druid
-ExecStart=${DRUID_DIR}/bin/start-druid
-ExecReload=/bin/kill -s HUP \$MAINPID
-Restart=on-failure
-KillMode=mixed
-PrivateTmp=true
-
-[Install]
-WantedBy=multi-user.target
-
-EOF
-
-	systemctl daemon-reload
-	systemctl start open-attribution-druid.service
-
-}
-
 # Assemble ClickHouse systemd service file and starts it
 function start-clickhouse {
 	sudo service clickhouse-server start
@@ -173,7 +143,7 @@ Description=Gunicorn instance to serve Open Attribution API
 After=network.target
 
 [Service]
-RuntimeDirectory=gunicorn
+RuntimeDirectory=gunicorn-api
 WorkingDirectory=${app_dir}
 ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 127.0.0.1:8000 -m 007 app:app
 ExecReload=/bin/kill -s HUP \$MAINPID
@@ -199,7 +169,7 @@ Description=Open Attribution Superset Analytics Dash for embedding
 After=network.target
 
 [Service]
-RuntimeDirectory=gunicorn
+RuntimeDirectory=gunicorn-superset
 WorkingDirectory=${app_dir}/apps/superset
 ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -w 10 \
                                        -k gevent \
@@ -207,7 +177,7 @@ ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -w 10 \
                                        --bind localhost:8088 \
                                        --limit-request-line 0 \
                                        --limit-request-field_size 0 \
-                                       superset:app
+                                       "superset.app:create_app()"
 ExecReload=/bin/kill -s HUP \$MAINPID
 Restart=on-failure
 KillMode=mixed
