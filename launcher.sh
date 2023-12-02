@@ -49,13 +49,6 @@ echo_status() {
 	echo "++++++++++++++++++++++++"
 	echo ""
 	echo "++++++++++++++++++++++++"
-	echo "Systemd services status: druid"
-	echo "++++++++++++++++++++++++"
-	systemctl status open-attribution-druid.service
-	#journalctl -u open-attribution-druid.service | tail -n 10
-	echo "++++++++++++++++++++++++"
-	echo ""
-	echo "++++++++++++++++++++++++"
 	echo "Systemd services status: kafka"
 	echo "++++++++++++++++++++++++"
 	systemctl status open-attribution-kafka.service
@@ -102,19 +95,14 @@ source ./local.conf
 
 app_dir=$(pwd)
 
-# Check & create users: druid, kafka
-if ! id "druid" &>/dev/null; then
-	sudo useradd -r -s /bin/false druid
-	echo "User 'druid' created."
-fi
-
+# Check & create users: kafka
 if ! id "kafka" &>/dev/null; then
 	sudo useradd -r -s /bin/false kafka
 	echo "User 'kafka' created."
 fi
 
-# This function assembles the druid systemd service file and starts it
-# using systemctl.
+# Assemble Druid systemd service file and starts it
+# NOTE: Currently not using, in future can remove if still not used
 function start-druid {
 	echo "Start druid service"
 	echo "druid_dir: $DRUID_DIR"
@@ -143,14 +131,12 @@ EOF
 
 }
 
-# This function assembles the clickhouse systemd service file and starts it
-# using systemctl.
+# Assemble ClickHouse systemd service file and starts it
 function start-clickhouse {
 	sudo service clickhouse-server start
 }
 
-# This function assembles the kafka systemd service file and starts it
-# using systemctl.
+# Assembles the Kafka systemd service file and starts it
 function start-kafka {
 	echo "Start kafka service"
 	echo "kafka_dir: $KAFKA_DIR"
@@ -177,8 +163,8 @@ EOF
 	systemctl start open-attribution-kafka.service
 }
 
-# This function assembles the python litestar api systemd service file and starts it
-# using systemctl.
+# Assemble Python litestar api systemd service file and starts it
+#Environment="PATH=${PYTHON_ENV_DIR}/bin:$PATH"
 function start-api {
 	echo "Start python api service"
 	cat <<EOF >/etc/systemd/system/open-attribution-api.service
@@ -189,7 +175,6 @@ After=network.target
 [Service]
 RuntimeDirectory=gunicorn
 WorkingDirectory=${app_dir}
-Environment=${PYTHON_ENV_DIR}/bin
 ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 127.0.0.1:8000 -m 007 app:app
 ExecReload=/bin/kill -s HUP \$MAINPID
 Restart=on-failure
@@ -204,14 +189,46 @@ EOF
 	systemctl start open-attribution-api.service
 }
 
+# Assemble python superset frontend systemd service file and starts it
+#Environment=${PYTHON_ENV_DIR}/bin
+function start-superset {
+	echo "Start python superset service"
+	cat <<EOF >/etc/systemd/system/open-attribution-superset.service
+[Unit]
+Description=Open Attribution Superset Analytics Dash for embedding
+After=network.target
+
+[Service]
+RuntimeDirectory=gunicorn
+WorkingDirectory=${app_dir}/apps/superset
+ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -w 10 \
+                                       -k gevent \
+                                       --timeout 120 \
+                                       --bind localhost:8088 \
+                                       --limit-request-line 0 \
+                                       --limit-request-field_size 0 \
+                                       superset:app
+ExecReload=/bin/kill -s HUP \$MAINPID
+Restart=on-failure
+KillMode=mixed
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+	systemctl daemon-reload
+	systemctl start open-attribution-superset.service
+}
+
 function start-service() {
 	local my_service=$1
 	if [ "$my_service" == "kafka" ]; then
 		start-kafka
 	elif [ "$my_service" == "clickhouse" ]; then
 		start-clickhouse
-	elif [ "$my_service" == "druid" ]; then
-		start-druid
+	elif [ "$my_service" == "superset" ]; then
+		start-superset
 	elif [ "$my_service" == "api" ]; then
 		start-api
 	else
@@ -248,8 +265,8 @@ function check-service() {
 			sleep 1
 		elif [ "$status" = "active" ]; then
 			dash_address=" "
-			if [ "$my_service" = "druid" ]; then
-				dash_address="http://localhost:8888"
+			if [ "$my_service" = "superset" ]; then
+				dash_address="superset: http://localhost:8088"
 			fi
 			echo "open-attribution-${my_service} is running normally. ${dash_address}"
 			break
@@ -268,7 +285,7 @@ function check-service() {
 
 }
 
-#check-service druid
 check-service clickhouse
 check-service kafka
 check-service api
+check-service superset
