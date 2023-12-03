@@ -1,6 +1,5 @@
-export const ssr = false;
-export const csr = true ;
-
+export const ssr = true; 
+export const csr = true;
 
 export async function load() {
     // Define the URL where you want to send the POST request
@@ -10,7 +9,7 @@ export async function load() {
     const loginpayload = {
         "password":"loginpass",
         "provider":"db",
-        "refresh":true,
+        // "refresh":true,
         "username":"admin"
     } ;
 
