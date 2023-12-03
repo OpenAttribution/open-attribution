@@ -9,6 +9,7 @@
 	console.info(`GUEST TOKEN: ${myToken}`)
 
 	onMount(() => {
+
 		embedDashboard({
   			id: "d7012462-5f39-48f1-96b4-fee1d7b2b3ac", // given by the Superset embedding UI
   			supersetDomain: "http://localhost:8088",
@@ -21,14 +22,21 @@
       			}
   			},
 			});
+
 	})
 </script>
 
 <h1 class='h1'>hi</h1>
 
-<div id="my-superset-container"></div>
-
-<div>
-<!-- <iframe id="my-superset-container2" src="http://localhost:8088/superset/dashboard/5/?standalone=true"></iframe> -->
+<div class="h-screen">
+<div id="my-superset-container" class="my-div-iframe h-screen w-full"/>
 </div>
 
+<style>
+:global(.my-div-iframe iframe){
+	height:100%;
+	width:100%;
+	border:4px solid red;
+}	
+
+</style>

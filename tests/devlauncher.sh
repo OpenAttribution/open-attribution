@@ -46,6 +46,10 @@ if [ "$dolaunchsess" = true ]; then
 	tmux select-pane -t $session:0.0
 	tmux split-window -v -p 50 -t $session
 	tmux send-keys -t $session "source ~/venv/open-attribution-env/bin/activate && python run_data_generation.py" Enter
+	# Second window
+	tmux new-window -t $session
+	tmux send-keys -t $session "cd apps/dash && npm run dev" Enter
+	tmux split-window -v -t $session
 	# Put cursor back on first pane
 	tmux select-pane -t $session:0.0
 else
