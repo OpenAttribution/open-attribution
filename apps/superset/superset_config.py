@@ -20,7 +20,7 @@ SECRET_KEY = "Mub5QPSdu10uAEjBRdsiEFYd+XQjACQ26u1Od5oNxwNo6tsIhq/I+mMy"
 SQLALCHEMY_DATABASE_URI: str = "sqlite:////home/james/open-attribution/apps/superset/superset.db?check_same_thread=false"
 
 # Flask-WTF flag for CSRF
-WTF_CSRF_ENABLED: bool = True
+WTF_CSRF_ENABLED: bool = False
 # Add endpoints that need to be exempt from CSRF protection
 WTF_CSRF_EXEMPT_LIST: list = []
 # A CSRF token that expires in 1 year
@@ -33,10 +33,20 @@ HTTP_HEADERS = {"X-Frame-Options": "ALLOWALL"}
 
 FEATURE_FLAGS = {"EMBEDDED_SUPERSET": True}
 
+GUEST_ROLE_NAME = "Admin"  # you might need to edit role permissions when 403 error
+GUEST_TOKEN_JWT_EXP_SECONDS = 300  # 5 minutes, or you could set it longer
+
 
 CORS_OPTIONS = {
     "supports_credentials": True,
     "allow_headers": ["*"],
     "resources": ["*"],
-    "origins": ["http://localhost:8088", "http://localhost:8888", "*"],
+    "origins": ["http://localhost:5173", "*"],
 }
+
+
+PUBLIC_ROLE_LIKE = "Gamma"
+ENABLE_PROXY_FIX = True
+ENABLE_CORS = True
+
+TALISMAN_ENABLED = False
