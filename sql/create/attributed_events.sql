@@ -11,6 +11,6 @@ CREATE TABLE attributed_events
     campaign_id LowCardinality(String) DEFAULT '',
     ad_name LowCardinality(String) DEFAULT '',
     ad_id LowCardinality(String) DEFAULT '',
-    revenue Nullable(Decimal32(4)) DEFAULT 0
+    revenue Decimal(9,4) DEFAULT 0
 ) ENGINE = MergeTree ORDER BY (store_id, event_id, ifa, client_ip, app_event_time)
 
