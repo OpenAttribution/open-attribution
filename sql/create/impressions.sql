@@ -4,10 +4,10 @@ CREATE TABLE impressions
     store_id LowCardinality(String),
     network LowCardinality(String),
     campaign_name LowCardinality(String),
-    campaign_id LowCardinality(String),
-    ad_name LowCardinality(String),
-    ad_id LowCardinality(String),
+    campaign_id LowCardinality(String) DEFAULT '',
+    ad_name LowCardinality(String) DEFAULT '',
+    ad_id LowCardinality(String) DEFAULT '',
     ifa UUID,
-    client_ip String,
+    client_ip String DEFAULT '',
 ) ENGINE = MergeTree ORDER BY (store_id, network, event_time)
 

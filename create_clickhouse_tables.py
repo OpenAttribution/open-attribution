@@ -15,7 +15,8 @@ my_tables = [
     "attributed_events",
     "attributed_events_mv",
     "daily_overview",
-    "daily_overview_mv",
+    "daily_overview_impressions_mv",
+    "daily_overview_clicks_mv",
 ]
 
 
