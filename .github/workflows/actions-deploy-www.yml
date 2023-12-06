@@ -29,3 +29,5 @@ jobs:
             cd $TARGETDIR
             pwd
             git pull origin main
+            chmod -x apps/scripts/deploy_www.sh
+            ./apps/scripts/deploy_www.sh
