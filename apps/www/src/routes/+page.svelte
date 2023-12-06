@@ -14,8 +14,8 @@
 	<div class="alert-message">
 		<h3 class="h3">Early Alpha: Under Construction</h3>
 		<p>
-			This open source project is in the very early alpha stages. If you're interested please reach
-			out on GitHub, LinkedIn or Discord
+			This open source project is in the very early alpha stages. If you're interested please
+			contact or reach out on GitHub or Discord.
 		</p>
 	</div>
 </aside>
@@ -25,9 +25,8 @@
 		<h1 class="h1 text-center">Own Your Data</h1>
 		<h1 class="h1 text-center text-secondary-500">Control Your Ad Attribution</h1>
 		<h4 class="h4 text-center p-2 lg:p-4">
-			Open Attribution is an open source MMP alternative. Fully host and own your data by overseeing
-			it's storage, manage your data pipeline and control your advertising campaign attribution
-			rules.
+			Open Attribution is an open source MMP. Fully host your data by overseeing it's storage,
+			manage your data pipeline and control your advertising campaign attribution rules.
 		</h4>
 
 		<div class="flex justify-center gap-2">
