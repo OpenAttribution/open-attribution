@@ -10,7 +10,7 @@ The python environment is used for 3 seperate use-cases. If you need you can cre
 
 `python3.11 -m venv my-env-path`
 `source activate ~/my-env-path/bin/activate`
-`pip install pyflink ... `
+`pip install "litestar[standard]" superset gunicorn uvicorn `
 
 
 # Kafka
@@ -23,12 +23,10 @@ The python environment is used for 3 seperate use-cases. If you need you can cre
 
 https://druid.apache.org/docs/latest/tutorials/
 
-# Druid: User (admin)
+# Clickhouse
 
-Create your druid data sources:
-`python create_druid_data_sources.py` 
 
-https://druid.apache.org/docs/latest/operations/security-overview
+Install Clickhouse, including `clickhouse-server`.
 
 # Superset
 
