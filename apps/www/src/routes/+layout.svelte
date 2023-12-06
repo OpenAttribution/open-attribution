@@ -26,6 +26,11 @@
 			</div>
 
 			<svelte:fragment slot="trail">
+				<a href="mailto:hello@openattribution.dev">
+					<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
+						>Contact</button
+					>
+				</a>
 				<a
 					class="btn btn-sm variant-ghost-surface"
 					href="https://github.com/OpenAttribution/open-attribution"
