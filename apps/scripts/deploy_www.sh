@@ -2,11 +2,8 @@
 
 # This script is used when deploying the commercial site found at openattribution.dev
 
-cd apps || exit
-mkdocs build --site-dir www/static/docs
-
 # Assembles the Kafka systemd service file and starts it
-function start-kafka {
+function start-service-www {
 	echo "Start open attribution www site service"
 	cat <<EOF >/etc/systemd/system/open-attribution-www.service
 [Unit]
@@ -33,4 +30,12 @@ WantedBy=multi-user.target
 EOF
 	systemctl daemon-reload
 	systemctl start open-attribution-www.service
+	systemctl enable /etc/systemd/system/open-attribution-www.service
 }
+
+cd apps || exit
+mkdocs build --site-dir www/static/docs
+cd www || exit
+npm run build
+
+start-service-www
