@@ -21,7 +21,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/ # careful, this also removes a lib folder in sveltekit
 lib64/
 parts/
 sdist/

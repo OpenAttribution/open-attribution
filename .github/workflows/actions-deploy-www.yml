@@ -32,7 +32,7 @@ jobs:
             cd apps || exit
             /home/openattribution/venv/open-attribution-www-env/bin/mkdocs build --site-dir www/static/docs
             cd www || exit
-            npm install --production
+            npm install
             npm run build
             cd ../apps/scripts/
             sudo chmod +x deploy_www.sh
