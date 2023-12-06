@@ -51,3 +51,13 @@ superset run -p 8088 --with-threads --reload
 ```
 
 1. Add database `druid://admin:password1@localhost:8888/druid/v2/sql`
+
+
+Javascript: Node & NPM:
+
+npm:
+`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash`
+
+node/npm 20:
+`nvm install v20.10.0`
+
