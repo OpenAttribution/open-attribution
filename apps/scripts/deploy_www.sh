@@ -35,3 +35,5 @@ EOF
 }
 
 start-service-www
+
+echo "open-attribution-www.service set up finished"
