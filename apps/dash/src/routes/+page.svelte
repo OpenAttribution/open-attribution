@@ -29,7 +29,7 @@
 	})
 </script>
 
-<h1 class='h1'>hi</h1>
+<h1 class='h1'>Open-Attribution</h1>
 
 <div class="h-screen">
 <div id="my-superset-container" class="my-div-iframe h-screen w-full"/>
@@ -39,7 +39,7 @@
 :global(.my-div-iframe iframe){
 	height:100%;
 	width:100%;
-	border:4px solid red;
+	border:4px solid black;
 }	
 
 </style>
