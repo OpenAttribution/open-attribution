@@ -35,7 +35,7 @@ EOF
 }
 
 cd apps || exit
-mkdocs build --site-dir www/static/docs
+/home/openattribution/venv/open-attribution-www-env/bin/python mkdocs build --site-dir www/static/docs
 cd www || exit
 npm run build
 
