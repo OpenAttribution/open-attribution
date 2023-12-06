@@ -29,5 +29,10 @@ jobs:
             cd $TARGETDIR
             pwd
             git pull origin main
-            chmod +x apps/scripts/deploy_www.sh
-            ./apps/scripts/deploy_www.sh
+            cd apps || exit
+            /home/openattribution/venv/open-attribution-www-env/bin/mkdocs build --site-dir www/static/docs
+            cd www || exit
+            npm run build
+            cd ../apps/scripts/
+            chmod +x deploy_www.sh
+            sudo ./deploy_www.sh
