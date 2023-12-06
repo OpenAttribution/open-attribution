@@ -32,8 +32,6 @@ jobs:
             cd apps || exit
             /home/openattribution/venv/open-attribution-www-env/bin/mkdocs build --site-dir www/static/docs
             cd www || exit
-            npm install
-            npm run build
             cd ../scripts/
             sudo chmod +x deploy_www.sh
             sudo /home/openattribution/open-attribution/apps/scripts/deploy_www.sh
