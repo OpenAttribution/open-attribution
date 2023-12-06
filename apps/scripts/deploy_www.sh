@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script is used when deploying the commercial site found at openattribution.dev
+# Run starts from .github/workflows/actions-deploy-www.yml
 
 # Assembles the Kafka systemd service file and starts it
 function start-service-www {
