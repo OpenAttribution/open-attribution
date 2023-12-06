@@ -30,7 +30,7 @@ WantedBy=multi-user.target
 
 EOF
 	systemctl daemon-reload
-	systemctl start open-attribution-www.service
+	systemctl restart open-attribution-www.service
 	systemctl enable /etc/systemd/system/open-attribution-www.service
 }
 
