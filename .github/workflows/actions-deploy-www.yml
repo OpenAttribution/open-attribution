@@ -36,4 +36,4 @@ jobs:
             npm run build
             cd ../apps/scripts/
             sudo chmod +x deploy_www.sh
-            sudo ./deploy_www.sh
+            sudo /home/openattribution/venv/open-attribution/apps/scripts/deploy_www.sh
