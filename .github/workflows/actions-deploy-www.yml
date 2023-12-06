@@ -34,5 +34,5 @@ jobs:
             cd www || exit
             npm run build
             cd ../apps/scripts/
-            chmod +x deploy_www.sh
+            sudo chmod +x deploy_www.sh
             sudo ./deploy_www.sh
