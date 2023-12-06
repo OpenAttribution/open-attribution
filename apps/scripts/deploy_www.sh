@@ -29,9 +29,9 @@ KillMode=mixed
 WantedBy=multi-user.target
 
 EOF
-	systemctl daemon-reload
-	systemctl start open-attribution-www.service
-	systemctl enable /etc/systemd/system/open-attribution-www.service
+	sudo systemctl daemon-reload
+	sudo systemctl start open-attribution-www.service
+	sudo systemctl enable /etc/systemd/system/open-attribution-www.service
 }
 
 cd apps || exit
