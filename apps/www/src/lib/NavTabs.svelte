@@ -23,10 +23,6 @@
 		<h3 class="h6 md:h5 md:p-2">Documentation</h3>
 	</TabAnchor>
 
-	<TabAnchor class="p-0 px-0" href="/pricing" selected={$page.url.pathname.startsWith('/pricing')}>
-		<h3 class="h6 md:h5 md:p-2">Pricing</h3>
-	</TabAnchor>
-
 	<TabAnchor class="p-0 px-0" href="/about" selected={$page.url.pathname === '/about'}
 		><h3 class="h6 md:h5 md:p-2">About</h3></TabAnchor
 	>
