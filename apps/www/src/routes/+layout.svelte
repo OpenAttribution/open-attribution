@@ -3,6 +3,7 @@
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import githubIcon from '$lib/assets/github-mark-white.svg?raw';
+	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
 </script>
 
 <!-- App Shell -->
@@ -30,6 +31,16 @@
 					<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
 						>Contact</button
 					>
+				</a>
+				<a
+					class="btn btn-sm variant-ghost-surface"
+					href="https://discord.gg/k2XCaXa9"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<div class="inline-flex items-center">
+						{@html discordIcon}
+					</div>
 				</a>
 				<a
 					class="btn btn-sm variant-ghost-surface"
