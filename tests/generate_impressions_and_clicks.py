@@ -1,26 +1,11 @@
-import datetime
 import random
 import time
 import uuid
 
-import requests
-
 from config import get_logger
-from config.dimensions import (
-    APP_EVENT_TIME,
-    LINK_AD,
-    LINK_APP_EVENT_ID,
-    LINK_CAMPAIGN,
-    LINK_EVENT_TIME,
-    LINK_IFA,
-    LINK_NETWORK,
-)
+from tests._simulate_network_calls import impression_or_click, make_inapp_request
 
 logger = get_logger(__name__)
-
-
-ENDPOINT = "http://localhost:8000/collect"
-
 
 NETWORKS = ["google", "ironsource", "facebook"]
 APPS = ["com.example.one", "com.game.eg.gg", "id123456789", "123456789"]
@@ -28,38 +13,6 @@ APPS = ["com.example.one", "com.game.eg.gg", "id123456789", "123456789"]
 CAMPAIGNS = ["CampaignA", "CampaignB"]
 
 ADS = ["Hi!", "NewVideo123"]
-
-
-def make_request(
-    mytype: str, myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
-) -> None:
-    params = {
-        LINK_CAMPAIGN: mycampaign,
-        LINK_IFA: myifa,
-        LINK_NETWORK: mynetwork,
-        LINK_AD: myad,
-        LINK_EVENT_TIME: round(
-            datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000
-        ),
-    }
-    url = ENDPOINT + f"/{mytype}/{myapp}"
-    response = requests.get(url, params=params)
-    logger.info(f"GET {response.status_code} {url=} ")
-    return
-
-
-def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> None:
-    params = {
-        LINK_APP_EVENT_ID: event_id,
-        LINK_IFA: myifa,
-        APP_EVENT_TIME: round(
-            datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000
-        ),
-    }
-    url = ENDPOINT + f"/{mytype}/{myapp}"
-    response = requests.get(url, params=params)
-    logger.info(f"GET {response.status_code} {url=} ")
-    return
 
 
 def main() -> None:
@@ -79,7 +32,7 @@ def main() -> None:
                 for campaign in CAMPAIGNS:
                     ifa = str(uuid.uuid4())
                     for ad in ADS:
-                        make_request(
+                        impression_or_click(
                             mytype="impressions",
                             myapp=app,
                             mycampaign=campaign,
@@ -90,7 +43,7 @@ def main() -> None:
                         # Decide if a click should be generated
                         if random.random() < 0.5:  # % chance for a click
                             time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
-                            make_request(
+                            impression_or_click(
                                 mytype="clicks",
                                 myapp=app,
                                 mycampaign=campaign,
