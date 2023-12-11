@@ -1,5 +1,6 @@
 CREATE TABLE clicks
 (
+    id UUID DEFAULT generateUUIDv4(),
     event_time DateTime64(3, 'UTC'),
     store_id LowCardinality(String),
     network LowCardinality(String),
