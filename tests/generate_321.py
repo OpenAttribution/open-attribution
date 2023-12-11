@@ -28,20 +28,21 @@ APPS = ["com.example.one", "123456789"]
 ADS = ["test2", "test1", "test3"]
 
 
-NUM_INSTALLS = 100
+NUM_INSTALLS = 20
 
 
 def main() -> None:
     for network in NETWORKS:
         for app in APPS:
             campaign = "test_" + datetime.datetime.now(tz=datetime.UTC).strftime(
-                "%Y%m%d%H%m"
+                "%Y%m%d%H%M"
             )
             for _ in range(NUM_INSTALLS):
                 num_impressions = 0
                 num_installs = 0
                 num_clicks = 0
                 while num_impressions < 3:
+                    num_impressions += 1
                     ifa = str(uuid.uuid4())
                     ad = random.choice(ADS)
                     impression_or_click(
@@ -53,6 +54,7 @@ def main() -> None:
                         myad=ad,
                     )
                     while num_clicks < 2:
+                        num_clicks += 1
                         time.sleep(random.uniform(0.1, 0.3))  # Simulate delay
                         impression_or_click(
                             mytype="clicks",
@@ -63,6 +65,7 @@ def main() -> None:
                             myad=ad,
                         )
                         while num_installs < 1:
+                            num_installs += 1
                             time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
                             make_inapp_request(
                                 mytype="events",
@@ -70,6 +73,3 @@ def main() -> None:
                                 myapp=app,
                                 myifa=ifa,
                             )
-                            num_installs += 1
-                        num_clicks += 1
-                    num_impressions += 1
