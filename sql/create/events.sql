@@ -6,5 +6,6 @@ CREATE TABLE events
     revenue Nullable(Decimal32(4)),
     ifa UUID,
     client_ip String,
+    event_uid UUID,
 ) ENGINE = MergeTree ORDER BY (store_id, event_id, event_time)
 

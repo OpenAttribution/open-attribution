@@ -1,6 +1,5 @@
 CREATE TABLE clicks
 (
-    id UUID DEFAULT generateUUIDv4(),
     event_time DateTime64(3, 'UTC'),
     store_id LowCardinality(String),
     network LowCardinality(String),
@@ -10,5 +9,6 @@ CREATE TABLE clicks
     ad_id LowCardinality(String) DEFAULT '',
     ifa UUID,
     client_ip String DEFAULT '',
+    link_uid UUID,
 ) ENGINE = MergeTree ORDER BY (store_id, network, event_time)
 

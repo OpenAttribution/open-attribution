@@ -9,9 +9,16 @@ LINK_AD_ID = "adid"
 LINK_IFA = "ifa"
 LINK_APP_EVENT_ID = "event_id"
 LINK_EVENT_TIME = "event_time"
+LINK_UID = "link_uid"
+
+# In App IDs
+APP_EVENT_UID = "event_uid"
+APP_EVENT_ID = "event_id"
+APP_EVENT_TIME = "event_time"
+APP_EVENT_REV = "revenue"
 
 
-# values for kafka -> druid columns
+# values for kafka -> db columns
 DB_STORE_ID = "store_id"
 DB_NETWORK = "network"
 DB_C = "campaign_name"
@@ -20,12 +27,8 @@ DB_AD_NAME = "ad_name"
 DB_AD_ID = "ad_id"
 DB_IFA = "ifa"
 DB_CLIENT_IP = "client_ip"
-
-
-# In App IDs
-APP_EVENT_ID = "event_id"
-APP_EVENT_TIME = "event_time"
-APP_EVENT_REV = "revenue"
+DB_LINK_UID = "link_uid"
+DB_EVENT_UID = "event_uid"
 
 
 AD_SHARED_DIMENSIONS = [
@@ -37,9 +40,17 @@ AD_SHARED_DIMENSIONS = [
     DB_AD_ID,
     DB_IFA,
     DB_CLIENT_IP,
+    DB_LINK_UID,
 ]
 
-APP_DIMENSIONS = [DB_STORE_ID, APP_EVENT_ID, DB_IFA, APP_EVENT_TIME, APP_EVENT_REV]
+APP_DIMENSIONS = [
+    DB_STORE_ID,
+    APP_EVENT_ID,
+    DB_IFA,
+    APP_EVENT_TIME,
+    APP_EVENT_REV,
+    APP_EVENT_UID,
+]
 
 MY_SCHEMAS = {
     "impressions": AD_SHARED_DIMENSIONS,

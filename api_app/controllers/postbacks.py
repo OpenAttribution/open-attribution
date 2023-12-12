@@ -11,12 +11,15 @@ from config.dimensions import (
     APP_EVENT_ID,
     APP_EVENT_REV,
     APP_EVENT_TIME,
+    APP_EVENT_UID,
     DB_AD_ID,
     DB_AD_NAME,
     DB_C,
     DB_C_ID,
     DB_CLIENT_IP,
+    DB_EVENT_UID,
     DB_IFA,
+    DB_LINK_UID,
     DB_NETWORK,
     DB_STORE_ID,
     LINK_AD,
@@ -26,6 +29,7 @@ from config.dimensions import (
     LINK_EVENT_TIME,
     LINK_IFA,
     LINK_NETWORK,
+    LINK_UID,
 )
 
 logger = get_logger(__name__)
@@ -50,6 +54,7 @@ class PostbackController(Controller):
         source: Annotated[str, Parameter(str, query=LINK_NETWORK)],
         c: Annotated[str, Parameter(str, query=LINK_CAMPAIGN)],
         event_time: Annotated[int, Parameter(int, query=LINK_EVENT_TIME)],
+        link_uid: Annotated[str, Parameter(str, query=LINK_UID)],
         c_id: Annotated[
             str | None, Parameter(str, query=LINK_CAMPAIGN_ID, required=False)
         ] = None,
@@ -70,7 +75,7 @@ class PostbackController(Controller):
         Returns:
             A dictionary representation of the list of apps for homepage
         """
-        logger.info(f"{self.path} start")
+        logger.info(f"{self.path} start {link_uid}")
 
         client_host = request.client.host
 
@@ -84,13 +89,13 @@ class PostbackController(Controller):
             DB_AD_ID: ad_id,
             DB_IFA: ifa,
             DB_CLIENT_IP: client_host,
+            DB_LINK_UID: link_uid,
         }
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
             producer.produce("impressions", value=enc_data)
             producer.poll(0)
-            logger.info("kafka insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -103,6 +108,7 @@ class PostbackController(Controller):
         source: Annotated[str, Parameter(str, query=LINK_NETWORK)],
         c: Annotated[str, Parameter(str, query=LINK_CAMPAIGN)],
         event_time: Annotated[int, Parameter(int, query=LINK_EVENT_TIME)],
+        link_uid: Annotated[str, Parameter(str, query=LINK_UID)],
         c_id: Annotated[
             str | None, Parameter(str, query=LINK_CAMPAIGN_ID, required=False)
         ] = None,
@@ -137,13 +143,13 @@ class PostbackController(Controller):
             DB_AD_ID: ad_id,
             DB_IFA: ifa,
             DB_CLIENT_IP: client_host,
+            DB_LINK_UID: link_uid,
         }
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
             producer.produce("clicks", value=enc_data)
             producer.poll(0)
-            logger.info("kafka insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -155,6 +161,7 @@ class PostbackController(Controller):
         app: str,
         event_id: Annotated[str, Parameter(str, query=APP_EVENT_ID)],
         event_time: Annotated[int, Parameter(int, query=APP_EVENT_TIME)],
+        event_uid: Annotated[str, Parameter(str, query=APP_EVENT_UID)],
         ifa: Annotated[
             str | None, Parameter(str, query=LINK_IFA, required=False)
         ] = None,
@@ -182,13 +189,13 @@ class PostbackController(Controller):
             DB_IFA: ifa,
             APP_EVENT_REV: revenue,
             DB_CLIENT_IP: client_host,
+            DB_EVENT_UID: event_uid,
         }
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
             producer.produce("events", value=enc_data)
             producer.poll(0)
-            logger.info("kafka insert success!")
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
