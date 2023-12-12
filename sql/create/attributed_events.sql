@@ -6,6 +6,8 @@ CREATE TABLE attributed_events
     ifa UUID,
     client_ip String DEFAULT '',
     click_event_time DateTime64(3, 'UTC'),
+    link_uid UUID,
+    event_uid UUID,
     network LowCardinality(String) DEFAULT '',
     campaign_name LowCardinality(String) DEFAULT '',
     campaign_id LowCardinality(String) DEFAULT '',
