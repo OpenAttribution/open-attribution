@@ -21,6 +21,51 @@ logger = get_logger(__name__)
 ENDPOINT = "http://localhost:8000/collect"
 
 
+def impression(
+    myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
+) -> None:
+    impression_or_click(
+        mytype="impressions",
+        myapp=myapp,
+        mycampaign=mycampaign,
+        mynetwork=mynetwork,
+        myifa=myifa,
+        myad=myad,
+    )
+
+
+def click(myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str) -> None:
+    impression_or_click(
+        mytype="clicks",
+        myapp=myapp,
+        mycampaign=mycampaign,
+        mynetwork=mynetwork,
+        myifa=myifa,
+        myad=myad,
+    )
+
+
+def impression_or_click(
+    mytype: str, myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
+) -> None:
+    tmstmp: str = str(
+        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
+    )
+    id = str(uuid.uuid4())
+    params = {
+        LINK_CAMPAIGN: mycampaign,
+        LINK_IFA: myifa,
+        LINK_NETWORK: mynetwork,
+        LINK_AD: myad,
+        LINK_EVENT_TIME: tmstmp,
+        LINK_UID: id,
+    }
+    url = ENDPOINT + f"/{mytype}/{myapp}"
+    response = requests.get(url, params=params)
+    logger.info(f"GET {response.status_code} {url=} {id=} ")
+    return
+
+
 def impression_or_click(
     mytype: str, myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
 ) -> None:
