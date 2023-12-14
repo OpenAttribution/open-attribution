@@ -66,27 +66,6 @@ def impression_or_click(
     return
 
 
-def impression_or_click(
-    mytype: str, myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
-) -> None:
-    tmstmp: str = str(
-        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
-    )
-    id = str(uuid.uuid4())
-    params = {
-        LINK_CAMPAIGN: mycampaign,
-        LINK_IFA: myifa,
-        LINK_NETWORK: mynetwork,
-        LINK_AD: myad,
-        LINK_EVENT_TIME: tmstmp,
-        LINK_UID: id,
-    }
-    url = ENDPOINT + f"/{mytype}/{myapp}"
-    response = requests.get(url, params=params)
-    logger.info(f"GET {response.status_code} {url=} {id=} ")
-    return
-
-
 def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)

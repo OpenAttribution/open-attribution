@@ -71,7 +71,7 @@ def main() -> None:
                     if num_installs == 0:
                         num_installs += 1
                         _total_installs += 1
-                        time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
+                        time.sleep(random.uniform(1.9, 5.0))  # Simulate delay
                         make_inapp_request(
                             mytype="events",
                             event_id="app_open",

@@ -1,5 +1,7 @@
 This project was started around Nov 10th, 2023 and is still very pre-alpha stage. Thus this page will serve to help put some context for how much work is still needed for an MVP product.
 
+## Testing
+Make plan for testing regimen. FOr 
 
 ## Documentation
 Some parts of documentation will need to be even more detailed and specific. They will be dealing with the ops side, so perhaps they should even be moved to somewhere unique or different?
