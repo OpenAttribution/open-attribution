@@ -1,7 +1,16 @@
 This project was started around Nov 10th, 2023 and is still very pre-alpha stage. Thus this page will serve to help put some context for how much work is still needed for an MVP product.
 
 ## Testing
-Make plan for testing regimen. FOr 
+Make plan for testing regimen. To test:
+1. Per user: 
+	1. 1 impression, 1 click, 1 install
+	2. 1 impression, 1 install
+	3. 1 impression, 1 click, 1 install, 1 click (shouldn't be counted)
+	4. 1 impression, 1 install, 1 click (shouldn't be counted) 
+	5. 2 impression, 1 install
+	6. 2 clicks, 1 install
+	7. 2 impressions, 2 clicks, 1 install
+		1. 
 
 ## Documentation
 Some parts of documentation will need to be even more detailed and specific. They will be dealing with the ops side, so perhaps they should even be moved to somewhere unique or different?
