@@ -2,15 +2,18 @@ This project was started around Nov 10th, 2023 and is still very pre-alpha stage
 
 ## Testing
 Make plan for testing regimen. To test:
-1. Per user: 
-	1. 1 impression, 1 click, 1 install
-	2. 1 impression, 1 install
-	3. 1 impression, 1 click, 1 install, 1 click (shouldn't be counted)
-	4. 1 impression, 1 install, 1 click (shouldn't be counted) 
-	5. 2 impression, 1 install
-	6. 2 clicks, 1 install
-	7. 2 impressions, 2 clicks, 1 install
-		1. 
+
+1. 5x per user: 
+- [ ] 1 impression, 1 click, 1 install
+- [ ] 1 impression, 1 install
+- [ ] 1 impression, 1 click, 1 install, 1 bad click
+- [ ] 1 impression, 1 install, 1 bad click
+- [ ] 2 impression, 1 install
+- [ ] 1 impression, 1 click, 1 install
+- [ ] 2 click, 1 install
+- [ ] 2 impression, 2 click, 1 install
+- [ ] 2 impression, 2 click, 1 install, 1 bad impression, 2 bad clicks
+
 
 ## Documentation
 Some parts of documentation will need to be even more detailed and specific. They will be dealing with the ops side, so perhaps they should even be moved to somewhere unique or different?
