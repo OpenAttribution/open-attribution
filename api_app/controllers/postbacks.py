@@ -39,8 +39,16 @@ logger = get_logger(__name__)
 /clicks/
 """
 
-pconfig = {"bootstrap.servers": "localhost:9092"}
-producer = Producer(pconfig)
+reg_config = {
+    "bootstrap.servers": "localhost:9092",
+}
+
+event_config = {
+    "bootstrap.servers": "localhost:9092",
+    "linger.ms": 2000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
+}
+reg_producer = Producer(reg_config)
+event_producer = Producer(event_config)
 
 
 class PostbackController(Controller):
@@ -94,8 +102,8 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            producer.produce("impressions", value=enc_data)
-            producer.poll(0)
+            reg_producer.produce("impressions", value=enc_data)
+            reg_producer.poll(0)
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -148,8 +156,8 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            producer.produce("clicks", value=enc_data)
-            producer.poll(0)
+            reg_producer.produce("clicks", value=enc_data)
+            reg_producer.poll(0)
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -194,8 +202,8 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            producer.produce("events", value=enc_data)
-            producer.poll(0)
+            event_producer.produce("events", value=enc_data)
+            event_producer.poll(0)
         except KafkaException as ex:
             logger.error({"status": "error", "message": str(ex)})
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
