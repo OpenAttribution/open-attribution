@@ -23,7 +23,6 @@ def main() -> None:
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
                     make_inapp_request(
-                        mytype="events",
                         event_id="app_open",
                         myapp=app,
                         myifa=ifa,
@@ -54,7 +53,6 @@ def main() -> None:
                             if random.random() < 0.5:
                                 time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
                                 make_inapp_request(
-                                    mytype="events",
                                     event_id="app_open",
                                     myapp=app,
                                     myifa=ifa,

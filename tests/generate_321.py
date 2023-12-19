@@ -14,70 +14,93 @@ This will always generate a random campaign which gets
 2 clicks
 1 installs
 
-with each 'user' rotates through:
-    1 impression -> 1 click -> 1 install
-    1 impression -> 1 click -> 0 install
+with each 'user' rotates through the events in the order described. For example:
     1 impression -> 0 click -> 0 install
+    1 impression -> 1 click -> 0 install
+    1 impression -> 1 click -> 1 install
 """
 
-NETWORKS = [
-    "test_321",
-]
-APPS = ["com.example.one", "123456789"]
-APPS = ["com.example.one"]
+APP = "com.example.one"
 
-ADS = ["test2", "test1", "test3"]
+ADS = ["test1", "test2", "test3"]
 
 
-NUM_INSTALLS = 20
+NUM_INSTALLS = 5
+
+ALL_TESTS = {
+    "test_installs_5": {
+        "1i_1c_1e": ["impression", "click", "app_open"],
+        "1i_0c_1e": ["impression", "app_open"],
+        "0i_1c_1e": ["click", "app_open"],
+        "1i_2c_1e": ["impression", "click", "click", "app_open"],
+        "2i_2c_1e_v2": ["impression", "impression", "click", "click", "app_open"],
+        "2i_2c_1e": ["impression", "click", "impression", "click", "app_open"],
+        "1i_1c_2e": ["impression", "click", "event", "app_open"],
+        "1i_1c_2e_1c_1e": [
+            "impression",
+            "click",
+            "event",
+            "event",
+            "click",
+            "app_open",
+        ],
+        "1i_1c_2e_1i_1e": [
+            "impression",
+            "click",
+            "event",
+            "event",
+            "impression",
+            "app_open",
+        ],
+        "1i_1c_1e_1t": ["impression", "click", "app_open", "tutorial"],
+        "1i_1c_1e_2t": ["impression", "click", "app_open", "tutorial", "level1"],
+    },
+    "test_installs_0": {
+        "1i_1c_0e": ["impression", "click"],
+        "1i_0c_0e": [
+            "impression",
+        ],
+        "2i_2c_0e": ["impression", "click", "impression", "click", "app_open"],
+    },
+}
 
 
 def main() -> None:
-    _total_impressions = 0
-    _total_clicks = 0
-    _total_installs = 0
-    for network in NETWORKS:
-        for app in APPS:
-            campaign = "test_" + datetime.datetime.now(tz=datetime.UTC).strftime(
+    for network, tests in ALL_TESTS.items():
+        for _campaign, test in tests.items():
+            _total_impressions = 0
+            _total_clicks = 0
+            _total_installs = 0
+            campaign = _campaign + datetime.datetime.now(tz=datetime.UTC).strftime(
                 "%Y%m%d%H%M"
             )
             for _ in range(NUM_INSTALLS):
-                num_impressions = 0
-                num_installs = 0
-                num_clicks = 0
-                while num_impressions < 3:
-                    num_impressions += 1
-                    _total_impressions += 1
-                    ifa = str(uuid.uuid4())  # User start
-                    ad = random.choice(ADS)
-                    impression(
-                        myapp=app,
-                        mycampaign=campaign,
-                        mynetwork=network,
-                        myifa=ifa,
-                        myad=ad,
-                    )
-                    if num_clicks < 2:
-                        num_clicks += 1
-                        _total_clicks += 1
-                        time.sleep(random.uniform(0.1, 0.3))  # Simulate delay
-                        click(
-                            myapp=app,
+                ifa = str(uuid.uuid4())  # User start
+                ad = random.choice(ADS)
+                for item in test:
+                    if item == "impression":
+                        impression(
+                            myapp=APP,
                             mycampaign=campaign,
                             mynetwork=network,
                             myifa=ifa,
                             myad=ad,
                         )
-                    if num_installs == 0:
-                        num_installs += 1
-                        _total_installs += 1
-                        time.sleep(random.uniform(0.2, 0.5))  # Simulate delay
+                    elif item == "click":
+                        click(
+                            myapp=APP,
+                            mycampaign=campaign,
+                            mynetwork=network,
+                            myifa=ifa,
+                            myad=ad,
+                        )
+                    else:
                         make_inapp_request(
-                            mytype="events",
-                            event_id="app_open",
-                            myapp=app,
+                            event_id=item,
+                            myapp=APP,
                             myifa=ifa,
                         )
-                logger.info(
-                    f"index:{_} impressions:{_total_impressions} clicks: {_total_clicks} installs:{_total_installs} "
-                )
+                    time.sleep(random.uniform(0.1, 0.5))  # Simulate delay
+            logger.info(
+                f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} installs:{_total_installs} "
+            )

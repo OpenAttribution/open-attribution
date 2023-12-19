@@ -9,7 +9,6 @@ Make plan for testing regimen. To test:
 - [ ] 1 impression, 1 click, 1 install, 1 bad click
 - [ ] 1 impression, 1 install, 1 bad click
 - [ ] 2 impression, 1 install
-- [ ] 1 impression, 1 click, 1 install
 - [ ] 2 click, 1 install
 - [ ] 2 impression, 2 click, 1 install
 - [ ] 2 impression, 2 click, 1 install, 1 bad impression, 2 bad clicks

@@ -66,7 +66,7 @@ def impression_or_click(
     return
 
 
-def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> None:
+def make_inapp_request(myapp: str, event_id: str, myifa: str) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
     )
@@ -77,7 +77,7 @@ def make_inapp_request(mytype: str, myapp: str, event_id: str, myifa: str) -> No
         APP_EVENT_TIME: tmstmp,
         APP_EVENT_UID: id,
     }
-    url = ENDPOINT + f"/{mytype}/{myapp}"
+    url = ENDPOINT + f"/events/{myapp}"
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} ")
     return
