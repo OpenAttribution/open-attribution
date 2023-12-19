@@ -1,11 +1,12 @@
-CREATE TABLE attributed_events
+CREATE TABLE attributed_installs
 (
     app_event_time DateTime64(3, 'UTC'),
     store_id LowCardinality(String),
     event_id LowCardinality(String),
     ifa UUID,
     client_ip String DEFAULT '',
-    click_event_time DateTime64(3, 'UTC'),
+    attribution_type LowCardinality(String),
+    attribution_event_time DateTime64(3, 'UTC'),
     link_uid UUID,
     event_uid UUID,
     network LowCardinality(String) DEFAULT '',

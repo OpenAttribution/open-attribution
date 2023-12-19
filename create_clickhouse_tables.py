@@ -12,11 +12,12 @@ my_tables = [
     "events",
     "events_queue",
     "events_mv",
-    "attributed_events",
-    "attributed_events_mv",
+    "attributed_installs",
+    "attribute_default_clicks_mv",
+    "attribute_default_impressions_mv",
     "daily_overview",
     "daily_overview_impressions_mv",
-    "daily_overview_attributed_events_mv",
+    "daily_overview_attributed_installs_mv",
     "daily_overview_clicks_mv",
 ]
 

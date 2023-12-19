@@ -1,4 +1,4 @@
-CREATE MATERIALIZED VIEW daily_overview_attributed_events_mv
+CREATE MATERIALIZED VIEW daily_overview_attributed_installs_mv
 TO daily_overview
 AS
 SELECT
@@ -12,7 +12,7 @@ SELECT
     count() AS installs,
     sum(revenue) as revenue
 FROM
-    attributed_events
+    attributed_installs
 GROUP BY
     toDate(app_event_time) AS on_date,
     store_id,

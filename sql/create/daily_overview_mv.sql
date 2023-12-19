@@ -66,7 +66,7 @@ SELECT
             count() AS installs,
             sum(revenue) AS revenue
 FROM
-            attributed_events
+            attributed_installs
 GROUP BY
             toDate(app_event_time) AS on_date,
             store_id,
