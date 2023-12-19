@@ -39,16 +39,16 @@ ALL_TESTS = {
         "1i_1c_2e_1c_1e": [
             "impression",
             "click",
-            "event",
-            "event",
+            "app_open",
+            "app_open",
             "click",
             "app_open",
         ],
         "1i_1c_2e_1i_1e": [
             "impression",
             "click",
-            "event",
-            "event",
+            "app_open",
+            "app_open",
             "impression",
             "app_open",
         ],
@@ -67,34 +67,38 @@ ALL_TESTS = {
 
 
 def main() -> None:
+    test_time = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M")
     for network, tests in ALL_TESTS.items():
         for _campaign, test in tests.items():
             _total_impressions = 0
             _total_clicks = 0
             _total_installs = 0
-            campaign = _campaign + datetime.datetime.now(tz=datetime.UTC).strftime(
-                "%Y%m%d%H%M"
-            )
+            campaign = _campaign + "_" + test_time
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
                 ad = random.choice(ADS)
-                for item in test:
-                    if item == "impression":
-                        impression(
-                            myapp=APP,
-                            mycampaign=campaign,
-                            mynetwork=network,
-                            myifa=ifa,
-                            myad=ad,
-                        )
-                    elif item == "click":
-                        click(
-                            myapp=APP,
-                            mycampaign=campaign,
-                            mynetwork=network,
-                            myifa=ifa,
-                            myad=ad,
-                        )
+                for idx, item in enumerate(test):
+                    if item in ["impression", "click"]:
+                        if "app_open" in test[:idx]:
+                            my_campaign = campaign + "_BAD_RESULT"
+                        else:
+                            my_campaign = campaign
+                        if item == "impression":
+                            impression(
+                                myapp=APP,
+                                mycampaign=my_campaign,
+                                mynetwork=network,
+                                myifa=ifa,
+                                myad=ad,
+                            )
+                        elif item == "click":
+                            click(
+                                myapp=APP,
+                                mycampaign=my_campaign,
+                                mynetwork=network,
+                                myifa=ifa,
+                                myad=ad,
+                            )
                     else:
                         make_inapp_request(
                             event_id=item,
