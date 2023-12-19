@@ -1,16 +1,16 @@
 import argparse
 
 from tests.generate_impressions_and_clicks import main as continuously_generate
-from tests.test_installs import main as generate_simple_321
+from tests.test_installs import main as test_installs
 
 
 def manage_cli_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-s",
-        "--simple-321",
+        "-i",
+        "--installs-test",
         action="store_true",
-        help="Generate 300 impressions, 200 clicks and 100 installs",
+        help="Generate installs",
         default=False,
     )
     args, leftovers = parser.parse_known_args()
@@ -18,8 +18,8 @@ def manage_cli_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    if args.simple_321:
-        generate_simple_321()
+    if args.installs_test:
+        test_installs()
     else:
         continuously_generate()
 
