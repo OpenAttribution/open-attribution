@@ -60,7 +60,8 @@ ALL_TESTS = {
         "1i_0c_0e": [
             "impression",
         ],
-        "2i_2c_0e": ["impression", "click", "impression", "click", "app_open"],
+        "0i_1c_0e": ["click"],
+        "2i_2c_0e": ["impression", "click", "impression", "click"],
     },
 }
 
