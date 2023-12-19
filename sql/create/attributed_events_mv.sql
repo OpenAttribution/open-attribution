@@ -49,6 +49,8 @@ WITH merged_click_event AS (
         AND app.ifa = click.ifa
     WHERE 
             click.event_time <= app.earliest_app_event_time
+            -- TODO: This will need to be parameterized
+            AND click.event_time >= now() - INTERVAL 7 Day
 ),
 latest_click_events AS (
     SELECT
