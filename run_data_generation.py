@@ -1,7 +1,7 @@
 import argparse
 
-from tests.generate_321 import main as generate_simple_321
 from tests.generate_impressions_and_clicks import main as continuously_generate
+from tests.test_installs import main as generate_simple_321
 
 
 def manage_cli_args() -> argparse.Namespace:
