@@ -1,7 +1,8 @@
-CREATE MATERIALIZED VIEW attributed_events_mv
-TO attributed_events -- Specify the destination table
+CREATE MATERIALIZED VIEW attribute_default_clicks_mv
+TO attributed_installs -- Specify the destination table
 AS
-WITH merged_click_event AS (
+WITH
+merged_click_event AS (
     -- Ranked rows by click time
     SELECT 
             app.event_time AS app_event_time,
@@ -10,7 +11,8 @@ WITH merged_click_event AS (
             app.ifa,
             app.client_ip,
             app.event_uid,
-            click.event_time AS click_event_time,
+            'click' AS attribution_type,
+            click.event_time AS attribution_event_time,
             click.network,
             click.campaign_name,
             click.campaign_id,
@@ -49,10 +51,10 @@ WITH merged_click_event AS (
         AND app.ifa = click.ifa
     WHERE 
             click.event_time <= app.earliest_app_event_time
-            -- TODO: This will need to be parameterized
-            AND click.event_time >= now() - INTERVAL 7 Day
+        -- TODO: This will need to be parameterized
+        AND click.event_time >= app.earliest_app_event_time - INTERVAL 7 DAY
 ),
-latest_click_events AS (
+latest_attributed_click_events AS (
     SELECT
         *
     FROM
@@ -68,7 +70,8 @@ SELECT
     ifa,
     client_ip,
     event_uid,
-    click_event_time,
+    attribution_type,
+    attribution_event_time,
     network,
     campaign_name,
     campaign_id,
@@ -76,5 +79,5 @@ SELECT
     ad_id,
     link_uid
 FROM
-    latest_click_events
+    latest_attributed_click_events
 ;
