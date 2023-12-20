@@ -250,11 +250,8 @@ def main() -> None:
     test_time = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M")
     for network, tests in ALL_TESTS.items():
         for _campaign, test in tests.items():
-            if "events" in test:
-                if isinstance(test["events"], list):
-                    my_events: list[str] = test["events"]
-                else:
-                    continue
+            if isinstance(test["events"], list):
+                my_events: list[str] = test["events"]
             else:
                 continue
             _total_impressions = 0
