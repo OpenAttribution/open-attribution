@@ -253,6 +253,9 @@ def main() -> None:
             if isinstance(test["events"], list):
                 my_events: list[str] = test["events"]
             else:
+                logger.warning(
+                    f"campaign test: {_campaign} is incorrectly formatted, events must be a list."
+                )
                 continue
             _total_impressions = 0
             _total_clicks = 0
