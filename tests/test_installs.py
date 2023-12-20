@@ -22,7 +22,7 @@ with each 'user' rotates through the events in the order described. For example:
     1 impression -> 1 click -> 0 install
     1 impression -> 1 click -> 1 install
 """
-
+NOT_ATTRIBUTABLE_SUFFIX = "_NOT_ATTRIBUTABLE"
 APP = "com.example.one"
 
 ADS = ["test1", "test2", "test3"]
@@ -153,6 +153,7 @@ client = create_client(host="localhost")
 
 
 def query_campaign(table: str, campaign: str) -> pd.DataFrame:
+    bad_name = campaign + NOT_ATTRIBUTABLE_SUFFIX
     # Define the query template
     query_template = """
     SELECT
@@ -160,12 +161,15 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
     FROM
         %(table)s
     WHERE
-        campaign_name = %(campaign_name)s
+        campaign_name = %(campaign_name)s OR campaign_name = %(bad_name)s
     """
     # Execute the query and fetch the data as pandas df
     df = client.query_df(
-        query_template, parameters={"campaign_name": campaign, "table": table}
+        query_template,
+        parameters={"campaign_name": campaign, "table": table, "bad_name": bad_name},
     )
+    # NOTE: Since some campaigns have suffixes to warn if they show up in data, ignore those names here
+    df["campaign_name"] = campaign
     return df
 
 
@@ -267,7 +271,7 @@ def main() -> None:
                 for idx, item in enumerate(my_events):
                     if item in ["impression", "click"]:
                         if "app_open" in test["events"][:idx]:
-                            my_campaign = campaign + "_BAD_RESULT"
+                            my_campaign = campaign + NOT_ATTRIBUTABLE_SUFFIX
                         else:
                             my_campaign = campaign
                         if item == "impression":
