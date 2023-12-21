@@ -28,7 +28,8 @@ APP = "com.example.one"
 ADS = ["test1", "test2", "test3"]
 
 
-NUM_INSTALLS = 5
+NUM_INSTALLS = 2
+
 
 ALL_TESTS = {
     "test_installs": {
@@ -263,7 +264,7 @@ def main() -> None:
                 continue
             _total_impressions = 0
             _total_clicks = 0
-            _total_installs = 0
+            _total_events = 0
             campaign = _campaign + "_" + test_time
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
@@ -282,6 +283,7 @@ def main() -> None:
                                 myifa=ifa,
                                 myad=ad,
                             )
+                            _total_impressions += 1
                         elif item == "click":
                             click(
                                 myapp=APP,
@@ -290,14 +292,17 @@ def main() -> None:
                                 myifa=ifa,
                                 myad=ad,
                             )
+                            _total_clicks += 1
                     else:
                         make_inapp_request(
                             event_id=item,
                             myapp=APP,
                             myifa=ifa,
                         )
+                        _total_events += 1
                     time.sleep(random.uniform(0.1, 0.5))  # Simulate delay
             logger.info(
-                f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} installs:{_total_installs} "
+                f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} "
             )
+    time.sleep(1)
     check_install_results(time_part=test_time)

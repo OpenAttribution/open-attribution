@@ -13,7 +13,7 @@ def manage_cli_args() -> argparse.Namespace:
         help="Generate installs",
         default=False,
     )
-    args, leftovers = parser.parse_known_args()
+    args = parser.parse_args()
     return args
 
 

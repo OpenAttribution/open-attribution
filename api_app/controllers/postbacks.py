@@ -83,7 +83,7 @@ class PostbackController(Controller):
         Returns:
             A dictionary representation of the list of apps for homepage
         """
-        logger.info(f"{self.path} start {link_uid}")
+        # logger.info(f"{self.path} start {link_uid}")
 
         client_host = request.client.host
 
@@ -137,7 +137,6 @@ class PostbackController(Controller):
         Returns:
             A dictionary representation of the list of apps for homepage
         """
-        logger.info(f"{self.path} start")
 
         client_host = request.client.host
 
@@ -186,7 +185,6 @@ class PostbackController(Controller):
         Returns:
             A dictionary representation of the list of apps for homepage
         """
-        logger.info(f"{self.path} start")
 
         client_host = request.client.host
 
