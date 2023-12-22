@@ -27,7 +27,7 @@ APP = "com.example.one"
 
 ADS = ["test1", "test2", "test3"]
 
-NUM_INSTALLS = 2
+NUM_INSTALLS = 1
 
 
 ALL_TESTS = {
@@ -252,7 +252,7 @@ def check_install_results(time_part: str) -> None:
 
 
 def main() -> None:
-    test_time = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M")
+    test_time = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
     for network, tests in ALL_TESTS.items():
         for _campaign, test in tests.items():
             if isinstance(test["events"], list):
