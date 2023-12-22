@@ -27,7 +27,6 @@ APP = "com.example.one"
 
 ADS = ["test1", "test2", "test3"]
 
-
 NUM_INSTALLS = 2
 
 
@@ -225,6 +224,7 @@ def get_db_dfs(time_part: str) -> pd.DataFrame:
 def check_install_results(time_part: str) -> None:
     test_df = get_expected_test_df(time_part)
     db_df = get_db_dfs(time_part)
+
     df = pd.merge(
         test_df, db_df, how="outer", on="campaign_name", validate="1:1"
     ).fillna(0)
@@ -294,15 +294,15 @@ def main() -> None:
                             )
                             _total_clicks += 1
                     else:
+                        time.sleep(0.5)  # Simulate delay
                         make_inapp_request(
                             event_id=item,
                             myapp=APP,
                             myifa=ifa,
                         )
                         _total_events += 1
-                    time.sleep(random.uniform(0.1, 0.5))  # Simulate delay
             logger.info(
                 f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} "
             )
-    time.sleep(1)
+    time.sleep(10)
     check_install_results(time_part=test_time)
