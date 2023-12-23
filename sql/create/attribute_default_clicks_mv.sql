@@ -24,8 +24,9 @@ merged_click_event AS (
                 PARTITION BY app.client_ip,
             app.ifa
         ORDER BY
+            app_event_time ASC,
             click.event_time DESC
-        ) AS rn
+        ) AS event_and_click_rn
     FROM 
             (
             SELECT 
@@ -60,7 +61,7 @@ latest_attributed_click_events AS (
     FROM
         merged_click_event
     WHERE
-        rn = 1
+        event_and_click_rn = 1
 )
 SELECT
     -- All rows except rn
