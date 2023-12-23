@@ -65,6 +65,34 @@ ALL_TESTS = {
             ],
             "is_attributable": True,
         },
+        "1i_1c_4e_1c_1e": {
+            "events": [
+                "impression",
+                "click",
+                "app_open",
+                "app_open",
+                "app_open",
+                "app_open",
+                "click",
+                "app_open",
+            ],
+            "is_attributable": True,
+        },
+        "1i_1c_4e_1c_3e": {
+            "events": [
+                "impression",
+                "click",
+                "app_open",
+                "app_open",
+                "app_open",
+                "app_open",
+                "click",
+                "app_open",
+                "app_open",
+                "app_open",
+            ],
+            "is_attributable": True,
+        },
         "1i_1c_2e_1i_1e": {
             "events": [
                 "impression",
