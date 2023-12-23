@@ -51,7 +51,7 @@ merged_click_event AS (
             app.client_ip = click.client_ip
         AND app.ifa = click.ifa
     WHERE 
-            click.event_time <= app.earliest_app_event_time
+            click.event_time < app.earliest_app_event_time
         -- TODO: This will need to be parameterized
         AND click.event_time >= app.earliest_app_event_time - INTERVAL 7 DAY
 ),
@@ -63,6 +63,7 @@ latest_attributed_click_events AS (
     WHERE
         event_and_click_rn = 1
 )
+
 SELECT
     -- All rows except rn
     app_event_time,

@@ -51,8 +51,8 @@ ALL_TESTS = {
             ],
             "is_attributable": True,
         },
-        "1i_0c_1e": {"events": ["impression", "app_open"], "is_attributable": True},
-        "0i_1c_1e": {"events": ["click", "app_open"], "is_attributable": True},
+        "1i_1e": {"events": ["impression", "app_open"], "is_attributable": True},
+        "1c_1e": {"events": ["click", "app_open"], "is_attributable": True},
         "1i_2c_1e": {
             "events": ["impression", "click", "click", "app_open"],
             "is_attributable": True,
@@ -101,7 +101,7 @@ ALL_TESTS = {
             ],
             "is_attributable": True,
         },
-        "1i_1c_1e_1c_1e_1c": {
+        "1i_1c_1e_1c_1e_1c_1e": {
             "events": [
                 "impression",
                 "click",
@@ -110,10 +110,11 @@ ALL_TESTS = {
                 "click",
                 "app_open",
                 "click",
+                "app_open",
             ],
             "is_attributable": True,
         },
-        "1i_1c_1e_1c_1e_1c_1c_1i": {
+        "1i_1c_1e_1e_1c_1e_1c_1c_1i": {
             "events": [
                 "impression",
                 "click",
@@ -155,6 +156,39 @@ ALL_TESTS = {
             ],
             "is_attributable": True,
         },
+        "1i_1c_4e_1i_3e": {
+            "events": [
+                "impression",
+                "click",
+                "app_open",
+                "app_open",
+                "app_open",
+                "app_open",
+                "impression",
+                "app_open",
+                "app_open",
+                "app_open",
+            ],
+            "is_attributable": True,
+        },
+        "1i_1c_4e_1i_3e_1i_2e": {
+            "events": [
+                "impression",
+                "click",
+                "app_open",
+                "app_open",
+                "app_open",
+                "app_open",
+                "impression",
+                "app_open",
+                "app_open",
+                "app_open",
+                "impression",
+                "app_open",
+                "app_open",
+            ],
+            "is_attributable": True,
+        },
         "1i_1c_2e_1i_1e": {
             "events": [
                 "impression",
@@ -188,13 +222,13 @@ ALL_TESTS = {
             "is_attributable": True,
         },
         "1i_1c_0e": {"events": ["impression", "click"], "is_attributable": False},
-        "1i_0c_0e": {
+        "1i_0e": {
             "events": [
                 "impression",
             ],
             "is_attributable": False,
         },
-        "0i_1c_0e": {"events": ["click"], "is_attributable": False},
+        "1c_0e": {"events": ["click"], "is_attributable": False},
         "2i_2c_0e": {
             "events": ["impression", "click", "impression", "click"],
             "is_attributable": False,
@@ -271,60 +305,64 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
         query_template,
         parameters={"campaign_name": campaign, "table": table, "bad_name": bad_name},
     )
-    # NOTE: Since some campaigns have suffixes to warn if they show up in data, ignore those names here
+    if not df.empty:
+        # NOTE: Since some campaigns have suffixes to warn if they show up in data, ignore those names here
+        df["original_campaign_name"] = df["campaign_name"]
     df["campaign_name"] = campaign
     return df
 
 
-def get_db_dfs(time_part: str) -> pd.DataFrame:
+def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
     tables = ["impressions", "clicks"]
+    dfs = []
+    for table in tables:
+        df = query_campaign(table=table, campaign=campaign)
+        df["type"] = table
+        dfs.append(df)
+    df = pd.concat(dfs)
+    if df.empty:
+        logger.warning(f"Testing did not find any data in db for {campaign=}")
+    else:
+        df = (
+            df.groupby(["campaign_name", "type"])
+            .size()
+            .reset_index()
+            .rename(columns={0: "db_raw_count"})
+        )
+        df = (
+            pd.pivot(df, index="campaign_name", columns="type", values="db_raw_count")
+            .add_prefix("raw_")
+            .reset_index()
+        )
+    odf = query_campaign(table="daily_overview", campaign=campaign)
+    if odf.empty:
+        logger.warning(f"Testing did not find any data in db for {campaign=}")
+    else:
+        odf = (
+            odf.groupby(["campaign_name"])[["impressions", "clicks", "installs"]]
+            .sum()
+            .add_prefix("overview_")
+            .reset_index()
+        )
+    try:
+        campaign_df = pd.merge(df, odf, how="outer", on="campaign_name", validate="1:1")
+    except Exception:
+        logger.exception(f"Testing did not find any data in db for {campaign=}")
+    return campaign_df
+
+
+def get_db_dfs(time_part: str) -> pd.DataFrame:
     db_dfs = []
     for _campaign in ALL_TESTS["test_installs"].keys():
         campaign = _campaign + "_" + time_part
-        dfs = []
-        for table in tables:
-            df = query_campaign(table=table, campaign=campaign)
-            df["type"] = table
-            dfs.append(df)
-        df = pd.concat(dfs)
-        if df.empty:
-            logger.warning(f"Testing did not find any data in db for {campaign=}")
-        else:
-            df = (
-                df.groupby(["campaign_name", "type"])
-                .size()
-                .reset_index()
-                .rename(columns={0: "db_raw_count"})
-            )
-            df = (
-                pd.pivot(
-                    df, index="campaign_name", columns="type", values="db_raw_count"
-                )
-                .add_prefix("raw_")
-                .reset_index()
-            )
-        odf = query_campaign(table="daily_overview", campaign=campaign)
-        if odf.empty:
-            logger.warning(f"Testing did not find any data in db for {campaign=}")
-        else:
-            odf = (
-                odf.groupby(["campaign_name"])[["impressions", "clicks", "installs"]]
-                .sum()
-                .add_prefix("overview_")
-                .reset_index()
-            )
-        try:
-            campaign_df = pd.merge(
-                df, odf, how="outer", on="campaign_name", validate="1:1"
-            )
-            db_dfs.append(campaign_df)
-        except Exception:
-            logger.exception(f"Testing did not find any data in db for {campaign=}")
+        campaign_df = get_db_data_for_single_campaign(campaign)
+        db_dfs.append(campaign_df)
     db_df = pd.concat(db_dfs)
     return db_df
 
 
 def check_install_results(time_part: str) -> None:
+    logger.info("Begin checking results")
     test_df = get_expected_test_df(time_part)
     db_df = get_db_dfs(time_part)
 
@@ -407,5 +445,6 @@ def main() -> None:
             logger.info(
                 f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} "
             )
+    logger.info("Pause before checking")
     time.sleep(10)
     check_install_results(time_part=test_time)
