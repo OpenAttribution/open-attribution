@@ -6,7 +6,7 @@
 # Python environment
 Create your python environment for open-attribution using Python 3.11.
 
-The python environment is used for 3 seperate use-cases. If you need you can create individual environments or a single shared environment. Python is used for the Postback API, Kafka & druid setup scripts, Pyflink and the frontend dashboard.
+Python is used for the Postback API, Kafka & ClickHouse setup scripts and the frontend dashboard. If you need you can create individual environments or a single shared environment. 
 
 `python3.11 -m venv my-env-path`
 `source activate ~/my-env-path/bin/activate`

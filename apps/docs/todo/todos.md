@@ -4,14 +4,10 @@ This project was started around Nov 10th, 2023 and is still very pre-alpha stage
 Make plan for testing regimen. To test:
 
 1. 5x per user: 
-- [ ] 1 impression, 1 click, 1 install
-- [ ] 1 impression, 1 install
-- [ ] 1 impression, 1 click, 1 install, 1 bad click
-- [ ] 1 impression, 1 install, 1 bad click
-- [ ] 2 impression, 1 install
-- [ ] 2 click, 1 install
-- [ ] 2 impression, 2 click, 1 install
-- [ ] 2 impression, 2 click, 1 install, 1 bad impression, 2 bad clicks
+- [ ] Test events
+- [ ] Test revenue
+- [ ] Test retention
+- [ ] 
 
 
 ## Documentation
@@ -49,7 +45,7 @@ These will be the applications for the JS site wrapping the analytics dashboard.
 - [ ] Data connections page (in/out)
 
 ### Business site
-- [ ] Build Svelte App
+- [x] Build Svelte App
 - [ ] Pages
 	- [x] Home & Marketing
 	- [ ] Road map
