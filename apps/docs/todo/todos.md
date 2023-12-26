@@ -7,7 +7,6 @@ Make plan for testing regimen. To test:
 - [ ] Test events
 - [ ] Test revenue
 - [ ] Test retention
-- [ ] 
 
 
 ## Documentation
