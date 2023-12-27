@@ -1,5 +1,7 @@
 # Open Attribution
 
+An open source Mobile Measurement Platform (MMP) for tracking your mobile advertising spend and ROI.
+
 🏗️ Under Construction 🏗️
 If you're insterested in this project please feel free to reach out!
 [Join Discord](https://discord.gg/k2XCaXa9)
