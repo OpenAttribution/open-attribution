@@ -7,6 +7,13 @@ If you're insterested in this project please feel free to reach out for collaboa
 
 [Chat on Discord](https://discord.gg/k2XCaXa9)
 
+Open attribution covers your advertising spend from the ad click and connects that to later in-app events. This is done with several parts:
+
+1. Impression & Click Tracking
+2. Attribution
+3. In-App Event Tracking
+4. Analytics Dashboards
+
 Own your advertising data without giving it over to a 3rd party processor. Our goal is to give developers their own ad tracking data. When users click on an app ad it's OK for the app to be tracking that data but user's don't want that data to be then passed on to other third parties.
 
 ## True ownership of your mobile app's data
