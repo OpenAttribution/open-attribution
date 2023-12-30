@@ -7,10 +7,10 @@ If you're insterested in this project please feel free to reach out for collaboa
 
 [Chat on Discord](https://discord.gg/k2XCaXa9)
 
-Open attribution covers your advertising spend from the ad click and connects that to later in-app events. This is done with several parts:
+Open attribution tracks your mobile advertising spend from the ad impression and click then connects that to later in-app events. This is done with several parts:
 
 1. Impression & Click Tracking
-2. Attribution
+2. Attribution of Mobile Users to the impressions or clicks
 3. In-App Event Tracking
 4. Analytics Dashboards
 
