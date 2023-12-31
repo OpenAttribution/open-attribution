@@ -11,12 +11,13 @@ Open attribution tracks your mobile advertising spend from the ad impression and
 
 1. Impression & Click Tracking
 2. Attribution of Mobile Users to the impressions or clicks
-3. In-App Event Tracking
+3. In-App Event Tracking via iOS and Android SDK
 4. Analytics Dashboards
 
-Own your advertising data without giving it over to a 3rd party processor. Our goal is to give developers their own ad tracking data. When users click on an app ad it's OK for the app to be tracking that data but user's don't want that data to be then passed on to other third parties.
 
 ## True ownership of your mobile app's data
+
+Own your advertising data without giving it over to a 3rd party processor. Our goal is to give developers their own ad tracking data. When users click on an app ad it's OK for the app to be tracking that data but user's don't want that data to be then passed on to other third parties.
 
 Paying someone else to hold and manage your app's data takes power away from app creators. Open Attribution is a suite of open source tools so that you can manage your advertising data ownership.
 
