@@ -1,5 +1,9 @@
 This project was started around Nov 10th, 2023 and is still very pre-alpha stage. Thus this page will serve to help put some context for how much work is still needed for an MVP product.
 
+
+## Issues
+Trouble with install attribution. Often times when the events come in a quick succession then some of the events will attribute multiple times to the table. Not all events, but some. 
+
 ## Testing
 Make plan for testing regimen. To test:
 
