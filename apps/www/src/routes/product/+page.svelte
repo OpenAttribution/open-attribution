@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<h1>Product</h1>
+<h1 class="h1">Product</h1>
 
 <div class="card mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center">
 	<div class="py-12">
