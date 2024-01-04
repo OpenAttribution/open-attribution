@@ -2,7 +2,8 @@ This project was started around Nov 10th, 2023 and is still very pre-alpha stage
 
 
 ## Issues
-Trouble with install attribution. Often times when the events come in a quick succession then some of the events will attribute multiple times to the table. Not all events, but some. 
+- Trouble with install attribution. Often times when the events come in a quick succession then some of the events will attribute multiple times to the table. Not all events, but some. https://github.com/OpenAttribution/open-attribution/issues/5
+- Product Page *and other changes* not applying https://github.com/OpenAttribution/open-attribution/issues/6
 
 ## Testing
 Make plan for testing regimen. To test:
