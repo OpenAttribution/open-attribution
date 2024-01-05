@@ -34,24 +34,27 @@ if [ "$dolaunchsess" = true ]; then
 	echo "Launching new session"
 	# Set up your session
 	tmux new-session -d -s $session
-	# Initial: Top Left
-	tmux send-keys -t $session "vim" Enter
-	# Top Right
+	# First Window
+	## Initial: Top Left
+	tmux send-keys -t $session "cd apps/dash && npm run dev" Enter
+	## Top Right
 	tmux split-window -h -t $session
 	tmux send-keys -t $session "sudo tail -f /var/log/clickhouse-server/clickhouse-server.log" Enter
-	# Bottom Right
+	## Bottom Right
 	tmux split-window -v -p 50 -t $session
 	tmux send-keys -t $session "sudo tail -f /var/log/clickhouse-server/clickhouse-server.err.log" Enter
-	# Bottom Left
+	## Bottom Left
 	tmux select-pane -t $session:0.0
 	tmux split-window -v -p 50 -t $session
 	tmux send-keys -t $session "source ~/venv/open-attribution-env/bin/activate && python run_data_generation.py" Enter
-	# Second window
+	# Second Window
+	## Initial: Top
 	tmux new-window -t $session
-	tmux send-keys -t $session "cd apps/dash && npm run dev" Enter
-	tmux split-window -v -t $session
+	tmux send-keys -t $session "source ~/venv/open-attribution-env/bin/activate && python run_data_generation.py -i" Enter
+	## Bottom
+	#tmux split-window -v -t $session
 	# Put cursor back on first pane
-	tmux select-pane -t $session:0.0
+	#tmux select-pane -t $session:0.0
 else
 	echo "Attach existing new session"
 fi
