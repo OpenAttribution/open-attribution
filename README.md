@@ -23,7 +23,7 @@ Paying someone else to hold and manage your app's data takes power away from app
 
 ## Open Source Community
 
-Open Attribution is committed to building a community of developers who work together to build a secure ecosystem.
+Open Attribution is committed to building a community of developers who work together to build a secure ecosystem. The goal of having this as Open Source is to enable a community of advertisers who control the tracking of their adverstising campaigns and data.
 
 ## Ready?
 
