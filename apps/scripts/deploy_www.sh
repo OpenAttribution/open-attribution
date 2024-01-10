@@ -34,8 +34,10 @@ EOF
 	systemctl enable /etc/systemd/system/open-attribution-www.service
 }
 
+# Build node
 cd /home/openattribution/open-attribution/apps/www/ || exit
 npm run build
+# Start systemd service
 start-service-www
 
 echo "open-attribution-www.service set up finished"
