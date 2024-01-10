@@ -1,31 +1,42 @@
 [project]
 authors = [{ name = "James O'Claire" }]
-name = "app-track"
+name = "open-attribution"
 description = "Tracking for apps and attribution"
 version = "0.0.1"
 
 [project.optional-dependencies]
 dev = ["pre-commit", "psycopg2-binary"]
 
-dependencies = ["uvicorn", "litestar[standard]", "apache-superset", "confluent_kafka"]
+dependencies = [
+    "uvicorn",
+    "litestar[standard]",
+    "apache-superset",
+    "confluent_kafka",
+]
 
 [build-system]
 requires = ["setuptools", "wheel"]
 
 
 [tool.ruff]
-# Enable flake8-bugbear (`B`) rules.
-select = ["E", "W", "F", "B", "I", "N", "UP"]
+#select = ["E", "W", "F", "B", "I", "N", "UP"]
+select = ["ALL"]
+
+target-version = 'py311'
 
 ignore = [
-    "E501", # line length
-    "W291", # trailing space at end of line
+    "E501",   # line length
+    "W291",   # trailing space at end of line
+    "G",      # Ignore pyflake logging as it does not like f-strings in log messages.
+    "RET504", #Unnecessary assignment to variable before return, but I prefer for readability.
 ]
 
 # Avoid trying to fix flake8-bugbear (`B`) violations.
 unfixable = ["B"]
 
-fixable = ["I", "F"]
+fixable = ["ALL"]
+
+exclude = ["tests/*"]
 
 [tool.mypy]
 warn_return_any = true

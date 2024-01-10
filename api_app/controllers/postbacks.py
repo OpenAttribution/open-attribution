@@ -64,23 +64,27 @@ class PostbackController(Controller):
         event_time: Annotated[int, Parameter(int, query=LINK_EVENT_TIME)],
         link_uid: Annotated[str, Parameter(str, query=LINK_UID)],
         c_id: Annotated[
-            str | None, Parameter(str, query=LINK_CAMPAIGN_ID, required=False)
+            str | None,
+            Parameter(str, query=LINK_CAMPAIGN_ID, required=False),
         ] = None,
         ad: Annotated[str | None, Parameter(str, query=LINK_AD, required=False)] = None,
         ad_id: Annotated[
-            str | None, Parameter(str, query=LINK_AD_ID, required=False)
+            str | None,
+            Parameter(str, query=LINK_AD_ID, required=False),
         ] = None,
         ifa: Annotated[
-            str | None, Parameter(str, query=LINK_IFA, required=False)
+            str | None,
+            Parameter(str, query=LINK_IFA, required=False),
         ] = None,
     ) -> None:
-        """
-        Handles a GET request for a list of apps
+        """Handles a GET request for a list of apps.
 
         Args:
+        ----
             app:app
 
         Returns:
+        -------
             A dictionary representation of the list of apps for homepage
         """
         # logger.info(f"{self.path} start {link_uid}")
@@ -118,26 +122,29 @@ class PostbackController(Controller):
         event_time: Annotated[int, Parameter(int, query=LINK_EVENT_TIME)],
         link_uid: Annotated[str, Parameter(str, query=LINK_UID)],
         c_id: Annotated[
-            str | None, Parameter(str, query=LINK_CAMPAIGN_ID, required=False)
+            str | None,
+            Parameter(str, query=LINK_CAMPAIGN_ID, required=False),
         ] = None,
         ad: Annotated[str | None, Parameter(str, query=LINK_AD, required=False)] = None,
         ad_id: Annotated[
-            str | None, Parameter(str, query=LINK_AD_ID, required=False)
+            str | None,
+            Parameter(str, query=LINK_AD_ID, required=False),
         ] = None,
         ifa: Annotated[
-            str | None, Parameter(str, query=LINK_IFA, required=False)
+            str | None,
+            Parameter(str, query=LINK_IFA, required=False),
         ] = None,
     ) -> None:
-        """
-        Handles a GET request for a list of apps
+        """Handles a GET request for a list of apps
 
         Args:
+        ----
             app:app
 
         Returns:
+        -------
             A dictionary representation of the list of apps for homepage
         """
-
         client_host = request.client.host
 
         data = {
@@ -170,22 +177,24 @@ class PostbackController(Controller):
         event_time: Annotated[int, Parameter(int, query=APP_EVENT_TIME)],
         event_uid: Annotated[str, Parameter(str, query=APP_EVENT_UID)],
         ifa: Annotated[
-            str | None, Parameter(str, query=LINK_IFA, required=False)
+            str | None,
+            Parameter(str, query=LINK_IFA, required=False),
         ] = None,
         revenue: Annotated[
-            str | None, Parameter(str, query=APP_EVENT_REV, required=False)
+            str | None,
+            Parameter(str, query=APP_EVENT_REV, required=False),
         ] = None,
     ) -> None:
-        """
-        Handles a GET request to send postback for an app install, event or revenue
+        """Handles a GET request to send postback for an app install, event or revenue
 
         Args:
+        ----
             app:app
 
         Returns:
+        -------
             A dictionary representation of the list of apps for homepage
         """
-
         client_host = request.client.host
 
         data = {

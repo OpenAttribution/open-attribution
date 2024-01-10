@@ -22,7 +22,11 @@ ENDPOINT = "http://localhost:8000/collect"
 
 
 def impression(
-    myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
+    myapp: str,
+    mycampaign: str,
+    myifa: str,
+    mynetwork: str,
+    myad: str,
 ) -> None:
     impression_or_click(
         mytype="impressions",
@@ -46,10 +50,15 @@ def click(myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str) ->
 
 
 def impression_or_click(
-    mytype: str, myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str
+    mytype: str,
+    myapp: str,
+    mycampaign: str,
+    myifa: str,
+    mynetwork: str,
+    myad: str,
 ) -> None:
     tmstmp: str = str(
-        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
+        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000),
     )
     id = str(uuid.uuid4())
     params = {
@@ -63,12 +72,11 @@ def impression_or_click(
     url = ENDPOINT + f"/{mytype}/{myapp}"
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} {id=} ")
-    return
 
 
 def make_inapp_request(myapp: str, event_id: str, myifa: str) -> None:
     tmstmp: str = str(
-        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
+        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000),
     )
     id = str(uuid.uuid4())
     params = {
@@ -80,4 +88,3 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str) -> None:
     url = ENDPOINT + f"/events/{myapp}"
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} ")
-    return

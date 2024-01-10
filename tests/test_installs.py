@@ -271,7 +271,7 @@ def get_expected_test_df(time_part: str) -> pd.DataFrame:
                 "installs": "expected_installs",
                 "impression": "expected_impressions",
                 "click": "expected_clicks",
-            }
+            },
         )
     )
     test_df["campaign_name"] = test_df["campaign_name"] + f"_{time_part}"
@@ -367,7 +367,11 @@ def check_install_results(time_part: str) -> None:
     db_df = get_db_dfs(time_part)
 
     df = pd.merge(
-        test_df, db_df, how="outer", on="campaign_name", validate="1:1"
+        test_df,
+        db_df,
+        how="outer",
+        on="campaign_name",
+        validate="1:1",
     ).fillna(0)
     df["raw_impressions_ok"] = df["expected_impressions"] == df["raw_impressions"]
     df["raw_clicks_ok"] = df["expected_clicks"] == df["raw_clicks"]
@@ -400,7 +404,7 @@ def main() -> None:
                 my_events: list[str] = test["events"]
             else:
                 logger.warning(
-                    f"campaign test: {_campaign} is incorrectly formatted, events must be a list."
+                    f"campaign test: {_campaign} is incorrectly formatted, events must be a list.",
                 )
                 continue
             _total_impressions = 0
@@ -443,7 +447,7 @@ def main() -> None:
                         )
                         _total_events += 1
             logger.info(
-                f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} "
+                f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
             )
     logger.info("Pause before checking")
     time.sleep(10)
