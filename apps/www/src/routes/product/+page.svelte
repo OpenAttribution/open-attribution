@@ -3,7 +3,7 @@
 
 <div class="card mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center">
 	<div class="py-12">
-		<h1 class="h1 text-center">Full Ownership & Privacy</h1>
+		<h1 class="h1 text-center">Full Ownership & Data Privacy</h1>
 		<h1 class="h1 text-center text-secondary-500">Control who sees your company's ad data.</h1>
 		<h4 class="h4 text-center p-2 lg:p-4">
 			Fully hosted means your user data sits on your servers and is only seen by your teams.

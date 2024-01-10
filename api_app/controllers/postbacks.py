@@ -45,7 +45,7 @@ reg_config = {
 
 event_config = {
     "bootstrap.servers": "localhost:9092",
-    "linger.ms": 2000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
+    "linger.ms": 1000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
 }
 reg_producer = Producer(reg_config)
 event_producer = Producer(event_config)
