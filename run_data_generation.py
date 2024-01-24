@@ -29,7 +29,7 @@ def manage_cli_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    """Main entry point for tests."""
+    """Run user tests."""
     test_names = args.names
     if args.installs_test:
         test_installs(test_names)

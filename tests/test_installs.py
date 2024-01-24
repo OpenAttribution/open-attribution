@@ -237,12 +237,11 @@ ALL_TESTS = {
 }
 
 
-def get_expected_test_df(run_tests:dict, time_part: str) -> pd.DataFrame:
-    test_df = pd.DataFrame.from_dict(run_tests, orient='index')
+def get_expected_test_df(run_tests: dict, time_part: str) -> pd.DataFrame:
+    test_df = pd.DataFrame.from_dict(run_tests, orient="index")
     test_df = test_df.reset_index().rename(columns={"index": "campaign_name"})
     test_df = (
-        test_df 
-        .explode("events")
+        test_df.explode("events")
         .groupby(["campaign_name", "events", "is_attributable"])
         .size()
         .reset_index()
@@ -349,21 +348,28 @@ def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
     return campaign_df
 
 
-def get_db_dfs(run_tests:dict, time_part: str) -> pd.DataFrame:
+def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
     db_dfs = []
     for _campaign in run_tests.keys():
         campaign = _campaign + "_" + time_part
         campaign_df = get_db_data_for_single_campaign(campaign)
         db_dfs.append(campaign_df)
     db_df = pd.concat(db_dfs)
-    expected_cols = ["raw_installs", "raw_clicks", "raw_impressions", "overview_installs", "overview_clicks", "overview_impressions"]
+    expected_cols = [
+        "raw_installs",
+        "raw_clicks",
+        "raw_impressions",
+        "overview_installs",
+        "overview_clicks",
+        "overview_impressions",
+    ]
     for col in expected_cols:
         if col not in db_df.columns:
             db_df[col] = 0
     return db_df
 
 
-def check_install_results(run_tests:dict, time_part: str) -> None:
+def check_install_results(run_tests: dict, time_part: str) -> None:
     logger.info("Begin checking results")
     test_df = get_expected_test_df(run_tests, time_part)
     db_df = get_db_dfs(run_tests, time_part)
@@ -397,16 +403,18 @@ def check_install_results(run_tests:dict, time_part: str) -> None:
             logger.info(f"{row.campaign_name=} check: {row}")
 
 
-def main(test_names:list[str]=None) -> None:
+def main(test_names: list[str] | None = None) -> None:
     time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
-    for network, tests in ALL_TESTS.items():    
+    for network, tests in ALL_TESTS.items():
         if test_names:
             run_tests = {key: tests[key] for key in test_names if key in tests}
             if len(run_tests) == 0:
                 example_test_names = " or ".join(list(tests.keys())[0:2])
-                logger.error(f"No test names matched, try names like {example_test_names} from test_installs.py")
+                logger.error(
+                    f"No test names matched, try names like {example_test_names} from test_installs.py"
+                )
                 return
-            logger.info(f'tests filtered to {len(run_tests)} out of {len(tests)}.')
+            logger.info(f"tests filtered to {len(run_tests)} out of {len(tests)}.")
         else:
             run_tests = tests
         for _campaign, test in run_tests.items():
@@ -460,5 +468,5 @@ def main(test_names:list[str]=None) -> None:
                 f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
             )
     logger.info("Pause before checking")
-    time.sleep(1)
-    check_install_results(run_tests=run_tests,time_part=time_part)
+    time.sleep(15)
+    check_install_results(run_tests=run_tests, time_part=time_part)

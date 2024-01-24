@@ -24,6 +24,7 @@ merged_click_event AS (
                 PARTITION BY app.client_ip,
             app.ifa
         ORDER BY
+            -- Sorted by earliest app events but latest click
             app_event_time ASC,
             click.event_time DESC
         ) AS event_and_click_rn
