@@ -1,3 +1,5 @@
+"""Run tests and check results of attributions."""
+
 import argparse
 
 from tests.generate_impressions_and_clicks import main as continuously_generate
@@ -5,6 +7,7 @@ from tests.test_installs import main as test_installs
 
 
 def manage_cli_args() -> argparse.Namespace:
+    """Add the CLI arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-i",
@@ -26,6 +29,7 @@ def manage_cli_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
+    """Main entry point for tests."""
     test_names = args.names
     if args.installs_test:
         test_installs(test_names)
