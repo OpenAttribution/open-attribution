@@ -57,16 +57,16 @@ ALL_TESTS = {
             "events": ["impression", "click", "click", "app_open"],
             "is_attributable": True,
         },
-        "2i_2c_1e_v2": {
-            "events": ["impression", "impression", "click", "click", "app_open"],
-            "is_attributable": True,
-        },
-        "2i_2c_1e": {
+        "1i_1c_1i_1c_1e": {
             "events": ["impression", "click", "impression", "click", "app_open"],
             "is_attributable": True,
         },
+        "2i_2c_1e": {
+            "events": ["impression", "impression", "click", "click", "app_open"],
+            "is_attributable": True,
+        },
         "1i_1c_2e": {
-            "events": ["impression", "click", "app_epen", "app_open"],
+            "events": ["impression", "click", "app_open", "app_open"],
             "is_attributable": True,
         },
         "1i_1c_4e": {
@@ -101,7 +101,7 @@ ALL_TESTS = {
             ],
             "is_attributable": True,
         },
-        "1i_1c_1e_1c_1e_1c_1e": {
+        "1i_1c_2e_1c_1e_1c_1e": {
             "events": [
                 "impression",
                 "click",
@@ -114,7 +114,7 @@ ALL_TESTS = {
             ],
             "is_attributable": True,
         },
-        "1i_1c_1e_1e_1c_1e_1c_1c_1i": {
+        "1i_1c_2e_1c_1e_2c_1i": {
             "events": [
                 "impression",
                 "click",
@@ -229,7 +229,7 @@ ALL_TESTS = {
             "is_attributable": False,
         },
         "1c_0e": {"events": ["click"], "is_attributable": False},
-        "2i_2c_0e": {
+        "1i_1c_1i_1c_0e": {
             "events": ["impression", "click", "impression", "click"],
             "is_attributable": False,
         },
@@ -237,18 +237,11 @@ ALL_TESTS = {
 }
 
 
-def get_expected_test_df(time_part: str) -> pd.DataFrame:
-    test_df = pd.DataFrame(ALL_TESTS)
+def get_expected_test_df(run_tests: dict, time_part: str) -> pd.DataFrame:
+    test_df = pd.DataFrame.from_dict(run_tests, orient="index")
     test_df = test_df.reset_index().rename(columns={"index": "campaign_name"})
     test_df = (
-        pd.concat(
-            [
-                test_df.drop(columns="test_installs"),
-                pd.json_normalize(test_df["test_installs"]),
-            ],
-            axis=1,
-        )
-        .explode("events")
+        test_df.explode("events")
         .groupby(["campaign_name", "events", "is_attributable"])
         .size()
         .reset_index()
@@ -274,6 +267,10 @@ def get_expected_test_df(time_part: str) -> pd.DataFrame:
             },
         )
     )
+    expected_cols = ["expected_installs", "expected_clicks", "exptected_impressions"]
+    for col in expected_cols:
+        if col not in test_df.columns:
+            test_df[col] = 0
     test_df["campaign_name"] = test_df["campaign_name"] + f"_{time_part}"
     test_df = test_df[
         [
@@ -351,21 +348,31 @@ def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
     return campaign_df
 
 
-def get_db_dfs(time_part: str) -> pd.DataFrame:
+def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
     db_dfs = []
-    for _campaign in ALL_TESTS["test_installs"].keys():
+    for _campaign in run_tests.keys():
         campaign = _campaign + "_" + time_part
         campaign_df = get_db_data_for_single_campaign(campaign)
         db_dfs.append(campaign_df)
     db_df = pd.concat(db_dfs)
+    expected_cols = [
+        "raw_installs",
+        "raw_clicks",
+        "raw_impressions",
+        "overview_installs",
+        "overview_clicks",
+        "overview_impressions",
+    ]
+    for col in expected_cols:
+        if col not in db_df.columns:
+            db_df[col] = 0
     return db_df
 
 
-def check_install_results(time_part: str) -> None:
+def check_install_results(run_tests: dict, time_part: str) -> None:
     logger.info("Begin checking results")
-    test_df = get_expected_test_df(time_part)
-    db_df = get_db_dfs(time_part)
-
+    test_df = get_expected_test_df(run_tests, time_part)
+    db_df = get_db_dfs(run_tests, time_part)
     df = pd.merge(
         test_df,
         db_df,
@@ -396,10 +403,21 @@ def check_install_results(time_part: str) -> None:
             logger.info(f"{row.campaign_name=} check: {row}")
 
 
-def main() -> None:
-    test_time = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
+def main(test_names: list[str] | None = None) -> None:
+    time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
     for network, tests in ALL_TESTS.items():
-        for _campaign, test in tests.items():
+        if test_names:
+            run_tests = {key: tests[key] for key in test_names if key in tests}
+            if len(run_tests) == 0:
+                example_test_names = " or ".join(list(tests.keys())[0:2])
+                logger.error(
+                    f"No test names matched, try names like {example_test_names} from test_installs.py"
+                )
+                return
+            logger.info(f"tests filtered to {len(run_tests)} out of {len(tests)}.")
+        else:
+            run_tests = tests
+        for _campaign, test in run_tests.items():
             if isinstance(test["events"], list):
                 my_events: list[str] = test["events"]
             else:
@@ -410,7 +428,7 @@ def main() -> None:
             _total_impressions = 0
             _total_clicks = 0
             _total_events = 0
-            campaign = _campaign + "_" + test_time
+            campaign = _campaign + "_" + time_part
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
                 ad = random.choice(ADS)
@@ -450,5 +468,5 @@ def main() -> None:
                 f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
             )
     logger.info("Pause before checking")
-    time.sleep(10)
-    check_install_results(time_part=test_time)
+    time.sleep(15)
+    check_install_results(run_tests=run_tests, time_part=time_part)
