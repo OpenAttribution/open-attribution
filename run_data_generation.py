@@ -13,13 +13,22 @@ def manage_cli_args() -> argparse.Namespace:
         help="Generate installs",
         default=False,
     )
+    # Argument to accept a list of names
+    parser.add_argument(
+        "-n",
+        "--names",
+        type=lambda s: s.split(","),
+        help="List of names separated by commas",
+        default=[],
+    )
     args = parser.parse_args()
     return args
 
 
 def main(args: argparse.Namespace) -> None:
+    test_names = args.names
     if args.installs_test:
-        test_installs()
+        test_installs(test_names)
     else:
         continuously_generate()
 
