@@ -12,9 +12,12 @@ my_tables = [
     "events",
     "events_queue",
     "events_mv",
+    "attributed_impressions",
+    "attributed_clicks",
     "attributed_installs",
-    "attribute_default_clicks_mv",
-    "attribute_default_impressions_mv",
+    "attribute_clicks_mv",
+    "attribute_impressions_mv",
+    "attribute_installs_mv",
     "daily_overview",
     "daily_overview_impressions_mv",
     "daily_overview_attributed_installs_mv",
@@ -22,6 +25,7 @@ my_tables = [
 ]
 
 
+client.command("SET allow_experimental_refreshable_materialized_view = 1;")
 for my_table in my_tables:
     # Check if the table exists
     table_exists = client.command(f"EXISTS TABLE {my_table}")

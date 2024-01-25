@@ -1,5 +1,6 @@
-CREATE MATERIALIZED VIEW attribute_default_clicks_mv
-TO attributed_installs -- Specify the destination table
+CREATE MATERIALIZED VIEW attribute_clicks_mv
+REFRESH EVERY 5 SECOND
+TO attributed_clicks
 AS
 WITH
 merged_click_event AS (
@@ -71,15 +72,16 @@ SELECT
     event_id,
     ifa,
     client_ip,
-    event_uid,
     attribution_type,
     attribution_event_time,
+    link_uid,
+    event_uid,
     network,
     campaign_name,
     campaign_id,
     ad_name,
     ad_id,
-    link_uid
+    0 as revenue
 FROM
     latest_attributed_click_events
 ;
