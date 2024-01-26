@@ -1,4 +1,5 @@
 CREATE MATERIALIZED VIEW daily_overview_attributed_installs_mv
+REFRESH EVERY 5 SECOND
 TO daily_overview
 AS
 SELECT
@@ -9,6 +10,8 @@ SELECT
     campaign_id,
     ad_name,
     ad_id,
+    0 as impressions,
+    0 as clicks,
     count() AS installs,
     sum(revenue) as revenue
 FROM
