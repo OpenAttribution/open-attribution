@@ -1,4 +1,5 @@
 CREATE MATERIALIZED VIEW daily_overview_mv
+REFRESH EVERY 5 SECOND
 TO daily_overview
 AS
 WITH combined AS (

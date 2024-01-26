@@ -310,7 +310,7 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
 
 
 def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
-    tables = ["impressions", "clicks"]
+    tables = ["impressions", "clicks", "attributed_installs"]
     dfs = []
     for table in tables:
         df = query_campaign(table=table, campaign=campaign)
@@ -356,7 +356,7 @@ def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
         db_dfs.append(campaign_df)
     db_df = pd.concat(db_dfs)
     expected_cols = [
-        "raw_installs",
+        "raw_attributed_installs",
         "raw_clicks",
         "raw_impressions",
         "overview_installs",
@@ -382,6 +382,7 @@ def check_install_results(run_tests: dict, time_part: str) -> None:
     ).fillna(0)
     df["raw_impressions_ok"] = df["expected_impressions"] == df["raw_impressions"]
     df["raw_clicks_ok"] = df["expected_clicks"] == df["raw_clicks"]
+    df["raw_installs_ok"] = df["expected_installs"] == df["raw_attributed_installs"]
     df["overview_impressions_ok"] = (
         df["expected_impressions"] == df["overview_impressions"]
     )
@@ -468,5 +469,5 @@ def main(test_names: list[str] | None = None) -> None:
                 f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
             )
     logger.info("Pause before checking")
-    time.sleep(15)
+    time.sleep(20)
     check_install_results(run_tests=run_tests, time_part=time_part)
