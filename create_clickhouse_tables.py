@@ -28,9 +28,10 @@ if __name__ == "__main__":
         "attribute_impressions_mv",
         "attribute_installs_mv",
         "daily_overview",
-        "daily_overview_impressions_mv",
-        "daily_overview_attributed_installs_mv",
-        "daily_overview_clicks_mv",
+        "daily_overview_mv",
+        # "daily_overview_impressions_mv",
+        # "daily_overview_clicks_mv",
+        # "daily_overview_attributed_installs_mv",
     ]
 
     client.command("SET allow_experimental_refreshable_materialized_view = 1;")

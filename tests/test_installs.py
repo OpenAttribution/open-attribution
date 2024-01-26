@@ -469,5 +469,5 @@ def main(test_names: list[str] | None = None) -> None:
                 f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
             )
     logger.info("Pause before checking")
-    time.sleep(30)
+    time.sleep(20)
     check_install_results(run_tests=run_tests, time_part=time_part)
