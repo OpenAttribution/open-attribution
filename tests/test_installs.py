@@ -27,7 +27,7 @@ APP = "com.example.one"
 
 ADS = ["test1", "test2", "test3"]
 
-NUM_INSTALLS = 1
+NUM_INSTALLS = 3
 
 
 ALL_TESTS = {
