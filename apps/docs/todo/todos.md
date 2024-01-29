@@ -2,7 +2,7 @@ This project was started around Nov 10th, 2023 and is still very pre-alpha stage
 
 
 ## Issues
-- [ ] Trouble with install attribution. Often times when the events come in a quick succession then some of the events will attribute multiple times to the table. Not all events, but some. https://github.com/OpenAttribution/open-attribution/issues/5
+
 
 ## Testing
 Make plan for testing regimen. To test:
@@ -12,6 +12,8 @@ Make plan for testing regimen. To test:
 - [ ] Test revenue
 - [ ] Test retention
 
+## Docker
+Setup docker for deploying and launching on a local machine.
 
 ## Documentation
 Some parts of documentation will need to be even more detailed and specific. They will be dealing with the ops side, so perhaps they should even be moved to somewhere unique or different?
