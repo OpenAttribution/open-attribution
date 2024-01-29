@@ -1,5 +1,17 @@
+"""API endpoints for postbacks from both in-app and ad networks.
+
+Endpoints for Ad Networks
+=========
+/collect/impressions/
+/collect/clicks/
+
+Endpoints for In App Events
+=========
+/collect/events
+
+"""
 import json
-from typing import Annotated
+from typing import Annotated, Self
 
 from confluent_kafka import KafkaException, Producer
 from litestar import Controller, Request, get
@@ -34,11 +46,6 @@ from config.dimensions import (
 
 logger = get_logger(__name__)
 
-"""
-/impressions/
-/clicks/
-"""
-
 reg_config = {
     "bootstrap.servers": "localhost:9092",
 }
@@ -52,11 +59,13 @@ event_producer = Producer(event_config)
 
 
 class PostbackController(Controller):
+    """Record all postback endpoints."""
+
     path = "collect"
 
     @get(path="impressions/{app:str}")
     async def impressions(
-        self,
+        self: Self,
         request: Request,
         app: str,
         source: Annotated[str, Parameter(str, query=LINK_NETWORK)],
@@ -77,18 +86,49 @@ class PostbackController(Controller):
             Parameter(str, query=LINK_IFA, required=False),
         ] = None,
     ) -> None:
-        """Handles a GET request for a list of apps.
+        """Record impression postbacks for app from an ad network.
+
+        Process various query parameters related to the impression, such as the source network, campaign details, event time, and other identifiers. The data is then serialized and sent to a Kafka topic named "impressions".
+
+        URL Path: GET api/collect/impressions/{app:str}
 
         Args:
         ----
-            app:app
+            self: not for external use
+            request: not for external use
+            app (str): The application identifier included in the URL path.
+            source (str): The source network for the impression. Obtained from query parameter LINK_NETWORK.
+            c (str): The campaign name associated with the impression. Obtained from query parameter LINK_CAMPAIGN.
+            event_time (int): The time of the event associated with the impression. Obtained from query parameter LINK_EVENT_TIME.
+            link_uid (str): A unique identifier for the link. Obtained from query parameter LINK_UID.
+            c_id (str, optional): The campaign ID. Obtained from query parameter LINK_CAMPAIGN_ID. Default is None.
+            ad (str, optional): The name of the advertisement. Obtained from query parameter LINK_AD. Default is None.
+            ad_id (str, optional): The advertisement ID. Obtained from query parameter LINK_AD_ID. Default is None.
+            ifa (str, optional): Identifier for Advertisers. Obtained from query parameter LINK_IFA. Default is None.
 
         Returns:
         -------
-            A dictionary representation of the list of apps for homepage
-        """
-        # logger.info(f"{self.path} start {link_uid}")
+        - None: The function does not return any value.
 
+        Behavior
+        --------
+        1. Extracts the client's host information from the request.
+        2. Constructs a data dictionary with the provided parameters and additional information like the client's IP address.
+        3. Serializes the data dictionary into a JSON string and encodes it to UTF-8.
+        4. Produces a message with the encoded data to the "impressions" Kafka topic.
+        5. Handles any KafkaException by logging an error message and raising an HTTPException.
+
+        Exceptions
+        ----------
+        - HTTPException: Raised if an error occurs while producing the message to the Kafka topic.
+
+        Example Usage
+        -------------
+        ```
+        GET https://track.example.com/api/collect/impressions/com.example.app?source_network=abc&campaign=xyz&event_time=1617715200&link_uid=123&campaign_id=456&ad_name=ad_sample&ad_id=789&ifa=ifa_value
+        ```
+
+        """
         client_host = request.client.host
 
         data = {
@@ -109,12 +149,12 @@ class PostbackController(Controller):
             reg_producer.produce("impressions", value=enc_data)
             reg_producer.poll(0)
         except KafkaException as ex:
-            logger.error({"status": "error", "message": str(ex)})
+            logger.exception("Write to Kafka Impressions failed.")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
 
     @get(path="clicks/{app:str}")
     async def clicks(
-        self,
+        self: Self,
         request: Request,
         app: str,
         source: Annotated[str, Parameter(str, query=LINK_NETWORK)],
@@ -135,15 +175,48 @@ class PostbackController(Controller):
             Parameter(str, query=LINK_IFA, required=False),
         ] = None,
     ) -> None:
-        """Handles a GET request for a list of apps
+        """Record click postbacks for app from an ad network.
+
+        Process various query parameters related to the impression, such as the source network, campaign details, event time, and other identifiers. The data is then serialized and sent to a Kafka topic named "impressions".
+
+        URL Path: GET api/collect/clicks/{app:str}
 
         Args:
         ----
-            app:app
+          app (str): The application identifier included in the URL path.
+          source (str): The source network for the impression. Obtained from query parameter LINK_NETWORK.
+          c (str): The campaign name associated with the impression. Obtained from query parameter LINK_CAMPAIGN.
+          event_time (int): The time of the event associated with the impression. Obtained from query parameter LINK_EVENT_TIME.
+          link_uid (str): A unique identifier for the link. Obtained from query parameter LINK_UID.
+          c_id (str, optional): The campaign ID. Obtained from query parameter LINK_CAMPAIGN_ID. Default is None.
+          ad (str, optional): The name of the advertisement. Obtained from query parameter LINK_AD. Default is None.
+          ad_id (str, optional): The advertisement ID. Obtained from query parameter LINK_AD_ID. Default is None.
+          ifa (str, optional): Identifier for Advertisers. Obtained from query parameter LINK_IFA. Default is None.
+          self: not for external use.
+          request: not for external use.
 
         Returns:
         -------
-            A dictionary representation of the list of apps for homepage
+        - None: The function does not return any value.
+
+        Behavior
+        --------
+        1. Extracts the client's host information from the request.
+        2. Constructs a data dictionary with the provided parameters and additional information like the client's IP address.
+        3. Serializes the data dictionary into a JSON string and encodes it to UTF-8.
+        4. Produces a message with the encoded data to the "impressions" Kafka topic.
+        5. Handles any KafkaException by logging an error message and raising an HTTPException.
+
+        Exceptions
+        ----------
+        - HTTPException: Raised if an error occurs while producing the message to the Kafka topic.
+
+        Example Usage
+        -------------
+        ```
+        GET https://track.example.com/api/collect/clicks/com.example.app?source_network=abc&campaign=xyz&event_time=1617715200&link_uid=123&campaign_id=456&ad_name=ad_sample&ad_id=789&ifa=ifa_value
+        ```
+
         """
         client_host = request.client.host
 
@@ -165,12 +238,12 @@ class PostbackController(Controller):
             reg_producer.produce("clicks", value=enc_data)
             reg_producer.poll(0)
         except KafkaException as ex:
-            logger.error({"status": "error", "message": str(ex)})
+            logger.exception("Process click for kafka failed.")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
 
     @get(path="events/{app:str}")
     async def events(
-        self,
+        self: Self,
         request: Request,
         app: str,
         event_id: Annotated[str, Parameter(str, query=APP_EVENT_ID)],
@@ -185,15 +258,46 @@ class PostbackController(Controller):
             Parameter(str, query=APP_EVENT_REV, required=False),
         ] = None,
     ) -> None:
-        """Handles a GET request to send postback for an app install, event or revenue
+        """Record event postbacks from in app.
+
+        Process various query parameters related to the in app events, such as the event_id, event_time and user's ifa
+
+        URL Path: GET api/collect/events/{app:str}
 
         Args:
         ----
-            app:app
+          app (str): The iOS or Android Store ID. Examples: 123456789 or com.example.app.
+          event_id (str): The sting ID for an event tracked. Examples: 'tutorial', 'level_1'
+          event_time (int): The time of the event associated with the impression. Obtained from query parameter LINK_EVENT_TIME.
+          event_uid (str): A unique generated UID for the event, this is used for deduplication.
+          ifa (str, optional): Identifier for Advertisers.
+          revenue (str, optional): The numerical value of the revenue in USD. Examples: '1', '1.00', '0.222'
+          self: not for external use.
+          request: not for external use.
+
 
         Returns:
         -------
-            A dictionary representation of the list of apps for homepage
+        - None: The function does not return any value.
+
+        Behavior
+        --------
+        1. Extracts the client's host information from the request.
+        2. Constructs a data dictionary with the provided parameters and additional information like the client's IP address.
+        3. Serializes the data dictionary into a JSON string and encodes it to UTF-8.
+        4. Produces a message with the encoded data to the "impressions" Kafka topic.
+        5. Handles any KafkaException by logging an error message and raising an HTTPException.
+
+        Exceptions
+        ----------
+        - HTTPException: Raised if an error occurs while producing the message to the Kafka topic.
+
+        Example Usage
+        -------------
+        ```
+        GET https://track.example.com/api/collect/events/com.example.app?event_id=level_1&event_time=1706499131&&event_uid=6a660ee7-bbc1-4440-9fdd-6564aca3560c
+        ```
+
         """
         client_host = request.client.host
 
@@ -212,5 +316,5 @@ class PostbackController(Controller):
             event_producer.produce("events", value=enc_data)
             event_producer.poll(0)
         except KafkaException as ex:
-            logger.error({"status": "error", "message": str(ex)})
+            logger.exception("Processing event postback for kafka failed")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex

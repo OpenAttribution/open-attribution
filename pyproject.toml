@@ -38,6 +38,10 @@ fixable = ["ALL"]
 
 exclude = ["tests/*"]
 
+[tool.ruff.lint.per-file-ignores]
+"postbacks.py" = ["PLR0913"]
+
+
 [tool.mypy]
 warn_return_any = true
 warn_unused_configs = true
