@@ -1,3 +1,4 @@
+"""API Endpoints for postbacks to OpenAttribution."""
 import logging
 
 from litestar import Litestar
@@ -15,6 +16,8 @@ cors_config = CORSConfig(
 
 
 class MyOpenAPIController(OpenAPIController):
+    """Set Docs path."""
+
     path = "/api/docs"
 
 
