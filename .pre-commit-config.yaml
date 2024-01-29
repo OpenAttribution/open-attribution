@@ -1,7 +1,7 @@
 repos:
   # Black
   - repo: https://github.com/psf/black
-    rev: 23.12.1
+    rev: 24.1.1
     hooks:
       - id: black
   # Ruff
@@ -40,7 +40,7 @@ repos:
           - prettier@2.8.8
           - prettier-plugin-svelte@2.10.1
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.0.0-alpha.1
+    rev: v9.0.0-alpha.2
     hooks:
       - id: eslint
         name: eslint
