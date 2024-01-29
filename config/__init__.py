@@ -1,3 +1,4 @@
+"""Initialize project settings and logging."""
 import logging
 import pathlib
 import sys
@@ -17,10 +18,12 @@ LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
 
 
 def handle_exception(
+    # ruff: noqa: ANN401
     exc_type: Any,
     exc_value: BaseException,
     exc_traceback: TracebackType | None,
 ) -> None:
+    """Handle uncaught exceptions."""
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
@@ -28,18 +31,21 @@ def handle_exception(
 
 
 def check_config_dirs() -> None:
+    """Check that config dirs exist."""
     dirs = [TOP_CONFIGDIR, CONFIG_DIR, LOG_DIR]
-    for dir in dirs:
-        if not pathlib.Path.exists(dir):
-            pathlib.Path.mkdir(dir, exist_ok=True)
+    for _dir in dirs:
+        if not pathlib.Path.exists(_dir):
+            pathlib.Path.mkdir(_dir, exist_ok=True)
 
 
 def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
-    format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"
+    """Create a logger for use in other modules."""
+    _format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"
     check_config_dirs()
     log_dir = pathlib.Path(HOME, pathlib.Path(f".config/{PROJECT_NAME}/logs"))
     if not pathlib.Path.exists(log_dir):
         pathlib.Path.mkdir(log_dir, exist_ok=True)
+        # ruff: noqa: T201
         print(f"Couldn't find {log_dir=} so it was created.")
     filename = f"{log_dir}/{log_name}.log"
     # Writes to file
@@ -49,31 +55,25 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
         backupCount=5,
     )
     logging.basicConfig(
-        format=format,
+        format=_format,
         level=logging.INFO,
         handlers=[
             rotate_handler,
-            # logging.StreamHandler(), # handle via logger instead
         ],
     )
     logger = logging.getLogger(mod_name)
-    """Retun logger object."""
     # create logger
     logger = logging.getLogger(mod_name)
     logger.setLevel(logging.INFO)
-
     # create console handler and set level to debug
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
-
     # create formatter
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
-
     # add formatter to ch
     ch.setFormatter(formatter)
-
     # add ch to logger
     logger.addHandler(ch)
     return logger
