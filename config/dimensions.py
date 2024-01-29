@@ -1,3 +1,5 @@
+"""Set the string names as defined in the database scripts."""
+
 # Link IDs
 
 LINK_STORE_ID = "store_id"
