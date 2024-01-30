@@ -1,0 +1,28 @@
+# Usage
+#   Start:          docker compose up
+#   Stop:           docker compose down
+#   Pull New:           docker compose pull
+#   Destroy:        docker compose -f docker-compose.yml down -v --remove-orphans
+
+name: openattribution
+version: '3'
+
+services:
+  #  api:
+  #     image: image-api
+  #     ports:
+  #       - "5000:5000"
+  #  kafka:
+  #     image: image-kafka
+  #     ports:
+  #       - "9092:9092"
+  db:
+    container_name: clickhouse
+    image: openattribution/clickhouse:main
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8123/ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - '9000:9000'

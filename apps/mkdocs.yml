@@ -4,17 +4,17 @@ site_url: https://openattribution.com/
 
 nav:
   - Home: index.md
-  - TODO and Roadmap: 
-    - TODOs: ./todo/todos.md
-    - Data Flow: ./todo/data_flow.md
-    - Database Overview: ./todo/database_overview.md
-  - Getting Started: 
-    - Installation: ./getting_started/installation.md
-    - Running after Installation: ./getting_started/running.md
-    - Develop Locally: ./getting_started/develop_locally.md
-  - About: 
-    - History: ./about/history.md
-    - Target Use Cases: ./about/target_use_cases.md
+  - TODO and Roadmap:
+      - TODOs: ./todo/todos.md
+      - Data Flow: ./todo/data_flow.md
+      - Database Overview: ./todo/database_overview.md
+  - Getting Started:
+      - Installation: ./getting_started/installation.md
+      - Running after Installation: ./getting_started/running.md
+      - Develop Locally: ./getting_started/develop_locally.md
+  - About:
+      - History: ./about/history.md
+      - Target Use Cases: ./about/target_use_cases.md
 
 theme:
   name: material
@@ -52,7 +52,6 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
-
 
 repo_url: https://github.com/OpenAttribution/open-attribution
 edit_uri: edit/main/apps/docs/

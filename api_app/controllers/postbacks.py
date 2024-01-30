@@ -10,6 +10,7 @@ Endpoints for In App Events
 /collect/events
 
 """
+
 import json
 from typing import Annotated, Self
 

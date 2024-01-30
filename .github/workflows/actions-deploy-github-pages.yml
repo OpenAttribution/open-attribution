@@ -1,5 +1,4 @@
-name: ci 
-
+name: ci
 
 on:
   push:
@@ -19,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
 
       - uses: actions/cache@v3
         with:
@@ -27,5 +26,5 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material 
+      - run: pip install mkdocs-material
       - run: cd apps && mkdocs gh-deploy --force
