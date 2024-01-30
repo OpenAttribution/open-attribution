@@ -38,10 +38,12 @@ services:
     container_name: clickhouse
     image: openattribution/clickhouse:main
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8123/ping']
+      # test: ["CMD", "curl", "-f", "http://clickhouse:8123/ping"]
+      # test: apt update -y && apt install curl -y && echo 'SELECT 1' | curl 'http://localhost:8123/' --data-binary @-
+      test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 2
     ports:
       - '9000:9000'
       - '8123:8123'
@@ -57,7 +59,8 @@ services:
     ports:
       - '8000:8000'
     depends_on:
-      - clickhouse
+      clickhouse:
+        condition: service_healthy
 volumes:
   kafka-volume:
   zookeeper-volume:
