@@ -7,17 +7,14 @@ FROM python:${python_version}
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-
-
 # Set the working directory
 WORKDIR /app
 
+# Install the requirements
+RUN pip install --no-cache-dir --upgrade uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 apache-superset==3.1.0 confluent_kafka==2.3.0
 
 # Copy only the necessary files to the working directory
 COPY . /app/
-# Install the requirements
-# RUN pip install --upgrade pip
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 # Expose the port the app runs on
 EXPOSE 8000

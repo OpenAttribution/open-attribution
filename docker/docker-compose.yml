@@ -34,13 +34,6 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
-  api:
-    container_name: api
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    ports:
-      - '8000:8000'
   clickhouse:
     container_name: clickhouse
     image: openattribution/clickhouse:main
@@ -52,7 +45,20 @@ services:
     ports:
       - '9000:9000'
       - '8123:8123'
-
+    volumes:
+      - 'clickhouse-volume:/var/lib/clickhouse/'
+    depends_on:
+      - kafka
+  api:
+    container_name: api
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - '8000:8000'
+    depends_on:
+      - clickhouse
 volumes:
   kafka-volume:
   zookeeper-volume:
+  clickhouse-volume:
