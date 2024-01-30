@@ -5,18 +5,43 @@
 #   Destroy:        docker compose -f docker-compose.yml down -v --remove-orphans
 
 name: openattribution
-version: '3'
+version: '3.7'
 
 services:
-  #  api:
-  #     image: image-api
-  #     ports:
-  #       - "5000:5000"
-  #  kafka:
-  #     image: image-kafka
-  #     ports:
-  #       - "9092:9092"
-  db:
+  zookeeper:
+    restart: always
+    image: docker.io/bitnami/zookeeper:3.9.1
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper-volume:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    restart: always
+    image: docker.io/bitnami/kafka:3.6.1
+    ports:
+      - '9093:9093'
+    volumes:
+      - 'kafka-volume:/bitnami'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+  api:
+    container_name: api
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - '8000:8000'
+  clickhouse:
     container_name: clickhouse
     image: openattribution/clickhouse:main
     healthcheck:
@@ -26,3 +51,8 @@ services:
       retries: 10
     ports:
       - '9000:9000'
+      - '8123:8123'
+
+volumes:
+  kafka-volume:
+  zookeeper-volume:
