@@ -19,7 +19,7 @@ COPY . /app/
 # Expose the port the app runs on
 EXPOSE 8000
 
-RUN python /app/create_clickhouse_tables.py
+# RUN python /app/create_clickhouse_tables.py
 
 # Run the app with the Litestar CLI
 CMD ["litestar", "run", "--host", "0.0.0.0", "--port", "8000"]

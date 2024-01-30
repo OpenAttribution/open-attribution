@@ -48,7 +48,9 @@ services:
       - '9000:9000'
       - '8123:8123'
     volumes:
-      - 'clickhouse-volume:/var/lib/clickhouse/'
+      # - ${PWD}/sql:/docker-entrypoint-initdb.d
+      - ../sql/create/:/my-tables/
+      - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
     depends_on:
       - kafka
   api:
