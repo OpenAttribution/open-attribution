@@ -20,6 +20,7 @@ services:
   kafka:
     restart: always
     image: docker.io/bitnami/kafka:3.6.1
+    container_name: kafka
     ports:
       - '9093:9093'
     volumes:
@@ -30,29 +31,34 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9093
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
   clickhouse:
     container_name: clickhouse
-    image: openattribution/clickhouse:main
+    image: clickhouse/clickhouse-server:24.1.1
+    # image: openattribution/clickhouse:main
     healthcheck:
       # test: ["CMD", "curl", "-f", "http://clickhouse:8123/ping"]
       # test: apt update -y && apt install curl -y && echo 'SELECT 1' | curl 'http://localhost:8123/' --data-binary @-
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
       timeout: 5s
-      retries: 2
+      retries: 10
+    depends_on:
+      - kafka
     ports:
       - '9000:9000'
       - '8123:8123'
+    # command: ["tail", "-f", "/dev/null"]
     volumes:
-      # - ${PWD}/sql:/docker-entrypoint-initdb.d
-      - ../sql/create/:/my-tables/
-      - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
-    depends_on:
-      - kafka
+      - ${PWD}/sql/create/:/my-tables/
+      - ${PWD}/sql/startup-scripts/:/docker-entrypoint-initdb.d/
+        # Always use a fresh database when developing
+      # - /var/lib/clickhouse/
+      # - ../sql/create/:/my-tables/
+      # - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
   api:
     container_name: api
     build:
@@ -66,4 +72,4 @@ services:
 volumes:
   kafka-volume:
   zookeeper-volume:
-  clickhouse-volume:
+# clickhouse-volume:

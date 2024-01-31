@@ -11,6 +11,7 @@ until clickhouse-client --host localhost --query "SELECT 2"; do
 done
 
 # Define the array of table names
+
 my_tables=(
 	"impressions"
 	"impressions_queue"
