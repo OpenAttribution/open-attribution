@@ -68,7 +68,11 @@ services:
       context: ../
       dockerfile: docker/Dockerfile.dash
     ports:
-      - '4173:4173'
+      - '3000:3000'
+    volumes:
+      # - ./:/apps
+      - /apps/dash/node_modules
+      - /apps/dash/build
 volumes:
   kafka-volume:
   zookeeper-volume:
