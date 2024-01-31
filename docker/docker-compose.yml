@@ -40,8 +40,6 @@ services:
     image: clickhouse/clickhouse-server:24.1.1
     # image: openattribution/clickhouse:main
     healthcheck:
-      # test: ["CMD", "curl", "-f", "http://clickhouse:8123/ping"]
-      # test: apt update -y && apt install curl -y && echo 'SELECT 1' | curl 'http://localhost:8123/' --data-binary @-
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
       timeout: 5s
@@ -51,24 +49,26 @@ services:
     ports:
       - '9000:9000'
       - '8123:8123'
-    # command: ["tail", "-f", "/dev/null"]
     volumes:
       - ${PWD}/sql/create/:/my-tables/
       - ${PWD}/sql/startup-scripts/:/docker-entrypoint-initdb.d/
-        # Always use a fresh database when developing
-      # - /var/lib/clickhouse/
-      # - ../sql/create/:/my-tables/
-      # - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
   api:
     container_name: api
     build:
       context: ../
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.python
     ports:
       - '8000:8000'
     depends_on:
       clickhouse:
         condition: service_healthy
+  dash:
+    container_name: dash
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.dash
+    ports:
+      - '4173:4173'
 volumes:
   kafka-volume:
   zookeeper-volume:

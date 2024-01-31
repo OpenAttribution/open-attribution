@@ -1,0 +1,38 @@
+FROM node:20.10 as builder
+
+ENV NODE_ENV=production 
+
+
+COPY apps/ /app/
+
+WORKDIR /app/dash
+
+# RUN npm install -g vite
+
+COPY apps/dash/package.json /app/dash/
+COPY apps/dash/package-lock.json /app/dash/
+
+RUN npm install -g
+
+# WORKDIR /app/dash
+
+
+# WORKDIR /app/
+
+
+
+RUN npm run build
+
+
+FROM node:20.10-alpine3.19
+
+WORKDIR /app/dash
+COPY --from=builder /app/dash .
+
+
+
+
+# # ENV HOST=0.0.0.0
+EXPOSE 4173
+# CMD ["npm","run", "preview","--", "--host", "0.0.0.0"]
+CMD ["node","build"]

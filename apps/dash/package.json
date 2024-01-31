@@ -36,6 +36,14 @@
   },
   "type": "module",
   "dependencies": {
-    "@superset-ui/embedded-sdk": "^0.1.0-alpha.10"
+    "@superset-ui/embedded-sdk": "^0.1.0-alpha.10",
+    "vite": "^4.4.2",
+    "svelte": "^4.0.5",
+    "typescript": "^5.0.0",
+    "@skeletonlabs/skeleton": "2.5.1",
+    "@skeletonlabs/tw-plugin": "0.2.4",
+    "@sveltejs/adapter-auto": "^2.0.0",
+    "@sveltejs/kit": "^1.20.4",
+    "vite-plugin-tailwind-purgecss": "0.1.4"
   }
 }
