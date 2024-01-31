@@ -1,0 +1,33 @@
+FROM node:20.10 as builder
+
+ENV NODE_ENV=production
+
+WORKDIR /apps/
+
+
+WORKDIR /apps/dash/
+
+
+COPY apps/dash/package.json /apps/dash/
+COPY apps/dash/package-lock.json /apps/dash/
+
+RUN npm -g install
+
+
+COPY apps/dash /apps/dash
+
+COPY apps/shared /apps/shared
+
+WORKDIR /apps/dash/
+RUN npm run build
+
+FROM node:20.10
+
+WORKDIR /apps/dash/
+
+COPY --from=builder /apps/dash/ /apps/dash/
+COPY --from=builder /apps/shared/ /apps/shared/
+
+EXPOSE 3000
+# CMD ["npm","run", "preview","--", "--host", "0.0.0.0"]
+CMD ["node","build"]

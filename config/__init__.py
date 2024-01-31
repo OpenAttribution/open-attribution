@@ -1,4 +1,5 @@
 """Initialize project settings and logging."""
+
 import logging
 import pathlib
 import sys

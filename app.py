@@ -1,4 +1,5 @@
 """API Endpoints for postbacks to OpenAttribution."""
+
 import logging
 
 from litestar import Litestar
