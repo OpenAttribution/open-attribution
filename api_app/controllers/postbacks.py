@@ -47,12 +47,13 @@ from config.dimensions import (
 
 logger = get_logger(__name__)
 
+# If inside docker: "bootstrap.servers": "kafka:9093",
 reg_config = {
-    "bootstrap.servers": "kafka:9093",
+    "bootstrap.servers": "localhost:9092",
 }
 
 event_config = {
-    "bootstrap.servers": "kafka:9093",
+    "bootstrap.servers": "localhost:9092",
     "linger.ms": 1000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
 }
 reg_producer = Producer(reg_config)
