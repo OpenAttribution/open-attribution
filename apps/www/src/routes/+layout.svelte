@@ -34,7 +34,7 @@
 				</a>
 				<a
 					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/Z5ueYE3Ct"
+					href="https://discord.gg/Z5ueYE3Ct3"
 					target="_blank"
 					rel="noreferrer"
 				>
