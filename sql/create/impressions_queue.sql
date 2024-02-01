@@ -11,6 +11,6 @@ CREATE TABLE impressions_queue
     client_ip String,
     link_uid UUID,
 ) 
-ENGINE = Kafka('kafka:9093', 'impressions', 'clickhouse',
+ENGINE = Kafka('localhost:9092', 'impressions', 'clickhouse',
             'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1;
 

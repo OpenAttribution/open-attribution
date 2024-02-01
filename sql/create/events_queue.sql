@@ -8,6 +8,6 @@ CREATE TABLE events_queue
     client_ip String,
     event_uid UUID,
 ) 
-ENGINE = Kafka('kafka:9093', 'events', 'clickhouse',
+ENGINE = Kafka('localhost:9092', 'events', 'clickhouse',
             'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1;
 
