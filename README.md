@@ -3,6 +3,7 @@
 An open source Mobile Measurement Platform (MMP) for tracking your mobile advertising spend and ROI.
 
 ## 🏗️ Under Construction 🏗️
+
 If you're insterested in this project please feel free to reach out for collaboartion or more information.
 
 [Chat on Discord](https://discord.gg/Z5ueYE3Ct3)
@@ -16,7 +17,6 @@ Open attribution tracks your mobile advertising spend from the ad impression and
 3. In-App Event Tracking via iOS and Android SDK
 4. Analytics Dashboards
 
-
 ## True ownership of your mobile app's data
 
 Own your advertising data without giving it over to a 3rd party processor. Our goal is to give developers their own ad tracking data. When users click on an app ad it's OK for the app to be tracking that data but user's don't want that data to be then passed on to other third parties.
@@ -29,7 +29,7 @@ Open Attribution is committed to building a community of developers who work tog
 
 ## Interested in getting involved?
 
-🏗️ This project is just starting, so if you're interested in using it please reach out before putting it into production. You can reach out on [Discord](https://discord.gg/Z5ueYE3Ct3) or email hello@openattribution.dev
+🏗️ This project is just starting, so if you're interested in using it please reach out before putting it into production. You can reach out on [Discord](https://discord.gg/Z5ueYE3Ct3) or email [hello@openattribution.dev](mailto:hello@openattribution.dev)
 
 To read the work in progress documentation head to [Getting Started]([https://openattribution.dev/docs/getting_started/installation](https://openattribution.dev/docs/getting_started/installation/)) to learn more.
 
