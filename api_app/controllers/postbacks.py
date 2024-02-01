@@ -19,7 +19,7 @@ from litestar import Controller, Request, get
 from litestar.exceptions import HTTPException
 from litestar.params import Parameter
 
-from config import get_logger
+from config import KAFKA_LOCATION, get_logger
 from config.dimensions import (
     APP_EVENT_ID,
     APP_EVENT_REV,
@@ -47,13 +47,14 @@ from config.dimensions import (
 
 logger = get_logger(__name__)
 
+
 # If inside docker: "bootstrap.servers": "kafka:9093",
 reg_config = {
-    "bootstrap.servers": "localhost:9092",
+    "bootstrap.servers": KAFKA_LOCATION,
 }
 
 event_config = {
-    "bootstrap.servers": "localhost:9092",
+    "bootstrap.servers": KAFKA_LOCATION,
     "linger.ms": 1000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
 }
 reg_producer = Producer(reg_config)
