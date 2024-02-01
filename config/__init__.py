@@ -18,6 +18,19 @@ CONFIG_FILENAME = "config.toml"
 LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
 
 
+def is_docker() -> bool:
+    """Decide if we are in docker."""
+    path = pathlib.Path("/proc/self/cgroup")
+    return (
+        pathlib.Path("/.dockerenv").exists()
+        or path.is_file()
+        and any("docker" in line for line in path.open())
+    )
+
+
+KAFKA_LOCATION = "kafka:9093" if is_docker() else "localhost:9092"
+
+
 def handle_exception(
     # ruff: noqa: ANN401
     exc_type: Any,
