@@ -50,7 +50,7 @@
 		<h3 class="h3">Want to get in touch?</h3>
 		<a
 			class="btn btn-sm variant-ghost-surface"
-			href="https://discord.gg/k2XCaXa9"
+			href="https://discord.gg/Z5ueYE3Ct"
 			target="_blank"
 			rel="noreferrer"
 		>
