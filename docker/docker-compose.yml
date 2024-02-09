@@ -1,30 +1,32 @@
 # Usage
-#   Start:          docker compose up
+#   Start:          docker compose -f ~/open-attribution/docker/docker-compose.yml up -d
 #   Stop:           docker compose down
 #   Pull New:           docker compose pull
-#   Destroy:        docker compose -f docker-compose.yml down -v --remove-orphans
+#   Destroy:        docker compose -f ~/open-attribution/docker/docker-compose.yml down -v --remove-orphans
 
 name: openattribution
-version: '3.7'
+version: "3.7"
 
 services:
   zookeeper:
     restart: always
     image: docker.io/bitnami/zookeeper:3.9.1
     ports:
-      - '2181:2181'
+      - "2181:2181"
     volumes:
-      - 'zookeeper-volume:/bitnami'
+      - "zookeeper-volume:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - open-attribution-network
   kafka:
     restart: always
     image: docker.io/bitnami/kafka:3.6.1
     container_name: kafka
     ports:
-      - '9093:9093'
+      - "9093:9093"
     volumes:
-      - 'kafka-volume:/bitnami'
+      - "kafka-volume:/bitnami"
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
@@ -35,45 +37,56 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
+    networks:
+      - open-attribution-network
   clickhouse:
     container_name: clickhouse
     image: clickhouse/clickhouse-server:24.1.1
     # image: openattribution/clickhouse:main
     healthcheck:
-      test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
+      test: ["CMD-SHELL", 'clickhouse-client --query "SELECT 1"']
       interval: 5s
       timeout: 5s
       retries: 10
     depends_on:
       - kafka
     ports:
-      - '9000:9000'
-      - '8123:8123'
+      - "9000:9000"
+      - "8123:8123"
     volumes:
       - ${PWD}/sql/create/:/my-tables/
       - ${PWD}/sql/startup-scripts/:/docker-entrypoint-initdb.d/
+    networks:
+      - open-attribution-network
   api:
     container_name: api
     build:
       context: ../
       dockerfile: docker/Dockerfile.python
     ports:
-      - '8000:8000'
+      - "8000:8000"
     depends_on:
       clickhouse:
         condition: service_healthy
-  dash:
+    networks:
+      - open-attribution-network
+  jsdash:
     container_name: dash
     build:
       context: ../
       dockerfile: docker/Dockerfile.dash
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
-      # - ./:/apps
       - /apps/dash/node_modules
       - /apps/dash/build
+    networks:
+      - open-attribution-network
 volumes:
   kafka-volume:
   zookeeper-volume:
 # clickhouse-volume:
+networks:
+  open-attribution-network:
+    name: OpenAttributionNetwork
+    driver: bridge
