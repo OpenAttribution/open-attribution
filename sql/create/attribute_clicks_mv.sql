@@ -1,7 +1,6 @@
 CREATE MATERIALIZED VIEW attribute_clicks_mv
 REFRESH EVERY 5 SECOND
-TO attributed_clicks
-AS
+TO attributed_clicks AS
 WITH
 merged_click_event AS (
     -- Ranked rows by click time
