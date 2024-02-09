@@ -46,3 +46,14 @@ exclude = ["tests/*"]
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+
+
+[tool.sqlfluff.core]
+templater = 'placeholder'
+verbose = 2
+dialect = 'clickhouse'
+large_file_skip_byte_limit = 0
+exclude_rules = 'AM04'
+
+[tool.sqlfluff.templater.placeholder]
+param_style = 'colon'

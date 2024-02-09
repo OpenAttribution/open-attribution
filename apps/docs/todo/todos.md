@@ -21,6 +21,9 @@ Some parts of documentation will need to be even more detailed and specific. The
 #### SDK Setup
 Documentation for the iOS and Android developers. It would also presumably fit well with Unity and Unreal as well.
 
+Android will use this library to fetch referrer data from the PlayStore:
+https://developer.android.com/google/play/installreferrer/library
+
 #### Tracking links
 Tracking link setups for marketers.
 
