@@ -1,5 +1,9 @@
 from confluent_kafka.admin import AdminClient, NewTopic
 
+from config import get_logger
+
+logger = get_logger(__name__)
+
 # Configuration for the AdminClient
 admin_config = {"bootstrap.servers": "localhost:9092"}
 
@@ -24,6 +28,6 @@ new_topics = [
 # Create the topics
 if new_topics:
     admin_client.create_topics(new_topics=new_topics)
-    print(f"Created topics: {', '.join(topics_to_create)}")
+    logger.info(f"Created topics: {', '.join(topics_to_create)}")
 else:
-    print("All topics already exist.")
+    logger.info("All topics already exist.")

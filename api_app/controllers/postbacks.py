@@ -1,4 +1,5 @@
-"""API endpoints for postbacks from both in-app and ad networks.
+"""
+API endpoints for postbacks from both in-app and ad networks.
 
 Endpoints for Ad Networks
 =========
@@ -89,7 +90,8 @@ class PostbackController(Controller):
             Parameter(str, query=LINK_IFA, required=False),
         ] = None,
     ) -> None:
-        """Record impression postbacks for app from an ad network.
+        """
+        Record impression postbacks for app from an ad network.
 
         Process various query parameters related to the impression, such as the source network, campaign details, event time, and other identifiers. The data is then serialized and sent to a Kafka topic named "impressions".
 
@@ -178,7 +180,8 @@ class PostbackController(Controller):
             Parameter(str, query=LINK_IFA, required=False),
         ] = None,
     ) -> None:
-        """Record click postbacks for app from an ad network.
+        """
+        Record click postbacks for app from an ad network.
 
         Process various query parameters related to the impression, such as the source network, campaign details, event time, and other identifiers. The data is then serialized and sent to a Kafka topic named "impressions".
 
@@ -261,7 +264,8 @@ class PostbackController(Controller):
             Parameter(str, query=APP_EVENT_REV, required=False),
         ] = None,
     ) -> None:
-        """Record event postbacks from in app.
+        """
+        Record event postbacks from in app.
 
         Process various query parameters related to the in app events, such as the event_id, event_time and user's ifa
 

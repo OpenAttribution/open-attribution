@@ -20,21 +20,23 @@ requires = ["setuptools", "wheel"]
 
 [tool.ruff]
 #select = ["E", "W", "F", "B", "I", "N", "UP"]
-select = ["ALL"]
+lint.select = ["ALL"]
 
 target-version = 'py311'
 
-ignore = [
+lint.ignore = [
     "E501",   # line length
     "W291",   # trailing space at end of line
     "G",      # Ignore pyflake logging as it does not like f-strings in log messages.
     "RET504", #Unnecessary assignment to variable before return, but I prefer for readability.
+    "D203",
+    "D212",
 ]
 
 # Avoid trying to fix flake8-bugbear (`B`) violations.
-unfixable = ["B"]
+lint.unfixable = ["B"]
 
-fixable = ["ALL"]
+lint.fixable = ["ALL"]
 
 exclude = ["tests/*"]
 

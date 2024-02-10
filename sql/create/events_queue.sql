@@ -10,4 +10,3 @@ CREATE TABLE events_queue
 ) 
 ENGINE = Kafka('localhost:9092', 'events', 'clickhouse',
             'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1;
-
