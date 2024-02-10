@@ -99,5 +99,4 @@ GROUP BY
     campaign_name,
     campaign_id,
     ad_name,
-    ad_id; 
-
+    ad_id;

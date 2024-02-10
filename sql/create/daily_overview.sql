@@ -10,8 +10,8 @@ CREATE TABLE daily_overview
     impressions SimpleAggregateFunction(Sum, UInt64),
     clicks SimpleAggregateFunction(Sum, UInt64),
     installs SimpleAggregateFunction(Sum, UInt64),
-    revenue Nullable (SimpleAggregateFunction (sum, Decimal (38, 4))) DEFAULT 0
-) ENGINE
-= AggregatingMergeTreeORDER BY (
+    revenue Nullable (SimpleAggregateFunction (Sum, Decimal (38, 4))) DEFAULT 0
+) ENGINE = AggregatingMergeTree()
+ORDER BY (
     on_date, store_id, network, campaign_name, campaign_id, ad_name, ad_id
-)
+);

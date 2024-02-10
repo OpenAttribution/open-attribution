@@ -45,10 +45,10 @@ repos:
         require_serial: true
         files: ^(apps/www/.*\.(js|jsx|ts|tsx|css|svelte|yml)|.*\.yml)$
         additional_dependencies:
-          - prettier@2.8.8
-          - prettier-plugin-svelte@2.10.1
+          - prettier
+          - prettier-plugin-svelte
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.0.0-alpha.2
+    rev: v9.0.0-beta.0
     hooks:
       - id: eslint
         name: eslint
