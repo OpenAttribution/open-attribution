@@ -59,7 +59,7 @@ for table in "${my_tables[@]}"; do
 		# Execute setting and SQL file in the same session
 		(
 			echo "SET allow_experimental_refreshable_materialized_view = 1;"
-			cat "$modified_sql"
+			echo "$modified_sql"
 		) | clickhouse-client -n
 	else
 		echo "No SQL files found in $INIT_SQL_DIR"
