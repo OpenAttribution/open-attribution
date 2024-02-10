@@ -56,6 +56,8 @@ services:
     volumes:
       - ${PWD}/sql/create/:/my-tables/
       - ${PWD}/sql/startup-scripts/:/docker-entrypoint-initdb.d/
+      - "clickhouse-volume:/var/lib/clickhouse"
+      - "clickhouse-log-volume:/var/log/clickhouse-server"
     networks:
       - open-attribution-network
   api:
@@ -83,9 +85,12 @@ services:
     networks:
       - open-attribution-network
 volumes:
+  # Persist across restarts
   kafka-volume:
   zookeeper-volume:
-# clickhouse-volume:
+  clickhouse-log-volume:
+  # Persist across docker down ?
+  clickhouse-volume:
 networks:
   open-attribution-network:
     name: OpenAttributionNetwork
