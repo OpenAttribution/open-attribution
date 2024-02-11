@@ -8,10 +8,11 @@ Endpoints for Ad Networks
 
 Endpoints for In App Events
 =========
-/collect/events
+/collect/events/
 
 """
 
+import datetime
 import json
 from typing import Annotated, Self
 
@@ -35,6 +36,7 @@ from config.dimensions import (
     DB_IFA,
     DB_LINK_UID,
     DB_NETWORK,
+    DB_RECEIVED_AT,
     DB_STORE_ID,
     LINK_AD,
     LINK_AD_ID,
@@ -60,6 +62,14 @@ event_config = {
 }
 reg_producer = Producer(reg_config)
 event_producer = Producer(event_config)
+
+
+def now() -> str:
+    """Return datetime in epoch milliseconds as integer."""
+    timestamp_with_ms_int = str(
+        int(datetime.datetime.now(datetime.UTC).timestamp() * 1000),
+    )
+    return timestamp_with_ms_int
 
 
 class PostbackController(Controller):
@@ -147,6 +157,7 @@ class PostbackController(Controller):
             DB_IFA: ifa,
             DB_CLIENT_IP: client_host,
             DB_LINK_UID: link_uid,
+            DB_RECEIVED_AT: now(),
         }
 
         try:
@@ -237,6 +248,7 @@ class PostbackController(Controller):
             DB_IFA: ifa,
             DB_CLIENT_IP: client_host,
             DB_LINK_UID: link_uid,
+            DB_RECEIVED_AT: now(),
         }
 
         try:
@@ -316,6 +328,7 @@ class PostbackController(Controller):
             APP_EVENT_REV: revenue,
             DB_CLIENT_IP: client_host,
             DB_EVENT_UID: event_uid,
+            DB_RECEIVED_AT: now(),
         }
 
         try:
