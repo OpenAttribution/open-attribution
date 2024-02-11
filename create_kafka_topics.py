@@ -1,3 +1,10 @@
+"""
+Create kakfa topics.
+
+Was created for shell scripts to use, may be superseced by docker.
+
+"""
+
 from confluent_kafka.admin import AdminClient, NewTopic
 
 from config import get_logger
