@@ -7,5 +7,6 @@ CREATE TABLE events
     `ifa` UUID,
     `client_ip` String,
     `event_uid` UUID,
+    `received_at` DateTime64(3, 'UTC'),
 )
 ENGINE = MergeTree() ORDER BY (`store_id`, `event_id`, `event_time`);

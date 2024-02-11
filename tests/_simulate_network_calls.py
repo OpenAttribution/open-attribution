@@ -76,7 +76,7 @@ def impression_or_click(
 
 def make_inapp_request(myapp: str, event_id: str, myifa: str) -> None:
     tmstmp: str = str(
-        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000),
+        round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
     )
     id = str(uuid.uuid4())
     params = {

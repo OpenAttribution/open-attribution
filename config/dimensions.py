@@ -31,6 +31,7 @@ DB_IFA = "ifa"
 DB_CLIENT_IP = "client_ip"
 DB_LINK_UID = "link_uid"
 DB_EVENT_UID = "event_uid"
+DB_RECEIVED_AT = "received_at"
 
 
 AD_SHARED_DIMENSIONS = [

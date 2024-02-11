@@ -10,4 +10,5 @@ CREATE TABLE clicks
     ifa UUID,
     client_ip String DEFAULT '',
     link_uid UUID,
+    received_at DateTime64(3, 'UTC'),
 ) ENGINE = MergeTree() ORDER BY (store_id, network, event_time);

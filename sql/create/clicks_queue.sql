@@ -10,6 +10,7 @@ CREATE TABLE clicks_queue
     ifa UUID,
     client_ip String,
     link_uid UUID,
-) 
+    received_at DateTime64(3, 'UTC'),
+)
 ENGINE = Kafka('localhost:9092', 'clicks', 'clickhouse',
             'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1;
