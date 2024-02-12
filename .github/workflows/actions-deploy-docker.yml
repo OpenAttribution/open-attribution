@@ -21,6 +21,13 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     environment: production
+    strategy:
+      matrix:
+        include:
+          - image: openattribution/python-api
+            dockerfile: docker/Dockerfile.python
+          - image: openattribution/dash
+            dockerfile: docker/Dockerfile.dash
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -35,13 +42,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: openattribution/python-api
+          images: ${{ matrix.image }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          file: ./docker/Dockerfile.python
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
