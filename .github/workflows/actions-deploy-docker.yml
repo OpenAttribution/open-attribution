@@ -9,8 +9,9 @@ on:
   # release:
   # types: [published]
   push:
-    branches:
-      ['main']
+    branches: ['main']
+    paths:
+      - 'docker/**'
       # Publish semver tags as releases.
     tags: ['v*.*.*']
   pull_request:
