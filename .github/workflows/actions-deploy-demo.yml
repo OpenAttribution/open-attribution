@@ -1,0 +1,36 @@
+name: Push Production Demo to Digital Ocean
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api_app/**'
+      - 'apps/**'
+      - 'docker/**'
+jobs:
+  deploy:
+    name: Deploy on main branch push
+    runs-on: ubuntu-latest
+    environment: production-demo
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v3
+      - name: Deploy to my Droplet
+        uses: appleboy/ssh-action@master
+        env:
+          TARGETDIR: open-attribution
+        with:
+          host: ${{ vars.HOST_DNS }}
+          username: ${{ vars.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          envs: TARGETDIR
+          script_stop: true
+          script: |
+            cd $TARGETDIR
+            pwd
+            git pull origin main
+            docker compose -f docker/docker-compose.yml down --volumes
+            docker compose pull
+            docker compose -f docker/docker-compose.yml up -d
