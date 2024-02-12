@@ -177,11 +177,10 @@ services:
 #     external: true
 
 volumes:
-  # Persist across restarts
+  # Persist across stop/start, not down
   kafka-volume:
   zookeeper-volume:
   clickhouse-log-volume:
-  # Persist across docker down ?
   clickhouse-volume:
   #### SUPERSET ####
   superset_home:
