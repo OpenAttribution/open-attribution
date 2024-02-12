@@ -68,9 +68,10 @@ services:
       - 'clickhouse-log-volume:/var/log/clickhouse-server'
   api:
     container_name: api
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.python
+    image: openattribution/python-api:main
+    # build:
+    # context: ../
+    # dockerfile: docker/Dockerfile.python
     ports:
       - '8000:8000'
     depends_on:
