@@ -11,7 +11,7 @@ WORKDIR /apps/dash/
 COPY apps/dash/package.json /apps/dash/
 COPY apps/dash/package-lock.json /apps/dash/
 
-RUN npm -g install
+RUN npm install
 
 
 COPY apps/dash /apps/dash
