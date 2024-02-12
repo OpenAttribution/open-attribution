@@ -68,9 +68,10 @@ services:
       - 'clickhouse-log-volume:/var/log/clickhouse-server'
   api:
     container_name: api
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.python
+    image: openattribution/python-api:main
+    # build:
+    # context: ../
+    # dockerfile: docker/Dockerfile.python
     ports:
       - '8000:8000'
     depends_on:
@@ -177,11 +178,10 @@ services:
 #     external: true
 
 volumes:
-  # Persist across restarts
+  # Persist across stop/start, not down
   kafka-volume:
   zookeeper-volume:
   clickhouse-log-volume:
-  # Persist across docker down ?
   clickhouse-volume:
   #### SUPERSET ####
   superset_home:
