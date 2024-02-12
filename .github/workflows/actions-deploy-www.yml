@@ -1,11 +1,12 @@
 name: Push WWW to Digital Ocean
 
-# Trigger deployment only on push to main branch
 on:
   push:
     branches:
       - main
-
+    paths:
+      - 'apps/www/**'
+      - 'apps/shared/**'
 jobs:
   deploy:
     name: Deploy on main branch push
