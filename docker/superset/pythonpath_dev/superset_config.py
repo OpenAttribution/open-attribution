@@ -19,9 +19,12 @@
 # deploying the image to prod. Settings configured here are intended for use in local
 # development environments. Also note that superset_config_docker.py is imported
 # as a final step as a means to override "defaults" configured here
-#
+
+"""Config options for superset."""
+
 import logging
 import os
+from typing import ClassVar
 
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
@@ -73,12 +76,14 @@ DATA_CACHE_CONFIG = CACHE_CONFIG
 
 
 class CeleryConfig:
+    """Config."""
+
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
     imports = ("superset.sql_lab",)
     result_backend = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}"
     worker_prefetch_multiplier = 1
     task_acks_late = False
-    beat_schedule = {
+    beat_schedule: ClassVar[dict] = {
         "reports.scheduler": {
             "task": "reports.scheduler",
             "schedule": crontab(minute="*", hour="*"),
@@ -106,7 +111,7 @@ SQLLAB_CTAS_NO_LIMIT = True
 #
 try:
     import superset_config_docker
-    from superset_config_docker import *  # noqa
+    from superset_config_docker import *  # noqa: F403
 
     logger.info(
         f"Loaded your Docker configuration at [{superset_config_docker.__file__}]",
