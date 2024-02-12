@@ -1,4 +1,4 @@
-name: Push-to-Digital-Ocean
+name: Push WWW to Digital Ocean
 
 # Trigger deployment only on push to main branch
 on:
