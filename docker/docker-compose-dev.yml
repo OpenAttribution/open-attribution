@@ -69,9 +69,9 @@ services:
   api:
     container_name: api
     image: openattribution/python-api:main
-    # build:
-    # context: ../
-    # dockerfile: docker/Dockerfile.python
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.python
     ports:
       - '8000:8000'
     depends_on:
@@ -79,7 +79,9 @@ services:
         condition: service_healthy
   jsdash:
     container_name: dash
-    image: openattribution/dash:main
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.dash
     ports:
       - '3000:3000'
 
