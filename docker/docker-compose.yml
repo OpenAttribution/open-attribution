@@ -81,12 +81,9 @@ services:
     container_name: dash
     build:
       context: ../
-      dockerfile: docker/Dockerfile.dash
+      dockerfile: openattribution/dash
     ports:
       - '3000:3000'
-    volumes:
-      - /apps/dash/node_modules
-      - /apps/dash/build
 
   #################
   ## SUPERSET
