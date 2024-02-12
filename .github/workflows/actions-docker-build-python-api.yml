@@ -2,7 +2,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish Docker image
+name: Publish Python API Docker image
 
 on:
   # TODO: Should use releases instead of push?
