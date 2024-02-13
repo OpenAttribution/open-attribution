@@ -7,7 +7,7 @@
 
 	import { onMount } from 'svelte';
 
-	import { SUPERSET_HOST_NAME } from '$env/static/private';
+	import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
 
 	export let data;
 
@@ -20,7 +20,7 @@
 		if (myDiv) {
 			embedDashboard({
 				id: 'd7012462-5f39-48f1-96b4-fee1d7b2b3ac', // given by the Superset embedding UI
-				supersetDomain: `http://${SUPERSET_HOST_NAME}:8088`,
+				supersetDomain: `http://${PUBLIC_SUPERSET_HOST_NAME}:8088`,
 				mountPoint: myDiv,
 				fetchGuestToken: () => myToken,
 				dashboardUiConfig: {

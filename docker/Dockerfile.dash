@@ -19,6 +19,9 @@ COPY apps/dash /apps/dash
 COPY apps/shared /apps/shared
 
 WORKDIR /apps/dash/
+
+CMD ["echo", "SUPERSET_HOST_NAME=superset'", ">", ".env"]
+
 RUN npm run build
 
 FROM node:20.10
@@ -29,5 +32,6 @@ COPY --from=builder /apps/dash/ /apps/dash/
 COPY --from=builder /apps/shared/ /apps/shared/
 
 EXPOSE 3000
+
 # CMD ["npm","run", "preview","--", "--host", "0.0.0.0"]
 CMD ["node","build"]
