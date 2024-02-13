@@ -1,13 +1,15 @@
 export const ssr = true; 
 export const csr = true;
 
+import { SUPERSET_HOST_NAME } from '$env/static/private';
+
 export async function load() {
     // Define the URL where you want to send the POST request
-    const loginurl = 'http://localhost:8088/api/v1/security/login';
+    const loginurl = `http://${SUPERSET_HOST_NAME}:8088/api/v1/security/login`;
 
     // Define the payload
     const loginpayload = {
-        "password":"loginpass",
+        "password":"admin",
         "provider":"db",
         // "refresh":true,
         "username":"admin"
@@ -30,7 +32,7 @@ export async function load() {
     const loginData = await loginResponse.json();
     const myAccessToken = loginData.access_token; // Assuming the token is in the 'access_token' field
 
-    const url = 'http://localhost:8088/api/v1/security/guest_token';
+    const url = `http://${SUPERSET_HOST_NAME}:8088/api/v1/security/guest_token`;
 
     // Define the payload
     const payload = {
