@@ -9,6 +9,7 @@ on:
       - 'apps/shared/**'
 jobs:
   deploy:
+    if: github.repository_owner == 'OpenAttribution'
     name: Deploy on main branch push
     runs-on: ubuntu-latest
     environment: production
