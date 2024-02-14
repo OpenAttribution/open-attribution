@@ -9,8 +9,8 @@ export async function load() {
 
     // Define the payload
     const loginpayload = {
-        // "password":"admin",
-        "password":"loginpass",
+        "password":"admin",
+        // "password":"loginpass",
         "provider":"db",
         // "refresh":true,
         "username":"admin"

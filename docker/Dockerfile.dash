@@ -20,7 +20,7 @@ COPY apps/shared /apps/shared
 
 WORKDIR /apps/dash/
 
-CMD ["echo", "'SUPERSET_HOST_NAME=\"superset\"'", ">", ".env"]
+RUN echo 'PUBLIC_SUPERSET_HOST_NAME="superset"' > .env
 
 RUN npm run build
 
