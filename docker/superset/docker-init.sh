@@ -22,7 +22,7 @@ set -e
 #
 /app/docker/docker-bootstrap.sh
 
-STEP_CNT=4
+STEP_CNT=5
 
 echo_step() {
 	cat <<EOF
@@ -76,3 +76,9 @@ if [ "$SUPERSET_LOAD_EXAMPLES" = "yes" ]; then
 	fi
 	echo_step "4" "Complete" "Loading examples"
 fi
+
+echo_step "5" "Starting" "Loading open attribution datasources"
+superset import_datasources -p /app/datasources
+echo_step "5" "Starting" "Loading open attribution dashboards"
+superset import_dashboards -p /app/dashboards
+echo_step "5" "Complete" "Loading open attribution dashboards"

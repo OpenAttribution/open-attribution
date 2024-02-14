@@ -170,9 +170,9 @@ After=network.target
 
 [Service]
 RuntimeDirectory=gunicorn-superset
-Environment="SUPERSET_CONFIG_PATH=/home/james/open-attribution/apps/superset/superset_config.py"
+Environment="SUPERSET_CONFIG_PATH=/home/james/open-attribution/apps/superset/cli_superset_config.py"
 WorkingDirectory=${app_dir}/apps/superset
-Environment="SUPERSET_CONFIG_PATH=/home/james/open-attribution/apps/superset/superset_config.py"
+Environment="SUPERSET_CONFIG_PATH=/home/james/open-attribution/apps/superset/cli_superset_config.py"
 ExecStart=${PYTHON_ENV_DIR}/bin/gunicorn -w 10 \
                                        -k gevent \
                                        --timeout 120 \
