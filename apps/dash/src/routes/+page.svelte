@@ -1,13 +1,13 @@
 <script lang="ts">
-	// import { embedDashboard } from '@superset-ui/embedded-sdk';
+	import { embedDashboard } from '@superset-ui/embedded-sdk';
 
-	import * as pkg from '@superset-ui/embedded-sdk';
-	console.log('mypkg', pkg);
-	const { embedDashboard } = pkg;
+	// import * as pkg from '@superset-ui/embedded-sdk';
+	// console.log('mypkg', pkg);
+	// const { embedDashboard } = pkg;
 
 	import { onMount } from 'svelte';
 
-	import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
+	// import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
 
 	export let data;
 
@@ -19,8 +19,9 @@
 		const myDiv = document.getElementById('my-superset-container'); // any html element that can contain an iframe
 		if (myDiv) {
 			embedDashboard({
-				id: 'd7012462-5f39-48f1-96b4-fee1d7b2b3ac', // given by the Superset embedding UI
-				supersetDomain: `http://${PUBLIC_SUPERSET_HOST_NAME}:8088`,
+				id: '47d4d3a7-c2b0-46c5-80ad-dc7ee0e68ef9', // given by the Superset embedding UI
+				// supersetDomain: `http://${PUBLIC_SUPERSET_HOST_NAME}:8088`,
+				supersetDomain: `http://localhost:8088`,
 				mountPoint: myDiv,
 				fetchGuestToken: () => myToken,
 				dashboardUiConfig: {
