@@ -2,7 +2,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish Dash Docker image
+name: Publish Docker image dash
 
 on:
   # TODO: Should use releases instead of push?
