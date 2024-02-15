@@ -10,12 +10,11 @@
 </script>
 
 <aside class="alert variant-filled-secondary p-4 mx-8 lg:mx-96 mt-8">
-	{@html myWarningTriangle}
 	<div class="alert-message">
-		<h3 class="h3">Early Alpha: Under Construction</h3>
+		<h3 class="h3">🏗️Early Alpha: Under Construction🏗️</h3>
 		<p>
-			This open source project is underconstruction in the very early alpha stages. If you're
-			interested please contact or reach out on GitHub or Discord.
+			This open source project is underconstruction in the very early alpha stages and is not yet
+			ready for production. If you're interested please contact or reach out on GitHub or Discord.
 		</p>
 	</div>
 </aside>
