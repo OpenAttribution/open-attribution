@@ -5,15 +5,18 @@ import { oaTheme } from '../shared/oa-theme';
 
 export default {
 	darkMode: 'class',
-	content: ['./src/**/*.{html,js,svelte,ts}', join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')],
+	content: [
+		'./src/**/*.{html,js,svelte,ts}',
+		join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
+	],
 	theme: {
-		extend: {},
+		extend: {}
 	},
 	plugins: [
 		skeleton({
 			themes: {
 				custom: [oaTheme]
-			},
-		}),
-	],
+			}
+		})
+	]
 } satisfies Config;
