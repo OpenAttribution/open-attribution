@@ -167,10 +167,6 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
-# networks:
-#   my-proxy-net:
-#     name: OpenAttributionNetwork
-#     external: true
 
 volumes:
   # Persist across stop/start, not down

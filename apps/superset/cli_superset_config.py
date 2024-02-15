@@ -43,7 +43,7 @@ CORS_OPTIONS = {
     "supports_credentials": True,
     "allow_headers": ["*"],
     "resources": ["*"],
-    "origins": ["http://localhost:3000", "*"],
+    "origins": ["http://localhost:5173", "*"],
 }
 
 
