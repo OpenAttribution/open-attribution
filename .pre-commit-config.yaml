@@ -11,7 +11,7 @@ repos:
     rev: v1.8.0
     hooks:
       - id: mypy
-        additional_dependencies: ["types-requests"]
+        additional_dependencies: ['types-requests']
   ### DOCKER
   - repo: https://github.com/hadolint/hadolint
     rev: v2.12.1-beta
@@ -26,7 +26,7 @@ repos:
     rev: v0.9.0.6
     hooks:
       - id: shellcheck
-        args: ["-x"]
+        args: ['-x']
   ### JS / YML
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v4.0.0-alpha.8
@@ -34,11 +34,11 @@ repos:
       - id: prettier
         args:
           [
-            "--config",
-            "apps/www/.prettierrc",
-            "--ignore-unknown",
-            "--write",
-            "--check",
+            '--config',
+            'apps/www/.prettierrc',
+            '--ignore-unknown',
+            '--write',
+            '--check',
           ]
         language: node
         entry: apps/www/node_modules/.bin/prettier
@@ -62,8 +62,8 @@ repos:
           - svelte
           - typescript
           - eslint-plugin-svelte
-          - "@typescript-eslint/eslint-plugin"
-          - "@typescript-eslint/parser"
+          - '@typescript-eslint/eslint-plugin'
+          - '@typescript-eslint/parser'
           - svelte-eslint-parser
   - repo: local
     hooks:
