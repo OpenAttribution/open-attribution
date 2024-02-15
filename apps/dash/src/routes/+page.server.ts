@@ -45,7 +45,8 @@ export async function load() {
 		resources: [
 			{
 				type: 'dashboard',
-				id: 'd7012462-5f39-48f1-96b4-fee1d7b2b3ac'
+				// id: 'd7012462-5f39-48f1-96b4-fee1d7b2b3ac'
+				id: '47d4d3a7-c2b0-46c5-80ad-dc7ee0e68ef9'
 			}
 		],
 		rls: []
@@ -65,9 +66,10 @@ export async function load() {
 
 	// Check if the request was successful
 	if (!response.ok) {
-		// Handle errors here
-		const error = new Error('An error occurred while fetching the data');
-		// You can add more error handling logic here
+		const text = await response.text();
+		const error = new Error(`An error occurred while fetching the data: ${text}`);
+		console.error(error);
+		// You can add more error handling logic here, like throwing the error
 		throw error;
 	}
 

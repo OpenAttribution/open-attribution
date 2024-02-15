@@ -1,3 +1,4 @@
+"""Docker superset config."""
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -23,5 +24,35 @@
 # superset/config.py
 #
 
+# Flask-WTF flag for CSRF
+WTF_CSRF_ENABLED: bool = False
+# Add endpoints that need to be exempt from CSRF protection
+WTF_CSRF_EXEMPT_LIST: list = []
+# A CSRF token that expires in 1 year
+WTF_CSRF_TIME_LIMIT: int = 60 * 60 * 24 * 365
+
 
 FEATURE_FLAGS = {"EMBEDDED_SUPERSET": True}
+
+# Not sure, but seems this is required?
+GUEST_ROLE_NAME = "Admin"
+
+GUEST_TOKEN_JWT_EXP_SECONDS = 300  # 5 minutes, or you could set it longer
+
+
+CORS_OPTIONS = {
+    "supports_credentials": True,
+    "allow_headers": ["*"],
+    "resources": ["*"],
+    "origins": ["*"],
+}
+
+
+ENABLE_PROXY_FIX = True
+
+
+ENABLE_CORS = True
+
+PUBLIC_ROLE_LIKE_GAMMA = True
+
+TALISMAN_ENABLED = False
