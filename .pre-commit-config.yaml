@@ -32,18 +32,11 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-        args:
-          [
-            '--config',
-            'apps/www/.prettierrc',
-            '--ignore-unknown',
-            '--write',
-            '--check',
-          ]
+        args: ['--config', '.prettierrc', '--ignore-unknown', '--write', '--check']
         language: node
         entry: apps/www/node_modules/.bin/prettier
         require_serial: true
-        files: ^(apps/www/.*\.(js|jsx|ts|tsx|css|svelte|yml)|.*\.yml)$
+        files: ^(apps/.*\.(js|jsx|ts|tsx|css|svelte|yml))$
         additional_dependencies:
           - prettier
           - prettier-plugin-svelte
