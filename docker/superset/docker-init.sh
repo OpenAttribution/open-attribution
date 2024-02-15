@@ -22,7 +22,7 @@ set -e
 #
 /app/docker/docker-bootstrap.sh
 
-STEP_CNT=5
+STEP_CNT=4
 
 echo_step() {
 	cat <<EOF
@@ -64,21 +64,8 @@ echo_step "3" "Starting" "Setting up roles and perms"
 superset init
 echo_step "3" "Complete" "Setting up roles and perms"
 
-if [ "$SUPERSET_LOAD_EXAMPLES" = "yes" ]; then
-	# Load some data to play with
-	echo_step "4" "Starting" "Loading examples"
-	# If Cypress run which consumes superset_test_config – load required data for tests
-	if [ "$CYPRESS_CONFIG" == "true" ]; then
-		superset load_test_users
-		superset load_examples --load-test-data
-	else
-		superset load_examples --force
-	fi
-	echo_step "4" "Complete" "Loading examples"
-fi
-
-echo_step "5" "Starting" "Loading open attribution datasources"
-superset import_datasources -p /app/datasources
-echo_step "5" "Starting" "Loading open attribution dashboards"
-superset import_dashboards -p /app/dashboards
-echo_step "5" "Complete" "Loading open attribution dashboards"
+echo_step "4" "Starting" "Loading open attribution datasources"
+superset import_datasources -p /app/mydatasources.zip
+echo_step "4" "Starting" "Loading open attribution dashboards"
+superset import_dashboards -p /app/mydashboards.zip
+echo_step "4" "Complete" "Loading open attribution dashboards"
