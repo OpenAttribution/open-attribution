@@ -67,5 +67,5 @@ echo_step "3" "Complete" "Setting up roles and perms"
 echo_step "4" "Starting" "Loading open attribution datasources"
 superset import_datasources -p /app/mydatasources.zip
 echo_step "4" "Starting" "Loading open attribution dashboards"
-superset import_dashboards -p /app/mydashboards.zip
+superset import_dashboards -p /app/mydashboards.zip --username 'admin'
 echo_step "4" "Complete" "Loading open attribution dashboards"
