@@ -65,7 +65,7 @@ def import_directory(directory: str, overwrite: bool, force: bool) -> None:
     "-f",
     help="Specify the file to export to",
 )
-def export_dashboards(dashboard_file: str | None = None) -> None:
+def export_dashboards(dashboard_file: str = None) -> None:
     """Export dashboards to ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dashboard.export import ExportDashboardsCommand
@@ -98,7 +98,7 @@ def export_dashboards(dashboard_file: str | None = None) -> None:
     "-f",
     help="Specify the file to export to",
 )
-def export_datasources(datasource_file: str | None = None) -> None:
+def export_datasources(datasource_file: str= None) -> None:
     """Export datasources to ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dataset.export import ExportDatasetsCommand
@@ -138,7 +138,7 @@ def export_datasources(datasource_file: str | None = None) -> None:
     required=True,
     help="Specify the user name to assign dashboards to",
 )
-def import_dashboards(path: str, username: str | None) -> None:
+def import_dashboards(path: str, username: str) -> None:
     """Import dashboards from ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dashboard.importers.dispatcher import ImportDashboardsCommand
@@ -209,7 +209,7 @@ def import_datasources(path: str) -> None:
     help="Print JSON to stdout",
 )
 def legacy_export_dashboards(
-    dashboard_file: str | None, print_stdout: bool = False,
+    dashboard_file: str, print_stdout: bool = False,
 ) -> None:
     """Export dashboards to JSON"""
     # pylint: disable=import-outside-toplevel
@@ -254,7 +254,7 @@ def legacy_export_dashboards(
     help="Include fields containing defaults",
 )
 def legacy_export_datasources(
-    datasource_file: str | None,
+    datasource_file: str,
     print_stdout: bool = False,
     back_references: bool = False,
     include_defaults: bool = False,
