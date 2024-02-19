@@ -4,36 +4,29 @@
 
 # Define variables
 CONTAINER_NAME="superset_app"
-DATASOURCES_EXPORT_PATH="mydatasources.zip"
-DASHBOARDS_EXPORT_PATH="mydashboards.zip"
+DATASOURCES_FILE="mydatasources.zip"
+DASHBOARDS_FILE="mydashboards.zip"
 LOCAL_EXPORT_DIR_PATH="./apps/superset/exported/"
 
-# Function to export from Docker and copy
-function export_and_copy {
-	local export_path="$1"
-	local local_path="$2"
-	# local export_name="$(basename "$export_path")"
+export_and_copy() {
+	local file=$1
+	local export_cmd=$2
+	echo "Starting export of $file..."
 
-	echo "Starting export of $export_path..."
-
-	if docker exec "$CONTAINER_NAME" sh -c "superset export_datasources -f '$export_path'"; then
-		echo "Export successful. Copying $export_path..."
-
-		# Copy the zip file to the target directory
-		if docker cp "$CONTAINER_NAME:$export_path" "$local_path/$export_path"; then
+	if docker exec -it "$CONTAINER_NAME" sh -c "$export_cmd -f '$file'"; then
+		echo "Export successful. Copying $file..."
+		if docker cp "$CONTAINER_NAME:/app/$file" "$LOCAL_EXPORT_DIR_PATH/$file"; then
 			echo "Copy successful."
 		else
-			echo "Failed to copy $export_path from Docker container."
-			return 1
+			echo "Failed to copy $file from Docker container."
+			exit 1
 		fi
 	else
-		echo "Failed to export $export_path."
-		return 1
+		echo "Failed to export $file."
+		exit 1
 	fi
 }
 
-# Export and Copy Datasources
-export_and_copy "$DATASOURCES_EXPORT_PATH" "$LOCAL_EXPORT_DIR_PATH"
-
-# Export and Copy Dashboards
-export_and_copy "$DASHBOARDS_EXPORT_PATH" "$LOCAL_EXPORT_DIR_PATH"
+# Main execution
+# export_and_copy "$DATASOURCES_FILE" "superset export_datasources"
+export_and_copy "$DASHBOARDS_FILE" "superset export_dashboards"
