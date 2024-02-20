@@ -73,7 +73,19 @@ def now() -> str:
 
 
 class PostbackController(Controller):
-    """Record all postback endpoints."""
+    """
+    Record all postback endpoints.
+
+    Endpoints for Ad Networks
+    =========
+    /collect/impressions/
+    /collect/clicks/
+
+    Endpoints for In App Events
+    =========
+    /collect/events/
+
+    """
 
     path = "collect"
 
