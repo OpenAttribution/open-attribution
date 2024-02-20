@@ -8,6 +8,11 @@ on:
       - 'api_app/**'
       - 'apps/**'
       - 'docker/**'
+  workflow_run:
+    workflows: [Publish Docker image dash, Publish Docker image python API]
+    # NOTE: Does this trigger when ALL workflows completed or just when first?
+    types: [completed]
+
 jobs:
   deploy:
     if: github.repository_owner == 'OpenAttribution'

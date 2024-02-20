@@ -14,6 +14,10 @@ x-superset-volumes:
   &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   - ./superset:/app/docker
   - superset_home:/app/superset_home
+  - ${PWD}/apps/superset/importexport.py:/app/superset/cli/importexport.py
+  - ${PWD}/apps/superset/get_superset_dashboard_id.py:/app/get_superset_dashboard_id.py
+  - ${PWD}/apps/superset/exported/mydatasources.zip:/app/mydatasources.zip
+  - ${PWD}/apps/superset/exported/mydashboards.zip:/app/mydashboards.zip
 #### END SUPERSET #####
 
 name: openattribution
@@ -69,9 +73,6 @@ services:
   api:
     container_name: api
     image: openattribution/python-api:main
-    # build:
-    # context: ../
-    # dockerfile: docker/Dockerfile.python
     ports:
       - '8000:8000'
     depends_on:
@@ -83,7 +84,7 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      superset:
+      - 'superset'
 
   #################
   ## SUPERSET

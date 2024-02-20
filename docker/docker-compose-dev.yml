@@ -82,13 +82,15 @@ services:
     depends_on:
       clickhouse:
         condition: service_healthy
-  jsdash:
+  dash:
     container_name: dash
     build:
       context: ../
       dockerfile: docker/Dockerfile.dash
     ports:
       - '3000:3000'
+    depends_on:
+      - 'superset'
 
   #################
   ## SUPERSET
