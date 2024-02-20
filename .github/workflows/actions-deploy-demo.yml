@@ -5,13 +5,14 @@ on:
     branches:
       - main
     paths:
-      - 'api_app/**'
-      - 'apps/**'
-      - 'docker/**'
+      - 'apps/superset/exported/**'
+      - 'docker/docker-compose.yml'
   workflow_run:
     workflows: [Publish Docker image dash, Publish Docker image python API]
-    # NOTE: Does this trigger when ALL workflows completed or just when first?
+    # NOTE: Does this trigger when ALL workflows completed or just when EITHER?
     types: [completed]
+    branches:
+      - main
 
 jobs:
   deploy:
