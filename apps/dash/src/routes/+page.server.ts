@@ -1,12 +1,13 @@
 export const ssr = true;
-export const csr = false;
+// NOTE currently this CSR must be true for superset to run
+export const csr = true;
 
-import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
+import { PUBLIC_SUPERSET_INSIDE_DOCKER_HOST } from '$env/static/public';
 
 export async function load({ parent }) {
 	const { dashboardID } = await parent();
 
-	const loginurl = `http://${PUBLIC_SUPERSET_HOST_NAME}:8088/api/v1/security/login`;
+	const loginurl = `http://${PUBLIC_SUPERSET_INSIDE_DOCKER_HOST}:8088/api/v1/security/login`;
 
 	try {
 		// Define the payload
@@ -28,7 +29,7 @@ export async function load({ parent }) {
 
 		// Check if the login request was successful
 		if (!loginResponse.ok) {
-			throw new Error(`Login failed: ${PUBLIC_SUPERSET_HOST_NAME}:8088`);
+			throw new Error(`Login failed: ${PUBLIC_SUPERSET_INSIDE_DOCKER_HOST}:8088`);
 		}
 		// Extract the access token from the login response
 		const loginData = await loginResponse.json();
@@ -36,7 +37,7 @@ export async function load({ parent }) {
 
 		console.info(`GOT accessToken`);
 
-		const url = `http://${PUBLIC_SUPERSET_HOST_NAME}:8088/api/v1/security/guest_token`;
+		const url = `http://${PUBLIC_SUPERSET_INSIDE_DOCKER_HOST}:8088/api/v1/security/guest_token`;
 
 		// Define the payload
 		const payload = {

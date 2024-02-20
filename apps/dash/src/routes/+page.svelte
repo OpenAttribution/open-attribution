@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import { PUBLIC_SUPERSET_BROWSER_HOST } from '$env/static/public';
+
 	// NOTE: import { embedDashboard } should be the correct way, but throws Vite error?
 	import { embedDashboard } from '@superset-ui/embedded-sdk';
 	// import * as pkg from '@superset-ui/embedded-sdk';
@@ -19,7 +21,7 @@
 			if (myDiv) {
 				embedDashboard({
 					id: data.dashboardID,
-					supersetDomain: `https://demo.openattribution.dev/superset`,
+					supersetDomain: PUBLIC_SUPERSET_BROWSER_HOST,
 					mountPoint: myDiv,
 					fetchGuestToken: () => myToken,
 					dashboardUiConfig: {

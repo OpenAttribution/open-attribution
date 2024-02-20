@@ -1,12 +1,12 @@
 import type { PageServerLoad } from './$types';
-import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
+import { PUBLIC_SUPERSET_INSIDE_DOCKER_HOST } from '$env/static/public';
 
 export const ssr = true;
 export const csr = false;
 
 export const load: PageServerLoad = async () => {
-	const loginUrl = `http://${PUBLIC_SUPERSET_HOST_NAME}:8088/login/`;
-	const embedUrl = `http://${PUBLIC_SUPERSET_HOST_NAME}:8088/api/v1/dashboard/1/embedded`;
+	const loginUrl = `http://${PUBLIC_SUPERSET_INSIDE_DOCKER_HOST}:8088/login/`;
+	const embedUrl = `http://${PUBLIC_SUPERSET_INSIDE_DOCKER_HOST}:8088/api/v1/dashboard/1/embedded`;
 
 	try {
 		const formData = new FormData();
