@@ -2,6 +2,7 @@ export const ssr = true;
 // NOTE currently this CSR must be true for superset to run
 export const csr = true;
 
+// NOTE: This is only for docker, will need localhost if not in docker
 import { PUBLIC_SUPERSET_INSIDE_DOCKER_HOST } from '$env/static/public';
 
 export async function load({ parent }) {
