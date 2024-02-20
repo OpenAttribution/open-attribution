@@ -38,6 +38,6 @@ jobs:
             cd $TARGETDIR
             pwd
             git pull origin main
-            docker compose -f docker/docker-compose.yml down --volumes
+            docker compose -f docker/docker-compose.yml down
             docker compose -f docker/docker-compose.yml pull
             docker compose -f docker/docker-compose.yml up -d
