@@ -19,7 +19,7 @@
 			if (myDiv) {
 				embedDashboard({
 					id: data.dashboardID,
-					supersetDomain: `http://localhost:8088`,
+					supersetDomain: `https://demo.openattribution.dev/superset`,
 					mountPoint: myDiv,
 					fetchGuestToken: () => myToken,
 					dashboardUiConfig: {

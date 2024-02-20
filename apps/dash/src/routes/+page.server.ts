@@ -1,5 +1,5 @@
 export const ssr = true;
-export const csr = true;
+export const csr = false;
 
 import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
 
