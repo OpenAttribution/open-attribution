@@ -29,8 +29,8 @@ jobs:
 
       - name: Set OpenAttribution docker env
         run: |
-          echo 'PUBLIC_SUPERSET_INSIDE_DOCKER_HOST="superset"' > apps/dash/.env
-          echo 'PUBLIC_SUPERSET_BROWSER_HOST="https://openattribution.dev"' >> apps/dash/.env
+          echo 'PUBLIC_SUPERSET_INSIDE_DOCKER_HOST="superset"' > apps/dash/prodenv
+          echo 'PUBLIC_SUPERSET_BROWSER_HOST="https://openattribution.dev"' >> apps/dash/prodenv
           pwd
           cat apps/dash/.env
 
