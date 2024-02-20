@@ -47,6 +47,6 @@ export const load: PageServerLoad = async () => {
 		return { dashboardID: dashboardID };
 	} catch (error) {
 		console.error(error);
-		return { error: error };
+		return;
 	}
 };
