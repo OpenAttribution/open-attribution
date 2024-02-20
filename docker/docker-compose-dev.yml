@@ -84,6 +84,8 @@ services:
         condition: service_healthy
   dash:
     container_name: dash
+    volumes:
+      - ./apps/dash/src/:/apps/dash/src/
     build:
       context: ../
       dockerfile: docker/Dockerfile.dash

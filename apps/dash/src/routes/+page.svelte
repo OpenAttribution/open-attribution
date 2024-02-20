@@ -23,7 +23,7 @@
 				fetchGuestToken: () => myToken,
 				dashboardUiConfig: {
 					// dashboard UI config: hideTitle, hideTab, hideChartControls, filters.visible, filters.expanded (optional)
-					// hideTitle: true,
+					hideTitle: true,
 					filters: {
 						//  expanded: true,
 					}
@@ -33,8 +33,7 @@
 	});
 </script>
 
-<h1 class="h1">Open-Attribution</h1>
-<h2>{data.dashboardID}</h2>
+<h1 class="h1">Open-Attribution Demo</h1>
 
 <div class="h-screen">
 	<div id="my-superset-container" class="my-div-iframe h-screen w-full" />
@@ -44,6 +43,5 @@
 	:global(.my-div-iframe iframe) {
 		height: 100%;
 		width: 100%;
-		border: 4px solid black;
 	}
 </style>
