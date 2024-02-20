@@ -78,12 +78,12 @@ class PostbackController(Controller):
 
     Endpoints for Ad Networks
     =========
-    /collect/impressions/
-    /collect/clicks/
+    api/collect/impressions/
+    api/collect/clicks/
 
     Endpoints for In App Events
     =========
-    /collect/events/
+    api/collect/events/
 
     """
 
