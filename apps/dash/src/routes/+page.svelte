@@ -33,7 +33,7 @@
 	});
 </script>
 
-<h1 class="h1">Open-Attribution Demo !</h1>
+<h1 class="h1">Open-Attribution Demo</h1>
 
 <div class="h-screen">
 	<div id="my-superset-container" class="my-div-iframe h-screen w-full" />
