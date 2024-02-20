@@ -40,8 +40,9 @@
 </script>
 
 <h1 class="h1">Open-Attribution Demo</h1>
-<h1 class="h8">Please reach out if you have questions.</h1>
-
+<h1 class="h8">
+	<a href="https://openattribution.dev">Please reach out if you have questions.</a>
+</h1>
 <div class="h-screen">
 	<div id="my-superset-container" class="my-div-iframe h-screen w-full" />
 </div>
