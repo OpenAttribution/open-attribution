@@ -31,6 +31,8 @@ jobs:
         run: |
           echo 'PUBLIC_SUPERSET_INSIDE_DOCKER_HOST="superset"' > apps/dash/.env
           echo 'PUBLIC_SUPERSET_BROWSER_HOST="https://openattribution.dev"' >> apps/dash/.env
+          pwd
+          cat apps/dash/.env
 
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a

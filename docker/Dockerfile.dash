@@ -23,7 +23,7 @@ WORKDIR /apps/dash/
 # RUN echo 'PUBLIC_SUPERSET_INSIDE_DOCKER_HOST="superset"' > .env
 # RUN echo 'PUBLIC_SUPERSET_BROWSER_HOST="http://localhost:8088"' >> .env
 
-COPY apps/dash/.env /apps/dash/.env
+COPY apps/dash/.env .env
 
 RUN npm run build
 
