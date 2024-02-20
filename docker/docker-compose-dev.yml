@@ -15,6 +15,7 @@ x-superset-volumes:
   - ./superset:/app/docker
   - superset_home:/app/superset_home
   - ${PWD}/apps/superset/importexport.py:/app/superset/cli/importexport.py
+  - ${PWD}/apps/superset/get_superset_dashboard_id.py:/app/get_superset_dashboard_id.py
   - ${PWD}/apps/superset/exported/mydatasources.zip:/app/mydatasources.zip
   - ${PWD}/apps/superset/exported/mydashboards.zip:/app/mydashboards.zip
 

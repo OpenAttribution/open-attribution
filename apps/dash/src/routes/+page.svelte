@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { embedDashboard } from '@superset-ui/embedded-sdk';
-
-	// import * as pkg from '@superset-ui/embedded-sdk';
-	// console.log('mypkg', pkg);
-	// const { embedDashboard } = pkg;
-
 	import { onMount } from 'svelte';
 
-	// import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
+	// NOTE: import { embedDashboard } should be the correct way, but throws Vite error?
+	// import { embedDashboard } from '@superset-ui/embedded-sdk';
+	import * as pkg from '@superset-ui/embedded-sdk';
+	console.log('mypkg', pkg);
+	const { embedDashboard } = pkg;
 
 	export let data;
 
@@ -19,8 +17,7 @@
 		const myDiv = document.getElementById('my-superset-container'); // any html element that can contain an iframe
 		if (myDiv) {
 			embedDashboard({
-				id: '47d4d3a7-c2b0-46c5-80ad-dc7ee0e68ef9', // given by the Superset embedding UI
-				// supersetDomain: `http://${PUBLIC_SUPERSET_HOST_NAME}:8088`,
+				id: data.dashboardID,
 				supersetDomain: `http://localhost:8088`,
 				mountPoint: myDiv,
 				fetchGuestToken: () => myToken,
@@ -37,6 +34,7 @@
 </script>
 
 <h1 class="h1">Open-Attribution</h1>
+<h2>{data.dashboardID}</h2>
 
 <div class="h-screen">
 	<div id="my-superset-container" class="my-div-iframe h-screen w-full" />

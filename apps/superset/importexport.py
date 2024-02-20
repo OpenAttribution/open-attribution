@@ -1,3 +1,5 @@
+# ruff: noqa
+# type: ignore
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -98,7 +100,7 @@ def export_dashboards(dashboard_file: str = None) -> None:
     "-f",
     help="Specify the file to export to",
 )
-def export_datasources(datasource_file: str= None) -> None:
+def export_datasources(datasource_file: str = None) -> None:
     """Export datasources to ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dataset.export import ExportDatasetsCommand
@@ -209,7 +211,8 @@ def import_datasources(path: str) -> None:
     help="Print JSON to stdout",
 )
 def legacy_export_dashboards(
-    dashboard_file: str, print_stdout: bool = False,
+    dashboard_file: str,
+    print_stdout: bool = False,
 ) -> None:
     """Export dashboards to JSON"""
     # pylint: disable=import-outside-toplevel
@@ -372,7 +375,9 @@ def legacy_import_datasources(path: str, sync: str, recursive: bool) -> None:
             contents[path_.name] = file.read()
     try:
         ImportDatasetsCommand(
-            contents, sync_columns=sync_columns, sync_metrics=sync_metrics,
+            contents,
+            sync_columns=sync_columns,
+            sync_metrics=sync_metrics,
         ).run()
     except Exception:  # pylint: disable=broad-except
         logger.exception("Error when importing dataset")
