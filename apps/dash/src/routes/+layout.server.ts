@@ -1,9 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { PUBLIC_SUPERSET_HOST_NAME } from '$env/static/public';
-import { json } from '@sveltejs/kit';
 
 export const ssr = true;
-export const csr = true;
+export const csr = false;
 
 export const load: PageServerLoad = async () => {
 	const loginUrl = `http://${PUBLIC_SUPERSET_HOST_NAME}:8088/login/`;
@@ -48,6 +47,6 @@ export const load: PageServerLoad = async () => {
 		return { dashboardID: dashboardID };
 	} catch (error) {
 		console.error(error);
-		return json({ error: error });
+		return { error: error };
 	}
 };
