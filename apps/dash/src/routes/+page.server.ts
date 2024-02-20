@@ -82,6 +82,6 @@ export async function load({ parent }) {
 		};
 	} catch (error) {
 		console.error(error);
-		return { error: error };
+		return;
 	}
 }
