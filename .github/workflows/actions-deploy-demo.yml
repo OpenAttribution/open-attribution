@@ -21,7 +21,7 @@ jobs:
     environment: production-demo
     steps:
       - name: Checkout the files
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Deploy to my Droplet
         uses: appleboy/ssh-action@master
         env:
