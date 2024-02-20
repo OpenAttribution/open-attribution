@@ -70,3 +70,6 @@ superset import_datasources -p /app/mydatasources.zip
 echo_step "4" "Starting" "Loading open attribution dashboards"
 superset import_dashboards -p /app/mydashboards.zip --username 'admin'
 echo_step "4" "Complete" "Loading open attribution dashboards"
+
+chmod +x /app/get_superset_dashboard_id.py
+python /app/get_superset_dashboards_id.py
