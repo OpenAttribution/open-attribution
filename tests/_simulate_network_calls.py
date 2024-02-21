@@ -73,6 +73,7 @@ def impression_or_click(
         LINK_UID: id,
     }
     url = endpoint + f"/collect/{mytype}/{myapp}"
+    logger.info(url)
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} {id=} ")
 
@@ -89,5 +90,6 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str, endpoint:str) -> N
         APP_EVENT_UID: id,
     }
     url = endpoint + f"/collect/events/{myapp}"
+    logger.info(url)
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} ")

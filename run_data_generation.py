@@ -43,7 +43,6 @@ def main(args: argparse.Namespace) -> None:
     logger.info(f"Main start with {args=}")
     test_names = args.names
     endpoint = args.endpoint_api
-    endpoint = "https://localhost.com:8000/"
     if endpoint[-1] == "/":
         endpoint = endpoint[:-1]
     if args.installs_test:
