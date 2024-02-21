@@ -15,7 +15,7 @@ CAMPAIGNS = ["CampaignA", "CampaignB"]
 ADS = ["Hi!", "NewVideo123"]
 
 
-def main() -> None:
+def main(endpoint:str) -> None:
     while True:
         for network in NETWORKS:
             for app in APPS:
@@ -26,6 +26,7 @@ def main() -> None:
                         event_id="app_open",
                         myapp=app,
                         myifa=ifa,
+                        endpoint=endpoint
                     )
                     continue
                 for campaign in CAMPAIGNS:
@@ -38,6 +39,7 @@ def main() -> None:
                             mynetwork=network,
                             myifa=ifa,
                             myad=ad,
+                            endpoint=endpoint
                         )
                         # Decide if a click should be generated
                         if random.random() < 0.5:  # % chance for a click
@@ -49,6 +51,7 @@ def main() -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                                endpoint=endpoint
                             )
                             if random.random() < 0.5:
                                 time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
@@ -56,4 +59,5 @@ def main() -> None:
                                     event_id="app_open",
                                     myapp=app,
                                     myifa=ifa,
+                                    endpoint=endpoint
                                 )

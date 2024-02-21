@@ -404,7 +404,7 @@ def check_install_results(run_tests: dict, time_part: str) -> None:
             logger.info(f"{row.campaign_name=} check: {row}")
 
 
-def main(test_names: list[str] | None = None) -> None:
+def main(endpoint:str, test_names: list[str] | None = None) -> None:
     time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
     for network, tests in ALL_TESTS.items():
         if test_names:
@@ -446,6 +446,7 @@ def main(test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                            endpoint=endpoint
                             )
                             _total_impressions += 1
                         elif item == "click":
@@ -455,6 +456,7 @@ def main(test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                            endpoint=endpoint
                             )
                             _total_clicks += 1
                     else:
@@ -463,6 +465,7 @@ def main(test_names: list[str] | None = None) -> None:
                             event_id=item,
                             myapp=APP,
                             myifa=ifa,
+                            endpoint=endpoint
                         )
                         _total_events += 1
             logger.info(

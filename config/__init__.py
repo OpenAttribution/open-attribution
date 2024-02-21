@@ -14,7 +14,6 @@ HOME = pathlib.Path.home()
 # load config in /home/my-user/app-store/config.toml
 TOP_CONFIGDIR = pathlib.Path(HOME, pathlib.Path(".config"))
 CONFIG_DIR = pathlib.Path(TOP_CONFIGDIR, pathlib.Path(PROJECT_NAME))
-CONFIG_FILENAME = "config.toml"
 LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
 
 

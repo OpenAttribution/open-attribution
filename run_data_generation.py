@@ -18,6 +18,13 @@ def manage_cli_args() -> argparse.Namespace:
     )
     # Argument to accept a list of names
     parser.add_argument(
+        "-u",
+        "--url-endpoint",
+        help="API endpoint for testing",
+        default="http://localhost:8000/",
+    )
+    # Argument to accept a list of names
+    parser.add_argument(
         "-n",
         "--names",
         type=lambda s: s.split(","),
@@ -31,10 +38,14 @@ def manage_cli_args() -> argparse.Namespace:
 def main(args: argparse.Namespace) -> None:
     """Run user tests."""
     test_names = args.names
+    endpoint = args.url_endpoint
+    endpoint = "https://localhost.com:8000/"
+    if endpoint[-1] == "/":
+        endpoint = endpoint[:-1]
     if args.installs_test:
-        test_installs(test_names)
+        test_installs(endpoint=endpoint, test_names=test_names)
     else:
-        continuously_generate()
+        continuously_generate(endpoint=endpoint)
 
 
 if __name__ == "__main__":

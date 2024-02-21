@@ -18,7 +18,6 @@ from config.dimensions import (
 
 logger = get_logger(__name__)
 
-ENDPOINT = "http://localhost:8000/collect"
 
 
 def impression(
@@ -27,6 +26,7 @@ def impression(
     myifa: str,
     mynetwork: str,
     myad: str,
+    endpoint:str
 ) -> None:
     impression_or_click(
         mytype="impressions",
@@ -35,10 +35,11 @@ def impression(
         mynetwork=mynetwork,
         myifa=myifa,
         myad=myad,
+        endpoint=endpoint
     )
 
 
-def click(myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str) -> None:
+def click(myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str, endpoint:str) -> None:
     impression_or_click(
         mytype="clicks",
         myapp=myapp,
@@ -46,6 +47,7 @@ def click(myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str) ->
         mynetwork=mynetwork,
         myifa=myifa,
         myad=myad,
+        endpoint=endpoint
     )
 
 
@@ -56,6 +58,7 @@ def impression_or_click(
     myifa: str,
     mynetwork: str,
     myad: str,
+    endpoint: str,
 ) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000),
@@ -69,12 +72,12 @@ def impression_or_click(
         LINK_EVENT_TIME: tmstmp,
         LINK_UID: id,
     }
-    url = ENDPOINT + f"/{mytype}/{myapp}"
+    url = endpoint + f"/collect/{mytype}/{myapp}"
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} {id=} ")
 
 
-def make_inapp_request(myapp: str, event_id: str, myifa: str) -> None:
+def make_inapp_request(myapp: str, event_id: str, myifa: str, endpoint:str) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
     )
@@ -85,6 +88,6 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str) -> None:
         APP_EVENT_TIME: tmstmp,
         APP_EVENT_UID: id,
     }
-    url = ENDPOINT + f"/events/{myapp}"
+    url = endpoint + f"/collect/events/{myapp}"
     response = requests.get(url, params=params)
     logger.info(f"GET {response.status_code} {url=} ")
