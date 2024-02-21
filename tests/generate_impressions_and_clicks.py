@@ -16,6 +16,7 @@ ADS = ["Hi!", "NewVideo123"]
 
 
 def main(endpoint:str) -> None:
+    logger.info("Start continuous generate")
     while True:
         for network in NETWORKS:
             for app in APPS:

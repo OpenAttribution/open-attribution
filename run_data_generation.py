@@ -2,8 +2,11 @@
 
 import argparse
 
+from config import get_logger
 from tests.generate_impressions_and_clicks import main as continuously_generate
 from tests.test_installs import main as test_installs
+
+logger = get_logger(__name__)
 
 
 def manage_cli_args() -> argparse.Namespace:
@@ -18,8 +21,8 @@ def manage_cli_args() -> argparse.Namespace:
     )
     # Argument to accept a list of names
     parser.add_argument(
-        "-u",
-        "--url-endpoint",
+        "-e",
+        "--endpoint-api",
         help="API endpoint for testing",
         default="http://localhost:8000/",
     )
@@ -37,8 +40,9 @@ def manage_cli_args() -> argparse.Namespace:
 
 def main(args: argparse.Namespace) -> None:
     """Run user tests."""
+    logger.info(f"Main start with {args=}")
     test_names = args.names
-    endpoint = args.url_endpoint
+    endpoint = args.endpoint_api
     endpoint = "https://localhost.com:8000/"
     if endpoint[-1] == "/":
         endpoint = endpoint[:-1]

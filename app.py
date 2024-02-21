@@ -19,7 +19,7 @@ cors_config = CORSConfig(
 class MyOpenAPIController(OpenAPIController):
     """Set Docs path."""
 
-    path = "/api/docs"
+    path = "/collect/docs"
 
 
 logging_config = LoggingConfig(

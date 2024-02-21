@@ -78,12 +78,12 @@ class PostbackController(Controller):
 
     Endpoints for Ad Networks
     =========
-    api/collect/impressions/
-    api/collect/clicks/
+    collect/impressions/
+    collect/clicks/
 
     Endpoints for In App Events
     =========
-    api/collect/events/
+    collect/events/
 
     """
 
@@ -117,7 +117,7 @@ class PostbackController(Controller):
 
         Process various query parameters related to the impression, such as the source network, campaign details, event time, and other identifiers. The data is then serialized and sent to a Kafka topic named "impressions".
 
-        URL Path: GET api/collect/impressions/{app:str}
+        URL Path: GET collect/impressions/{app:str}
 
         Args:
         ----
@@ -152,7 +152,7 @@ class PostbackController(Controller):
         Example Usage
         -------------
         ```
-        GET https://track.example.com/api/collect/impressions/com.example.app?source_network=abc&campaign=xyz&event_time=1617715200&link_uid=123&campaign_id=456&ad_name=ad_sample&ad_id=789&ifa=ifa_value
+        GET https://track.example.com/collect/impressions/com.example.app?source_network=abc&campaign=xyz&event_time=1617715200&link_uid=123&campaign_id=456&ad_name=ad_sample&ad_id=789&ifa=ifa_value
         ```
 
         """
@@ -208,7 +208,7 @@ class PostbackController(Controller):
 
         Process various query parameters related to the impression, such as the source network, campaign details, event time, and other identifiers. The data is then serialized and sent to a Kafka topic named "impressions".
 
-        URL Path: GET api/collect/clicks/{app:str}
+        URL Path: GET collect/clicks/{app:str}
 
         Args:
         ----
@@ -243,7 +243,7 @@ class PostbackController(Controller):
         Example Usage
         -------------
         ```
-        GET https://track.example.com/api/collect/clicks/com.example.app?source_network=abc&campaign=xyz&event_time=1617715200&link_uid=123&campaign_id=456&ad_name=ad_sample&ad_id=789&ifa=ifa_value
+        GET https://track.example.com/collect/clicks/com.example.app?source_network=abc&campaign=xyz&event_time=1617715200&link_uid=123&campaign_id=456&ad_name=ad_sample&ad_id=789&ifa=ifa_value
         ```
 
         """
@@ -293,7 +293,7 @@ class PostbackController(Controller):
 
         Process various query parameters related to the in app events, such as the event_id, event_time and user's ifa
 
-        URL Path: GET api/collect/events/{app:str}
+        URL Path: GET collect/events/{app:str}
 
         Args:
         ----
@@ -326,7 +326,7 @@ class PostbackController(Controller):
         Example Usage
         -------------
         ```
-        GET https://track.example.com/api/collect/events/com.example.app?event_id=level_1&event_time=1706499131&&event_uid=6a660ee7-bbc1-4440-9fdd-6564aca3560c
+        GET https://track.example.com/collect/events/com.example.app?event_id=level_1&event_time=1706499131&&event_uid=6a660ee7-bbc1-4440-9fdd-6564aca3560c
         ```
 
         """
