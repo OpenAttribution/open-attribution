@@ -12,6 +12,7 @@ nav:
       - Installation: ./getting_started/installation.md
       - Running after Installation: ./getting_started/running.md
       - Develop Locally: ./getting_started/develop_locally.md
+  - Blog: ./blog/
   - About:
       - History: ./about/history.md
       - Target Use Cases: ./about/target_use_cases.md
@@ -57,3 +58,14 @@ repo_url: https://github.com/OpenAttribution/open-attribution
 edit_uri: edit/main/apps/docs/
 
 copyright: Copyright &copy; 2023 - Open Attribution LLC
+
+plugins:
+  - blog
+  - rss:
+      match_path: blog/posts/.*
+
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
