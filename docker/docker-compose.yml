@@ -53,6 +53,7 @@ services:
       - zookeeper
   clickhouse:
     container_name: clickhouse
+    restart: unless-stopped
     image: clickhouse/clickhouse-server:24.1.1
     # image: openattribution/clickhouse:main
     healthcheck:
@@ -73,6 +74,7 @@ services:
   api:
     container_name: api
     image: openattribution/python-api:main
+    restart: unless-stopped
     ports:
       - '8000:8000'
     depends_on:
@@ -81,6 +83,7 @@ services:
   dash:
     container_name: dash
     image: openattribution/dash:main
+    restart: unless-stopped
     ports:
       - '3000:3000'
     depends_on:
