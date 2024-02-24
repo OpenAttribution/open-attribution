@@ -26,7 +26,6 @@ version: '3.7'
 
 services:
   zookeeper:
-    restart: always
     image: docker.io/bitnami/zookeeper:3.9.1
     ports:
       - '2181:2181'
@@ -35,7 +34,6 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
-    restart: always
     image: docker.io/bitnami/kafka:3.6.1
     container_name: kafka
     ports:
@@ -118,7 +116,6 @@ services:
   redis:
     image: redis:7
     container_name: superset_cache
-    restart: unless-stopped
     volumes:
       - redis:/data
 
@@ -126,7 +123,6 @@ services:
     env_file: ./superset/.env-non-dev
     image: postgres:15
     container_name: superset_db
-    restart: unless-stopped
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./superset/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -137,7 +133,6 @@ services:
     container_name: superset_app
     command: ['/app/docker/docker-bootstrap.sh', 'app-gunicorn']
     user: 'root'
-    restart: unless-stopped
     ports:
       - 8088:8088
     depends_on: *superset-depends-on
@@ -159,7 +154,6 @@ services:
     container_name: superset_worker
     command: ['/app/docker/docker-bootstrap.sh', 'worker']
     env_file: ./superset/.env-non-dev
-    restart: unless-stopped
     depends_on: *superset-depends-on
     user: 'root'
     volumes: *superset-volumes
@@ -172,7 +166,6 @@ services:
     container_name: superset_worker_beat
     command: ['/app/docker/docker-bootstrap.sh', 'beat']
     env_file: ./superset/.env-non-dev
-    restart: unless-stopped
     depends_on: *superset-depends-on
     user: 'root'
     volumes: *superset-volumes
