@@ -1,9 +1,9 @@
 site_name: Open Attribution Docs
 
-site_url: https://openattribution.com/
+site_url: https://openattribution.dev/
 
 nav:
-  - Home: index.md
+  - Docs: index.md
   - TODO and Roadmap:
       - TODOs: ./todo/todos.md
       - Data Flow: ./todo/data_flow.md
@@ -12,7 +12,6 @@ nav:
       - Installation: ./getting_started/installation.md
       - Running after Installation: ./getting_started/running.md
       - Develop Locally: ./getting_started/develop_locally.md
-  - Blog: ./blog/
   - About:
       - History: ./about/history.md
       - Target Use Cases: ./about/target_use_cases.md
@@ -23,8 +22,8 @@ theme:
   icon:
     repo: fontawesome/brands/github
   features:
-    - header.autohide
-      - content.code.copy
+    # - header.autohide
+    # - content.code.copy
     - navigation.tabs
     - navigation.footer
       #- navigation.sections

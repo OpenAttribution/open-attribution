@@ -5,7 +5,7 @@
 		goto('/product');
 	}
 	function redirectToDocs() {
-		window.location.href = '/docs/index.html';
+		window.location.href = '/docs/';
 	}
 </script>
 
