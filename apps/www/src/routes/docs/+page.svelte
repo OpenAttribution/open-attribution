@@ -1,14 +1,11 @@
 <script lang="ts">
-	let embedUrl = '/static/docs/index.html';
+	// let htmlContent = '';
+
+	export let data;
+
+	// This function fetches the HTML content based on the current route
 </script>
 
-<iframe src={embedUrl} width="100%" height="600px" title="Embedded Blog Page">
-	Your browser does not support iframes.
-</iframe>
+hi
 
-<style>
-	iframe {
-		border: none; /* Removes the default border around the iframe */
-		/* Additional styling here */
-	}
-</style>
+{@html data}

@@ -1,11 +1,10 @@
 <script type="ts">
 	import { goto } from '$app/navigation';
-	import myWarningTriangle from '$lib/assets/triangle-warning.svg?raw';
 	function redirectToProduct() {
 		goto('/product');
 	}
 	function redirectToDocs() {
-		window.location.href = '/docs/';
+		window.location.href = '/docs';
 	}
 </script>
 
