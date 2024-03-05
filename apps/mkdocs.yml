@@ -68,5 +68,5 @@ plugins:
       categories:
         - categories
         - tags
-# hooks:
-#   - mkdoc_hooks.py
+hooks:
+  - mkdoc_hooks.py
