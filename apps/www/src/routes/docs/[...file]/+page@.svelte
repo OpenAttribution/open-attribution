@@ -5,7 +5,7 @@
 <div class="border-b border-gray-200"></div>
 
 <iframe
-	srcdoc={data.props.myhtml}
+	srcdoc={data.props.mydocs}
 	class="bg-[#ececec] w-full h-full"
 	frameborder="0"
 	title="Project"
