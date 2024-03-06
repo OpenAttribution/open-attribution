@@ -202,5 +202,6 @@ tags
 
 # Static Rendered HTML docs
 apps/www/static/docs/
+apps/www/static/mkdocs/
 
 
