@@ -16,7 +16,6 @@ async function fetchContent(page) {
 			htmlContent = 'Page not found.';
 		}
 	}
-	htmlContent = `${htmlContent}`;
 	// console.log(`GOT CONTENT: ${htmlContent}`)
 	return htmlContent;
 }
