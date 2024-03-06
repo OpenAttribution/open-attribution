@@ -1,9 +1,11 @@
 site_name: Open Attribution Docs
 
-site_url: https://openattribution.com/
+site_url: https://openattribution.dev/
+
+site_dir: www/static/docs/
 
 nav:
-  - Home: index.md
+  - Docs: index.md
   - TODO and Roadmap:
       - TODOs: ./todo/todos.md
       - Data Flow: ./todo/data_flow.md
@@ -22,8 +24,8 @@ theme:
   icon:
     repo: fontawesome/brands/github
   features:
-    - header.autohide
-      - content.code.copy
+    # - header.autohide
+    # - content.code.copy
     - navigation.tabs
     - navigation.footer
       #- navigation.sections
@@ -57,3 +59,16 @@ repo_url: https://github.com/OpenAttribution/open-attribution
 edit_uri: edit/main/apps/docs/
 
 copyright: Copyright &copy; 2023 - Open Attribution LLC
+
+plugins:
+  - blog
+  - rss:
+      match_path: blog/posts/.*
+
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
+hooks:
+  - mkdoc_hooks.py

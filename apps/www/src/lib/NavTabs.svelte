@@ -19,8 +19,21 @@
 		<h3 class="h6 md:h5 md:p-2">Product</h3>
 	</TabAnchor>
 
-	<TabAnchor class="p-0 px-0" href="/docs/" selected={$page.url.pathname.startsWith('/docs/')}>
+	<TabAnchor
+		class="p-0 px-0"
+		href="/docs/"
+		selected={$page.url.pathname.startsWith('/docs/') &&
+			!$page.url.pathname.startsWith('/docs/blog')}
+	>
 		<h3 class="h6 md:h5 md:p-2">Documentation</h3>
+	</TabAnchor>
+
+	<TabAnchor
+		class="p-0 px-0"
+		href="/docs/blog/"
+		selected={$page.url.pathname.startsWith('/docs/blog/')}
+	>
+		<h3 class="h6 md:h5 md:p-2">Blog</h3>
 	</TabAnchor>
 
 	<TabAnchor class="p-0 px-0" href="/about" selected={$page.url.pathname === '/about'}
