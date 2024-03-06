@@ -6,8 +6,9 @@ async function fetchContent(page) {
 	let htmlContent;
 	if (page) {
 		// Ensure the path correctly points to where your HTML files are located.
-		var mypath = `${PUBLIC_DOCS_HOST}${page.pathname}index.html`;
-		console.log(`LETS GO ${mypath}`);
+		// ie www/static/mkdocs/docs/blog/index.html
+		var mypath = `${PUBLIC_DOCS_HOST}/mkdocs${page.pathname}index.html`;
+		console.log(`Try rendering static path= ${mypath}`);
 		const response = await fetch(mypath);
 		if (response.ok) {
 			htmlContent = await response.text();
