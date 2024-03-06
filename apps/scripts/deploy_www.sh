@@ -18,7 +18,7 @@ Type=simple
 User=openattribution
 Group=openattribution
 SupplementaryGroups=nginx
-Environment=NODE_ENV=production SOCKET_PATH=/tmp/open-attribution-www.sock
+Environment=NODE_ENV=production PORT=4000
 ExecStartPre=/bin/bash -c "sudo rm -f /tmp/open-attribution-www.sock"
 ExecStart=/usr/bin/node /home/openattribution/open-attribution/apps/www/build
 ExecStartPost=/bin/bash -c "sleep 5 && sudo chown nginx:nginx /tmp/open-attribution-www.sock"
