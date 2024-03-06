@@ -5,8 +5,6 @@ site_url: https://openattribution.dev/docs/
 # This sets the export location as well as relative HTML links /documentation/todos
 site_dir: www/static/documentation/
 
-# docs_dir: mydocs
-
 nav:
   - Docs: index.md
   - TODO and Roadmap:
