@@ -6,7 +6,7 @@
 
 <iframe
 	srcdoc={data.props.myblog}
-	class="bg-[#ececec] w-full h-full"
+	class="w-full h-full"
 	frameborder="0"
 	title="Project"
 	id="frame"
