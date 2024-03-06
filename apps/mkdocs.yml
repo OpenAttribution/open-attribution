@@ -2,7 +2,7 @@ site_name: Open Attribution Docs
 
 site_url: https://openattribution.dev/
 
-site_dir: www/static/mkdocs/docs/
+site_dir: www/static/docs/
 
 nav:
   - Docs: index.md
