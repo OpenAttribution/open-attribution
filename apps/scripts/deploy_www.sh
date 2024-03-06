@@ -18,7 +18,7 @@ Type=simple
 User=openattribution
 Group=openattribution
 SupplementaryGroups=nginx
-Environment=NODE_ENV=production PORT=4000
+Environment=NODE_ENV=production PORT=4173
 ExecStart=/usr/bin/node /home/openattribution/open-attribution/apps/www/build
 Restart=on-failure
 KillMode=mixed
