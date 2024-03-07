@@ -17,5 +17,5 @@ def on_post_page(output: str, **kwargs) -> str:
     #     flags=re.IGNORECASE,
     # )
     # Add target="_top" to change URL outside of iFrame
-    # output = re.sub(r'href="([^"]+)"', r'href="\1" target="_top"', output)
+    output = re.sub(r'href="([^"]+)"', r'href="\1" target="_top"', output)
     return output
