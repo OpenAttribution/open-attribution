@@ -2,12 +2,13 @@ export const csr = false;
 
 import { PUBLIC_DOCS_HOST } from '$env/static/public';
 
-async function fetchContent(page) {
+async function fetchContent(url) {
 	let htmlContent;
-	if (page) {
-		// Ensure the path correctly points to where your HTML files are located.
-		// ie www/static/mkdocs/docs/index.html
-		var mypath = `${PUBLIC_DOCS_HOST}/docs${page.pathname}index.html`;
+	if (url && !url.pathname.includes('.')) {
+		// Ensure the path correctly points to where mkdocs HTML files are located.
+		// ie www/static/documentation/docs/index.html
+        // const processedPathname = url.pathname.replace('/docs/', '')
+		var mypath = `${PUBLIC_DOCS_HOST}/documentation/${url.pathname}index.html`;
 		console.log(`Try rendering static path= ${mypath}`);
 		const response = await fetch(mypath);
 		if (response.ok) {

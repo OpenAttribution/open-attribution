@@ -1,20 +1,47 @@
 import { purgeCss } from 'vite-plugin-tailwind-purgecss';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import { myVitePlugin } from './my-vite-plugin';
 
-// Used for serving static mkbuild docs
-import express from 'express';
-const assets = express.static('./static/documentation/assets/');
 
-export default defineConfig({
-	plugins: [
+
+// export default defineConfig({
+export default defineConfig(({ command, mode, ssrBuild }) => {
+	return {plugins: [
 		sveltekit(),
 		purgeCss(),
-		{
-		name: 'docs-static-assets',
-		configureServer(server) {
-    		server.middlewares.use('/docs/assets', assets)
-}
-}
+		myVitePlugin(),
+		// I am unclear if this has ever helped worked, perhaps only after build?
+		// {
+		// 	name: 'docs-index',
+		// 	configureServer(server) {
+		// 		server.middlewares.use((req, res, next) => {
+		// 			if (req.url?.startsWith('/docs')) {
+		// 				req.url = req.url + '/index.html';
+		// 			}
+		// 			next();
+		// 		});
+		// 	}
+		// }
+// 		{
+// 		name: 'docs-static-assets',
+// 		configureServer(server) {
+//     		server.middlewares.use('/docs/assets', assets)
+// }
+// },
+// { name: 'testtest',
+// 		configureServer(server) {
+// 			server.middlewares.use((req, res, next) => {
+// 					if (req.url?.startsWith('/docs')) {
+// 						req.url = req.url + '/index.html';
+// 					}
+// 					next();
+// 				});
+// 			}
+// 		}
+
 	]
+// );
+// }
+};
 });

@@ -8,7 +8,7 @@
 	srcdoc={data.props.myblog}
 	class="w-full h-full"
 	frameborder="0"
-	title="Project"
+	title="Blog Content"
 	id="frame"
 	style="color-scheme: dark;"
 />
