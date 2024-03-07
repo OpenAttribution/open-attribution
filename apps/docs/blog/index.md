@@ -1,3 +1,3 @@
-# Blog
+# Blog Home
 
-welcome. inside index.md
+welcome. inside index.md of blog home
