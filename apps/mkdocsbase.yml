@@ -1,0 +1,71 @@
+# This sets the export location as well as relative HTML links /documentation/todos
+# site_dir: www/static/documentation/
+
+# nav:
+#   - Docs: index.md
+#   - TODO and Roadmap:
+#       - TODOs: ./todo/todos.md
+#       - Data Flow: ./todo/data_flow.md
+#       - Database Overview: ./todo/database_overview.md
+#   - Getting Started:
+#       - Installation: ./getting_started/installation.md
+#       - Running after Installation: ./getting_started/running.md
+#       - Develop Locally: ./getting_started/develop_locally.md
+#   - About:
+#       - History: ./about/history.md
+#       - Target Use Cases: ./about/target_use_cases.md
+
+theme:
+  name: material
+  custom_dir: ../../overrides
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    # - header.autohide
+    # - content.code.copy
+    - navigation.tabs
+    - navigation.footer
+      #- navigation.sections
+    - content.action.edit
+    - toc.integrate
+    - navigation.expand
+  palette:
+    scheme: slate
+    primary: black
+extra:
+  generator: false
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  # Admonitions are info/tip/warning boxes
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+repo_url: https://github.com/OpenAttribution/open-attribution
+edit_uri: edit/main/apps/docs/
+
+copyright: Copyright &copy; 2023 - Open Attribution LLC
+
+# plugins:
+# - blog
+# - rss:
+#     match_path: blog/posts/.*
+#     date_from_meta:
+#       as_creation: date
+#     categories:
+#       - categories
+#       - tags
+
+hooks:
+  - ../../mkdoc_hooks.py

@@ -1,9 +1,11 @@
+INHERIT: ../../mkdocsbase.yml
 site_name: Open Attribution Docs
 
 site_url: https://openattribution.dev/docs/
 
 # This sets the export location as well as relative HTML links /documentation/todos
-site_dir: www/static/documentation/
+site_dir: ../../www/static/generated-docs/
+docs_dir: '.'
 
 nav:
   - Docs: index.md
@@ -19,25 +21,25 @@ nav:
       - History: ./about/history.md
       - Target Use Cases: ./about/target_use_cases.md
 
-theme:
-  name: material
-  custom_dir: docs/overrides
-  icon:
-    repo: fontawesome/brands/github
-  features:
-    # - header.autohide
-    # - content.code.copy
-    - navigation.tabs
-    - navigation.footer
-      #- navigation.sections
-    - content.action.edit
-    - toc.integrate
-    - navigation.expand
-  palette:
-    scheme: slate
-    primary: black
-extra:
-  generator: false
+# theme:
+#   name: material
+#   custom_dir: docs/overridxxes
+#   icon:
+#     repo: fontawesome/brands/github
+#   features:
+#     # - header.autohide
+#     # - content.code.copy
+#     - navigation.tabs
+#     - navigation.footer
+#       #- navigation.sections
+#     - content.action.edit
+#     - toc.integrate
+#     - navigation.expand
+#   palette:
+#     scheme: slate
+#     primary: black
+# extra:
+#   generator: false
 
 markdown_extensions:
   - attr_list
@@ -60,15 +62,3 @@ repo_url: https://github.com/OpenAttribution/open-attribution
 edit_uri: edit/main/apps/docs/
 
 copyright: Copyright &copy; 2023 - Open Attribution LLC
-
-plugins:
-  - blog
-  - rss:
-      match_path: blog/posts/.*
-      date_from_meta:
-        as_creation: date
-      categories:
-        - categories
-        - tags
-hooks:
-  - mkdoc_hooks.py
