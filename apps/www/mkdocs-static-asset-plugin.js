@@ -6,8 +6,8 @@ const configureServer = (server) => {
 	server.middlewares.use('/docs/assets', assets);
 };
 
-export const myVitePlugin = () => ({
-	name: 'my-vite-plugin',
+export const myDocsAssetPlugin = () => ({
+	name: 'my-mkdocs-plugin',
 	configureServer,
 	configurePreviewServer: configureServer
 });
