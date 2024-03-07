@@ -32,7 +32,8 @@ jobs:
             pwd
             git pull origin main
             cd apps || exit
-            /home/openattribution/venv/open-attribution-www-env/bin/mkdocs build
+            /home/openattribution/venv/open-attribution-www-env/bin/mkdocs build -f docs/docs/mkdocs.yml
+            /home/openattribution/venv/open-attribution-www-env/bin/mkdocs build -f docs/blog/mkdocs.yml
             cd www || exit
             pwd
             PATH="/home/openattribution/.nvm/versions/node/v20.10.0/bin:$PATH"
