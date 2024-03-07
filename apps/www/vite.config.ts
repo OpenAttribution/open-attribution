@@ -6,6 +6,7 @@ export default defineConfig({
 	plugins: [
 		sveltekit(),
 		purgeCss()
+		// I am unclear if this has ever helped worked, perhaps only after build?
 		// {
 		// 	name: 'docs-index',
 		// 	configureServer(server) {
