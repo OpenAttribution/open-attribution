@@ -8,7 +8,7 @@ async function fetchContent(url) {
 		// Ensure the path correctly points to where mkdocs HTML files are located.
 		// ie www/static/documentation/docs/index.html
 		const processedPathname = url.pathname.replace('/docs/', '');
-		var mypath = `${PUBLIC_DOCS_HOST}/documentation/${processedPathname}index.html`;
+		var mypath = `${PUBLIC_DOCS_HOST}/generated-docs/${processedPathname}index.html`;
 		console.log(`Try rendering static path= ${mypath}`);
 		const response = await fetch(mypath);
 		if (response.ok) {
