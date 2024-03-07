@@ -3,7 +3,7 @@ site_name: Open Attribution Docs
 site_url: https://openattribution.dev/docs/
 
 # This sets the export location as well as relative HTML links /documentation/todos
-site_dir: www/static/docs/
+site_dir: www/static/documentation/
 
 nav:
   - Docs: index.md

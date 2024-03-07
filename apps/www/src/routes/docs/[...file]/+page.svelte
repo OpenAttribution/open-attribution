@@ -21,7 +21,7 @@
 
 <iframe
 	class="w-full h-full"
-	src={`/docs/${processedPathname}index.html`}
+	src={`/documentation/${processedPathname}index.html`}
 	frameborder="0"
 	title="Docs Content"
 	id="frame"
