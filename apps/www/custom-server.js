@@ -1,21 +1,22 @@
 import { handler } from './build/handler.js';
 import express from 'express';
+import {join} from 'desm';
 
 const app = express();
 
-// Get absolute path to assets folder, "./data/assets" might work fine and you can remove this line/dep
-//const assetsPath = desm.join(import.meta.url, './static/generated-docs/assets');
+// Get absolute path to assets folder
+const docsAssetsPath = join(import.meta.url, './static/generated-docs/assets');
+const blogAssetsPath = join(import.meta.url, './static/generated-blog/assets');
 
-// Serve your "data/assets" folder
-app.use(express.static('/home/james/open-attribution/apps/www/static/generated-docs/assets/'));
-app.use(
-	'/blog/assets',
-	express.static('/home/james/open-attribution/apps/www/static/generated-blog/assets/')
-);
+// Serve your "static/x/assets" folder
+app.use(express.static('/home/james/open-attribution/apps/www/static/generated-docs/assets/'))
+
+app.use('/docs/assets', express.static(docsAssetsPath))
+app.use('/blog/assets', express.static(blogAssetsPath))
 
 // let SvelteKit handle everything else, including serving prerendered pages and static assets
 app.use(handler);
 
-app.listen(3000, () => {
-	console.log('listening on port 3000');
+app.listen(4173, () => {
+	console.log('listening on port 0.0.0.0:4173');
 });
