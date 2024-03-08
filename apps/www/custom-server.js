@@ -8,8 +8,8 @@ const app = express();
 const docsAssetsPath = join(import.meta.url, './static/generated-docs/assets');
 const blogAssetsPath = join(import.meta.url, './static/generated-blog/assets');
 
-app.use('/docs/assets', express.static(docsAssetsPath));
 app.use('/blog/assets', express.static(blogAssetsPath));
+app.use('/docs/assets', express.static(docsAssetsPath));
 
 // let SvelteKit handle everything else, including serving prerendered pages and static assets
 app.use(handler);
