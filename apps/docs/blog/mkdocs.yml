@@ -1,5 +1,5 @@
 INHERIT: ../../mkdocsbase.yml
-site_name: Open Attribution Docs
+site_name: Open Attribution Blog
 
 site_url: https://openattribution.dev/blog/
 
@@ -23,6 +23,22 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
+
+nav:
+  - Blog:
+      - index.md
+
+plugins:
+  - blog:
+      blog_dir: .
+  # Why does this appear to not be needed?
+  - rss:
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
 
 repo_url: https://github.com/OpenAttribution/open-attribution
 edit_uri: edit/main/apps/docs/

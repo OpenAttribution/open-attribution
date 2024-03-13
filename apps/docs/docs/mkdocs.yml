@@ -21,26 +21,6 @@ nav:
       - History: ./about/history.md
       - Target Use Cases: ./about/target_use_cases.md
 
-# theme:
-#   name: material
-#   custom_dir: docs/overridxxes
-#   icon:
-#     repo: fontawesome/brands/github
-#   features:
-#     # - header.autohide
-#     # - content.code.copy
-#     - navigation.tabs
-#     - navigation.footer
-#       #- navigation.sections
-#     - content.action.edit
-#     - toc.integrate
-#     - navigation.expand
-#   palette:
-#     scheme: slate
-#     primary: black
-# extra:
-#   generator: false
-
 markdown_extensions:
   - attr_list
   - md_in_html
