@@ -57,15 +57,5 @@ edit_uri: edit/main/apps/docs/
 
 copyright: Copyright &copy; 2023 - Open Attribution LLC
 
-# plugins:
-# - blog
-# - rss:
-#     match_path: blog/posts/.*
-#     date_from_meta:
-#       as_creation: date
-#     categories:
-#       - categories
-#       - tags
-
 hooks:
   - ../../mkdoc_hooks.py
