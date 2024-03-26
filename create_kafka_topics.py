@@ -1,5 +1,5 @@
 """
-Create kakfa topics.
+Create kafka topics.
 
 Was created for shell scripts to use, may be superseced by docker.
 
