@@ -1,4 +1,4 @@
-name: Push Production Demo to Digital Ocean
+name: Push Production Demo
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Checkout the files
         uses: actions/checkout@v4
-      - name: Deploy to my Droplet
+      - name: Deploy to Demo Server
         uses: appleboy/ssh-action@master
         env:
           TARGETDIR: open-attribution
@@ -38,6 +38,6 @@ jobs:
             cd $TARGETDIR
             pwd
             git pull origin main
-            docker compose -f docker/docker-compose.yml down
-            docker compose -f docker/docker-compose.yml pull
-            docker compose -f docker/docker-compose.yml up -d
+            sudo docker compose -f docker/docker-compose.yml down
+            sudo docker compose -f docker/docker-compose.yml pull
+            sudo docker compose -f docker/docker-compose.yml up -d
