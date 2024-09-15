@@ -31,7 +31,7 @@ jobs:
           host: ${{ vars.HOST_DNS }}
           username: ${{ vars.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: 8807
           envs: TARGETDIR
           script_stop: true
           script: |
