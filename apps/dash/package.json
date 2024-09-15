@@ -33,11 +33,11 @@
   "type": "module",
   "dependencies": {
     "@skeletonlabs/skeleton": "^2.8.0",
-    "@skeletonlabs/tw-plugin": "^0.3.1",
+    "@skeletonlabs/tw-plugin": "^0.4.0",
     "@superset-ui/embedded-sdk": "^0.1.0-alpha.10",
-    "@sveltejs/adapter-node": "^4.0.1",
+    "@sveltejs/adapter-node": "^5.2.2",
     "@sveltejs/kit": "^2.5.0",
-    "@types/node": "^20.11.13",
+    "@types/node": "^22.5.5",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.33",
@@ -46,6 +46,6 @@
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
-    "vite-plugin-tailwind-purgecss": "^0.2.0"
+    "vite-plugin-tailwind-purgecss": "^0.3.3"
   }
 }
