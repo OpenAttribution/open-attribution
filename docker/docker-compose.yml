@@ -6,7 +6,7 @@
 #   Destroy:        docker compose -f ~/open-attribution/docker/docker-compose.yml down -v --remove-orphans
 
 #### SUPERSET #####
-x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:3.1.0
+x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:3.1.3
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
@@ -14,14 +14,12 @@ x-superset-volumes:
   &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   - ./superset:/app/docker
   - superset_home:/app/superset_home
-  #- ${PWD}/apps/superset/importexport.py:/app/superset/cli/importexport.py
   - ${PWD}/apps/superset/get_superset_dashboard_id.py:/app/get_superset_dashboard_id.py
   - ${PWD}/apps/superset/exported/mydatasources.zip:/app/mydatasources.zip
   - ${PWD}/apps/superset/exported/mydashboards.zip:/app/mydashboards.zip
 #### END SUPERSET #####
 
 name: openattribution
-version: '3.7'
 
 services:
   zookeeper:
