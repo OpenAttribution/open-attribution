@@ -18,8 +18,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
-from zipfile import is_zipfile, ZipFile
+from zipfile import ZipFile, is_zipfile
 
 import click
 import yaml
@@ -67,7 +66,7 @@ def import_directory(directory: str, overwrite: bool, force: bool) -> None:
     "-f",
     help="Specify the file to export to",
 )
-def export_dashboards(dashboard_file: Optional[str] = None) -> None:
+def export_dashboards(dashboard_file: str | None = None) -> None:
     """Export dashboards to ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dashboard.export import ExportDashboardsCommand
@@ -88,7 +87,7 @@ def export_dashboards(dashboard_file: Optional[str] = None) -> None:
     except Exception:  # pylint: disable=broad-except
         logger.exception(
             "There was an error when exporting the dashboards, please check "
-            "the exception traceback in the log"
+            "the exception traceback in the log",
         )
         sys.exit(1)
 
@@ -100,7 +99,7 @@ def export_dashboards(dashboard_file: Optional[str] = None) -> None:
     "-f",
     help="Specify the file to export to",
 )
-def export_datasources(datasource_file: Optional[str] = None) -> None:
+def export_datasources(datasource_file: str | None = None) -> None:
     """Export datasources to ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dataset.export import ExportDatasetsCommand
@@ -121,7 +120,7 @@ def export_datasources(datasource_file: Optional[str] = None) -> None:
     except Exception:  # pylint: disable=broad-except
         logger.exception(
             "There was an error when exporting the datasets, please check "
-            "the exception traceback in the log"
+            "the exception traceback in the log",
         )
         sys.exit(1)
 
@@ -140,7 +139,7 @@ def export_datasources(datasource_file: Optional[str] = None) -> None:
     required=True,
     help="Specify the user name to assign dashboards to",
 )
-def import_dashboards(path: str, username: Optional[str]) -> None:
+def import_dashboards(path: str, username: str | None) -> None:
     """Import dashboards from ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dashboard.importers.dispatcher import ImportDashboardsCommand
@@ -159,7 +158,7 @@ def import_dashboards(path: str, username: Optional[str]) -> None:
     except Exception:  # pylint: disable=broad-except
         logger.exception(
             "There was an error when importing the dashboards(s), please check "
-            "the exception traceback in the log"
+            "the exception traceback in the log",
         )
         sys.exit(1)
 
@@ -178,7 +177,7 @@ def import_dashboards(path: str, username: Optional[str]) -> None:
     default="admin",
     help="Specify the user name to assign dashboards to",
 )
-def import_datasources(path: str, username: Optional[str] = "admin") -> None:
+def import_datasources(path: str, username: str | None = "admin") -> None:
     """Import datasources from ZIP file"""
     # pylint: disable=import-outside-toplevel
     from superset.commands.dataset.importers.dispatcher import ImportDatasetsCommand
@@ -196,7 +195,7 @@ def import_datasources(path: str, username: Optional[str] = "admin") -> None:
         except Exception:  # pylint: disable=broad-except
             logger.exception(
                 "There was an error when importing the dataset(s), please check the "
-                "exception traceback in the log"
+                "exception traceback in the log",
             )
             sys.exit(1)
 
@@ -217,7 +216,7 @@ def import_datasources(path: str, username: Optional[str] = "admin") -> None:
     help="Print JSON to stdout",
 )
 def legacy_export_dashboards(
-    dashboard_file: Optional[str], print_stdout: bool = False
+    dashboard_file: str | None, print_stdout: bool = False,
 ) -> None:
     """Export dashboards to JSON"""
     # pylint: disable=import-outside-toplevel
@@ -262,7 +261,7 @@ def legacy_export_dashboards(
     help="Include fields containing defaults",
 )
 def legacy_export_datasources(
-    datasource_file: Optional[str],
+    datasource_file: str | None,
     print_stdout: bool = False,
     back_references: bool = False,
     include_defaults: bool = False,
@@ -380,7 +379,7 @@ def legacy_import_datasources(path: str, sync: str, recursive: bool) -> None:
             contents[path_.name] = file.read()
     try:
         ImportDatasetsCommand(
-            contents, sync_columns=sync_columns, sync_metrics=sync_metrics
+            contents, sync_columns=sync_columns, sync_metrics=sync_metrics,
         ).run()
     except Exception:  # pylint: disable=broad-except
         logger.exception("Error when importing dataset")
