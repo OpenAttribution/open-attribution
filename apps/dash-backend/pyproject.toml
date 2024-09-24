@@ -1,0 +1,55 @@
+[project]
+authors = [{ name = "James O'Claire" }]
+name = "app-store-dash-backend"
+description = "Backend server for app store dashboard"
+version = "0.0.1"
+
+[project.optional-dependencies]
+dev = ["pre-commit", "psycopg2-binary", "sshtunnel"]
+
+dependencies = ["litestar[standard]", "pandas", "numpy", "sqlalchemy"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+
+
+[tool.ruff]
+#select = ["E", "W", "F", "B", "I", "N", "UP"]
+lint.select = ["ALL"]
+
+target-version = 'py312'
+
+lint.ignore = [
+    "E501",   # line length
+    "W291",   # trailing space at end of line
+    "G",      # Ignore pyflake logging as it does not like f-strings in log messages.
+    "RET504", # Unnecessary assignment to variable before return, but I prefer for readability.
+    "PD901",  # avoid 'df' for dataframe, but I prefer this as the main df in each function
+    "PD010",  # avoid pivot instead use pivot_table, great but also applies to unstack which is much more complicated
+    "D211",   # Suppress ruff internal conflict
+    "D213",   # Suppress ruff internal conflict
+]
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+lint.unfixable = ["B"]
+
+lint.fixable = ["ALL"]
+
+exclude = ["tests/*"]
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+
+[tool.sqlfluff.core]
+templater = 'placeholder'
+verbose = 0
+dialect = 'postgres'
+large_file_skip_byte_limit = 0
+exclude_rules = 'AM04'
+
+
+[tool.sqlfluff.templater.placeholder]
+param_style = 'colon'
