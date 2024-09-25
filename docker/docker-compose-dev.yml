@@ -79,17 +79,19 @@ services:
   dash-backend:
     container_name: dash-backend
     build:
-      context: ../
-      dockerfile: docker/Dockerfile.dash-backend
+      # context: ../ # commented out, wasn't affecting volume?
+      dockerfile: Dockerfile.dash-backend
     ports:
       - '8001:8001'
+    command: uvicorn app:app --host 0.0.0.0 --port 8001 --reload
+    working_dir: /app
     depends_on:
       clickhouse:
         condition: service_healthy
       admin-db:
         condition: service_started
     volumes:
-      - ./apps/dash-backend:/app/dash-backend
+      - ../apps/dash-backend:/app
 
   dash-frontend:
     container_name: dash-frontend
