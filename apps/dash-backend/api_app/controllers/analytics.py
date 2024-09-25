@@ -40,7 +40,7 @@ class OverviewController(Controller):
 
     path = "/api/overview"
 
-    @get(path="/", cache=3600)
+    @get(path="/")
     async def get_overview(self: Self, start_date: str, end_date: str) -> OverviewData:
         """
         Handle GET request for a list of apps.
@@ -58,7 +58,9 @@ class OverviewController(Controller):
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
         home_df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
-        home_dict = home_df.to_dict()
+        home_dict = home_df.to_dict(orient="records")
+
+        myresp = OverviewData(overview=home_dict)
 
         logger.info(f"{self.path} return")
-        return home_df
+        return myresp

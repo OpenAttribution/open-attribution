@@ -3,7 +3,7 @@
 import logging
 import pathlib
 import sys
-import tomllib
+import types
 from logging.handlers import RotatingFileHandler
 
 PROJECT_NAME = "open-attribution"
@@ -14,13 +14,15 @@ HOME = pathlib.Path.home()
 # Save logs in /home/my-user/oa-dash-backend/config.toml
 TOP_CONFIGDIR = pathlib.Path(HOME, pathlib.Path(".config"))
 CONFIG_DIR = pathlib.Path(TOP_CONFIGDIR, pathlib.Path(PROJECT_NAME))
-# CONFIG_FILENAME = "config.toml"
-# CONFIG_FILE_PATH = pathlib.Path(CONFIG_DIR, CONFIG_FILENAME)
 LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
 MODULE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
 
-def handle_exception(exc_type, exc_value, exc_traceback) -> None:  # noqa: ANN001
+def handle_exception(
+    exc_type: type[BaseException],
+    exc_value: BaseException,
+    exc_traceback: types.TracebackType | None,
+) -> None:
     """Handle uncaught exceptions for whole app."""
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
@@ -41,7 +43,8 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
     logformat = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"
     check_config_dirs()
     log_dir = pathlib.Path(
-        HOME, pathlib.Path(f".config/{PROJECT_NAME}/logs/dash-backend")
+        HOME,
+        pathlib.Path(f".config/{PROJECT_NAME}/logs/dash-backend"),
     )
     if not pathlib.Path.exists(log_dir):
         pathlib.Path.mkdir(log_dir, exist_ok=True)
@@ -86,16 +89,5 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
 sys.excepthook = handle_exception
 
 logger = get_logger(__name__)
-
-DATE_FORMAT = "%Y-%m-%d"
-
-# if not pathlib.Path.exists(CONFIG_FILE_PATH):
-#     error = f"Couldn't find {CONFIG_FILENAME} please add to {CONFIG_DIR}"
-#     logger.error(error)
-#     raise FileNotFoundError(error)
-
-
-# with CONFIG_FILE_PATH.open("rb") as f:
-#    CONFIG = tomllib.load(f)
 
 DATE_FORMAT = "%Y-%m-%d"
