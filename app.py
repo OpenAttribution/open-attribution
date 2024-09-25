@@ -19,7 +19,7 @@ cors_config = CORSConfig(
 class MyOpenAPIController(OpenAPIController):
     """Set Docs path."""
 
-    path = "/collect/docs"
+    path = "/dash/docs"  # NOTE: not working?
 
 
 logging_config = LoggingConfig(
@@ -34,7 +34,7 @@ app = Litestar(
     route_handlers=[PostbackController],
     cors_config=cors_config,
     openapi_config=OpenAPIConfig(
-        title="App Store API",
+        title="Open Attribution Postback API",
         version="0.0.1",
         openapi_controller=MyOpenAPIController,
     ),

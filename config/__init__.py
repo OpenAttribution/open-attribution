@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 from types import TracebackType
 from typing import Any
 
-PROJECT_NAME = "app-track"
+PROJECT_NAME = "open-attribution"
 
 HOME = pathlib.Path.home()
 
@@ -55,7 +55,7 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
     """Create a logger for use in other modules."""
     _format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"
     check_config_dirs()
-    log_dir = pathlib.Path(HOME, pathlib.Path(f".config/{PROJECT_NAME}/logs"))
+    log_dir = pathlib.Path(HOME, pathlib.Path(f".config/{PROJECT_NAME}/logs/testing"))
     if not pathlib.Path.exists(log_dir):
         pathlib.Path.mkdir(log_dir, exist_ok=True)
         # ruff: noqa: T201
