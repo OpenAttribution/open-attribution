@@ -52,7 +52,7 @@ class OverviewController(Controller):
 
         Returns:
         -------
-            A table with the overview breakdown for homepage
+            A table with the overview breakdown for homepage from clickhouse
 
         """
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
