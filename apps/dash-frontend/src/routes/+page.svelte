@@ -22,11 +22,7 @@
 
 	let { data } = $props<{ data: PageData }>();
 
-	let myRange: DateRange | undefined = $state(undefined);
-
 	function handleDateChange(newRange: DateRange | undefined) {
-		myRange = newRange;
-
 		if (newRange && newRange.start && newRange.end) {
 			// Format the dates as needed (ISO strings or other formats)
 			const startDate = newRange.start.toString(); // Adjust as necessary
@@ -37,7 +33,47 @@
 		}
 	}
 
-	// let overview = $state(data.respData.overview);
+	let overviewData = $state(data.respData.overview);
+
+	let totalRevenue = $derived.by(() => {
+		// Check if overviewData is defined and not null
+		if (overviewData && overviewData.length > 0) {
+			return overviewData.reduce((acc, entry) => acc + entry.revenue, 0);
+		} else {
+			return 0;
+		}
+	});
+
+	let totalImpressions = $derived.by(() => {
+		let total = 0;
+		if (overviewData && overviewData.length > 0) {
+			total = overviewData.reduce((acc, entry) => acc + entry.impressions, 0);
+		}
+		return total;
+	});
+
+	let totalClicks = $derived.by(() => {
+		if (overviewData && overviewData.length > 0) {
+			return overviewData.reduce((acc, entry) => acc + entry.clicks, 0);
+		} else {
+			return 0;
+		}
+	});
+
+	let totalInstalls = $derived.by(() => {
+		if (overviewData && Array.isArray(overviewData)) {
+			return overviewData.reduce((acc, entry) => acc + entry.installs, 0);
+		} else {
+			return 0;
+		}
+	});
+
+	let formattedRevenue = $derived.by(() => {
+		return totalRevenue.toLocaleString('en-US', {
+			style: 'currency',
+			currency: 'USD'
+		});
+	});
 </script>
 
 <div class="flex min-h-screen w-full flex-col">
@@ -115,52 +151,45 @@
 	</header>
 	<main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
 		<DateRangePicker onChange={handleDateChange} />
-
-		{#if myRange && myRange.start && myRange.end}
-			<p>
-				Selected Start Date: {myRange.start.toString()} <br />
-				Selected End Date: {myRange.end.toString()}
-			</p>
-		{/if}
 		<div class="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					<Card.Title class="text-sm font-medium">Impressions</Card.Title>
+					<Users class="text-muted-foreground h-4 w-4" />
+				</Card.Header>
+				<Card.Content>
+					<div class="text-2xl font-bold">{totalImpressions}</div>
+					<p class="text-muted-foreground text-xs">+180.1% from last month</p>
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					<Card.Title class="text-sm font-medium">Clicks</Card.Title>
+					<CreditCard class="text-muted-foreground h-4 w-4" />
+				</Card.Header>
+				<Card.Content>
+					<div class="text-2xl font-bold">{totalClicks}</div>
+					<p class="text-muted-foreground text-xs">+19% from last month</p>
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					<Card.Title class="text-sm font-medium">Installs</Card.Title>
+					<Activity class="text-muted-foreground h-4 w-4" />
+				</Card.Header>
+				<Card.Content>
+					<div class="text-2xl font-bold">{totalInstalls}</div>
+					<p class="text-muted-foreground text-xs">+201 since last hour</p>
+				</Card.Content>
+			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
 					<Card.Title class="text-sm font-medium">Total Revenue</Card.Title>
 					<DollarSign class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
 				<Card.Content>
-					<div class="text-2xl font-bold">$45,231.89</div>
+					<div class="text-2xl font-bold">{formattedRevenue}</div>
 					<p class="text-muted-foreground text-xs">+20.1% from last month</p>
-				</Card.Content>
-			</Card.Root>
-			<Card.Root>
-				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-					<Card.Title class="text-sm font-medium">Subscriptions</Card.Title>
-					<Users class="text-muted-foreground h-4 w-4" />
-				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">+2350</div>
-					<p class="text-muted-foreground text-xs">+180.1% from last month</p>
-				</Card.Content>
-			</Card.Root>
-			<Card.Root>
-				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-					<Card.Title class="text-sm font-medium">Sales</Card.Title>
-					<CreditCard class="text-muted-foreground h-4 w-4" />
-				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">+12,234</div>
-					<p class="text-muted-foreground text-xs">+19% from last month</p>
-				</Card.Content>
-			</Card.Root>
-			<Card.Root>
-				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-					<Card.Title class="text-sm font-medium">Active Now</Card.Title>
-					<Activity class="text-muted-foreground h-4 w-4" />
-				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">+573</div>
-					<p class="text-muted-foreground text-xs">+201 since last hour</p>
 				</Card.Content>
 			</Card.Root>
 		</div>
