@@ -9,17 +9,22 @@ name: openattribution
 
 services:
   zookeeper:
-    restart: always
-    image: docker.io/bitnami/zookeeper:3.9.1
+    image: docker.io/bitnami/zookeeper:3.9.2
+    container_name: zookeeper
     ports:
       - '2181:2181'
     volumes:
       - 'zookeeper-volume:/bitnami'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    healthcheck:
+      test: ['CMD-SHELL', 'zkServer.sh status']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   kafka:
-    restart: always
-    image: docker.io/bitnami/kafka:3.6.1
+    image: docker.io/bitnami/kafka:3.6.2
     container_name: kafka
     ports:
       - '9093:9093'
@@ -34,12 +39,17 @@ services:
       - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9093
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'kafka-topics.sh --bootstrap-server localhost:9092 --list']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   clickhouse:
     container_name: clickhouse
-    restart: unless-stopped
-    image: clickhouse/clickhouse-server:24.1.1
-    # image: openattribution/clickhouse:main
+    image: clickhouse/clickhouse-server:24.8.4
     healthcheck:
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
@@ -51,25 +61,54 @@ services:
       - '9000:9000'
       - '8123:8123'
     volumes:
-      - ${PWD}/sql/create/:/my-tables/
-      - ${PWD}/sql/startup-scripts/:/docker-entrypoint-initdb.d/
+      - ../sql/create/:/my-tables/
+      - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
       - 'clickhouse-volume:/var/lib/clickhouse'
       - 'clickhouse-log-volume:/var/log/clickhouse-server'
-  api:
-    container_name: api
+
+  postback-api:
+    container_name: postback-api
     image: openattribution/python-api:main
-    restart: unless-stopped
     ports:
       - '8000:8000'
     depends_on:
       clickhouse:
         condition: service_healthy
-  dash-frontend:
-    container_name: dash
-    image: openattribution/dash:main
-    restart: unless-stopped
+
+  admin-db:
+    container_name: admin-db
+    image: postgres:16-bullseye
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - 'pgdata-volume:/var/lib/postgresql/data'
+
+  dash-backend:
+    container_name: dash-backend
+    image: openattribution/dash-backend:main
     ports:
-      - '3000:3000'
+      - '8001:8001'
+    command: uvicorn app:app --host 0.0.0.0 --port 8001 --reload
+    working_dir: /app
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      admin-db:
+        condition: service_started
+
+  dash-frontend:
+    container_name: dash-frontend
+    image: openattribution/dash-frontend:main
+    working_dir: /apps/dash-frontend
+    command: npm run dev
+    ports:
+      - '4173:4173'
     depends_on:
       - 'dash-backend'
 
@@ -79,3 +118,4 @@ volumes:
   zookeeper-volume:
   clickhouse-log-volume:
   clickhouse-volume:
+  pgdata-volume:

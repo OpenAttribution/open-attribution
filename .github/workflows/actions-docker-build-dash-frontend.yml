@@ -2,7 +2,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish Docker image dash
+name: Publish Docker Image Dash Frontend
 
 on:
   # TODO: Should use releases instead of push?
@@ -11,9 +11,8 @@ on:
   push:
     branches: ['main']
     paths:
-      - 'docker/Dockerfile.dash'
-      - 'apps/shared/**'
-      - 'apps/dash/**'
+      - 'docker/Dockerfile.dash-frontend'
+      - 'apps/dash-frontend/**'
       # Publish semver tags as releases.
     tags: ['v*.*.*']
 
@@ -28,12 +27,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set OpenAttribution docker env
-        run: |
-          echo 'PUBLIC_SUPERSET_INSIDE_DOCKER_HOST="superset"' > apps/dash/prodenv
-          echo 'PUBLIC_SUPERSET_BROWSER_HOST="https://superset.openattribution.dev/"' >> apps/dash/prodenv
-          pwd
-          cat apps/dash/prodenv
-
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
@@ -44,13 +37,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: openattribution/dash
+          images: openattribution/dash-frontend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          file: docker/Dockerfile.dash
+          file: docker/Dockerfile.dash-frontend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -5,10 +5,16 @@ on:
     branches:
       - main
     paths:
-      - 'apps/superset/exported/**'
+      - 'apps/dash-backend/**'
+      - 'apps/dash-frontend/**'
       - 'docker/docker-compose.yml'
   workflow_run:
-    workflows: [Publish Docker image dash, Publish Docker image python API]
+    workflows:
+      [
+        Publish Docker Image Dash Backend,
+        Publish Docker Image Dash Frontend,
+        Publish Docker Image Python API
+      ]
     # NOTE: Does this trigger when ALL workflows completed or just when EITHER?
     types: [completed]
     branches:
