@@ -24,9 +24,8 @@
 
 	function handleDateChange(newRange: DateRange | undefined) {
 		if (newRange && newRange.start && newRange.end) {
-			// Format the dates as needed (ISO strings or other formats)
-			const startDate = newRange.start.toString(); // Adjust as necessary
-			const endDate = newRange.end.toString(); // Adjust as necessary
+			const startDate = newRange.start.toString();
+			const endDate = newRange.end.toString();
 
 			// Navigate to the same page with query parameters for start and end dates
 			goto(`?start=${startDate}&end=${endDate}`);
@@ -193,6 +192,7 @@
 				</Card.Content>
 			</Card.Root>
 		</div>
+
 		<div class="gap-4 md:gap-8">
 			<Card.Root class="xl:col-span-2">
 				<Card.Header class="flex flex-row items-center">
