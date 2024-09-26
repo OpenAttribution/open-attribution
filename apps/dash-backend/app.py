@@ -1,4 +1,4 @@
-"""API Endpoints for postbacks to OpenAttribution."""
+"""Main start point for LiteStar API."""
 
 import logging
 
@@ -7,7 +7,7 @@ from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig, OpenAPIController
 
-from api_app.controllers.postbacks import PostbackController
+from api_app.controllers.analytics import OverviewController
 
 cors_config = CORSConfig(
     allow_origins=[
@@ -17,9 +17,9 @@ cors_config = CORSConfig(
 
 
 class MyOpenAPIController(OpenAPIController):
-    """Set Docs path."""
+    """Set Path for API docs."""
 
-    path = "/dash/docs"  # NOTE: not working?
+    path = "/api/docs"
 
 
 logging_config = LoggingConfig(
@@ -31,10 +31,12 @@ logging_config = LoggingConfig(
 
 
 app = Litestar(
-    route_handlers=[PostbackController],
+    route_handlers=[
+        OverviewController,
+    ],
     cors_config=cors_config,
     openapi_config=OpenAPIConfig(
-        title="Open Attribution Postback API",
+        title="OpenAttribution Dash Backend API",
         version="0.0.1",
         openapi_controller=MyOpenAPIController,
     ),

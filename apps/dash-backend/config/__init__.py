@@ -1,42 +1,29 @@
-"""Initialize project settings and logging."""
+"""Init functions for whole app."""
 
 import logging
 import pathlib
 import sys
+import types
 from logging.handlers import RotatingFileHandler
-from types import TracebackType
-from typing import Any
 
 PROJECT_NAME = "open-attribution"
 
 HOME = pathlib.Path.home()
 
-# load config in /home/my-user/app-store/config.toml
+# load config in /home/my-user/oa-dash-backend/config.toml
+# Save logs in /home/my-user/oa-dash-backend/config.toml
 TOP_CONFIGDIR = pathlib.Path(HOME, pathlib.Path(".config"))
 CONFIG_DIR = pathlib.Path(TOP_CONFIGDIR, pathlib.Path(PROJECT_NAME))
 LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
-
-
-def is_docker() -> bool:
-    """Decide if we are in docker."""
-    path = pathlib.Path("/proc/self/cgroup")
-    return (
-        pathlib.Path("/.dockerenv").exists()
-        or path.is_file()
-        and any("docker" in line for line in path.open())
-    )
-
-
-KAFKA_LOCATION = "kafka:9093" if is_docker() else "localhost:9092"
+MODULE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
 
 def handle_exception(
-    # ruff: noqa: ANN401
-    exc_type: Any,
+    exc_type: type[BaseException],
     exc_value: BaseException,
-    exc_traceback: TracebackType | None,
+    exc_traceback: types.TracebackType | None,
 ) -> None:
-    """Handle uncaught exceptions."""
+    """Handle uncaught exceptions for whole app."""
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
@@ -44,7 +31,7 @@ def handle_exception(
 
 
 def check_config_dirs() -> None:
-    """Check that config dirs exist."""
+    """Check if config dirs exist and if not create."""
     dirs = [TOP_CONFIGDIR, CONFIG_DIR, LOG_DIR]
     for _dir in dirs:
         if not pathlib.Path.exists(_dir):
@@ -52,14 +39,16 @@ def check_config_dirs() -> None:
 
 
 def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
-    """Create a logger for use in other modules."""
-    _format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"
+    """Get a python logger."""
+    logformat = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"
     check_config_dirs()
-    log_dir = pathlib.Path(HOME, pathlib.Path(f".config/{PROJECT_NAME}/logs/testing"))
+    log_dir = pathlib.Path(
+        HOME,
+        pathlib.Path(f".config/{PROJECT_NAME}/logs/dash-backend"),
+    )
     if not pathlib.Path.exists(log_dir):
         pathlib.Path.mkdir(log_dir, exist_ok=True)
-        # ruff: noqa: T201
-        print(f"Couldn't find {log_dir=} so it was created.")
+        print(f"Couldn't find {log_dir=} so it was created.")  # noqa: T201
     filename = f"{log_dir}/{log_name}.log"
     # Writes to file
     rotate_handler = RotatingFileHandler(
@@ -68,25 +57,29 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
         backupCount=5,
     )
     logging.basicConfig(
-        format=_format,
+        format=logformat,
         level=logging.INFO,
         handlers=[
             rotate_handler,
         ],
     )
-    logger = logging.getLogger(mod_name)
+    """Retun logger object."""
     # create logger
     logger = logging.getLogger(mod_name)
     logger.setLevel(logging.INFO)
+
     # create console handler and set level to debug
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
+
     # create formatter
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
+
     # add formatter to ch
     ch.setFormatter(formatter)
+
     # add ch to logger
     logger.addHandler(ch)
     return logger
@@ -96,8 +89,5 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
 sys.excepthook = handle_exception
 
 logger = get_logger(__name__)
-
-DATE_FORMAT = "%Y-%m-%d"
-
 
 DATE_FORMAT = "%Y-%m-%d"

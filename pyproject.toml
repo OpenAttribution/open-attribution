@@ -31,6 +31,7 @@ lint.ignore = [
     "RET504", #Unnecessary assignment to variable before return, but I prefer for readability.
     "D203",
     "D212",
+    "PD901",  # Avoid using 'df', but this often is concise and informative when there is only one df in the function
 ]
 
 # Avoid trying to fix flake8-bugbear (`B`) violations.
