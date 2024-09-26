@@ -97,8 +97,6 @@ services:
     container_name: dash-frontend
     working_dir: /apps/dash-frontend
     command: npm run preview
-    volumes:
-      - ./apps/dash-frontend/src/:/apps/dash-frontend/src/
     build:
       context: ../
       dockerfile: docker/Dockerfile.dash-frontend
@@ -106,6 +104,10 @@ services:
       - '4173:4173'
     depends_on:
       - 'dash-backend'
+    volumes:
+      - ../apps/dash-frontend:/apps/dash-frontend
+      - /apps/dash-frontend/node_modules # Avoid overwriting node_modules
+      # - ../apps/dash-frontend/src:/apps/dash-frontend/src # Only mount the src directory
 
 volumes:
   # Persist across stop/start, not down

@@ -5,7 +5,9 @@ ENV NODE_ENV=production
 
 WORKDIR /apps/dash-frontend
 
-COPY apps/dash-frontend/package.json apps/dash-frontend/package-lock.json ./
+COPY ./apps/dash-frontend/package.json /apps/dash-frontend/
+COPY ./apps/dash-frontend/package-lock.json /apps/dash-frontend/
+
 RUN npm install
 
 COPY apps/dash-frontend ./
