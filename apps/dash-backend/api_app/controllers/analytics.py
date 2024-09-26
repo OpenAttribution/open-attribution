@@ -62,5 +62,5 @@ class OverviewController(Controller):
 
         myresp = OverviewData(overview=home_dict)
 
-        logger.info(f"{self.path} return")
+        logger.info(f"{self.path} return rows {home_df.shape}")
         return myresp

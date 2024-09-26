@@ -9,15 +9,22 @@ name: openattribution
 
 services:
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.9.1
+    image: docker.io/bitnami/zookeeper:3.9.2
+    container_name: zookeeper
     ports:
       - '2181:2181'
     volumes:
       - 'zookeeper-volume:/bitnami'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    healthcheck:
+      test: ['CMD-SHELL', 'zkServer.sh status']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   kafka:
-    image: docker.io/bitnami/kafka:3.6.1
+    image: docker.io/bitnami/kafka:3.6.2
     container_name: kafka
     ports:
       - '9093:9093'
@@ -32,10 +39,17 @@ services:
       - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9093
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'kafka-topics.sh --bootstrap-server localhost:9092 --list']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   clickhouse:
     container_name: clickhouse
-    image: clickhouse/clickhouse-server:24.1.1
+    image: clickhouse/clickhouse-server:24.8.4
     # image: openattribution/clickhouse:main
     healthcheck:
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
@@ -52,6 +66,7 @@ services:
       - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
       - 'clickhouse-volume:/var/lib/clickhouse'
       - 'clickhouse-log-volume:/var/log/clickhouse-server'
+
   postback-api:
     container_name: postback-api
     build:
@@ -64,12 +79,13 @@ services:
         condition: service_healthy
 
   admin-db:
-    image: postgres
+    container_name: admin-db
+    image: postgres:16-bullseye
     restart: always
     environment:
       POSTGRES_PASSWORD: example
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready']
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
       timeout: 5s
       retries: 10
@@ -106,8 +122,7 @@ services:
       - 'dash-backend'
     volumes:
       - ../apps/dash-frontend:/apps/dash-frontend
-      - /apps/dash-frontend/node_modules # Avoid overwriting node_modules
-      # - ../apps/dash-frontend/src:/apps/dash-frontend/src # Only mount the src directory
+      - /apps/dash-frontend/node_modules
 
 volumes:
   # Persist across stop/start, not down
