@@ -18,7 +18,11 @@
 	import type { DateRange } from 'bits-ui';
 	import { goto } from '$app/navigation';
 
-	let myRange: DateRange | undefined = undefined;
+	import { type PageData } from './$types';
+
+	let { data } = $props<{ data: PageData }>();
+
+	let myRange: DateRange | undefined = $state(undefined);
 
 	function handleDateChange(newRange: DateRange | undefined) {
 		myRange = newRange;
@@ -32,6 +36,8 @@
 			goto(`?start=${startDate}&end=${endDate}`);
 		}
 	}
+
+	// let overview = $state(data.respData.overview);
 </script>
 
 <div class="flex min-h-screen w-full flex-col">
@@ -109,6 +115,7 @@
 	</header>
 	<main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
 		<DateRangePicker onChange={handleDateChange} />
+
 		{#if myRange && myRange.start && myRange.end}
 			<p>
 				Selected Start Date: {myRange.start.toString()} <br />
@@ -166,37 +173,44 @@
 					</div>
 				</Card.Header>
 				<Card.Content>
-					<Table.Root>
-						<Table.Header>
-							<Table.Row>
-								<Table.Head>Network</Table.Head>
-								<Table.Head class="xl:table.-column">Campaign</Table.Head>
-								<Table.Head class="xl:table.-column">Impressions</Table.Head>
-								<Table.Head class="xl:table.-column">Clicks</Table.Head>
-								<Table.Head class="">Installs</Table.Head>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							<Table.Row>
-								<Table.Cell>
-									<div class="font-medium">networkA</div>
-								</Table.Cell>
-								<Table.Cell class="">campaignA</Table.Cell>
-								<Table.Cell class="">4000</Table.Cell>
-								<Table.Cell class="">200</Table.Cell>
-								<Table.Cell class="">2</Table.Cell>
-							</Table.Row>
-							<Table.Row>
-								<Table.Cell>
-									<div class="font-medium">networkA</div>
-								</Table.Cell>
-								<Table.Cell class="">campaignA</Table.Cell>
-								<Table.Cell class="">3000</Table.Cell>
-								<Table.Cell class="">300</Table.Cell>
-								<Table.Cell class="">3</Table.Cell>
-							</Table.Row>
-						</Table.Body>
-					</Table.Root>
+					{#await data.respData}
+						Loading...
+					{:then mydata}
+						<Table.Root>
+							<Table.Header>
+								<Table.Row>
+									<Table.Head>Date</Table.Head>
+									<Table.Head>Store ID</Table.Head>
+									<Table.Head>Network</Table.Head>
+									<Table.Head>Campaign</Table.Head>
+									<Table.Head>Ad Name</Table.Head>
+									<Table.Head class="text-right">Impressions</Table.Head>
+									<Table.Head class="text-right">Clicks</Table.Head>
+									<Table.Head class="text-right">Installs</Table.Head>
+									<Table.Head class="text-right">Revenue</Table.Head>
+								</Table.Row>
+							</Table.Header>
+							<Table.Body>
+								{#if mydata.overview && mydata.overview.length > 0}
+									{#each mydata.overview as entry (entry.on_date + entry.store_id + entry.network + entry.campaign_name + entry.ad_name)}
+										<Table.Row>
+											<Table.Cell>{entry.on_date.split('T')[0]}</Table.Cell>
+											<Table.Cell>{entry.store_id}</Table.Cell>
+											<Table.Cell>{entry.network}</Table.Cell>
+											<Table.Cell>{entry.campaign_name}</Table.Cell>
+											<Table.Cell>{entry.ad_name}</Table.Cell>
+											<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
+											<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
+											<Table.Cell class="text-right">{entry.installs}</Table.Cell>
+											<Table.Cell class="text-right"
+												>{parseFloat(entry.revenue).toFixed(4)}</Table.Cell
+											>
+										</Table.Row>
+									{/each}
+								{/if}
+							</Table.Body>
+						</Table.Root>
+					{/await}
 				</Card.Content>
 			</Card.Root>
 		</div>

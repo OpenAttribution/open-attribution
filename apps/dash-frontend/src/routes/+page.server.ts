@@ -5,7 +5,7 @@ export const load: PageServerLoad = async ({ url }) => {
 	const endDate = url.searchParams.get('end');
 
 	return {
-		myapp: fetch(
+		respData: fetch(
 			`http://dash-backend:8001/api/overview?start_date=${startDate}&end_date=${endDate}`
 		)
 			.then((resp) => {
