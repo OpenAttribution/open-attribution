@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Activity from 'lucide-svelte/icons/activity';
-	import ArrowUpRight from 'lucide-svelte/icons/arrow-up-right';
 	import CircleUser from 'lucide-svelte/icons/circle-user';
 	import CreditCard from 'lucide-svelte/icons/credit-card';
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
@@ -15,6 +14,25 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import DateRangePicker from '$lib/DateRangePicker.svelte';
+	import type { DateRange } from 'bits-ui';
+	import { goto } from '$app/navigation';
+
+	let myRange: DateRange | undefined = undefined;
+
+	function handleDateChange(newRange: DateRange | undefined) {
+		myRange = newRange;
+		// console.log(dateRange);
+
+		if (newRange && newRange.start && newRange.end) {
+			// Format the dates as needed (ISO strings or other formats)
+			const startDate = newRange.start.toString(); // Adjust as necessary
+			const endDate = newRange.end.toString(); // Adjust as necessary
+
+			// Navigate to the same page with query parameters for start and end dates
+			goto(`?start=${startDate}&end=${endDate}`);
+		}
+	}
 </script>
 
 <div class="flex min-h-screen w-full flex-col">
@@ -91,6 +109,13 @@
 		</div>
 	</header>
 	<main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+		<DateRangePicker onChange={handleDateChange} />
+		{#if myRange && myRange.start && myRange.end}
+			<p>
+				Selected Start Date: {myRange.start.toString()} <br />
+				Selected End Date: {myRange.end.toString()}
+			</p>
+		{/if}
 		<div class="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
