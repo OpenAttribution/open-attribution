@@ -95,13 +95,15 @@ services:
 
   dash-frontend:
     container_name: dash-frontend
+    working_dir: /apps/dash-frontend
+    command: npm run preview
     volumes:
       - ./apps/dash-frontend/src/:/apps/dash-frontend/src/
     build:
       context: ../
       dockerfile: docker/Dockerfile.dash-frontend
     ports:
-      - '3000:3000'
+      - '4173:4173'
     depends_on:
       - 'dash-backend'
 
