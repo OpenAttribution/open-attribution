@@ -22,7 +22,6 @@
 
 	function handleDateChange(newRange: DateRange | undefined) {
 		myRange = newRange;
-		// console.log(dateRange);
 
 		if (newRange && newRange.start && newRange.end) {
 			// Format the dates as needed (ISO strings or other formats)
