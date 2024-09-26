@@ -6,36 +6,21 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	// let { onChange, children, dateRange } = $props();
-	type OnChangeCallback = (value: DateRange | undefined) => void;
-	let { onChange, dateRange }: { onChange: OnChangeCallback; dateRange?: DateRange } = $props();
 
-	// Local state
+	type OnChangeCallback = (value: DateRange | undefined) => void;
+	let { onChange }: { onChange: OnChangeCallback } = $props();
+
 	let value: DateRange | undefined = $state({
 		start: today(getLocalTimeZone()).add({ days: -7 }),
 		end: today(getLocalTimeZone())
 	});
 
-	// let { value = $bindable() } = $props()
-
 	const df = new DateFormatter('en-CA', {
 		dateStyle: 'medium'
 	});
 
-	// Calculate the start date (7 days ago)
-	const startDate = today(getLocalTimeZone()).add({ days: -7 });
+	let startValue: DateValue | undefined = $state(today(getLocalTimeZone()).add({ days: -7 }));
 
-	// // Set the value to the range from today to the past 7 days
-	// export let value: DateRange | undefined = {
-	// 	start: startDate,
-	// 	end: today(getLocalTimeZone())
-	// };
-
-	// let startValue: DateValue | undefined = undefined;
-
-	let startValue: DateValue | undefined = $state(undefined);
-
-	// Effect to watch for changes in `value` and call onChange prop
 	$effect(() => {
 		if (onChange) {
 			onChange(value);
