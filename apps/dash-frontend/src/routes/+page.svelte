@@ -13,12 +13,12 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
 	import type { DateRange } from 'bits-ui';
 	import { goto } from '$app/navigation';
 
 	import { type PageData } from './$types';
+	import OverviewTable from '$lib/OverviewTable.svelte';
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -176,40 +176,7 @@
 					{#await data.respData}
 						Loading...
 					{:then mydata}
-						<Table.Root>
-							<Table.Header>
-								<Table.Row>
-									<Table.Head>Date</Table.Head>
-									<Table.Head>Store ID</Table.Head>
-									<Table.Head>Network</Table.Head>
-									<Table.Head>Campaign</Table.Head>
-									<Table.Head>Ad Name</Table.Head>
-									<Table.Head class="text-right">Impressions</Table.Head>
-									<Table.Head class="text-right">Clicks</Table.Head>
-									<Table.Head class="text-right">Installs</Table.Head>
-									<Table.Head class="text-right">Revenue</Table.Head>
-								</Table.Row>
-							</Table.Header>
-							<Table.Body>
-								{#if mydata.overview && mydata.overview.length > 0}
-									{#each mydata.overview as entry (entry.on_date + entry.store_id + entry.network + entry.campaign_name + entry.ad_name)}
-										<Table.Row>
-											<Table.Cell>{entry.on_date.split('T')[0]}</Table.Cell>
-											<Table.Cell>{entry.store_id}</Table.Cell>
-											<Table.Cell>{entry.network}</Table.Cell>
-											<Table.Cell>{entry.campaign_name}</Table.Cell>
-											<Table.Cell>{entry.ad_name}</Table.Cell>
-											<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
-											<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
-											<Table.Cell class="text-right">{entry.installs}</Table.Cell>
-											<Table.Cell class="text-right"
-												>{parseFloat(entry.revenue).toFixed(4)}</Table.Cell
-											>
-										</Table.Row>
-									{/each}
-								{/if}
-							</Table.Body>
-						</Table.Root>
+						<OverviewTable overviewData={mydata.overview}></OverviewTable>
 					{/await}
 				</Card.Content>
 			</Card.Root>
