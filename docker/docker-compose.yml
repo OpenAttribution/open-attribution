@@ -50,7 +50,6 @@ services:
   clickhouse:
     container_name: clickhouse
     image: clickhouse/clickhouse-server:24.8.4
-    # image: openattribution/clickhouse:main
     healthcheck:
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
@@ -92,9 +91,7 @@ services:
 
   dash-backend:
     container_name: dash-backend
-    build:
-      # context: ../ # commented out, wasn't affecting volume?
-      dockerfile: Dockerfile.dash-backend
+    image: openattribution/dash-backend:main
     ports:
       - '8001:8001'
     command: uvicorn app:app --host 0.0.0.0 --port 8001 --reload
@@ -107,11 +104,9 @@ services:
 
   dash-frontend:
     container_name: dash-frontend
+    image: openattribution/dash-frontend:main
     working_dir: /apps/dash-frontend
     command: npm run dev
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.dash-frontend
     ports:
       - '4173:4173'
     depends_on:
