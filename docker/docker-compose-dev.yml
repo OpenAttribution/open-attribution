@@ -96,7 +96,7 @@ services:
   dash-frontend:
     container_name: dash-frontend
     working_dir: /apps/dash-frontend
-    command: npm run preview
+    command: npm run dev
     build:
       context: ../
       dockerfile: docker/Dockerfile.dash-frontend

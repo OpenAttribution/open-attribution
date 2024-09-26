@@ -9,8 +9,6 @@
 	import Search from 'lucide-svelte/icons/search';
 	import Users from 'lucide-svelte/icons/users';
 
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -160,18 +158,18 @@
 									<div class="font-medium">networkA</div>
 								</Table.Cell>
 								<Table.Cell class="">campaignA</Table.Cell>
-								<Table.Cell class="">1000</Table.Cell>
-								<Table.Cell class="">100</Table.Cell>
-								<Table.Cell class="">1</Table.Cell>
+								<Table.Cell class="">4000</Table.Cell>
+								<Table.Cell class="">200</Table.Cell>
+								<Table.Cell class="">2</Table.Cell>
 							</Table.Row>
 							<Table.Row>
 								<Table.Cell>
 									<div class="font-medium">networkA</div>
 								</Table.Cell>
 								<Table.Cell class="">campaignA</Table.Cell>
-								<Table.Cell class="">1000</Table.Cell>
-								<Table.Cell class="">100</Table.Cell>
-								<Table.Cell class="">1</Table.Cell>
+								<Table.Cell class="">3000</Table.Cell>
+								<Table.Cell class="">300</Table.Cell>
+								<Table.Cell class="">3</Table.Cell>
 							</Table.Row>
 						</Table.Body>
 					</Table.Root>
