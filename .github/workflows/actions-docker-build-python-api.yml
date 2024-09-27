@@ -13,6 +13,7 @@ on:
     paths:
       - 'docker/Dockerfile.python'
       - 'api_app/**'
+      - '.github/workflows/actions-docker-build-python-api.yml'
       # Publish semver tags as releases.
     tags: ['v*.*.*']
 

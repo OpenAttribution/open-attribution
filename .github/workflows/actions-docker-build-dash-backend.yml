@@ -13,6 +13,7 @@ on:
     paths:
       - 'docker/Dockerfile.dash-backend'
       - 'apps/dash-backend/**'
+      - '.github/workflows/actions-docker-build-dash-backend.yml'
       # Publish semver tags as releases.
     tags: ['v*.*.*']
 
