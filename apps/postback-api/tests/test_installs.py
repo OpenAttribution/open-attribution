@@ -5,8 +5,8 @@ import uuid
 
 import pandas as pd
 from clickhouse_connect import create_client
-
 from config import get_logger
+
 from tests._simulate_network_calls import click, impression, make_inapp_request
 
 logger = get_logger(__name__)
@@ -283,9 +283,6 @@ def get_expected_test_df(run_tests: dict, time_part: str) -> pd.DataFrame:
     return test_df
 
 
-client = create_client(host="localhost")
-
-
 def query_campaign(table: str, campaign: str) -> pd.DataFrame:
     bad_name = campaign + NOT_ATTRIBUTABLE_SUFFIX
     # Define the query template
@@ -298,6 +295,7 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
         campaign_name = %(campaign_name)s OR campaign_name = %(bad_name)s
     """
     # Execute the query and fetch the data as pandas df
+    client = create_client(host="localhost")
     df = client.query_df(
         query_template,
         parameters={"campaign_name": campaign, "table": table, "bad_name": bad_name},
@@ -350,7 +348,7 @@ def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
 
 def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
     db_dfs = []
-    for _campaign in run_tests.keys():
+    for _campaign in run_tests:
         campaign = _campaign + "_" + time_part
         campaign_df = get_db_data_for_single_campaign(campaign)
         db_dfs.append(campaign_df)
@@ -404,7 +402,7 @@ def check_install_results(run_tests: dict, time_part: str) -> None:
             logger.info(f"{row.campaign_name=} check: {row}")
 
 
-def main(endpoint:str, test_names: list[str] | None = None) -> None:
+def main(endpoint: str, test_names: list[str] | None = None) -> None:
     time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
     for network, tests in ALL_TESTS.items():
         if test_names:
@@ -412,7 +410,7 @@ def main(endpoint:str, test_names: list[str] | None = None) -> None:
             if len(run_tests) == 0:
                 example_test_names = " or ".join(list(tests.keys())[0:2])
                 logger.error(
-                    f"No test names matched, try names like {example_test_names} from test_installs.py"
+                    f"No test names matched, try names like {example_test_names} from test_installs.py",
                 )
                 return
             logger.info(f"tests filtered to {len(run_tests)} out of {len(tests)}.")
@@ -446,7 +444,7 @@ def main(endpoint:str, test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
-                            endpoint=endpoint
+                                endpoint=endpoint,
                             )
                             _total_impressions += 1
                         elif item == "click":
@@ -456,16 +454,13 @@ def main(endpoint:str, test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
-                            endpoint=endpoint
+                                endpoint=endpoint,
                             )
                             _total_clicks += 1
                     else:
                         time.sleep(0.5)  # Simulate delay
                         make_inapp_request(
-                            event_id=item,
-                            myapp=APP,
-                            myifa=ifa,
-                            endpoint=endpoint
+                            event_id=item, myapp=APP, myifa=ifa, endpoint=endpoint,
                         )
                         _total_events += 1
             logger.info(
