@@ -10,6 +10,7 @@ COPY package-lock.json /apps/dash-frontend/
 RUN npm install
 
 COPY ./ ./
+
 RUN npm run build
 
 EXPOSE 4173
