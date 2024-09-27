@@ -95,8 +95,8 @@ services:
   dash-backend:
     container_name: dash-backend
     build:
-      # context: ../ # commented out, wasn't affecting volume?
-      dockerfile: Dockerfile.dash-backend
+      context: ../apps/dash-backend
+      dockerfile: Dockerfile.dev
     ports:
       - '8001:8001'
     command: uvicorn app:app --host 0.0.0.0 --port 8001 --reload
@@ -114,8 +114,8 @@ services:
     working_dir: /apps/dash-frontend
     command: npm run dev
     build:
-      context: ../
-      dockerfile: docker/Dockerfile.dash-frontend
+      context: ../apps/dash-frontend
+      dockerfile: Dockerfile.dev
     ports:
       - '4173:4173'
     depends_on:

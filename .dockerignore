@@ -1,5 +1,6 @@
 # Ignore node_modules for dash app
-apps/dash/node_modules
+apps/dash-frontend/node_modules
+apps/www/node_modules
 
 # Other directories or files to ignore
 .git

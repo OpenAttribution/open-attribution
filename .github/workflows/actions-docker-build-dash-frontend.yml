@@ -11,7 +11,6 @@ on:
   push:
     branches: ['main']
     paths:
-      - 'docker/Dockerfile.dash-frontend'
       - 'apps/dash-frontend/**'
       - '.github/workflows/actions-docker-build-dash-frontend.yml'
       # Publish semver tags as releases.
@@ -43,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/Dockerfile.dash-frontend
+          file: apps/dash-frontend/Dockerfile.dash-frontend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
