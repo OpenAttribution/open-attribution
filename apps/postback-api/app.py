@@ -10,7 +10,7 @@ from litestar.openapi import OpenAPIConfig, OpenAPIController
 
 cors_config = CORSConfig(
     allow_origins=[
-        "localhost",
+        "*",
     ],
 )
 
@@ -18,7 +18,7 @@ cors_config = CORSConfig(
 class MyOpenAPIController(OpenAPIController):
     """Set Docs path."""
 
-    path = "/dash/docs"  # NOTE: not working?
+    path = "/collect/docs"  # NOTE: not working?
 
 
 logging_config = LoggingConfig(
