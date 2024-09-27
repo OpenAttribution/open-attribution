@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install --no-cache-dir --upgrade uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0 requests==2.32.3
+RUN pip install --no-cache-dir --upgrade uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0 requests==2.32.3 pandas==2.2.3
 
 COPY . /app/
 

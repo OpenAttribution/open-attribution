@@ -87,7 +87,7 @@ services:
     depends_on:
       - postback-api
     environment:
-      - TEST_HOST=${TEST_HOST:-http://localhost}
+      - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
 
   admin-db:
     container_name: admin-db
