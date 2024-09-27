@@ -1,11 +1,10 @@
+
 # Ignore node_modules for dash app
-apps/dash-frontend/node_modules
-apps/www/node_modules
+
+node_modules/
 
 # Other directories or files to ignore
+
 .git
-.dockerignore
-Dockerfile
 **/temp*
 */*.log
-
