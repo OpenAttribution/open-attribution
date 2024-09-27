@@ -3,6 +3,7 @@
 import argparse
 
 from config import get_logger
+
 from tests.generate_impressions_and_clicks import main as continuously_generate
 from tests.test_installs import main as test_installs
 

@@ -3,6 +3,7 @@ import time
 import uuid
 
 from config import get_logger
+
 from tests._simulate_network_calls import impression_or_click, make_inapp_request
 
 logger = get_logger(__name__)
@@ -27,7 +28,7 @@ def main(endpoint:str) -> None:
                         event_id="app_open",
                         myapp=app,
                         myifa=ifa,
-                        endpoint=endpoint
+                        endpoint=endpoint,
                     )
                     continue
                 for campaign in CAMPAIGNS:
@@ -40,7 +41,7 @@ def main(endpoint:str) -> None:
                             mynetwork=network,
                             myifa=ifa,
                             myad=ad,
-                            endpoint=endpoint
+                            endpoint=endpoint,
                         )
                         # Decide if a click should be generated
                         if random.random() < 0.5:  # % chance for a click
@@ -52,7 +53,7 @@ def main(endpoint:str) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
-                                endpoint=endpoint
+                                endpoint=endpoint,
                             )
                             if random.random() < 0.5:
                                 time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
@@ -60,5 +61,5 @@ def main(endpoint:str) -> None:
                                     event_id="app_open",
                                     myapp=app,
                                     myifa=ifa,
-                                    endpoint=endpoint
+                                    endpoint=endpoint,
                                 )
