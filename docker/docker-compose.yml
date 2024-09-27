@@ -106,7 +106,7 @@ services:
     container_name: dash-frontend
     image: openattribution/dash-frontend:main
     working_dir: /apps/dash-frontend
-    command: npm run dev
+    command: 'node build'
     ports:
       - '4173:4173'
     depends_on:

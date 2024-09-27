@@ -25,5 +25,5 @@ EXPOSE 4173
 
 ENV PORT=4173
 
-CMD ["node", "build/index.js"]
+CMD ["node", "build"]
 
