@@ -1,7 +1,6 @@
+# Build for local development use and hot module reloading
 # Build Stage
 FROM node:20 as builder
-
-ENV NODE_ENV=production
 
 WORKDIR /apps/dash-frontend
 
@@ -15,5 +14,4 @@ RUN npm run build
 
 EXPOSE 4173
 
-# Use npm script or directly run serve
 CMD ["npm", "run", "preview"]

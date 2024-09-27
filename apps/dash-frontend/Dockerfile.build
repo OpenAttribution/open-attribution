@@ -1,20 +1,31 @@
+# Build for docker image
 # Build Stage
 FROM node:20 as builder
-
-ENV NODE_ENV=production
-
 WORKDIR /apps/dash-frontend
 
-COPY package.json /apps/dash-frontend/
-COPY package-lock.json /apps/dash-frontend/
+# Copy package files
+COPY package.json package-lock.json ./
 
-RUN npm install
+# Install dependencies
+RUN npm ci
 
-COPY ./ ./
+# Copy the rest of the application code
+COPY . .
+
+# Build the application
 RUN npm run build
+
+# Production Stage
+FROM node:20-slim
+ENV NODE_ENV=production
+WORKDIR /apps/dash-frontend
+
+# Copy only the built application from the builder stage
+COPY --from=builder /apps/dash-frontend/build ./build
 
 EXPOSE 4173
 
-# Use npm script or directly run serve
-CMD ["npm", "start"]
+ENV PORT=4173
+
+CMD ["node", "build/index.js"]
 

@@ -1,10 +1,11 @@
 
-# Ignore node_modules for dash app
+# Ignore npm/node builds for dash app
 
-node_modules/
+**/node_modules
+**/build
 
 # Other directories or files to ignore
 
 .git
-**/temp*
+**/temp
 */*.log
