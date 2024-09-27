@@ -70,7 +70,7 @@ services:
     container_name: postback-api
     image: openattribution/python-api:main
     working_dir: /app
-    command: litestar run --host 0.0.0.0 --port 8001
+    command: litestar run --host 0.0.0.0 --port 8000
     ports:
       - '8000:8000'
     depends_on:
