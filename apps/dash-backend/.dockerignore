@@ -1,0 +1,5 @@
+# Other directories or files to ignore
+
+.git
+**/temp*
+*/*.log
