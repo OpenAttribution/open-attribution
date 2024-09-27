@@ -83,9 +83,11 @@ services:
       context: ../apps/postback-api
       dockerfile: Dockerfile.test
     working_dir: /app
-    command: python tests/run_data_generation.py -i && python tests/run_data_generation.py
+    command: python run_data_generation.py -i && python run_data_generation.py
     depends_on:
       - postback-api
+    environment:
+      - TEST_HOST=${TEST_HOST:-http://localhost}
 
   admin-db:
     container_name: admin-db
