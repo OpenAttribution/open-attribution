@@ -41,7 +41,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: apps/postback-api/
           file: apps/postback-api/Dockerfile.python
           push: true
           tags: ${{ steps.meta.outputs.tags }}
