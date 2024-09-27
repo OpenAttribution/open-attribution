@@ -77,6 +77,16 @@ services:
       clickhouse:
         condition: service_healthy
 
+  postback-test:
+    container_name: postback-test
+    build:
+      context: ../apps/postback-api
+      dockerfile: Dockerfile.test
+    working_dir: /app
+    command: python tests/run_data_generation.py -i && python tests/run_data_generation.py
+    depends_on:
+      - postback-api
+
   admin-db:
     container_name: admin-db
     image: postgres:16-bullseye

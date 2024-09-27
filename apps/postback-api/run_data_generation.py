@@ -1,6 +1,7 @@
 """Run tests and check results of attributions."""
 
 import argparse
+import os
 
 from config import get_logger
 
@@ -43,7 +44,8 @@ def main(args: argparse.Namespace) -> None:
     """Run user tests."""
     logger.info(f"Main start with {args=}")
     test_names = args.names
-    endpoint = args.endpoint_api
+    test_host = os.getenv("TEST_HOST", None)
+    endpoint = test_host if test_host else args.endpoint_api
     if endpoint[-1] == "/":
         endpoint = endpoint[:-1]
     if args.installs_test:
