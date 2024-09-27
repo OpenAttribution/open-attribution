@@ -1,18 +1,16 @@
 # Build for docker image
 # Build Stage
 FROM node:20 as builder
+
 WORKDIR /apps/dash-frontend
 
-# Copy package files
-COPY package.json package-lock.json ./
+COPY package.json /apps/dash-frontend/
+COPY package-lock.json /apps/dash-frontend/
 
-# Install dependencies
 RUN npm ci
 
-# Copy the rest of the application code
-COPY . .
+COPY ./ ./
 
-# Build the application
 RUN npm run build
 
 # Production Stage
