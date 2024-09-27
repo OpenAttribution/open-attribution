@@ -2,12 +2,11 @@
 
 import logging
 
+from api_app.controllers.postbacks import PostbackController
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig, OpenAPIController
-
-from api_app.controllers.postbacks import PostbackController
 
 cors_config = CORSConfig(
     allow_origins=[

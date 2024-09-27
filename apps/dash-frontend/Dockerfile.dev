@@ -1,0 +1,19 @@
+# Build Stage
+FROM node:20 as builder
+
+ENV NODE_ENV=production
+
+WORKDIR /apps/dash-frontend
+
+COPY package.json /apps/dash-frontend/
+COPY package-lock.json /apps/dash-frontend/
+
+RUN npm install
+
+COPY ./ ./
+RUN npm run build
+
+EXPOSE 4173
+
+# Use npm script or directly run serve
+CMD ["npm", "run", "preview"]

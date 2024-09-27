@@ -1,4 +1,0 @@
-uvicorn==0.27.0.post1
-litestar[standard]==2.5.3
-apache-superset==3.1.0
-confluent_kafka==2.3.0
