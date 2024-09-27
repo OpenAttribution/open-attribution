@@ -20,6 +20,8 @@ WORKDIR /apps/dash-frontend
 
 # Copy only the built application from the builder stage
 COPY --from=builder /apps/dash-frontend/build ./build
+COPY --from=builder /apps/dash-frontend/node_modules ./node_modules
+COPY --from=builder /apps/dash-frontend/package.json ./package.json
 
 EXPOSE 4173
 
