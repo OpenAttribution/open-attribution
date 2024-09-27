@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import clickhouse_connect
-
 from config import get_logger
 
 if __name__ == "__main__":
