@@ -7,7 +7,7 @@ FROM python:${python_version}
 WORKDIR /app
 
 # Install the requirements
-RUN pip install --no-cache-dir --upgrade uvicorn==0.30.6 "litestar[standard]"==2.12.1 clickhouse_connect==0.7.19 confluent_kafka==2.3.0 pandas==2.2.3
+RUN pip install --no-cache-dir --upgrade uvicorn==0.30.6 "litestar[standard]"==2.12.1 clickhouse_connect==0.7.19 confluent_kafka==2.3.0 pandas==2.2.3 gunicorn==21.2.0
 
 # Copy only the necessary files to the working directory
 COPY ./ /app/
@@ -16,6 +16,5 @@ COPY ./ /app/
 EXPOSE 8001
 
 # Run the app with the Litestar CLI
-# CMD ["litestar", "run", "--host", "0.0.0.0", "--port", "8001", "--reload"]
-
+CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app:app", "--bind", "0.0.0.0:8001"]
 
