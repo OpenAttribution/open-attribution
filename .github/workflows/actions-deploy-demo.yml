@@ -44,6 +44,7 @@ jobs:
             cd $TARGETDIR
             pwd
             git pull origin main
+            export TEST_HOST=http://demo.openattribution.dev
             sudo docker compose -f docker/docker-compose.yml down
             sudo docker compose -f docker/docker-compose.yml pull
             sudo docker compose -f docker/docker-compose.yml up -d
