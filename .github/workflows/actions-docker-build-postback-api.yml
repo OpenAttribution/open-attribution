@@ -11,9 +11,8 @@ on:
   push:
     branches: ['main']
     paths:
-      - 'docker/Dockerfile.python'
-      - 'api_app/**'
-      - '.github/workflows/actions-docker-build-python-api.yml'
+      - 'apps/postback-api/**'
+      - '.github/workflows/actions-docker-build-postback-api.yml'
       # Publish semver tags as releases.
     tags: ['v*.*.*']
 
@@ -43,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/postback-api/docker/Dockerfile.python
+          file: apps/postback-api/Dockerfile.python
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
