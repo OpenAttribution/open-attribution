@@ -94,7 +94,7 @@ services:
     image: openattribution/dash-backend:main
     ports:
       - '8001:8001'
-    command: uvicorn app:app --host 0.0.0.0 --port 8001 --reload
+    command: gunicorn app:app --bind 0.0.0.0:8001
     working_dir: /app
     depends_on:
       clickhouse:
