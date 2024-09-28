@@ -1,3 +1,5 @@
+import type { CalendarDate } from '@internationalized/date';
+
 export interface OverviewEntry {
 	on_date: string;
 	network: string;
@@ -13,3 +15,8 @@ export interface OverviewEntry {
 }
 
 export type OverviewEntries = OverviewEntry[];
+
+export type MyDateRange = {
+	start: CalendarDate;
+	end: CalendarDate;
+};

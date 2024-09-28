@@ -22,7 +22,7 @@
 	</Table.Header>
 	<Table.Body>
 		{#if overviewData && overviewData.length > 0}
-			{#each overviewData as entry (entry.on_date + entry.store_id + entry.network + entry.campaign_name + entry.ad_name)}
+			{#each overviewData.slice(0, 10) as entry (entry.on_date + entry.store_id + entry.network + entry.campaign_name + entry.ad_name)}
 				<Table.Row>
 					<Table.Cell>{entry.on_date.split('T')[0]}</Table.Cell>
 					<Table.Cell>{entry.store_id}</Table.Cell>
