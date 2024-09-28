@@ -15,15 +15,25 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
 	// import type { DateRange } from 'bits-ui';
-	import type { MyDateRange } from '../types';
+	import type { MyDateRange, OverviewEntries } from '../types';
 	import { goto } from '$app/navigation';
 
 	import type { OverviewEntry } from '../types';
 
 	import { type PageData } from './$types';
-	import OverviewTable2 from '$lib/OverviewTable.svelte';
+	import OverviewTable from '$lib/OverviewTable.svelte';
 
-	let { data } = $props<{ data: PageData }>();
+	const { data } = $props<{ data: PageData }>();
+
+	function handleUpdate(newData: OverviewEntries) {
+		if (newData && newData.length > 0) {
+			console.log('isthisworking');
+			return newData.reduce((total: number, entry: OverviewEntry) => total + entry.clicks, 0);
+		} else {
+			console.log('NOPE');
+			return 0;
+		}
+	}
 
 	function handleDateChange(newRange: MyDateRange | undefined) {
 		if (newRange && newRange.start && newRange.end) {
@@ -37,20 +47,7 @@
 
 	let overviewData = $state(data.respData.overview);
 
-	let totalClicks = $state(0);
-
-	$effect(() => {
-		if (overviewData && overviewData.length > 0) {
-			console.log('isthisworking');
-			totalClicks = overviewData.reduce(
-				(total: number, entry: OverviewEntry) => total + entry.clicks,
-				0
-			);
-		} else {
-			console.log('NOPE');
-			totalClicks = 0;
-		}
-	});
+	let totalClicks = $state(handleUpdate(data.respData.overview));
 
 	let totalRevenue = $derived.by(() => {
 		// Check if overviewData is defined and not null
@@ -187,15 +184,23 @@
 					<Card.Title class="text-sm font-medium">Clicks</Card.Title>
 					<CreditCard class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">{totalClicks}</div>
-					<p class="text-muted-foreground text-xs">+19% from last month</p>
-				</Card.Content>
+				{#await data.respData}
+					Loading...
+				{:then mydatas}
+					<Card.Content>
+						<div class="text-2xl font-bold">{handleUpdate(mydatas)}</div>
+						<p class="text-muted-foreground text-xs">+19% from last month</p>
+					</Card.Content>
+				{/await}
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-					<Card.Title class="text-sm font-medium">Installs</Card.Title>
 					<Activity class="text-muted-foreground h-4 w-4" />
+					{#await data.respData}
+						Loading...
+					{:then mydata}
+						L is: {mydata.overview.length}
+					{/await}
 				</Card.Header>
 				<Card.Content>
 					<div class="text-2xl font-bold">{totalInstalls}</div>
@@ -226,7 +231,7 @@
 					{#await data.respData}
 						Loading...
 					{:then mydata}
-						<OverviewTable2 overviewData={mydata.overview}></OverviewTable2>
+						<OverviewTable overviewData={mydata.overview}></OverviewTable>
 					{/await}
 				</Card.Content>
 			</Card.Root>

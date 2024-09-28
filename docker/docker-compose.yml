@@ -110,7 +110,7 @@ services:
     working_dir: /apps/dash-frontend
     command: 'node build'
     ports:
-      - '4173:4173'
+      - '5173:5173'
     depends_on:
       - 'dash-backend'
 
