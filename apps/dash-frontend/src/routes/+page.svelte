@@ -14,15 +14,18 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
-	import type { DateRange } from 'bits-ui';
+	// import type { DateRange } from 'bits-ui';
+	import type { MyDateRange } from '../types';
 	import { goto } from '$app/navigation';
 
+	import type { OverviewEntry } from '../types';
+
 	import { type PageData } from './$types';
-	import OverviewTable from '$lib/OverviewTable.svelte';
+	import OverviewTable2 from '$lib/OverviewTable.svelte';
 
 	let { data } = $props<{ data: PageData }>();
 
-	function handleDateChange(newRange: DateRange | undefined) {
+	function handleDateChange(newRange: MyDateRange | undefined) {
 		if (newRange && newRange.start && newRange.end) {
 			const startDate = newRange.start.toString();
 			const endDate = newRange.end.toString();
@@ -34,10 +37,25 @@
 
 	let overviewData = $state(data.respData.overview);
 
+	let totalClicks = $state(0);
+
+	$effect(() => {
+		if (overviewData && overviewData.length > 0) {
+			console.log('isthisworking');
+			totalClicks = overviewData.reduce(
+				(total: number, entry: OverviewEntry) => total + entry.clicks,
+				0
+			);
+		} else {
+			console.log('NOPE');
+			totalClicks = 0;
+		}
+	});
+
 	let totalRevenue = $derived.by(() => {
 		// Check if overviewData is defined and not null
 		if (overviewData && overviewData.length > 0) {
-			return overviewData.reduce((acc, entry) => acc + entry.revenue, 0);
+			return overviewData.reduce((acc: number, entry: OverviewEntry) => acc + entry.revenue, 0);
 		} else {
 			return 0;
 		}
@@ -46,22 +64,25 @@
 	let totalImpressions = $derived.by(() => {
 		let total = 0;
 		if (overviewData && overviewData.length > 0) {
-			total = overviewData.reduce((acc, entry) => acc + entry.impressions, 0);
+			total = overviewData.reduce(
+				(acc: number, entry: OverviewEntry) => acc + entry.impressions,
+				0
+			);
 		}
 		return total;
 	});
 
-	let totalClicks = $derived.by(() => {
-		if (overviewData && overviewData.length > 0) {
-			return overviewData.reduce((acc, entry) => acc + entry.clicks, 0);
-		} else {
-			return 0;
-		}
-	});
+	// let totalClicks = $state(overviewData.reduce((acc, entry) => acc + entry.clicks, 0));
+	// totalClicks = 0;
+
+	// Updating overviewData will automatically recalculate totalClicks
+	function updateData() {
+		overviewData = [{ clicks: 20 }, { clicks: 30 }];
+	}
 
 	let totalInstalls = $derived.by(() => {
 		if (overviewData && Array.isArray(overviewData)) {
-			return overviewData.reduce((acc, entry) => acc + entry.installs, 0);
+			return overviewData.reduce((acc: number, entry: OverviewEntry) => acc + entry.installs, 0);
 		} else {
 			return 0;
 		}
@@ -197,7 +218,7 @@
 			<Card.Root class="xl:col-span-2">
 				<Card.Header class="flex flex-row items-center">
 					<div class="gap-2">
-						<Card.Title>Campaign</Card.Title>
+						<Card.Title>Campaign Shadcn Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 					</div>
 				</Card.Header>
@@ -205,7 +226,7 @@
 					{#await data.respData}
 						Loading...
 					{:then mydata}
-						<OverviewTable overviewData={mydata.overview}></OverviewTable>
+						<OverviewTable2 overviewData={mydata.overview}></OverviewTable2>
 					{/await}
 				</Card.Content>
 			</Card.Root>

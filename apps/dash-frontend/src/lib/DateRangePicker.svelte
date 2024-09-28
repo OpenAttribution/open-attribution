@@ -1,16 +1,18 @@
 <script lang="ts">
 	import CalendarIcon from 'lucide-svelte/icons/calendar';
-	import type { DateRange } from 'bits-ui';
+	// import type { DateRange } from 'bits-ui';
 	import { DateFormatter, type DateValue, getLocalTimeZone, today } from '@internationalized/date';
 	import { cn } from '$lib/utils.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 
-	type OnChangeCallback = (value: DateRange | undefined) => void;
+	import type { MyDateRange } from '../types';
+
+	type OnChangeCallback = (value: MyDateRange | undefined) => void;
 	let { onChange }: { onChange: OnChangeCallback } = $props();
 
-	let value: DateRange | undefined = $state({
+	let value: MyDateRange | undefined = $state({
 		start: today(getLocalTimeZone()).add({ days: -7 }),
 		end: today(getLocalTimeZone())
 	});
