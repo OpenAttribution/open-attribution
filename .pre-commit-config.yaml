@@ -67,10 +67,11 @@ repos:
         files: \.(js|ts|svelte)$
         pass_filenames: false
         require_serial: true
-  - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.2.0
-    hooks:
-      - id: sqlfluff-lint
-        args: [--dialect=clickhouse]
-      - id: sqlfluff-fix
-        args: [--dialect=clickhouse]
+  #- repo: https://github.com/sqlfluff/sqlfluff
+  # Love SQLfluff, but causing huge issues with Clickhouse, many rules seem broken
+  #rev: 3.2.0
+  #hooks:
+  #- id: sqlfluff-lint
+  #args: [--dialect=clickhouse]
+  #- id: sqlfluff-fix
+  #args: [--dialect=clickhouse]
