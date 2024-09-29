@@ -149,7 +149,7 @@
 			<Card.Root class="xl:col-span-2">
 				<Card.Header class="flex flex-row items-center">
 					<div class="gap-2">
-						<Card.Title>Campaign Shadcn Table</Card.Title>
+						<Card.Title>My Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 					</div>
 				</Card.Header>

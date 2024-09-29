@@ -4,12 +4,12 @@ from typing import Self
 
 import clickhouse_connect
 import pandas as pd
+from config import get_logger
 from litestar import Controller, get
 
 from api_app.models import (
     OverviewData,
 )
-from config import get_logger
 
 logger = get_logger(__name__)
 
@@ -58,9 +58,25 @@ class OverviewController(Controller):
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
         home_df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
-        home_dict = home_df.to_dict(orient="records")
+        dates_home_df = (
+            home_df.groupby(
+                ["on_date", "store_id,", "network", "campaign_name", "campaign_id"],
+            )["impressions", "clicks", "installs", "revenue"]
+            .sum()
+            .reset_index()
+        )
+        home_df = (
+            home_df.groupby(
+                ["store_id,", "network", "campaign_name", "campaign_id"],
+            )["impressions", "clicks", "installs", "revenue"]
+            .sum()
+            .reset_index()
+        )
 
-        myresp = OverviewData(overview=home_dict)
+        home_dict = home_df.to_dict(orient="records")
+        dates_home_dict = dates_home_df.to_dict(orient="records")
+
+        myresp = OverviewData(overview=home_dict, dates_overview=dates_home_dict)
 
         logger.info(f"{self.path} return rows {home_df.shape}")
         return myresp

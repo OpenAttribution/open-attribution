@@ -8,3 +8,4 @@ class OverviewData:
     """Main overview for homepage."""
 
     overview: dict
+    dates_overview: dict

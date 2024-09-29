@@ -35,6 +35,14 @@
        "javascript.validate.enable": false,
        "typescript.validate.enable": true,
        "npm.packageManager": "npm",
-       "npm.exclude": ["**/Project Root"]
+       "npm.exclude": ["**/Project Root"],
+     "search.exclude": {
+    "**/node_modules": true,
+    "**/.virtualenv": true,
+    "**/__pycache__": true,
+    "**/package-lock.json": true,
+    "**/static/generated*": true
+}
      }
+
    }

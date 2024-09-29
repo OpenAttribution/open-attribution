@@ -9,11 +9,9 @@
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>Date</Table.Head>
 			<Table.Head>Store ID</Table.Head>
 			<Table.Head>Network</Table.Head>
 			<Table.Head>Campaign</Table.Head>
-			<Table.Head>Ad Name</Table.Head>
 			<Table.Head class="text-right">Impressions</Table.Head>
 			<Table.Head class="text-right">Clicks</Table.Head>
 			<Table.Head class="text-right">Installs</Table.Head>
@@ -22,13 +20,11 @@
 	</Table.Header>
 	<Table.Body>
 		{#if overviewData && overviewData.length > 0}
-			{#each overviewData.slice(0, 10) as entry (entry.on_date + entry.store_id + entry.network + entry.campaign_name + entry.ad_name)}
+			{#each overviewData.slice(0, 10) as entry (entry.store_id + entry.network + entry.campaign_name)}
 				<Table.Row>
-					<Table.Cell>{entry.on_date.split('T')[0]}</Table.Cell>
 					<Table.Cell>{entry.store_id}</Table.Cell>
 					<Table.Cell>{entry.network}</Table.Cell>
 					<Table.Cell>{entry.campaign_name}</Table.Cell>
-					<Table.Cell>{entry.ad_name}</Table.Cell>
 					<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
 					<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
 					<Table.Cell class="text-right">{entry.installs}</Table.Cell>
