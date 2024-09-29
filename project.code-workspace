@@ -1,3 +1,5 @@
+// Added to resolve the issue that a root node_modules caused all apps/xxx/node_modules to be ignored
+// which led to vscode thinking imports were not there
 {
      "folders": [
        {

@@ -17,10 +17,13 @@
 
 	const { data } = $props<{ data: PageData }>();
 
-	function handleUpdate(newData: OverviewEntries) {
+	function makeSum(newData: OverviewEntries, property: keyof OverviewEntry) {
 		if (newData && newData.length > 0) {
 			console.log('isthisworking');
-			return newData.reduce((total: number, entry: OverviewEntry) => total + entry.clicks, 0);
+			return newData.reduce((total: number, entry: OverviewEntry) => {
+				const value = entry[property];
+				return total + (typeof value === 'number' ? value : 0);
+			}, 0);
 		} else {
 			console.log('NOPE');
 			return 0;
@@ -38,10 +41,6 @@
 	}
 
 	let overviewData = $state(data.respData.overview);
-
-	let totalClicks = $state(handleUpdate(data.respData.overview));
-
-
 
 	let totalRevenue = $derived.by(() => {
 		// Check if overviewData is defined and not null
@@ -63,14 +62,6 @@
 		return total;
 	});
 
-	// let totalClicks = $state(overviewData.reduce((acc, entry) => acc + entry.clicks, 0));
-	// totalClicks = 0;
-
-	// Updating overviewData will automatically recalculate totalClicks
-	function updateData() {
-		overviewData = [{ clicks: 20 }, { clicks: 30 }];
-	}
-
 	let totalInstalls = $derived.by(() => {
 		if (overviewData && Array.isArray(overviewData)) {
 			return overviewData.reduce((acc: number, entry: OverviewEntry) => acc + entry.installs, 0);
@@ -88,7 +79,6 @@
 </script>
 
 <div class="flex min-h-screen w-full flex-col">
-	
 	<main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
 		<DateRangePicker onChange={handleDateChange} />
 		<div class="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -97,44 +87,61 @@
 					<Card.Title class="text-sm font-medium">Impressions</Card.Title>
 					<Users class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">{totalImpressions}</div>
-					<p class="text-muted-foreground text-xs">+180.1% from last month</p>
-				</Card.Content>
-			</Card.Root>
-			<Card.Root>
-				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-					<Card.Title class="text-sm font-medium">Clicks</Card.Title>
-					<CreditCard class="text-muted-foreground h-4 w-4" />
-				</Card.Header> {totalClicks} ->>
 				{#await data.respData}
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{handleUpdate(mydatas)}</div>
+						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'impressions')}</div>
 						<p class="text-muted-foreground text-xs">+19% from last month</p>
 					</Card.Content>
 				{/await}
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-					<Activity class="text-muted-foreground h-4 w-4" />
-				Installs 	
+					<Card.Title class="text-sm font-medium">Clicks</Card.Title>
+					<CreditCard class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">{totalInstalls}</div>
-					<p class="text-muted-foreground text-xs">+201 since last hour</p>
-				</Card.Content>
+				{#await data.respData}
+					Loading...
+				{:then mydatas}
+					<Card.Content>
+						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'clicks')}</div>
+						<p class="text-muted-foreground text-xs">+19% from last month</p>
+					</Card.Content>
+				{/await}
+			</Card.Root>
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					Installs
+					<Activity class="text-muted-foreground h-4 w-4" />
+				</Card.Header>
+				{#await data.respData}
+					Loading...
+				{:then mydatas}
+					<Card.Content>
+						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'installs')}</div>
+						<p class="text-muted-foreground text-xs">+19% from last month</p>
+					</Card.Content>
+				{/await}
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
 					<Card.Title class="text-sm font-medium">Total Revenue</Card.Title>
 					<DollarSign class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
-				<Card.Content>
-					<div class="text-2xl font-bold">{totalRevenue} -> {formattedRevenue}</div>
-					<p class="text-muted-foreground text-xs">+20.1% from last month</p>
-				</Card.Content>
+				{#await data.respData}
+					Loading...
+				{:then mydatas}
+					<Card.Content>
+						<div class="text-2xl font-bold">
+							{makeSum(mydatas.overview, 'revenue').toLocaleString('en-US', {
+								style: 'currency',
+								currency: 'USD'
+							})}
+						</div>
+						<p class="text-muted-foreground text-xs">+19% from last month</p>
+					</Card.Content>
+				{/await}
 			</Card.Root>
 		</div>
 
