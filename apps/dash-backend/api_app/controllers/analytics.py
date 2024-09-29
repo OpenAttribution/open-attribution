@@ -60,13 +60,13 @@ class OverviewController(Controller):
 
         dates_home_df = (
             home_df.groupby(
-                by=["on_date", "store_id,", "network", "campaign_name", "campaign_id"],
+                by=["on_date", "store_id", "network", "campaign_name", "campaign_id"],
             )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
         )
         home_df = (
-            home_df.groupby(["store_id,", "network", "campaign_name", "campaign_id"])[
+            home_df.groupby(["store_id", "network", "campaign_name", "campaign_id"])[
                 ["impressions", "clicks", "installs", "revenue"]
             ]
             .sum()
