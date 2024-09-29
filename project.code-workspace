@@ -1,0 +1,40 @@
+// Added to resolve the issue that a root node_modules caused all apps/xxx/node_modules to be ignored
+// which led to vscode thinking imports were not there
+{
+     "folders": [
+       {
+         "name": "Project Root",
+         "path": "."
+       },
+       {
+         "name": "dash-backend",
+         "path": "apps/dash-backend"
+       },
+       {
+         "name": "dash-frontend",
+         "path": "apps/dash-frontend"
+       },
+       {
+         "name": "docs",
+         "path": "apps/docs"
+       },
+       {
+         "name": "local-dev",
+         "path": "apps/local-dev"
+       },
+       {
+         "name": "postback-api",
+         "path": "apps/postback-api"
+       },
+       {
+         "name": "www",
+         "path": "apps/www"
+       }
+     ],
+     "settings": {
+       "javascript.validate.enable": false,
+       "typescript.validate.enable": true,
+       "npm.packageManager": "npm",
+       "npm.exclude": ["**/Project Root"]
+     }
+   }

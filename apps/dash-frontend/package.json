@@ -27,11 +27,12 @@
 	"type": "module",
 	"dependencies": {
 		"@internationalized/date": "^3.5.5",
+		"@vincjo/datatables": "^1.14.10",
 		"bits-ui": "^0.21.15",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.446.0",
+		"mode-watcher": "^0.4.1",
 		"tailwind-merge": "^2.5.2",
-		"tailwind-variants": "^0.2.1",
-		"@vincjo/datatables": "^1.14.10"
+		"tailwind-variants": "^0.2.1"
 	}
 }
