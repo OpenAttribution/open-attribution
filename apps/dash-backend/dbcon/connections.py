@@ -2,9 +2,8 @@
 
 from typing import Self
 
-from sqlalchemy import create_engine
-
 from config import CONFIG, get_logger
+from sqlalchemy import create_engine
 
 logger = get_logger(__name__)
 
@@ -26,8 +25,8 @@ def open_ssh_tunnel(server_name: str):  # noqa: ANN201
 
 
 class PostgresCon:
-
-    """Class for managing the connection to postgres.
+    """
+    Class for managing the connection to postgres.
 
     Parameters
     ----------
@@ -82,7 +81,8 @@ class PostgresCon:
 
 
 def get_db_connection(server_name: str) -> PostgresCon:
-    """Return PostgresCon class.
+    """
+    Return PostgresCon class.
 
     to use class run server.set_engine()
 

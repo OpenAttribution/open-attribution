@@ -16,11 +16,6 @@ import datetime
 import json
 from typing import Annotated, Self
 
-from confluent_kafka import KafkaException, Producer
-from litestar import Controller, Request, get
-from litestar.exceptions import HTTPException
-from litestar.params import Parameter
-
 from config import KAFKA_LOCATION, get_logger
 from config.dimensions import (
     APP_EVENT_ID,
@@ -47,6 +42,10 @@ from config.dimensions import (
     LINK_NETWORK,
     LINK_UID,
 )
+from confluent_kafka import KafkaException, Producer
+from litestar import Controller, Request, get
+from litestar.exceptions import HTTPException
+from litestar.params import Parameter
 
 logger = get_logger(__name__)
 

@@ -5,9 +5,9 @@ import pathlib
 
 import numpy as np
 import pandas as pd
+from config import MODULE_DIR, get_logger
 from sqlalchemy import text
 
-from config import MODULE_DIR, get_logger
 from dbcon.connections import get_db_connection
 
 logger = get_logger(__name__)
@@ -343,7 +343,8 @@ def get_top_companies(
     *,
     group_by_parent: bool = False,
 ) -> pd.DataFrame:
-    """Get top networks, mmps or other companies.
+    """
+    Get top networks, mmps or other companies.
 
     Data is pre-processed by materialized views.
 
