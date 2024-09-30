@@ -56,7 +56,12 @@ templater = 'placeholder'
 verbose = 2
 dialect = 'clickhouse'
 large_file_skip_byte_limit = 0
-exclude_rules = 'AM04'
+exclude_rules = [
+    'AM04', # ambiguous columns, ie *. While this should be avoided, there was an unavoidable one in attribute_clicks_mv
+    'CP05', #Capitalization of Types, this was causing issues in sqlfluff 3.2, can try removing later
+    'CP03', #Capitalization of functions, this was causing issues in sqlfluff 3.2, can try removing later
+]
+
 
 [tool.sqlfluff.templater.placeholder]
 param_style = 'colon'

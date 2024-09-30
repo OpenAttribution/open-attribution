@@ -23,6 +23,11 @@
 	import * as Table from '$lib/components/ui/table/index';
 	import * as Tabs from '$lib/components/ui/tabs/index';
 	import * as Tooltip from '$lib/components/ui/tooltip/index';
+
+	import NetworksTable from '$lib/NetworksTable.svelte';
+
+	import { type PageData } from './$types';
+	const { data } = $props<{ data: PageData }>();
 </script>
 
 <div class="bg-muted/40 flex min-h-screen w-full flex-col">
@@ -75,6 +80,10 @@
 								<DropdownMenu.CheckboxItem>Archived</DropdownMenu.CheckboxItem>
 							</DropdownMenu.Content>
 						</DropdownMenu.Root>
+						<Button size="sm" class="h-8 gap-1">
+							<CirclePlus class="h-3.5 w-3.5" />
+							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Add Custom Network </span>
+						</Button>
 					</div>
 				</div>
 				<Tabs.Content value="all">
@@ -84,101 +93,11 @@
 							<Card.Description>Manage your ad network integrations.</Card.Description>
 						</Card.Header>
 						<Card.Content>
-							<Table.Root>
-								<Table.Header>
-									<Table.Row>
-										<Table.Head class="hidden w-[100px] sm:table-cell">
-											<span class="sr-only">Image</span>
-										</Table.Head>
-										<Table.Head>Name</Table.Head>
-										<Table.Head>Status</Table.Head>
-										<Table.Head class="hidden md:table-cell">Price</Table.Head>
-										<Table.Head class="hidden md:table-cell">Total Sales</Table.Head>
-										<Table.Head class="hidden md:table-cell">Created at</Table.Head>
-										<Table.Head>
-											<span class="sr-only">Actions</span>
-										</Table.Head>
-									</Table.Row>
-								</Table.Header>
-								<Table.Body>
-									<Table.Row>
-										<Table.Cell class="hidden sm:table-cell">
-											<img
-												alt="Product example"
-												class="aspect-square rounded-md object-cover"
-												height="64"
-												src="/images/placeholder.svg"
-												width="64"
-											/>
-										</Table.Cell>
-										<Table.Cell class="font-medium">Laser Lemonade Machine</Table.Cell>
-										<Table.Cell>
-											<Badge variant="outline">Draft</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">$499.99</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">25</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-07-12 10:42 AM</Table.Cell>
-										<Table.Cell>
-											<DropdownMenu.Root>
-												<DropdownMenu.Trigger asChild let:builder>
-													<Button
-														aria-haspopup="true"
-														size="icon"
-														variant="ghost"
-														builders={[builder]}
-													>
-														<Ellipsis class="h-4 w-4" />
-														<span class="sr-only">Toggle menu</span>
-													</Button>
-												</DropdownMenu.Trigger>
-												<DropdownMenu.Content align="end">
-													<DropdownMenu.Label>Actions</DropdownMenu.Label>
-													<DropdownMenu.Item>Edit</DropdownMenu.Item>
-													<DropdownMenu.Item>Delete</DropdownMenu.Item>
-												</DropdownMenu.Content>
-											</DropdownMenu.Root>
-										</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell class="hidden sm:table-cell">
-											<img
-												alt="Product"
-												class="aspect-square rounded-md object-cover"
-												height="64"
-												src="/images/placeholder.svg"
-												width="64"
-											/>
-										</Table.Cell>
-										<Table.Cell class="font-medium">Hypernova Headphones</Table.Cell>
-										<Table.Cell>
-											<Badge variant="outline">Active</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">$129.99</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">100</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-10-18 03:21 PM</Table.Cell>
-										<Table.Cell>
-											<DropdownMenu.Root>
-												<DropdownMenu.Trigger asChild let:builder>
-													<Button
-														builders={[builder]}
-														aria-haspopup="true"
-														size="icon"
-														variant="ghost"
-													>
-														<Ellipsis class="h-4 w-4" />
-														<span class="sr-only">Toggle menu</span>
-													</Button>
-												</DropdownMenu.Trigger>
-												<DropdownMenu.Content align="end">
-													<DropdownMenu.Label>Actions</DropdownMenu.Label>
-													<DropdownMenu.Item>Edit</DropdownMenu.Item>
-													<DropdownMenu.Item>Delete</DropdownMenu.Item>
-												</DropdownMenu.Content>
-											</DropdownMenu.Root>
-										</Table.Cell>
-									</Table.Row>
-								</Table.Body>
-							</Table.Root>
+							{#await data.respData}
+								Loading...
+							{:then mydata}
+								<NetworksTable overviewData={mydata.networks}></NetworksTable>
+							{/await}
 						</Card.Content>
 						<Card.Footer></Card.Footer>
 					</Card.Root>

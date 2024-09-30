@@ -1,5 +1,13 @@
 import type { CalendarDate } from '@internationalized/date';
 
+export interface NetworkEntry {
+	name: string;
+}
+
+
+
+export type NetworkEntries = NetworkEntry[];
+
 export interface OverviewEntry {
 	network: string;
 	store_id: string;

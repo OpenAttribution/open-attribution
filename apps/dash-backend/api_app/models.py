@@ -9,3 +9,10 @@ class OverviewData:
 
     overview: dict
     dates_overview: dict
+
+
+@dataclass
+class Networks:
+    """All networks."""
+
+    networks: dict

@@ -2,32 +2,15 @@
 
 from typing import Self
 
+from config import get_logger
 from sqlalchemy import create_engine
-
-from config import CONFIG, get_logger
 
 logger = get_logger(__name__)
 
 
-def open_ssh_tunnel(server_name: str):  # noqa: ANN201
-    """Create SSH tunnel when working remotely."""
-    from sshtunnel import SSHTunnelForwarder
-
-    with SSHTunnelForwarder(
-        (CONFIG[server_name]["host"], 22),  # Remote server IP and SSH port
-        ssh_username=CONFIG[server_name]["os_user"],
-        ssh_pkey=CONFIG[server_name].get("ssh_pkey", None),
-        ssh_private_key_password=CONFIG[server_name].get("ssh_pkey_password", None),
-        remote_bind_address=("127.0.0.1", 5432),
-    ) as server:  # PostgreSQL server IP and sever port on remote machine
-        logger.info(f"Start SSH tunnel to {server_name=}")
-        logger.info(f"Opened SSH Tunnel {server_name=}")
-    return server
-
-
 class PostgresCon:
-
-    """Class for managing the connection to postgres.
+    """
+    Class for managing the connection to postgres.
 
     Parameters
     ----------
@@ -44,21 +27,19 @@ class PostgresCon:
 
     def __init__(
         self: Self,
-        my_db: str,
-        db_ip: str | None = None,
-        db_port: str | None = None,
+        db_name: str,
+        db_host: str,
+        db_port: str,
+        db_user: str,
+        db_password: str,
     ) -> None:
         """Initialize connection with ports and dbname."""
-        self.db_name = my_db
-        self.db_ip = db_ip
+        self.db_name = db_name
+        self.db_ip = db_host
         self.db_port = db_port
-        try:
-            self.db_user = CONFIG[self.db_name]["db_user"]
-            self.db_pass = CONFIG[self.db_name]["db_password"]
-            logger.info("Auth data loaded")
-        except Exception as error:
-            msg = f"Loading db_auth for {self.db_name}, error: {error}"
-            logger.exception(msg)
+        self.db_user = db_user
+        self.db_pass = db_password
+        logger.info("Auth data loaded")
 
     def set_engine(self: Self) -> None:
         """Set postgresql engine."""
@@ -69,7 +50,7 @@ class PostgresCon:
                 self.db_uri,
                 connect_args={
                     "connect_timeout": 10,
-                    "application_name": "oa-backend-demo",
+                    "application_name": "dash-backend",
                 },
             )
             logger.info(f"Created PostgreSQL Engine {self.db_name}")
@@ -81,8 +62,9 @@ class PostgresCon:
             self.db_name = None
 
 
-def get_db_connection(server_name: str) -> PostgresCon:
-    """Return PostgresCon class.
+def get_db_connection(db_name: str) -> PostgresCon:
+    """
+    Return PostgresCon class.
 
     to use class run server.set_engine()
 
@@ -90,22 +72,10 @@ def get_db_connection(server_name: str) -> PostgresCon:
     Parameters
        server_name: str String of server name for parsing config file
     """
-    server_ip, server_local_port = get_postgres_server_ips(server_name)
-    postgres_con = PostgresCon(server_name, server_ip, server_local_port)
+    db_name = "admin_db"
+    db_host = "admin-db"
+    db_local_port = "5432"
+    db_user = "postgres"
+    db_password = "example"
+    postgres_con = PostgresCon(db_name, db_host, db_local_port, db_user, db_password)
     return postgres_con
-
-
-def get_postgres_server_ips(server_name: str) -> tuple[str, str]:
-    """Decide whether postgres is local or over ssh."""
-    db_ip = CONFIG[server_name]["host"]
-    if db_ip == "localhost" or db_ip.startswith("192.168.0"):
-        db_ip = CONFIG[server_name]["host"]
-        db_port = str(5432)
-    else:
-        logger.info(f"Opening SSH tunnel to {server_name=}")
-        ssh_server = open_ssh_tunnel(server_name)
-        ssh_server.start()
-        db_port = str(ssh_server.local_bind_port)
-        db_ip = "127.0.0.1"
-    logger.info(f"Connecting {db_ip=} {db_port=}")
-    return db_ip, db_port
