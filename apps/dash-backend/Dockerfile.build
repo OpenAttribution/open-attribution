@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . /app
 
 # Install the requirements
-RUN pip install --no-cache-dir --upgrade uvicorn==0.30.6 "litestar[standard]"==2.12.1 clickhouse_connect==0.7.19 confluent_kafka==2.3.0 pandas==2.2.3
+RUN pip install --no-cache-dir uvicorn==0.30.6 "litestar[standard]"==2.12.1 clickhouse_connect==0.7.19 confluent_kafka==2.3.0 pandas==2.2.3
 
 # Expose the port the app runs on
 EXPOSE 8001

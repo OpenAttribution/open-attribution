@@ -61,8 +61,8 @@ services:
       - '9000:9000'
       - '8123:8123'
     volumes:
-      - ../sql/create/:/my-tables/
-      - ../sql/startup-scripts/:/docker-entrypoint-initdb.d/
+      - ../apps/analytics-db/create/:/my-tables/
+      - ../apps/analytics-db/startup-scripts/:/docker-entrypoint-initdb.d/
       - 'clickhouse-volume:/var/lib/clickhouse'
       - 'clickhouse-log-volume:/var/log/clickhouse-server'
 
@@ -91,10 +91,11 @@ services:
 
   admin-db:
     container_name: admin-db
-    image: postgres:16-bullseye
+    image: postgres:17-bullseye
     restart: always
     environment:
       POSTGRES_PASSWORD: example
+      POSTGRES_DB: admin_db
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
@@ -102,6 +103,7 @@ services:
       retries: 10
     volumes:
       - 'pgdata-volume:/var/lib/postgresql/data'
+      - '../apps/admin-db/pg-init.sql:/docker-entrypoint-initdb.d/init.sql'
 
   dash-backend:
     container_name: dash-backend
