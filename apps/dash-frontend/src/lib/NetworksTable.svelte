@@ -1,9 +1,9 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	import type { OverviewEntries } from '../types';
+	import type { NetworkEntries } from '../types';
 
-	let { overviewData = [] as OverviewEntries } = $props();
+	let { overviewData = [] as NetworkEntries } = $props();
 </script>
 
 <Table.Root>
@@ -14,9 +14,9 @@
 	</Table.Header>
 	<Table.Body>
 		{#if overviewData && overviewData.length > 0}
-			{#each overviewData.slice(0, 10) as entry (entry.network)}
+			{#each overviewData.slice(0, 10) as entry (entry.name)}
 				<Table.Row>
-					<Table.Cell>{entry.network}</Table.Cell>
+					<Table.Cell>{entry.name}</Table.Cell>
 				</Table.Row>
 			{/each}
 		{/if}

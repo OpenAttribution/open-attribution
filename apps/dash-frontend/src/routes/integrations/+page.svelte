@@ -28,8 +28,6 @@
 
 	import { type PageData } from './$types';
 	const { data } = $props<{ data: PageData }>();
-
-	let networks = $state(data.respData.networks);
 </script>
 
 <div class="bg-muted/40 flex min-h-screen w-full flex-col">

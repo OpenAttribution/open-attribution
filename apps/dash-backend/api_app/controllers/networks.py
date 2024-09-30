@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 class NetworkController(Controller):
     """Controll all ad networks."""
 
-    path = "/networks"
+    path = "/api/networks"
 
     @get(path="/")
     async def networks(self: Self) -> Networks:
