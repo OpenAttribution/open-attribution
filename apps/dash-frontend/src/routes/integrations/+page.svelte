@@ -28,6 +28,12 @@
 
 	import { type PageData } from './$types';
 	const { data } = $props<{ data: PageData }>();
+
+	let showForm = $state(false);
+
+	function toggleForm() {
+		showForm = !showForm;
+	}
 </script>
 
 <div class="bg-muted/40 flex min-h-screen w-full flex-col">
@@ -80,12 +86,42 @@
 								<DropdownMenu.CheckboxItem>Archived</DropdownMenu.CheckboxItem>
 							</DropdownMenu.Content>
 						</DropdownMenu.Root>
-						<Button size="sm" class="h-8 gap-1">
+
+						<!-- <form method="POST" action="/addCustomNetwork">
+							<label>
+								Network Name
+								<input name="name" type="name" />
+							</label>
+
+							<Button size="sm" class="h-8 gap-1" type="submit">
+								<CirclePlus class="h-3.5 w-3.5" />
+								<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
+									Add Custom Network
+								</span>
+							</Button>
+						</form> -->
+
+						<Button on:click={toggleForm} size="sm" class="h-8 gap-1">
 							<CirclePlus class="h-3.5 w-3.5" />
-							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Add Custom Network </span>
+							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"
+								>Add Custom Network (pop)</span
+							>
 						</Button>
+
+						{#if showForm}
+							<div class="modal">
+								<form method="POST" action="?/integrations">
+									<label>
+										Network Name
+										<input name="name" type="text" />
+									</label>
+									<button type="submit">-> Save</button>
+								</form>
+							</div>
+						{/if}
 					</div>
 				</div>
+
 				<Tabs.Content value="all">
 					<Card.Root>
 						<Card.Header>
