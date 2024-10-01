@@ -25,6 +25,9 @@ def load_sql_file(file_name: str) -> str:
 QUERY_NETWORKS = load_sql_file(
     "networks.sql",
 )
+INSERT_NETWORK = load_sql_file(
+    "insert_network.sql",
+)
 
 
 def query_networks() -> pd.DataFrame:
@@ -32,9 +35,19 @@ def query_networks() -> pd.DataFrame:
     logger.info("Query all networks.")
     df = pd.read_sql(
         QUERY_NETWORKS,
-        DBCON.engine,
+        con=DBCON.engine,
     )
     return df
+
+
+def insert_network(network_name: str) -> None:
+    """Get all networks."""
+    logger.info(f"Insert new {network_name=}.")
+    pd.read_sql(
+        QUERY_NETWORKS,
+        con=DBCON.engine,
+        params={"network_name": network_name},
+    )
 
 
 logger.info("set db engine")
