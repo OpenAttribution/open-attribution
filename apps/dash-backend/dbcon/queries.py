@@ -44,7 +44,7 @@ def insert_network(network_name: str) -> None:
     """Get all networks."""
     logger.info(f"Insert new {network_name=}.")
     pd.read_sql(
-        QUERY_NETWORKS,
+        INSERT_NETWORK,
         con=DBCON.engine,
         params={"network_name": network_name},
     )
