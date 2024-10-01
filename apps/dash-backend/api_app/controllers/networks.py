@@ -5,7 +5,7 @@ from typing import Self
 import dbcon
 import dbcon.queries
 from config import get_logger
-from litestar import Controller, get, post
+from litestar import Controller, delete, get, post
 
 from api_app.models import Networks
 
@@ -24,7 +24,7 @@ class NetworkController(Controller):
 
         Returns
         -------
-            A table with the overview breakdown for homepage from clickhouse
+            A table with the networks from admin-db
 
         """
         logger.info(f"{self.path} networks load")
@@ -34,15 +34,14 @@ class NetworkController(Controller):
         logger.info(f"{self.path} return rows {nets_df.shape}")
         return myresp
 
-    @post(path="/add/{network_name:str}")
+    @post(path="/{network_name:str}")
     async def add_custom_networks(self: Self, network_name: str) -> None:
-        """
-        Handle GET request for a list of networks.
-
-        Returns
-        -------
-            A table with the overview breakdown for homepage from clickhouse
-
-        """
+        """Create a custom network."""
         logger.info(f"{self.path} networks add {network_name=}")
         dbcon.queries.insert_network(network_name)
+
+    @delete(path="/{network_id:int}")
+    async def delete_custom_networks(self: Self, network_id: int) -> None:
+        """Handle DELETE request for a list of networks."""
+        logger.info(f"{self.path} networks DELETE {network_id=}")
+        dbcon.queries.delete_network(network_id)

@@ -6,22 +6,14 @@ CREATE TABLE apps (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE integration_statuses (
-    id SERIAL PRIMARY KEY,
-    status VARCHAR(50) UNIQUE NOT NULL
-);
-
-INSERT INTO integration_statuses (status) VALUES
-('active'),
-('inactive'),
-('error');
 
 
 -- Create networks table
 CREATE TABLE networks (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    status INTEGER REFERENCES integration_statuses(id) ON DELETE CASCADE,
+    status VARCHAR(10) DEFAULT 'inactive' CHECK (status IN ('active', 'inactive', 'error')),
+    is_custom BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -31,12 +23,6 @@ INSERT INTO networks (name) VALUES
 ('AppLovin'),
 ('Unity Ads'),
 ('Digital Turbine');
-
-CREATE TABLE custom_networks (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
 
 
 

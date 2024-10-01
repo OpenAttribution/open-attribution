@@ -3,7 +3,7 @@
 from typing import Self
 
 from config import get_logger
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 
 logger = get_logger(__name__)
 
@@ -19,7 +19,7 @@ class PostgresCon:
 
     """
 
-    engine = None
+    engine: None | Engine = None
     db_name = None
     db_pass = None
     db_uri = None
@@ -46,7 +46,7 @@ class PostgresCon:
         try:
             self.db_uri = f"postgresql://{self.db_user}:{self.db_pass}"
             self.db_uri += f"@{self.db_ip}:{self.db_port}/{self.db_name}"
-            self.engine = create_engine(
+            self.engine: Engine = create_engine(
                 self.db_uri,
                 connect_args={
                     "connect_timeout": 10,

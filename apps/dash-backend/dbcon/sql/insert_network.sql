@@ -1,3 +1,3 @@
-INSERT INTO networks (name)
-VALUES (:network_name)
+INSERT INTO networks (name, status, is_custom)
+VALUES (:network_name, :status, True)
 ;

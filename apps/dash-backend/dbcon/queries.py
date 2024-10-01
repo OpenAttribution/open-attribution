@@ -28,6 +28,9 @@ QUERY_NETWORKS = load_sql_file(
 INSERT_NETWORK = load_sql_file(
     "insert_network.sql",
 )
+DELETE_NETWORK = load_sql_file(
+    "delete_network.sql",
+)
 
 
 def query_networks() -> pd.DataFrame:
@@ -41,13 +44,23 @@ def query_networks() -> pd.DataFrame:
 
 
 def insert_network(network_name: str) -> None:
-    """Get all networks."""
-    logger.info(f"Insert new {network_name=}.")
-    pd.read_sql(
-        INSERT_NETWORK,
-        con=DBCON.engine,
-        params={"network_name": network_name},
-    )
+    """Insert a new network."""
+    logger.info(f"Inserting new network: {network_name}")
+
+    with DBCON.engine.connect() as connection:
+        connection.execute(
+            INSERT_NETWORK, {"network_name": network_name, "status": "active"},
+        )
+        connection.commit()
+
+
+def delete_network(network_id: int) -> None:
+    """Delete custom network."""
+    logger.info(f"Delete network: {network_id}")
+
+    with DBCON.engine.connect() as connection:
+        connection.execute(DELETE_NETWORK, {"network_id": network_id})
+        connection.commit()
 
 
 logger.info("set db engine")
