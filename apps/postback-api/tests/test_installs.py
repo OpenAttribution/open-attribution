@@ -1,5 +1,5 @@
 import datetime
-import random
+import secrets
 import time
 import uuid
 
@@ -284,6 +284,7 @@ def get_expected_test_df(run_tests: dict, time_part: str) -> pd.DataFrame:
 
 
 def query_campaign(table: str, campaign: str) -> pd.DataFrame:
+    """Query data from clickhouse."""
     bad_name = campaign + NOT_ATTRIBUTABLE_SUFFIX
     # Define the query template
     query_template = """
@@ -295,7 +296,7 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
         campaign_name = %(campaign_name)s OR campaign_name = %(bad_name)s
     """
     # Execute the query and fetch the data as pandas df
-    client = create_client(host="localhost")
+    client = create_client(host="clickhouse")
     df = client.query_df(
         query_template,
         parameters={"campaign_name": campaign, "table": table, "bad_name": bad_name},
@@ -430,7 +431,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
             campaign = _campaign + "_" + time_part
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
-                ad = random.choice(ADS)
+                ad = secrets.choice(ADS)
                 for idx, item in enumerate(my_events):
                     if item in ["impression", "click"]:
                         if "app_open" in test["events"][:idx]:
@@ -460,7 +461,10 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                     else:
                         time.sleep(0.5)  # Simulate delay
                         make_inapp_request(
-                            event_id=item, myapp=APP, myifa=ifa, endpoint=endpoint,
+                            event_id=item,
+                            myapp=APP,
+                            myifa=ifa,
+                            endpoint=endpoint,
                         )
                         _total_events += 1
             logger.info(
