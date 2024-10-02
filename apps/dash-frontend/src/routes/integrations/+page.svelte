@@ -3,14 +3,12 @@
 	import * as Table from '$lib/components/ui/table/index';
 	import * as Tabs from '$lib/components/ui/tabs/index';
 
-	import { CirclePlus, ListFilter, PanelLeft, Trash2 } from 'lucide-svelte';
+	import { CirclePlus, ListFilter, Trash2 } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { type PageData } from './$types';
 
 	import { CheckCircle, XCircle, AlertCircle } from 'lucide-svelte';
-
-	import type { NetworkEntries, NetworkResponse } from '../../types';
 
 	const { data } = $props<{ data: PageData }>();
 
@@ -102,7 +100,6 @@
 								{#each mydata.networks.slice(0, 10) as entry (entry.name)}
 									<Table.Row>
 										<Table.Cell>{entry.name}</Table.Cell>
-
 										<Table.Cell>
 											{#if entry.is_custom}
 												<form method="POST" action="?/deleteIntegration">

@@ -3,6 +3,7 @@
 import logging
 
 from api_app.controllers.analytics import OverviewController
+from api_app.controllers.apps import AppController
 from api_app.controllers.networks import NetworkController
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
@@ -31,7 +32,7 @@ logging_config = LoggingConfig(
 
 
 app = Litestar(
-    route_handlers=[OverviewController, NetworkController],
+    route_handlers=[OverviewController, NetworkController, AppController],
     cors_config=cors_config,
     openapi_config=OpenAPIConfig(
         title="OpenAttribution Dash Backend API",

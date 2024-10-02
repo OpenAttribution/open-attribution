@@ -17,9 +17,6 @@ export const actions = {
 			// Optionally, you could return some error state or message here
 			return { error: 'Failed to add the network' };
 		}
-
-		// Redirect back to /integrations after successful form submission
-		// throw redirect(303, '/integrations');
 	},
 
 	deleteIntegration: async ({ request }) => {
@@ -38,9 +35,6 @@ export const actions = {
 			// Optionally, you could return some error state or message here
 			return { error: 'Failed to delete the network' };
 		}
-
-		// Redirect back to /integrations after successful form submission
-		// throw redirect(303, '/integrations');
 	}
 } satisfies Actions;
 
