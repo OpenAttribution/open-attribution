@@ -8,6 +8,8 @@
 name: openattribution
 
 services:
+
+
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9.2
     container_name: zookeeper
@@ -83,7 +85,7 @@ services:
       context: ../apps/postback-api
       dockerfile: Dockerfile.test
     working_dir: /app
-    command: python run_data_generation.py -i && python run_data_generation.py
+    command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
     depends_on:
       - postback-api
     environment:
@@ -136,6 +138,17 @@ services:
     volumes:
       - ../apps/dash-frontend:/apps/dash-frontend
       - /apps/dash-frontend/node_modules
+
+  dozzle:
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8080:8080
+    environment: 
+      - DOZZLE_ENABLE_ACTIONS=true
+
+
 
 volumes:
   # Persist across stop/start, not down
