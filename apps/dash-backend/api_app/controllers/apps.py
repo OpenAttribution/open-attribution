@@ -1,5 +1,6 @@
 """API for returning analytics data for dash."""
 
+from enum import Enum
 from typing import Self
 
 import dbcon
@@ -10,6 +11,11 @@ from litestar import Controller, delete, get, post
 from api_app.models import Apps
 
 logger = get_logger(__name__)
+
+
+class StoreEnum(str, Enum):
+    IOS = "ios"
+    ANDROID = "android"
 
 
 class AppController(Controller):
@@ -35,10 +41,20 @@ class AppController(Controller):
         return myresp
 
     @post(path="/{store_id:str}")
-    async def add_app(self: Self, store_id: str, app_name: str, store: int) -> None:
-        """Create a custom app."""
+    async def add_app(
+        self: Self, store_id: str, app_name: str, store: StoreEnum,
+    ) -> None:
+        """Create an app."""
         logger.info(f"{self.path} apps add {app_name=}")
-        dbcon.queries.insert_app(app_name=app_name, store_id=store_id, store=store)
+
+        if store == StoreEnum.ANDROID:
+            store_db_id = 1
+        if store == StoreEnum.IOS:
+            store_db_id = 2
+
+        dbcon.queries.insert_app(
+            app_name=app_name, store_id=store_id, store=store_db_id,
+        )
 
     @delete(path="/{app_id:int}")
     async def delete_app(self: Self, app_id: int) -> None:
