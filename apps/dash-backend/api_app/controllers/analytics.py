@@ -13,6 +13,7 @@ from api_app.models import (
 
 logger = get_logger(__name__)
 
+# Seems like this needs to be localhost, not docker specific clickhouse?
 client = clickhouse_connect.create_client(host="clickhouse")
 
 
