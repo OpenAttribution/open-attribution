@@ -9,6 +9,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 	import * as Sheet from '$lib/components/ui/sheet/index';
 	import LineChart from 'lucide-svelte/icons/chart-column';
+	import { Blocks, BlocksIcon } from 'lucide-svelte';
 
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 </script>
@@ -23,10 +24,14 @@
 			<span class="">OpenAttribution</span>
 		</a>
 
-		<a href="/" class="flex text-foreground hover:text-foreground transition-colors"
+		<a href="/" class="flex text-muted-foreground hover:text-foreground transition-colors"
 			><LineChart></LineChart> Dashboard
 		</a>
-		<a href="/integrations" class="text-muted-foreground hover:text-foreground transition-colors">
+		<a
+			href="/integrations"
+			class="flex text-muted-foreground hover:text-foreground transition-colors"
+		>
+			<Blocks></Blocks>
 			Integrations
 		</a>
 	</nav>
