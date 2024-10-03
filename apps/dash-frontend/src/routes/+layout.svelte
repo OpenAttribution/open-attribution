@@ -65,7 +65,7 @@
 			<DropdownMenu.Content align="end">
 				<DropdownMenu.Label><a href="/account">My Account</a></DropdownMenu.Label>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item><a href="/settings">Settings</a></DropdownMenu.Item>
+				<DropdownMenu.Item><a href="/settings/general">Settings</a></DropdownMenu.Item>
 				<DropdownMenu.Item><a href="/support">Support</a></DropdownMenu.Item>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item>Logout</DropdownMenu.Item>
