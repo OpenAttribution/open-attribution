@@ -6,27 +6,20 @@
 	import { formSchema, type FormSchema } from './schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { Loader } from 'lucide-svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	import { goto } from '$app/navigation';
 
 	export let data: SuperValidated<Infer<FormSchema>>;
-
+	type Message = { status: 'error' | 'success' | 'warning'; text: string };
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
 
 		multipleSubmits: 'prevent'
 	});
 
-	const { form: formData, enhance } = form;
-
-	import { Button } from '$lib/components/ui/button';
-
-	async function handleSubmit(event: Event) {
-		event.preventDefault();
-
-		// After successful submission, redirect the user
-		goto('/new-page'); // Redirect to the new page
-	}
+	const { form: formData, enhance, delayed, message } = form;
 </script>
 
 <form method="POST" use:enhance class="space-y-6" action="?/createApp">
@@ -70,5 +63,21 @@
 			<Form.FieldErrors />
 		</Form.Field>
 		<Button type="submit" class="w-full">Submit</Button>
+		{#if $delayed}
+			<Loader></Loader>
+		{/if}
+
+		{#if $message}
+			<div class="error">
+				<p>{$message}</p>
+			</div>
+		{/if}
+
+		<style>
+			.error {
+				color: red;
+				margin-top: 1rem;
+			}
+		</style>
 	</div>
 </form>

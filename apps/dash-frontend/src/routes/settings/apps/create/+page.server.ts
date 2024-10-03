@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoad } from './$types.js';
-import { superValidate } from 'sveltekit-superforms';
+import { superValidate, message } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -28,10 +28,12 @@ export const actions = {
 			}
 		);
 
-		// Check if the request was successful
 		if (!response.ok) {
-			console.error('Failed to add the app');
-			return { error: 'Failed to add the app' };
+			return message(
+				form,
+				`Server failed to save the app (${response.status}): ${(await response.text()) || 'Unknown error'}`,
+				{ status: 500 }
+			);
 		}
 
 		return {
