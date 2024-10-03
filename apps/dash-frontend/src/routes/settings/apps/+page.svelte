@@ -30,14 +30,7 @@
 				return { icon: AlertCircle, color: 'text-red-500' };
 		}
 	};
-
-	import AddApp from './AddApp.svelte';
-	//export let data: PageData;
 </script>
-
-<h1 class="text-2xl">App Settings NEW FORM</h1>
-
-<AddApp data={data.form} />
 
 <h1 class="text-2xl">App Settings</h1>
 
@@ -52,6 +45,12 @@
 			</Card.Header>
 			<Card.Content>
 				<div class="flex items-center gap-2">
+					<a href="apps/create">
+						<Button size="sm" class="h-8 gap-1">
+							<CirclePlus class="h-3.5 w-3.5" />
+							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New App (new)</span>
+						</Button>
+					</a>
 					<Button on:click={toggleForm} size="sm" class="h-8 gap-1">
 						<CirclePlus class="h-3.5 w-3.5" />
 						<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New App (pop)</span>
