@@ -3,19 +3,14 @@
 	import * as Card from '$lib/components/ui/card/index';
 	import * as Table from '$lib/components/ui/table';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { CirclePlus, Trash2 } from 'lucide-svelte';
+	import { CheckCircle, XCircle, AlertCircle, CirclePlus, Trash2 } from 'lucide-svelte';
+
+	import IconAndroid from '$lib/svg/IconAndroid.svelte';
+	import IconIOS from '$lib/svg/IconiOS.svelte';
 
 	import type { PageData } from '../$types';
 
-	import { CheckCircle, XCircle, AlertCircle } from 'lucide-svelte';
-
 	const { data } = $props<{ data: PageData }>();
-
-	let showForm = $state(false);
-
-	function toggleForm() {
-		showForm = !showForm;
-	}
 
 	// Helper function to get the appropriate icon and color for status
 	const getStatusIcon = (status: String) => {
@@ -26,6 +21,18 @@
 				return { icon: XCircle, color: 'text-gray-500' };
 			case 'error':
 				return { icon: AlertCircle, color: 'text-red-500' };
+			default:
+				return { icon: AlertCircle, color: 'text-red-500' };
+		}
+	};
+
+	// Helper function to get the appropriate icon and color for status
+	const getStoreIcon = (storeId: number) => {
+		switch (storeId) {
+			case 1:
+				return { icon: IconAndroid, color: 'text-green-200' };
+			case 2:
+				return { icon: IconIOS, color: 'text-gray-500' };
 			default:
 				return { icon: AlertCircle, color: 'text-red-500' };
 		}
@@ -44,38 +51,6 @@
 				<Card.Description>Manage your Apps and their settings.</Card.Description>
 			</Card.Header>
 			<Card.Content>
-				<div class="flex items-center gap-2">
-					<a href="apps/create">
-						<Button size="sm" class="h-8 gap-1">
-							<CirclePlus class="h-3.5 w-3.5" />
-							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New App (new)</span>
-						</Button>
-					</a>
-					<Button on:click={toggleForm} size="sm" class="h-8 gap-1">
-						<CirclePlus class="h-3.5 w-3.5" />
-						<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New App (pop)</span>
-					</Button>
-					{#if showForm}
-						<div class="modal">
-							<form method="POST" action="?/createApp">
-								<label>
-									Store ID
-									<input name="store_id" type="text" />
-								</label>
-								<label>
-									Name
-									<input name="app_name" type="text" />
-								</label>
-								<label>
-									Store
-									<input name="store" type="number" />
-								</label>
-								<button type="submit">-> Save</button>
-							</form>
-						</div>
-					{/if}
-				</div>
-
 				{#await data.respData}
 					Loading...
 				{:then mydata}
@@ -85,6 +60,8 @@
 								<Table.Head>App</Table.Head>
 								<Table.Head></Table.Head>
 								<Table.Head>Status</Table.Head>
+								<Table.Head>Store</Table.Head>
+								<Table.Head>Store ID</Table.Head>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
@@ -116,6 +93,22 @@
 												<statusInfo.icon class={statusInfo.color} size={20} />
 											{/if}
 										</Table.Cell>
+										<Table.Cell>
+											{#if entry.store}
+												{#if entry.store == 1}
+													<IconAndroid size="40" />
+												{:else if entry.store === 2}
+													<IconIOS size="50" />
+												{:else}
+													MissingStoreIcon
+												{/if}
+											{/if}
+										</Table.Cell>
+										<Table.Cell>
+											{#if entry.store_id}
+												{entry.store_id}
+											{/if}
+										</Table.Cell>
 									</Table.Row>
 								{/each}
 							{/if}
@@ -123,7 +116,16 @@
 					</Table.Root>
 				{/await}
 			</Card.Content>
-			<Card.Footer></Card.Footer>
+			<Card.Footer>
+				<div class="flex items-center gap-2 my-4">
+					<a href="apps/create">
+						<Button size="sm" class="h-8 gap-1">
+							<CirclePlus class="h-3.5 w-3.5" />
+							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New App</span>
+						</Button>
+					</a>
+				</div>
+			</Card.Footer>
 		</Card.Root>
 	</Tabs.Content>
 </Tabs.Root>

@@ -1,28 +1,6 @@
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const actions = {
-	createApp: async ({ request }) => {
-		const data = await request.formData();
-		const store_id = data.get('store_id');
-		const app_name = data.get('app_name');
-		const store = data.get('store');
-
-		console.log(`Create app Name: ${app_name}`);
-
-		const response = await fetch(
-			`http://dash-backend:8001/api/apps/${store_id}?app_name=${app_name}&store=${store}`,
-			{
-				method: 'POST'
-			}
-		);
-
-		// Check if the request was successful
-		if (!response.ok) {
-			console.error('Failed to add the app');
-			return { error: 'Failed to add the app' };
-		}
-	},
-
 	deleteApp: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id');
@@ -35,9 +13,8 @@ export const actions = {
 
 		// Check if the request was successful
 		if (!response.ok) {
-			console.error('Failed to delete the network');
-			// Optionally, you could return some error state or message here
-			return { error: 'Failed to delete the network' };
+			console.error('Failed to delete the app');
+			return { error: 'Failed to delete the app' };
 		}
 	}
 } satisfies Actions;
