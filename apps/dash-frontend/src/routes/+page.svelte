@@ -102,7 +102,7 @@
 				{:then mydatas}
 					<Card.Content>
 						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'impressions')}</div>
-						<p class="text-muted-foreground text-xs">+19% from last month</p>
+						<p class="text-muted-foreground text-xs">+19% from last month?</p>
 					</Card.Content>
 				{/await}
 			</Card.Root>
@@ -116,7 +116,17 @@
 				{:then mydatas}
 					<Card.Content>
 						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'clicks')}</div>
-						<p class="text-muted-foreground text-xs">+19% from last month</p>
+						<p class="text-muted-foreground text-xs">
+							{#if makeSum(mydatas.overview, 'impressions') > 0}
+								{(
+									(makeSum(mydatas.overview, 'clicks') / makeSum(mydatas.overview, 'impressions')) *
+									100
+								).toFixed(2)}%
+							{:else}
+								--
+							{/if}
+							Click Through Rate
+						</p>
 					</Card.Content>
 				{/await}
 			</Card.Root>
@@ -129,8 +139,20 @@
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'installs')}</div>
-						<p class="text-muted-foreground text-xs">+19% from last month</p>
+						<div class="text-2xl font-bold">
+							{makeSum(mydatas.overview, 'impressions')}
+						</div>
+						<p class="text-muted-foreground text-xs">
+							{#if makeSum(mydatas.overview, 'impressions') > 0}
+								{(
+									makeSum(mydatas.overview, 'installs') /
+									(makeSum(mydatas.overview, 'impressions') / 1000)
+								).toFixed(2)}
+								% Installs Per Mille
+							{:else}
+								--
+							{/if}
+						</p>
 					</Card.Content>
 				{/await}
 			</Card.Root>
