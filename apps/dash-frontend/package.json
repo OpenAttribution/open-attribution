@@ -28,7 +28,6 @@
 	"type": "module",
 	"dependencies": {
 		"@internationalized/date": "^3.5.5",
-		"@vincjo/datatables": "^1.14.10",
 		"bits-ui": "^0.21.16",
 		"clsx": "^2.1.1",
 		"formsnap": "^1.0.1",
