@@ -9,8 +9,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 	import * as Sheet from '$lib/components/ui/sheet/index';
 	import LineChart from 'lucide-svelte/icons/chart-column';
-	import { Blocks, BlocksIcon } from 'lucide-svelte';
-
+	import { Blocks } from 'lucide-svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 </script>
 

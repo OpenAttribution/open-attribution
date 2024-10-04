@@ -14,6 +14,7 @@
 
 	import { type PageData } from './$types';
 	import OverviewTable from '$lib/OverviewTable.svelte';
+	import Multiselect from '$lib/Multiselect.svelte';
 
 	const { data } = $props<{ data: PageData }>();
 
@@ -42,45 +43,54 @@
 
 	let overviewData = $state(data.respData.overview);
 
-	let totalRevenue = $derived.by(() => {
-		// Check if overviewData is defined and not null
-		if (overviewData && overviewData.length > 0) {
-			return overviewData.reduce((acc: number, entry: OverviewEntry) => acc + entry.revenue, 0);
-		} else {
-			return 0;
-		}
-	});
+	const optionsA = [
+		{ value: 'apple', label: 'Apple' },
+		{ value: 'banana', label: 'Banana' },
+		{ value: 'cherry', label: 'Cherry' }
+		// ... more options
+	];
 
-	let totalImpressions = $derived.by(() => {
-		let total = 0;
-		if (overviewData && overviewData.length > 0) {
-			total = overviewData.reduce(
-				(acc: number, entry: OverviewEntry) => acc + entry.impressions,
-				0
-			);
-		}
-		return total;
-	});
+	const optionsB = [
+		{ value: 'apple', label: 'Apple' },
+		{ value: 'banana', label: 'Banana' },
+		{ value: 'cherry', label: 'Cherry' }
+		// ... more options
+	];
 
-	let totalInstalls = $derived.by(() => {
-		if (overviewData && Array.isArray(overviewData)) {
-			return overviewData.reduce((acc: number, entry: OverviewEntry) => acc + entry.installs, 0);
-		} else {
-			return 0;
-		}
-	});
-
-	let formattedRevenue = $derived.by(() => {
-		return totalRevenue.toLocaleString('en-US', {
-			style: 'currency',
-			currency: 'USD'
-		});
-	});
+	function handleChange(event: CustomEvent<string[]>) {
+		console.log('Selected options:', event.detail);
+	}
 </script>
 
 <div class="flex min-h-screen w-full flex-col">
 	<main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-		<DateRangePicker onChange={handleDateChange} />
+		<div class="grid gap-20 md:grid-cols-3">
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					<Card.Title class="text-sm font-large">Apps</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<Multiselect options={optionsA} placeholder="Select fruits..." on:change={handleChange} />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					<Card.Title class="text-sm font-large">Networks</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<Multiselect options={optionsB} placeholder="Select Types..." on:change={handleChange} />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+					<Card.Title class="text-sm font-large">Dates</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<DateRangePicker onChange={handleDateChange} />
+				</Card.Content>
+			</Card.Root>
+		</div>
+
 		<div class="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
