@@ -1,4 +1,4 @@
-import type { Actions, PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const startDate = url.searchParams.get('start');
