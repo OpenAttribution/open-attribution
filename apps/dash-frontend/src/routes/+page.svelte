@@ -43,19 +43,34 @@
 
 	let overviewData = $state(data.respData.overview);
 
-	const optionsA = [
-		{ value: 'apple', label: 'Apple' },
-		{ value: 'banana', label: 'Banana' },
-		{ value: 'cherry', label: 'Cherry' }
-		// ... more options
-	];
+	// let networks = $state(data.networks);
+	// let apps = $state(data.apps);
 
-	const optionsB = [
-		{ value: 'apple', label: 'Apple' },
-		{ value: 'banana', label: 'Banana' },
-		{ value: 'cherry', label: 'Cherry' }
-		// ... more options
-	];
+	// const netOptions = networks.map((network) => ({
+	// 	value: network.name,
+	// 	label: network.name
+	// }));
+
+	function handleMakeOptions(myRows: { name: string }[], myType: string) {
+		let myOptions;
+
+		if (myType === 'networks') {
+			myOptions = myRows.map((row) => ({
+				value: row.name,
+				label: row.name
+			}));
+		}
+
+		if (myType === 'apps') {
+			// Fixing the second condition to check for apps
+			myOptions = myRows.map((app) => ({
+				value: app.name,
+				label: app.name
+			}));
+		}
+
+		return myOptions || []; // Ensure we return an empty array if no condition is met
+	}
 
 	function handleChange(event: CustomEvent<string[]>) {
 		console.log('Selected options:', event.detail);
@@ -70,7 +85,19 @@
 					<Card.Title class="text-sm font-large">Apps</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<Multiselect options={optionsA} placeholder="Select fruits..." on:change={handleChange} />
+					{#await data.respApps}
+						Loading...
+					{:then myapps}
+						{#if myapps.apps && myapps.apps.length > 0}
+							<Multiselect
+								options={handleMakeOptions(myapps.apps, 'apps')}
+								placeholder="Filter by App"
+								on:change={handleChange}
+							/>
+						{:else}
+							No apps yet.
+						{/if}
+					{/await}
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>
@@ -78,7 +105,29 @@
 					<Card.Title class="text-sm font-large">Networks</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<Multiselect options={optionsB} placeholder="Select Types..." on:change={handleChange} />
+					{#await data.respNets}
+						Loading...
+					{:then mynets}
+						{#if mynets.networks && mynets.networks.length > 0}
+							<Multiselect
+								options={handleMakeOptions(mynets.networks, 'networks')}
+								placeholder="Filter by Network"
+								on:change={handleChange}
+							/>
+						{:else}
+							No networks.
+						{/if}
+					{/await}
+
+					<!-- {#await data.apps}
+						Loading...
+					{:then myapps}
+						<Multiselect
+							options={handleMakeOptions(myapps)}
+							placeholder="Select Types..."
+							on:change={handleChange}
+						/>
+					{/await} -->
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>

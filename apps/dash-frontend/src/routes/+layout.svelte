@@ -9,7 +9,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 	import * as Sheet from '$lib/components/ui/sheet/index';
 	import LineChart from 'lucide-svelte/icons/chart-column';
-	import { Blocks } from 'lucide-svelte';
+	import { Blocks, Settings } from 'lucide-svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 </script>
 
@@ -32,6 +32,13 @@
 		>
 			<Blocks></Blocks>
 			Integrations
+		</a>
+		<a
+			href="/settings/general"
+			class="flex text-muted-foreground hover:text-foreground transition-colors"
+		>
+			<Settings></Settings>
+			Settings
 		</a>
 	</nav>
 	<Sheet.Root>

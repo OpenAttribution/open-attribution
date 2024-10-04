@@ -14,6 +14,8 @@ logger = get_logger(__name__)
 
 
 class StoreEnum(str, Enum):
+    """Enum for receivable store names."""
+
     IOS = "ios"
     ANDROID = "android"
 
@@ -34,15 +36,18 @@ class AppController(Controller):
 
         """
         logger.info(f"{self.path} apps load")
-        nets_df = dbcon.queries.query_apps()
-        apps_dict = nets_df.to_dict(orient="records")
+        apps_df = dbcon.queries.query_apps()
+        apps_dict = apps_df.to_dict(orient="records")
         myresp = Apps(apps=apps_dict)
-        logger.info(f"{self.path} return rows {nets_df.shape}")
+        logger.info(f"{self.path} return rows {apps_df.shape}")
         return myresp
 
     @post(path="/{store_id:str}")
     async def add_app(
-        self: Self, store_id: str, app_name: str, store: StoreEnum,
+        self: Self,
+        store_id: str,
+        app_name: str,
+        store: StoreEnum,
     ) -> None:
         """Create an app."""
         logger.info(f"{self.path} apps add {app_name=}")
@@ -53,7 +58,9 @@ class AppController(Controller):
             store_db_id = 2
 
         dbcon.queries.insert_app(
-            app_name=app_name, store_id=store_id, store=store_db_id,
+            app_name=app_name,
+            store_id=store_id,
+            store=store_db_id,
         )
 
     @delete(path="/{app_id:int}")
