@@ -1,17 +1,14 @@
 <script lang="ts">
-	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Button } from '$lib/components/ui/button';
 	import * as Popover from '$lib/components/ui/popover';
-	import { Check, ChevronsUpDown } from 'lucide-svelte';
+	import { Check, ChevronsUpDown, X } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
 
 	export let options: { value: string; label: string }[] = [];
 	export let placeholder = 'Select options...';
-
 	let selected: string[] = [];
 	let open = false;
-
 	const dispatch = createEventDispatcher();
 
 	function toggleOption(value: string) {
@@ -33,6 +30,11 @@
 			toggleOption(value);
 		}
 	}
+
+	function removeSelected(value: string) {
+		selected = selected.filter((v) => v !== value);
+		dispatch('change', selected);
+	}
 </script>
 
 <Popover.Root bind:open>
@@ -47,9 +49,18 @@
 			{#if selected.length === 0}
 				<span class="text-muted-foreground">{placeholder}</span>
 			{:else}
-				<span class="truncate">
-					{selected.map(getLabel).join(', ')}
-				</span>
+				<div class="flex flex-wrap gap-1">
+					{#each selected as value}
+						<span
+							class="bg-primary text-primary-foreground rounded px-1 py-0.5 text-sm flex items-center"
+						>
+							{getLabel(value)}
+							<button class="ml-1" on:click|stopPropagation={() => removeSelected(value)}>
+								<X class="h-3 w-3" />
+							</button>
+						</span>
+					{/each}
+				</div>
 			{/if}
 			<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 		</Button>
@@ -66,7 +77,6 @@
 					on:keydown={(event) => handleKeyDown(event, option.value)}
 					transition:fly={{ y: -5, duration: 200 }}
 				>
-					<Checkbox checked={selected.includes(option.value)} class="mr-2" />
 					<span>{option.label}</span>
 					{#if selected.includes(option.value)}
 						<Check class="ml-auto h-4 w-4" />

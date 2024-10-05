@@ -6,8 +6,7 @@
 
 	import * as Card from '$lib/components/ui/card/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
-	// import type { DateRange } from 'bits-ui';
-	import type { MyDateRange, OverviewEntries } from '../types';
+	import type { MyDateRange, OverviewEntries, NetworkEntry, AppEntry } from '../types';
 	import { goto } from '$app/navigation';
 
 	import type { OverviewEntry } from '../types';
@@ -20,13 +19,12 @@
 
 	function makeSum(newData: OverviewEntries, property: keyof OverviewEntry) {
 		if (newData && newData.length > 0) {
-			console.log('isthisworking');
 			return newData.reduce((total: number, entry: OverviewEntry) => {
 				const value = entry[property];
 				return total + (typeof value === 'number' ? value : 0);
 			}, 0);
 		} else {
-			console.log('NOPE');
+			console.log('makeSum not working!');
 			return 0;
 		}
 	}
@@ -41,39 +39,45 @@
 		}
 	}
 
+	let filterNetworks = $state(['']);
+	let filterApps = $state(['']);
+
 	let overviewData = $state(data.respData.overview);
 
-	// let networks = $state(data.networks);
-	// let apps = $state(data.apps);
+	let filteredData = $state(overviewData);
 
-	// const netOptions = networks.map((network) => ({
-	// 	value: network.name,
-	// 	label: network.name
-	// }));
+	let filtered;
 
-	function handleMakeOptions(myRows: { name: string }[], myType: string) {
+	function handleNetOptions(myRows: NetworkEntry[]) {
 		let myOptions;
 
-		if (myType === 'networks') {
-			myOptions = myRows.map((row) => ({
-				value: row.name,
-				label: row.name
-			}));
-		}
-
-		if (myType === 'apps') {
-			// Fixing the second condition to check for apps
-			myOptions = myRows.map((app) => ({
-				value: app.name,
-				label: app.name
-			}));
-		}
-
-		return myOptions || []; // Ensure we return an empty array if no condition is met
+		myOptions = myRows.map((row) => ({
+			value: row.postback_id,
+			label: row.name
+		}));
+		return myOptions;
 	}
 
-	function handleChange(event: CustomEvent<string[]>) {
-		console.log('Selected options:', event.detail);
+	function handleAppOptions(myRows: AppEntry[], myType: string) {
+		let myOptions;
+
+		// Fixing the second condition to check for apps
+		myOptions = myRows.map((app) => ({
+			value: app.store_id,
+			label: app.name
+		}));
+
+		return myOptions;
+	}
+
+	function handleNetChange(event: CustomEvent<string[]>) {
+		console.log('Selected net options:', event.detail);
+		filterNetworks = event.detail;
+	}
+
+	function handleAppChange(event: CustomEvent<string[]>) {
+		console.log('Selected app options:', event.detail);
+		filterApps = event.detail;
 	}
 </script>
 
@@ -90,9 +94,9 @@
 					{:then myapps}
 						{#if myapps.apps && myapps.apps.length > 0}
 							<Multiselect
-								options={handleMakeOptions(myapps.apps, 'apps')}
+								options={handleAppOptions(myapps.apps, 'apps')}
 								placeholder="Filter by App"
-								on:change={handleChange}
+								on:change={handleAppChange}
 							/>
 						{:else}
 							No apps yet.
@@ -110,9 +114,9 @@
 					{:then mynets}
 						{#if mynets.networks && mynets.networks.length > 0}
 							<Multiselect
-								options={handleMakeOptions(mynets.networks, 'networks')}
+								options={handleNetOptions(mynets.networks)}
 								placeholder="Filter by Network"
-								on:change={handleChange}
+								on:change={handleNetChange}
 							/>
 						{:else}
 							No networks.

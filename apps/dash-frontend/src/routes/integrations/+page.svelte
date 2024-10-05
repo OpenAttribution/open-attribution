@@ -91,7 +91,7 @@
 						<Table.Header>
 							<Table.Row>
 								<Table.Head>Network</Table.Head>
-								<Table.Head></Table.Head>
+								<Table.Head>Postback ID</Table.Head>
 								<Table.Head>Status</Table.Head>
 							</Table.Row>
 						</Table.Header>
@@ -100,6 +100,7 @@
 								{#each mydata.networks.slice(0, 10) as entry (entry.name)}
 									<Table.Row>
 										<Table.Cell>{entry.name}</Table.Cell>
+										<Table.Cell class="text-gray-400 italic mr-2">{entry.postback_id}</Table.Cell>
 										<Table.Cell>
 											{#if entry.is_custom}
 												<form method="POST" action="?/deleteIntegration">
