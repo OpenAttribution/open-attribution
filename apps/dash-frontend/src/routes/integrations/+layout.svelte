@@ -2,7 +2,7 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet/index';
-	import { CirclePlus, ListFilter, PanelLeft } from 'lucide-svelte';
+	import { PanelLeft } from 'lucide-svelte';
 
 	let { children } = $props();
 </script>

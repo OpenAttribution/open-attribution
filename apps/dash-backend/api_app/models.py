@@ -16,3 +16,10 @@ class Networks:
     """All networks."""
 
     networks: dict
+
+
+@dataclass
+class Apps:
+    """All apps."""
+
+    apps: dict

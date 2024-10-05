@@ -9,7 +9,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 	import * as Sheet from '$lib/components/ui/sheet/index';
 	import LineChart from 'lucide-svelte/icons/chart-column';
-
+	import { Blocks, Settings } from 'lucide-svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 </script>
 
@@ -23,11 +23,22 @@
 			<span class="">OpenAttribution</span>
 		</a>
 
-		<a href="/" class="flex text-foreground hover:text-foreground transition-colors"
+		<a href="/" class="flex text-muted-foreground hover:text-foreground transition-colors"
 			><LineChart></LineChart> Dashboard
 		</a>
-		<a href="/integrations" class="text-muted-foreground hover:text-foreground transition-colors">
+		<a
+			href="/integrations"
+			class="flex text-muted-foreground hover:text-foreground transition-colors"
+		>
+			<Blocks></Blocks>
 			Integrations
+		</a>
+		<a
+			href="/settings/general"
+			class="flex text-muted-foreground hover:text-foreground transition-colors"
+		>
+			<Settings></Settings>
+			Settings
 		</a>
 	</nav>
 	<Sheet.Root>
@@ -65,7 +76,7 @@
 			<DropdownMenu.Content align="end">
 				<DropdownMenu.Label><a href="/account">My Account</a></DropdownMenu.Label>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item><a href="/settings">Settings</a></DropdownMenu.Item>
+				<DropdownMenu.Item><a href="/settings/general">Settings</a></DropdownMenu.Item>
 				<DropdownMenu.Item><a href="/support">Support</a></DropdownMenu.Item>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item>Logout</DropdownMenu.Item>

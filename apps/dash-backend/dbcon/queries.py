@@ -32,6 +32,16 @@ DELETE_NETWORK = load_sql_file(
     "delete_network.sql",
 )
 
+QUERY_APPS = load_sql_file(
+    "apps.sql",
+)
+INSERT_APP = load_sql_file(
+    "insert_app.sql",
+)
+DELETE_APP = load_sql_file(
+    "delete_app.sql",
+)
+
 
 def query_networks() -> pd.DataFrame:
     """Get all networks."""
@@ -49,7 +59,8 @@ def insert_network(network_name: str) -> None:
 
     with DBCON.engine.connect() as connection:
         connection.execute(
-            INSERT_NETWORK, {"network_name": network_name, "status": "active"},
+            INSERT_NETWORK,
+            {"network_name": network_name, "status": "active"},
         )
         connection.commit()
 
@@ -60,6 +71,37 @@ def delete_network(network_id: int) -> None:
 
     with DBCON.engine.connect() as connection:
         connection.execute(DELETE_NETWORK, {"network_id": network_id})
+        connection.commit()
+
+
+def query_apps() -> pd.DataFrame:
+    """Get all networks."""
+    logger.info("Query all apps.")
+    df = pd.read_sql(
+        QUERY_APPS,
+        con=DBCON.engine,
+    )
+    return df
+
+
+def insert_app(app_name: str, store_id: str, store: int) -> None:
+    """Insert a new network."""
+    logger.info(f"Inserting new app: {app_name}")
+
+    with DBCON.engine.connect() as connection:
+        connection.execute(
+            INSERT_APP,
+            {"app_name": app_name, "store_id": store_id, "store": store},
+        )
+        connection.commit()
+
+
+def delete_app(app_id: int) -> None:
+    """Delete custom network."""
+    logger.info(f"Delete app: {app_id}")
+
+    with DBCON.engine.connect() as connection:
+        connection.execute(DELETE_NETWORK, {"app_id": app_id})
         connection.commit()
 
 

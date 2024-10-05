@@ -1,29 +1,11 @@
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const actions = {
-	integrations: async ({ request }) => {
-		const data = await request.formData();
-		const name = data.get('name');
-
-		console.log(`Network Name: ${name}`);
-
-		const response = await fetch(`http://dash-backend:8001/api/networks/${name}`, {
-			method: 'POST'
-		});
-
-		// Check if the request was successful
-		if (!response.ok) {
-			console.error('Failed to add the network');
-			// Optionally, you could return some error state or message here
-			return { error: 'Failed to add the network' };
-		}
-	},
-
-	deleteIntegration: async ({ request }) => {
+	deleteApp: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id');
 
-		console.log(`Network id: ${id}`);
+		console.log(`Delete app id: ${id}`);
 
 		const response = await fetch(`http://dash-backend:8001/api/networks/${id}`, {
 			method: 'DELETE'
@@ -31,16 +13,15 @@ export const actions = {
 
 		// Check if the request was successful
 		if (!response.ok) {
-			console.error('Failed to delete the network');
-			// Optionally, you could return some error state or message here
-			return { error: 'Failed to delete the network' };
+			console.error('Failed to delete the app');
+			return { error: 'Failed to delete the app' };
 		}
 	}
 } satisfies Actions;
 
 export const load: PageServerLoad = async ({}) => {
 	return {
-		respData: fetch(`http://dash-backend:8001/api/networks`)
+		respData: fetch(`http://dash-backend:8001/api/apps`)
 			.then((resp) => {
 				if (resp.status === 200) {
 					return resp.json();

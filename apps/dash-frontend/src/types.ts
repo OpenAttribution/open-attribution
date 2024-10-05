@@ -3,8 +3,16 @@ import type { CalendarDate } from '@internationalized/date';
 export interface NetworkEntry {
 	id: number;
 	name: string;
+	postback_id: string;
 	status: string;
 	is_custom: boolean;
+}
+
+export interface AppEntry {
+	id: number;
+	name: string;
+	store_id: string;
+	status: string;
 }
 
 export type NetworkEntries = {

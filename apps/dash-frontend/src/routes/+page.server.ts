@@ -1,8 +1,10 @@
-import type { Actions, PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ parent, url }) => {
+	// depends(`page:${url.searchParams}`);
 	const startDate = url.searchParams.get('start');
 	const endDate = url.searchParams.get('end');
+	const { respApps, respNets } = await parent();
 
 	return {
 		respData: fetch(
@@ -25,6 +27,8 @@ export const load: PageServerLoad = async ({ url }) => {
 					console.log('Uncaught error', error);
 					return 'Uncaught Error';
 				}
-			)
+			),
+		respNets,
+		respApps
 	};
 };

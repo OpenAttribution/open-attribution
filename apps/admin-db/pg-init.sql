@@ -1,8 +1,22 @@
 
 -- Create apps table
+CREATE TABLE stores (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL);
+
+INSERT INTO stores (name) VALUES
+('Google Android'),
+('Apple iOS')
+;
+
+
+
+-- Create apps table
 CREATE TABLE apps (
     id SERIAL PRIMARY KEY,
+    store INTEGER NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
+    store_id VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -11,18 +25,19 @@ CREATE TABLE apps (
 -- Create networks table
 CREATE TABLE networks (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    status VARCHAR(10) DEFAULT 'inactive' CHECK (status IN ('active', 'inactive', 'error')),
-    is_custom BOOLEAN DEFAULT FALSE,
+    name VARCHAR(100) UNIQUE NOT NULL, 
+    postback_id VARCHAR(100) UNIQUE NOT NULL,
+    status VARCHAR(10) DEFAULT 'inactive' CHECK (status IN ('active', 'inactive', 'error')), 
+    is_custom BOOLEAN DEFAULT FALSE, 
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO networks (name) VALUES
-('Google'),
-('Facebook'),
-('AppLovin'),
-('Unity Ads'),
-('Digital Turbine');
+INSERT INTO networks (name, postback_id) VALUES
+('Google','google'),
+('Facebook', 'meta'),
+('AppLovin', 'applovin'),
+('Unity Ads', 'unityads'),
+('Digital Turbine','digitalturbine');
 
 
 
