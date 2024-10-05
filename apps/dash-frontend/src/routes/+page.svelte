@@ -17,29 +17,39 @@
 
 	const { data } = $props<{ data: PageData }>();
 
-	function makeSum(newData: OverviewEntries, property: keyof OverviewEntry) {
-		if (newData && newData.length > 0) {
-			return newData.reduce((total: number, entry: OverviewEntry) => {
-				const value = entry[property];
-				return total + (typeof value === 'number' ? value : 0);
-			}, 0);
-		} else {
-			console.log('makeSum not working!');
-			return 0;
-		}
-	}
-
 	let totalImpressions = $state(0);
+	let totalClicks = $state(0);
+	let totalInstalls = $state(0);
+	let totalRevenue = $state(0);
 
 	function makeNewSum(newData: OverviewEntries) {
 		if (newData && newData.length > 0) {
-			totalImpressions = newData.reduce((total: number, entry: OverviewEntry) => {
-				const value = entry['impressions'];
-				return total + (typeof value === 'number' ? value : 0);
-			}, 0);
+			// Generalize the summation for multiple fields
+			const fieldsToSum = ['impressions', 'clicks', 'installs', 'revenue'] as const;
+
+			// Reset the totals
+			let totals: Record<(typeof fieldsToSum)[number], number> = {
+				impressions: 0,
+				clicks: 0,
+				installs: 0,
+				revenue: 0
+			};
+
+			// Loop over each entry and sum up the values for each field
+			for (const entry of newData) {
+				fieldsToSum.forEach((field) => {
+					const value = entry[field];
+					totals[field] += typeof value === 'number' ? value : 0;
+				});
+			}
+
+			// Update the reactive states
+			totalImpressions = totals.impressions;
+			totalClicks = totals.clicks;
+			totalInstalls = totals.installs;
+			totalRevenue = totals.revenue;
 		} else {
 			console.log('makeSum not working!');
-			return 0;
 		}
 	}
 
@@ -53,8 +63,8 @@
 		}
 	}
 
-	let filterNetworks = $state([]);
-	let filterApps = $state([]);
+	let filterNetworks = $state<string[]>([]);
+	let filterApps = $state<string[]>([]);
 
 	let filteredData = $state(getFilteredData(data.respData.overview));
 
@@ -94,12 +104,6 @@
 		}));
 		return myOptions;
 	}
-
-	// function handleNetChange(event: CustomEvent<string[]>) {
-	// 	console.log('Selected net options:', event.detail);
-	// 	filterNetworks = event.detail;
-	// 	//goto(`?start=${startDate}&end=${endDate};
-	// }
 
 	function handleNetChange(event: CustomEvent<string[]>) {
 		console.log('Selected net options:', event.detail);
@@ -165,16 +169,6 @@
 							No networks.
 						{/if}
 					{/await}
-
-					<!-- {#await data.apps}
-						Loading...
-					{:then myapps}
-						<Multiselect
-							options={handleMakeOptions(myapps)}
-							placeholder="Select Types..."
-							on:change={handleChange}
-						/>
-					{/await} -->
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>
@@ -200,11 +194,6 @@
 						<div class="text-2xl font-bold">{totalImpressions}</div>
 						<p class="text-muted-foreground text-xs">+19% from last month?</p>
 					</Card.Content>
-					X
-					<Card.Content>
-						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'impressions')}</div>
-						<p class="text-muted-foreground text-xs">+19% from last month?</p>
-					</Card.Content>
 				{/await}
 			</Card.Root>
 			<Card.Root>
@@ -216,13 +205,10 @@
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'clicks')}</div>
+						<div class="text-2xl font-bold">{totalClicks}</div>
 						<p class="text-muted-foreground text-xs">
-							{#if makeSum(mydatas.overview, 'impressions') > 0}
-								{(
-									(makeSum(mydatas.overview, 'clicks') / makeSum(mydatas.overview, 'impressions')) *
-									100
-								).toFixed(2)}%
+							{#if totalImpressions > 0}
+								{((totalClicks / totalImpressions) * 100).toFixed(2)}%
 							{:else}
 								--
 							{/if}
@@ -241,15 +227,12 @@
 				{:then mydatas}
 					<Card.Content>
 						<div class="text-2xl font-bold">
-							{makeSum(mydatas.overview, 'impressions')}
+							{totalInstalls}
 						</div>
 						<p class="text-muted-foreground text-xs">
-							{#if makeSum(mydatas.overview, 'impressions') > 0}
-								{(
-									makeSum(mydatas.overview, 'installs') /
-									(makeSum(mydatas.overview, 'impressions') / 1000)
-								).toFixed(2)}
-								% Installs Per Mille
+							{#if totalImpressions > 0}
+								{(totalInstalls / (totalImpressions / 1000)).toFixed(2)}
+								Installs Per Mille
 							{:else}
 								--
 							{/if}
@@ -267,7 +250,7 @@
 				{:then mydatas}
 					<Card.Content>
 						<div class="text-2xl font-bold">
-							{makeSum(mydatas.overview, 'revenue').toLocaleString('en-US', {
+							{totalRevenue.toLocaleString('en-US', {
 								style: 'currency',
 								currency: 'USD'
 							})}
@@ -292,7 +275,6 @@
 					{:then mydata}
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
-							<!-- <OverviewTable overviewData={getFilteredData(mydata.overview)}></OverviewTable> -->
 							<OverviewTable overviewData={filteredData}></OverviewTable>
 						{:else}
 							Loading...
