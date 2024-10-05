@@ -1,3 +1,5 @@
+"""Generate impressions and clicks for testing."""
+
 import random
 import time
 import uuid
@@ -15,13 +17,18 @@ CAMPAIGNS = ["CampaignA", "CampaignB"]
 
 ADS = ["Hi!", "NewVideo123"]
 
+INSTALL_RATE = 0.3
+CLICK_THROUGH_RATE = 0.5
+D1_APP_OPEN_RATE = 0.4
 
-def main(endpoint:str) -> None:
+
+def main(endpoint: str) -> None:
+    """Start here."""
     logger.info("Start continuous generate")
     while True:
         for network in NETWORKS:
             for app in APPS:
-                if random.random() < 0.3:
+                if random.random() < INSTALL_RATE:  # noqa: S311
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
                     make_inapp_request(
@@ -44,8 +51,8 @@ def main(endpoint:str) -> None:
                             endpoint=endpoint,
                         )
                         # Decide if a click should be generated
-                        if random.random() < 0.5:  # % chance for a click
-                            time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
+                        if random.random() < CLICK_THROUGH_RATE:  # noqa: S311
+                            time.sleep(random.uniform(0.1, 1.0))  # noqa: S311
                             impression_or_click(
                                 mytype="clicks",
                                 myapp=app,
@@ -55,8 +62,8 @@ def main(endpoint:str) -> None:
                                 myad=ad,
                                 endpoint=endpoint,
                             )
-                            if random.random() < 0.5:
-                                time.sleep(random.uniform(0.1, 1.0))  # Simulate delay
+                            if random.random() < D1_APP_OPEN_RATE:  # noqa: S311
+                                time.sleep(random.uniform(0.1, 1.0))  # noqa: S311
                                 make_inapp_request(
                                     event_id="app_open",
                                     myapp=app,
