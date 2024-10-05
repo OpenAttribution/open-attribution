@@ -56,7 +56,6 @@
 	let filterNetworks = $state([]);
 	let filterApps = $state([]);
 
-	let overviewData = $state(data.respData.overview);
 	let filteredData = $state(getFilteredData(data.respData.overview));
 
 	function getFilteredData(myData: OverviewEntry[]) {
@@ -96,9 +95,27 @@
 		return myOptions;
 	}
 
+	// function handleNetChange(event: CustomEvent<string[]>) {
+	// 	console.log('Selected net options:', event.detail);
+	// 	filterNetworks = event.detail;
+	// 	//goto(`?start=${startDate}&end=${endDate};
+	// }
+
 	function handleNetChange(event: CustomEvent<string[]>) {
 		console.log('Selected net options:', event.detail);
 		filterNetworks = event.detail;
+
+		// Create a new URL object from the current location
+		const url = new URL(window.location.href);
+
+		// Get the existing query params
+		const params = new URLSearchParams(url.search);
+
+		// Set or update the 'networks' query parameter
+		params.set('networks', filterNetworks.join(','));
+
+		// Navigate to the new URL, keeping other query parameters intact
+		goto(`${url.pathname}?${params.toString()}`);
 	}
 
 	function handleAppChange(event: CustomEvent<string[]>) {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CalendarIcon from 'lucide-svelte/icons/calendar';
+	import { page } from '$app/stores';
 	// import type { DateRange } from 'bits-ui';
 	import { DateFormatter, type DateValue, getLocalTimeZone, today } from '@internationalized/date';
 	import { cn } from '$lib/utils.js';
@@ -21,7 +22,23 @@
 		dateStyle: 'medium'
 	});
 
-	let startValue: DateValue | undefined = $state(today(getLocalTimeZone()).add({ days: -7 }));
+	// let startValue: DateValue | undefined = $state(today(getLocalTimeZone()).add({ days: -7 }));
+
+	let startValue = $state(value.start); // Track start value separately if needed
+
+	$effect(() => {
+		const queryStart = $page.url.searchParams.get('start');
+		const queryEnd = $page.url.searchParams.get('end');
+
+		// If both are missing, update the URL with default calendar values
+		if (!queryStart || !queryEnd) {
+			const startDate = value.start.toString(); // Default start from the component
+			const endDate = value.end.toString(); // Default end from the component
+
+			// Update the URL with default date range
+			goto(`?start=${startDate}&end=${endDate}`, { replaceState: true });
+		}
+	});
 
 	$effect(() => {
 		if (onChange) {
