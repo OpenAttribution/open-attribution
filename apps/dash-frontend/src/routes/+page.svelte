@@ -29,6 +29,20 @@
 		}
 	}
 
+	let totalImpressions = $state(0);
+
+	function makeNewSum(newData: OverviewEntries) {
+		if (newData && newData.length > 0) {
+			totalImpressions = newData.reduce((total: number, entry: OverviewEntry) => {
+				const value = entry['impressions'];
+				return total + (typeof value === 'number' ? value : 0);
+			}, 0);
+		} else {
+			console.log('makeSum not working!');
+			return 0;
+		}
+	}
+
 	function handleDateChange(newRange: MyDateRange | undefined) {
 		if (newRange && newRange.start && newRange.end) {
 			const startDate = newRange.start.toString();
@@ -39,14 +53,27 @@
 		}
 	}
 
-	let filterNetworks = $state(['']);
-	let filterApps = $state(['']);
+	let filterNetworks = $state([]);
+	let filterApps = $state([]);
 
 	let overviewData = $state(data.respData.overview);
+	let filteredData = $state(getFilteredData(data.respData.overview));
 
-	let filteredData = $state(overviewData);
-
-	let filtered;
+	function getFilteredData(myData: OverviewEntry[]) {
+		console.log('START FILTER');
+		if (myData && myData.length > 0) {
+			console.log('START FILTER2');
+			filteredData = myData.filter((item) => {
+				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
+				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
+				return networkMatch && appMatch;
+			});
+		} else {
+			console.log('START FILTER FAIL');
+			return myData;
+		}
+		makeNewSum(filteredData);
+	}
 
 	function handleNetOptions(myRows: NetworkEntry[]) {
 		let myOptions;
@@ -66,7 +93,6 @@
 			value: app.store_id,
 			label: app.name
 		}));
-
 		return myOptions;
 	}
 
@@ -153,6 +179,11 @@
 				{#await data.respData}
 					Loading...
 				{:then mydatas}
+					<Card.Content>
+						<div class="text-2xl font-bold">{totalImpressions}</div>
+						<p class="text-muted-foreground text-xs">+19% from last month?</p>
+					</Card.Content>
+					X
 					<Card.Content>
 						<div class="text-2xl font-bold">{makeSum(mydatas.overview, 'impressions')}</div>
 						<p class="text-muted-foreground text-xs">+19% from last month?</p>
@@ -242,7 +273,13 @@
 					{#await data.respData}
 						Loading...
 					{:then mydata}
-						<OverviewTable overviewData={mydata.overview}></OverviewTable>
+						{#if mydata.overview && mydata.overview.length > 0}
+							{getFilteredData(mydata.overview)}
+							<!-- <OverviewTable overviewData={getFilteredData(mydata.overview)}></OverviewTable> -->
+							<OverviewTable overviewData={filteredData}></OverviewTable>
+						{:else}
+							Loading...
+						{/if}
 					{/await}
 				</Card.Content>
 			</Card.Root>
