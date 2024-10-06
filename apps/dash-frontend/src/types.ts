@@ -24,6 +24,7 @@ export type NetworkResponse = {
 };
 
 export interface OverviewEntry {
+	[key: string]: string | number;
 	network: string;
 	store_id: string;
 	campaign_name: string;
@@ -32,6 +33,14 @@ export interface OverviewEntry {
 	clicks: number;
 	installs: number;
 	revenue: string;
+}
+
+export interface GroupedEntry {
+	[key: string]: string | number;
+	impressions: number;
+	clicks: number;
+	installs: number;
+	revenue: number;
 }
 
 export interface DatesOverviewEntry {

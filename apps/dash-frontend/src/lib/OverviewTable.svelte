@@ -1,17 +1,20 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	import type { OverviewEntries } from '../types';
+	import type { GroupedEntry } from '../types';
 
-	let { overviewData = [] as OverviewEntries } = $props();
+	let {
+		overviewData = [] as GroupedEntry[],
+		dimensionA = 'network' as String,
+		dimensionB = 'store_id' as String
+	} = $props();
 </script>
 
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>Store ID</Table.Head>
-			<Table.Head>Network</Table.Head>
-			<Table.Head>Campaign</Table.Head>
+			<Table.Head>{dimensionA}</Table.Head>
+			<Table.Head>{dimensionB}</Table.Head>
 			<Table.Head class="text-right">Impressions</Table.Head>
 			<Table.Head class="text-right">Clicks</Table.Head>
 			<Table.Head class="text-right">Installs</Table.Head>
@@ -20,15 +23,14 @@
 	</Table.Header>
 	<Table.Body>
 		{#if overviewData && overviewData.length > 0}
-			{#each overviewData.slice(0, 10) as entry (entry.store_id + entry.network + entry.campaign_name)}
+			{#each overviewData.slice(0, 10) as entry}
 				<Table.Row>
-					<Table.Cell>{entry.store_id}</Table.Cell>
-					<Table.Cell>{entry.network}</Table.Cell>
-					<Table.Cell>{entry.campaign_name}</Table.Cell>
+					<Table.Cell>{entry[dimensionA]}</Table.Cell>
+					<Table.Cell>{entry[dimensionB]}</Table.Cell>
 					<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
 					<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
 					<Table.Cell class="text-right">{entry.installs}</Table.Cell>
-					<Table.Cell class="text-right">{parseFloat(entry.revenue).toFixed(4)}</Table.Cell>
+					<Table.Cell class="text-right">{entry.revenue.toFixed(4)}</Table.Cell>
 				</Table.Row>
 			{/each}
 		{/if}

@@ -7,8 +7,16 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
-	import type { MyDateRange, OverviewEntries, NetworkEntry, AppEntry } from '../types';
+	import type {
+		MyDateRange,
+		OverviewEntries,
+		NetworkEntry,
+		AppEntry,
+		GroupedEntry
+	} from '../types';
 	import { goto } from '$app/navigation';
+
+	import { page } from '$app/stores';
 
 	import type { OverviewEntry } from '../types';
 
@@ -19,6 +27,13 @@
 		{ value: 'campaign_id', label: 'Campaign ID' },
 		{ value: 'ad_name', label: 'Ad Name' },
 		{ value: 'ad_id', label: 'Ad ID' }
+	];
+
+	const tableMetrics = [
+		{ value: 'impressions', label: 'Impressions' },
+		{ value: 'clicks', label: 'Clicks' },
+		{ value: 'installs', label: 'Installs' },
+		{ value: 'revenue', label: 'Revenue' }
 	];
 
 	import { type PageData } from './$types';
@@ -80,6 +95,7 @@
 	let filterApps = $state<string[]>([]);
 
 	let filteredData = $state(getFilteredData(data.respData.overview));
+	let finalData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
 		console.log('START FILTER');
@@ -95,6 +111,13 @@
 			return myData;
 		}
 		makeNewSum(filteredData);
+	}
+
+	function getFinalData(myData: OverviewEntry[]) {
+		// getFilteredData(myData);
+		if (filteredData && filteredData.length > 0) {
+			groupByDimensions(filteredData, groubyDimA, groubyDimB);
+		}
 	}
 
 	function handleNetOptions(myRows: NetworkEntry[]) {
@@ -121,18 +144,15 @@
 	function handleNetChange(event: CustomEvent<string[]>) {
 		console.log('Selected net options:', event.detail);
 		filterNetworks = event.detail;
-
-		// Create a new URL object from the current location
-		const url = new URL(window.location.href);
-
+		// Create a new URL object from the current location const url = new URL(window.location.href);
 		// Get the existing query params
-		const params = new URLSearchParams(url.search);
+		const params = new URLSearchParams($page.url.search);
 
 		// Set or update the 'networks' query parameter
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
-		goto(`${url.pathname}?${params.toString()}`);
+		goto(`${$page.url.pathname}?${params.toString()}`);
 	}
 
 	function handleAppChange(event: CustomEvent<string[]>) {
@@ -146,15 +166,36 @@
 		} else if (whichSelect === 'B') {
 			groubyDimB = dimension;
 		}
+		// getFinalData(data.respData.overview);
 	}
 
-	function groupByDimension(filteredData: OverviewEntry[], dimension: string) {
-		return filteredData.reduce((acc, curr) => {
-			const key = curr[groupbyDimA];
-			if (!acc[key]) {
-				acc[key] = { ...curr, count: 0 };
+	function groupByDimensions(
+		filteredData: OverviewEntry[],
+		dimensionA: string,
+		dimensionB: string
+	): { [groupKey: string]: GroupedEntry } {
+		console.log('GROUPING');
+		finalData = filteredData.reduce<{ [groupKey: string]: GroupedEntry }>((acc, curr) => {
+			const keyA = curr[dimensionA] as string;
+			const keyB = curr[dimensionB] as string;
+			const groupKey = `${keyA}|${keyB}`;
+
+			if (!acc[groupKey]) {
+				acc[groupKey] = {
+					[dimensionA]: keyA,
+					[dimensionB]: keyB,
+					impressions: 0,
+					clicks: 0,
+					installs: 0,
+					revenue: 0
+				};
 			}
-			acc[key].count++;
+
+			acc[groupKey].impressions += curr.impressions || 0;
+			acc[groupKey].clicks += curr.clicks || 0;
+			acc[groupKey].installs += curr.installs || 0;
+			acc[groupKey].revenue += Number(curr.revenue) || 0;
+
 			return acc;
 		}, {});
 	}
@@ -318,7 +359,9 @@
 								</Select.Group>
 							</Select.Content>
 							<Select.Input name="favoriteFruitA" />
+						</Select.Root>
 
+						<Select.Root portal={null}>
 							<Select.Trigger class="w-[180px]">
 								<Select.Value placeholder="Select Group By DimensionB" />
 							</Select.Trigger>
@@ -345,7 +388,8 @@
 					{:then mydata}
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
-							<OverviewTable overviewData={filteredData}></OverviewTable>
+							{getFinalData(filteredData)}
+							<OverviewTable overviewData={finalData}></OverviewTable>
 						{:else}
 							Loading...
 						{/if}
