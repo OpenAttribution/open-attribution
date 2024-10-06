@@ -5,17 +5,30 @@
 	import Users from 'lucide-svelte/icons/users';
 
 	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
 	import type { MyDateRange, OverviewEntries, NetworkEntry, AppEntry } from '../types';
 	import { goto } from '$app/navigation';
 
 	import type { OverviewEntry } from '../types';
 
+	const tableDimensions = [
+		{ value: 'network', label: 'Ad Network' },
+		{ value: 'store_id', label: 'App' },
+		{ value: 'campaign_name', label: 'Campaign Name' },
+		{ value: 'campaign_id', label: 'Campaign ID' },
+		{ value: 'ad_name', label: 'Ad Name' },
+		{ value: 'ad_id', label: 'Ad ID' }
+	];
+
 	import { type PageData } from './$types';
 	import OverviewTable from '$lib/OverviewTable.svelte';
 	import Multiselect from '$lib/Multiselect.svelte';
 
 	const { data } = $props<{ data: PageData }>();
+
+	let groubyDimA = $state('network');
+	let groubyDimB = $state('store_id');
 
 	let totalImpressions = $state(0);
 	let totalClicks = $state(0);
@@ -125,6 +138,25 @@
 	function handleAppChange(event: CustomEvent<string[]>) {
 		console.log('Selected app options:', event.detail);
 		filterApps = event.detail;
+	}
+
+	function handleSelectGroupByChange(dimension: string, whichSelect: string) {
+		if (whichSelect === 'A') {
+			groubyDimA = dimension;
+		} else if (whichSelect === 'B') {
+			groubyDimB = dimension;
+		}
+	}
+
+	function groupByDimension(filteredData: OverviewEntry[], dimension: string) {
+		return filteredData.reduce((acc, curr) => {
+			const key = curr[groupbyDimA];
+			if (!acc[key]) {
+				acc[key] = { ...curr, count: 0 };
+			}
+			acc[key].count++;
+			return acc;
+		}, {});
 	}
 </script>
 
@@ -267,6 +299,44 @@
 					<div class="gap-2">
 						<Card.Title>My Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
+
+						<Select.Root portal={null}>
+							<Select.Trigger class="w-[180px]">
+								<Select.Value placeholder="Select Group By DimensionB" />
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Group>
+									<Select.Label>Fruits</Select.Label>
+									{#each tableDimensions as dimension}
+										<Select.Item
+											value={dimension.value}
+											label={dimension.label}
+											on:click={() => handleSelectGroupByChange(dimension.value, 'A')}
+											>{dimension.label}</Select.Item
+										>
+									{/each}
+								</Select.Group>
+							</Select.Content>
+							<Select.Input name="favoriteFruitA" />
+
+							<Select.Trigger class="w-[180px]">
+								<Select.Value placeholder="Select Group By DimensionB" />
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Group>
+									<Select.Label>Fruits</Select.Label>
+									{#each tableDimensions as dimension}
+										<Select.Item
+											value={dimension.value}
+											label={dimension.label}
+											on:click={() => handleSelectGroupByChange(dimension.value, 'B')}
+											>{dimension.label}</Select.Item
+										>
+									{/each}
+								</Select.Group>
+							</Select.Content>
+							<Select.Input name="favoriteFruitB" />
+						</Select.Root>
 					</div>
 				</Card.Header>
 				<Card.Content>
