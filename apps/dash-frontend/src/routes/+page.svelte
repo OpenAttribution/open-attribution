@@ -4,6 +4,8 @@
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
 
+	import { tableDimensions } from '$lib/constants';
+
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
@@ -20,21 +22,7 @@
 
 	import type { OverviewEntry } from '../types';
 
-	const tableDimensions = [
-		{ value: 'network', label: 'Ad Network' },
-		{ value: 'store_id', label: 'App' },
-		{ value: 'campaign_name', label: 'Campaign Name' },
-		{ value: 'campaign_id', label: 'Campaign ID' },
-		{ value: 'ad_name', label: 'Ad Name' },
-		{ value: 'ad_id', label: 'Ad ID' }
-	];
 
-	const tableMetrics = [
-		{ value: 'impressions', label: 'Impressions' },
-		{ value: 'clicks', label: 'Clicks' },
-		{ value: 'installs', label: 'Installs' },
-		{ value: 'revenue', label: 'Revenue' }
-	];
 
 	import { type PageData } from './$types';
 	import OverviewTable from '$lib/OverviewTable.svelte';
@@ -42,8 +30,8 @@
 
 	const { data } = $props<{ data: PageData }>();
 
-	let groubyDimA = $state('network');
-	let groubyDimB = $state('store_id');
+	let groupByDimA = $state('network');
+	let groupByDimB = $state('store_id');
 	let defaultDimA = {value:'network', label:'Network'};
 	let defaultDimB = {value:'store_id', label:'App'};
 	let totalImpressions = $state(0);
@@ -117,7 +105,7 @@
 	function getFinalData(myData: OverviewEntry[]) {
 		// getFilteredData(myData);
 		if (myData && myData.length > 0) {
-			groupByDimensions(myData, groubyDimA, groubyDimB);
+			groupByDimensions(myData, groupByDimA, groupByDimB);
 		}
 	}
 
@@ -163,9 +151,9 @@
 
 	function handleSelectGroupByChange(dimension: string, whichSelect: string) {
 		if (whichSelect === 'A') {
-			groubyDimA = dimension;
+			groupByDimA = dimension;
 		} else if (whichSelect === 'B') {
-			groubyDimB = dimension;
+			groupByDimB = dimension;
 		}
 		// getFinalData(data.respData.overview);
 	}
@@ -349,6 +337,7 @@
 					<div class="gap-2">
 						<Card.Title>My Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
+<div class='flex p-2 gap-4'>
 
 						<Select.Root portal={null} selected={defaultDimA}>
 							<Select.Trigger class="w-[180px]">
@@ -390,6 +379,7 @@
 							<Select.Input name="favoriteFruitB" />
 						</Select.Root>
 					</div>
+</div>
 				</Card.Header>
 				<Card.Content>
 					{#await data.respData}
@@ -398,10 +388,11 @@
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
 							{getFinalData(filteredData)}
+							{console.log('FINAL DATA GBA: ', groupByDimA)}
 							<OverviewTable
 								overviewData={finalData}
-								dimensionA={groubyDimA}
-								dimensionB={groubyDimB}
+								dimensionA={groupByDimA}
+								dimensionB={groupByDimB}
 							></OverviewTable>
 						{:else}
 							Loading...

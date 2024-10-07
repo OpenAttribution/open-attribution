@@ -57,21 +57,28 @@ class OverviewController(Controller):
 
         """
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
-        home_df = query_campaign_overview(start_date=start_date, end_date=end_date)
+        df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
-        home_df["revenue"] = home_df["revenue"].astype(float)
+        df["revenue"] = df["revenue"].astype(float)
 
         dates_home_df = (
-            home_df.groupby(
+            df.groupby(
                 by=["on_date", "store_id", "network", "campaign_name", "campaign_id"],
             )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
         )
         home_df = (
-            home_df.groupby(["store_id", "network", "campaign_name", "campaign_id"])[
-                ["impressions", "clicks", "installs", "revenue"]
-            ]
+            df.groupby(
+                [
+                    "store_id",
+                    "network",
+                    "campaign_name",
+                    "campaign_id",
+                    "ad_name",
+                    "ad_id",
+                ]
+            )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
         )

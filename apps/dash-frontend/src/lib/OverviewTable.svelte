@@ -3,20 +3,30 @@
 
 	import type { GroupedEntry } from '../types';
 
+	import { tableDimensions } from '$lib/constants';
+
+
 	let {
 		overviewData = [] as GroupedEntry[],
-		dimensionA = 'network' as String,
-		dimensionB = 'store_id' as String
+		dimensionA,
+		dimensionB
 	} = $props();
 
-	console.log('OVERVIEW DATA ROWS: ', Object.keys(overviewData).length);
+	// console.log('OVERVIEW DATA ROWS: ', Object.keys(overviewData).length);
+	// console.log('OVERVIEW DATA DimA: ', dimensionA);
+
+	// let dimensionALabel = $state(tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA);
+	// let dimensionBLabel = $state(tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB);
+	// console.log('OVERVIEW DATA DimA LABEL: ', dimensionALabel);
+	// console.log('OVERVIEW DATA DimB LABEL: ', dimensionBLabel);
+
 </script>
 
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>{dimensionA}</Table.Head>
-			<Table.Head>{dimensionB}</Table.Head>
+			<Table.Head>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}</Table.Head>
+			<Table.Head>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}</Table.Head>
 			<Table.Head class="text-right">Impressions</Table.Head>
 			<Table.Head class="text-right">Clicks</Table.Head>
 			<Table.Head class="text-right">Installs</Table.Head>
