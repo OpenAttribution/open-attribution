@@ -155,7 +155,6 @@
 		} else if (whichSelect === 'B') {
 			groupByDimB = dimension;
 		}
-		// getFinalData(data.respData.overview);
 	}
 
 	interface GroupedData {
@@ -195,6 +194,10 @@
 
 		finalData = Object.values(groupedData);
 		console.log('FINAL DATA ROWS:', finalData.length);
+	}
+
+	function formatNumber(num) {
+		return num.toLocaleString();
 	}
 </script>
 
@@ -261,7 +264,7 @@
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{totalImpressions}</div>
+						<div class="text-2xl font-bold">{formatNumber(totalImpressions)}</div>
 						<p class="text-muted-foreground text-xs">+19% from last month?</p>
 					</Card.Content>
 				{/await}
@@ -275,7 +278,7 @@
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{totalClicks}</div>
+						<div class="text-2xl font-bold">{formatNumber(totalClicks)}</div>
 						<p class="text-muted-foreground text-xs">
 							{#if totalImpressions > 0}
 								{((totalClicks / totalImpressions) * 100).toFixed(2)}%
@@ -297,7 +300,7 @@
 				{:then mydatas}
 					<Card.Content>
 						<div class="text-2xl font-bold">
-							{totalInstalls}
+							{formatNumber(totalInstalls)}
 						</div>
 						<p class="text-muted-foreground text-xs">
 							{#if totalImpressions > 0}
@@ -387,7 +390,7 @@
 					{:then mydata}
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
-							{getFinalData(filteredData)}
+							{getFinalData(filteredData || [])}
 							{console.log('FINAL DATA GBA: ', groupByDimA)}
 							<OverviewTable
 								overviewData={finalData}
