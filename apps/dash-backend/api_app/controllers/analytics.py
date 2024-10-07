@@ -5,6 +5,7 @@ from typing import Self
 import clickhouse_connect
 import pandas as pd
 from config import get_logger
+from dbcon.queries import query_apps, query_networks
 from litestar import Controller, get
 
 from api_app.models import (
@@ -57,19 +58,46 @@ class OverviewController(Controller):
 
         """
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
-        home_df = query_campaign_overview(start_date=start_date, end_date=end_date)
+        df = query_campaign_overview(start_date=start_date, end_date=end_date)
+
+        apps_df = query_apps().rename(columns={"name": "app_name"})
+        networks_df = query_networks().rename(columns={"name": "network_name"})
+
+        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="left")
+        df = df.merge(
+            networks_df, left_on="network", right_on="postback_id", how="left",
+        )
+
+        df["revenue"] = df["revenue"].astype(float)
 
         dates_home_df = (
-            home_df.groupby(
-                by=["on_date", "store_id", "network", "campaign_name", "campaign_id"],
+            df.groupby(
+                by=[
+                    "on_date",
+                    "store_id",
+                    "network",
+                    "network_name",
+                    "app_name",
+                    "campaign_name",
+                    "campaign_id",
+                ],
             )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
         )
         home_df = (
-            home_df.groupby(["store_id", "network", "campaign_name", "campaign_id"])[
-                ["impressions", "clicks", "installs", "revenue"]
-            ]
+            df.groupby(
+                [
+                    "store_id",
+                    "network",
+                    "network_name",
+                    "app_name",
+                    "campaign_name",
+                    "campaign_id",
+                    "ad_name",
+                    "ad_id",
+                ],
+            )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
         )

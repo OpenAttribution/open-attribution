@@ -66,7 +66,7 @@
 						</Table.Header>
 						<Table.Body>
 							{#if mydata.apps && mydata.apps.length > 0}
-								{#each mydata.apps.slice(0, 10) as entry (entry.name)}
+								{#each mydata.apps.slice(0, 10) as entry ((entry.id, entry.store_id, entry.name))}
 									<Table.Row>
 										<Table.Cell>{entry.name}</Table.Cell>
 

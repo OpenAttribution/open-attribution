@@ -4,10 +4,21 @@
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
 
+	import { tableDimensions } from '$lib/constants';
+
 	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
-	import type { MyDateRange, OverviewEntries, NetworkEntry, AppEntry } from '../types';
+	import type {
+		MyDateRange,
+		OverviewEntries,
+		NetworkEntry,
+		AppEntry,
+		GroupedEntry
+	} from '../types';
 	import { goto } from '$app/navigation';
+
+	import { page } from '$app/stores';
 
 	import type { OverviewEntry } from '../types';
 
@@ -17,6 +28,10 @@
 
 	const { data } = $props<{ data: PageData }>();
 
+	let groupByDimA = $state('network_name');
+	let groupByDimB = $state('app_name');
+	let defaultDimA = { value: 'network', label: 'Network' };
+	let defaultDimB = { value: 'store_id', label: 'App' };
 	let totalImpressions = $state(0);
 	let totalClicks = $state(0);
 	let totalInstalls = $state(0);
@@ -67,6 +82,7 @@
 	let filterApps = $state<string[]>([]);
 
 	let filteredData = $state(getFilteredData(data.respData.overview));
+	let finalData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
 		console.log('START FILTER');
@@ -82,6 +98,13 @@
 			return myData;
 		}
 		makeNewSum(filteredData);
+	}
+
+	function getFinalData(myData: OverviewEntry[]) {
+		// getFilteredData(myData);
+		if (myData && myData.length > 0) {
+			groupByDimensions(myData, groupByDimA, groupByDimB);
+		}
 	}
 
 	function handleNetOptions(myRows: NetworkEntry[]) {
@@ -108,23 +131,71 @@
 	function handleNetChange(event: CustomEvent<string[]>) {
 		console.log('Selected net options:', event.detail);
 		filterNetworks = event.detail;
-
-		// Create a new URL object from the current location
-		const url = new URL(window.location.href);
-
+		// Create a new URL object from the current location const url = new URL(window.location.href);
 		// Get the existing query params
-		const params = new URLSearchParams(url.search);
+		const params = new URLSearchParams($page.url.search);
 
 		// Set or update the 'networks' query parameter
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
-		goto(`${url.pathname}?${params.toString()}`);
+		goto(`${$page.url.pathname}?${params.toString()}`);
 	}
 
 	function handleAppChange(event: CustomEvent<string[]>) {
 		console.log('Selected app options:', event.detail);
 		filterApps = event.detail;
+	}
+
+	function handleSelectGroupByChange(dimension: string, whichSelect: string) {
+		if (whichSelect === 'A') {
+			groupByDimA = dimension;
+		} else if (whichSelect === 'B') {
+			groupByDimB = dimension;
+		}
+	}
+
+	interface GroupedData {
+		[groupKey: string]: GroupedEntry;
+	}
+
+	function groupByDimensions(
+		filteredData: OverviewEntry[],
+		dimensionA: string,
+		dimensionB: string
+	) {
+		console.log('GROUPING');
+
+		const groupedData = filteredData.reduce<GroupedData>((acc, curr) => {
+			const keyA = curr[dimensionA] as string;
+			const keyB = curr[dimensionB] as string;
+			const groupKey = `${keyA}|${keyB}`;
+
+			if (!acc[groupKey]) {
+				acc[groupKey] = {
+					[dimensionA]: keyA,
+					[dimensionB]: keyB,
+					impressions: 0,
+					clicks: 0,
+					installs: 0,
+					revenue: 0
+				};
+			}
+
+			acc[groupKey].impressions += curr.impressions || 0;
+			acc[groupKey].clicks += curr.clicks || 0;
+			acc[groupKey].installs += curr.installs || 0;
+			acc[groupKey].revenue += curr.revenue || 0;
+
+			return acc;
+		}, {});
+
+		finalData = Object.values(groupedData);
+		console.log('FINAL DATA ROWS:', finalData.length);
+	}
+
+	function formatNumber(num: number) {
+		return num.toLocaleString();
 	}
 </script>
 
@@ -191,7 +262,7 @@
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{totalImpressions}</div>
+						<div class="text-2xl font-bold">{formatNumber(totalImpressions)}</div>
 						<p class="text-muted-foreground text-xs">+19% from last month?</p>
 					</Card.Content>
 				{/await}
@@ -205,7 +276,7 @@
 					Loading...
 				{:then mydatas}
 					<Card.Content>
-						<div class="text-2xl font-bold">{totalClicks}</div>
+						<div class="text-2xl font-bold">{formatNumber(totalClicks)}</div>
 						<p class="text-muted-foreground text-xs">
 							{#if totalImpressions > 0}
 								{((totalClicks / totalImpressions) * 100).toFixed(2)}%
@@ -227,7 +298,7 @@
 				{:then mydatas}
 					<Card.Content>
 						<div class="text-2xl font-bold">
-							{totalInstalls}
+							{formatNumber(totalInstalls)}
 						</div>
 						<p class="text-muted-foreground text-xs">
 							{#if totalImpressions > 0}
@@ -267,6 +338,47 @@
 					<div class="gap-2">
 						<Card.Title>My Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
+						<div class="flex p-2 gap-4">
+							<Select.Root portal={null} selected={defaultDimA}>
+								<Select.Trigger class="w-[180px]">
+									<Select.Value placeholder="Select Group By DimensionB" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.Label>Fruits</Select.Label>
+										{#each tableDimensions as dimension}
+											<Select.Item
+												value={dimension.value}
+												label={dimension.label}
+												on:click={() => handleSelectGroupByChange(dimension.value, 'A')}
+												>{dimension.label}</Select.Item
+											>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+								<Select.Input name="favoriteFruitA" />
+							</Select.Root>
+
+							<Select.Root portal={null} selected={defaultDimB}>
+								<Select.Trigger class="w-[180px]">
+									<Select.Value placeholder="Select Group By DimensionB" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.Label>Ad Networks</Select.Label>
+										{#each tableDimensions as dimension}
+											<Select.Item
+												value={dimension.value}
+												label={dimension.label}
+												on:click={() => handleSelectGroupByChange(dimension.value, 'B')}
+												>{dimension.label}</Select.Item
+											>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+								<Select.Input name="favoriteFruitB" />
+							</Select.Root>
+						</div>
 					</div>
 				</Card.Header>
 				<Card.Content>
@@ -275,7 +387,13 @@
 					{:then mydata}
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
-							<OverviewTable overviewData={filteredData}></OverviewTable>
+							{getFinalData(filteredData || [])}
+							{console.log('FINAL DATA GBA: ', groupByDimA)}
+							<OverviewTable
+								overviewData={finalData}
+								dimensionA={groupByDimA}
+								dimensionB={groupByDimB}
+							></OverviewTable>
 						{:else}
 							Loading...
 						{/if}

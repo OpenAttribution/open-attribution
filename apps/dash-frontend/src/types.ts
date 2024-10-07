@@ -24,26 +24,38 @@ export type NetworkResponse = {
 };
 
 export interface OverviewEntry {
+	[key: string]: string | number;
 	network: string;
+	network_name: string;
 	store_id: string;
+	app_name: string;
 	campaign_name: string;
 	campaign_id: string;
 	impressions: number;
 	clicks: number;
 	installs: number;
-	revenue: string;
+	revenue: number;
+}
+
+export interface GroupedEntry {
+	[key: string]: string | number;
+	impressions: number;
+	clicks: number;
+	installs: number;
+	revenue: number;
 }
 
 export interface DatesOverviewEntry {
 	on_date: string;
 	network: string;
-	store_id: string;
+	network_name: string;
+	app_name: string;
 	campaign_name: string;
 	campaign_id: string;
 	impressions: number;
 	clicks: number;
 	installs: number;
-	revenue: string;
+	revenue: number;
 }
 
 export type OverviewResponse = { overview: OverviewEntry[]; dates_overview: DatesOverviewEntry[] };
