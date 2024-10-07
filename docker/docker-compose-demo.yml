@@ -1,0 +1,137 @@
+########################################################
+# DEMO SERVER USE ONLY
+# DO NOT USE THIS IN PRODUCTION
+# INSTEAD USE docker-compose.yml
+# THIS VERSION MANAGES THE DEMO SERVER at demo.openattribution.dev
+########################################################
+
+name: openattribution-demo
+
+services:
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.9.2
+    container_name: zookeeper
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper-volume:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    healthcheck:
+      test: ['CMD-SHELL', 'zkServer.sh status']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  kafka:
+    image: docker.io/bitnami/kafka:3.6.2
+    container_name: kafka
+    ports:
+      - '9093:9093'
+    volumes:
+      - 'kafka-volume:/bitnami'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'kafka-topics.sh --bootstrap-server localhost:9092 --list']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  clickhouse:
+    container_name: clickhouse
+    image: clickhouse/clickhouse-server:24.8.4
+    healthcheck:
+      test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      - kafka
+    ports:
+      - '9000:9000'
+      - '8123:8123'
+    volumes:
+      - ../apps/analytics-db/create/:/my-tables/
+      - ../apps/analytics-db/startup-scripts/:/docker-entrypoint-initdb.d/
+      - 'clickhouse-volume:/var/lib/clickhouse'
+      - 'clickhouse-log-volume:/var/log/clickhouse-server'
+
+  postback-api:
+    container_name: postback-api
+    image: openattribution/python-api:main
+    working_dir: /app
+    command: litestar run --host 0.0.0.0 --port 8000
+    ports:
+      - '8000:8000'
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+
+  postback-test:
+    container_name: postback-test
+    build:
+      context: ../apps/postback-api
+      dockerfile: Dockerfile.test
+    working_dir: /app
+    command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
+    depends_on:
+      - postback-api
+    environment:
+      - TEST_HOST=${TEST_HOST:-http://demo.openattribution.dev}
+
+  admin-db:
+    container_name: admin-db
+    image: postgres:17-bullseye
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: admin_db
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - 'pgdata-volume:/var/lib/postgresql/data'
+      - '../apps/admin-db/pg-init.sql:/docker-entrypoint-initdb.d/init.sql'
+
+  dash-backend:
+    container_name: dash-backend
+    image: openattribution/dash-backend:main
+    ports:
+      - '8001:8001'
+    command: litestar run --host 0.0.0.0 --port 8001
+    working_dir: /app
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      admin-db:
+        condition: service_started
+
+  dash-frontend:
+    container_name: dash-frontend
+    image: openattribution/dash-frontend:main
+    working_dir: /apps/dash-frontend
+    command: 'node build'
+    ports:
+      - '5173:5173'
+    depends_on:
+      - 'dash-backend'
+
+volumes:
+  # Persist across stop/start, not down
+  kafka-volume:
+  zookeeper-volume:
+  clickhouse-log-volume:
+  clickhouse-volume:
+  pgdata-volume:
