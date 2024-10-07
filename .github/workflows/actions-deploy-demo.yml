@@ -43,6 +43,6 @@ jobs:
             pwd
             git pull origin main
             export TEST_HOST=http://demo.openattribution.dev
-            sudo docker compose -f docker/docker-compose.yml down
-            sudo docker compose -f docker/docker-compose.yml pull
-            sudo docker compose -f docker/docker-compose.yml up -d
+            sudo docker compose -f docker/docker-compose-demo.yml down
+            sudo docker compose -f docker/docker-compose-demo.yml pull
+            sudo docker compose -f docker/docker-compose-demo.yml up -d
