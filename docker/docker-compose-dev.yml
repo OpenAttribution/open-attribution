@@ -8,8 +8,6 @@
 name: openattribution
 
 services:
-
-
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.9.2
     container_name: zookeeper
@@ -95,6 +93,8 @@ services:
     container_name: admin-db
     image: postgres:17-bullseye
     restart: always
+    ports:
+      - '5432:5432'
     environment:
       POSTGRES_PASSWORD: example
       POSTGRES_DB: admin_db
@@ -145,10 +145,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8080:8080
-    environment: 
+    environment:
       - DOZZLE_ENABLE_ACTIONS=true
-
-
 
 volumes:
   # Persist across stop/start, not down

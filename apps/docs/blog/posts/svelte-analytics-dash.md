@@ -27,7 +27,6 @@ So with that, we changed the frontend dash quite a bit. The analytics dashboard 
 
 Meanwhile, I've also completely revamped the docker environment for development / deployment. A big part of this was due to removing Superset, which had come with a lof of it's own docker baggage, and more just because I'm still learning Docker.
 
-
 ## More to Do
 
 - [ ] Tons more work to finish MVP of frontend: authentication, reporting levels, creatives, spend, revenue, revents
