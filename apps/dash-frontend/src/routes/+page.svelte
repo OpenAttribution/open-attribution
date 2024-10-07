@@ -179,7 +179,7 @@
 		dimensionB: string
 	) {
 		console.log('GROUPING');
-		
+
 		const groupedData = filteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
@@ -397,7 +397,11 @@
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
 							{getFinalData(filteredData)}
-							<OverviewTable overviewData={finalData}></OverviewTable>
+							<OverviewTable
+								overviewData={finalData}
+								dimensionA={groubyDimA}
+								dimensionB={groubyDimB}
+							></OverviewTable>
 						{:else}
 							Loading...
 						{/if}

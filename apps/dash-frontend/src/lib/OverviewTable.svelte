@@ -28,9 +28,9 @@
 			{console.log('OVERVIEW DATA ROWS: AFTER IF ', Object.keys(overviewData).length)}
 			{#each overviewData.slice(0, 10) as entry}
 				<Table.Row>
-					<Table.Cell>{entry[dimensionA]}</Table.Cell>
-					<Table.Cell>{entry[dimensionB]}</Table.Cell>
-					<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
+					<Table.Cell>{entry[dimensionA as keyof typeof entry]}</Table.Cell>
+					<Table.Cell>{entry[dimensionB as keyof typeof entry]}</Table.Cell>
+					<Table.Cell class="text-right">{entry['impressions']}</Table.Cell>
 					<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
 					<Table.Cell class="text-right">{entry.installs}</Table.Cell>
 					<Table.Cell class="text-right">{entry.revenue.toFixed(4)}</Table.Cell>
