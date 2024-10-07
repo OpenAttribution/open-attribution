@@ -336,7 +336,7 @@
 			<Card.Root class="xl:col-span-2">
 				<Card.Header class="flex flex-row items-center">
 					<div class="gap-2">
-						<Card.Title>My Table</Card.Title>
+						<Card.Title>Overview</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 						<div class="flex p-2 gap-4">
 							<Select.Root portal={null} selected={defaultDimA}>
