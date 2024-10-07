@@ -22,8 +22,6 @@
 
 	import type { OverviewEntry } from '../types';
 
-
-
 	import { type PageData } from './$types';
 	import OverviewTable from '$lib/OverviewTable.svelte';
 	import Multiselect from '$lib/Multiselect.svelte';
@@ -32,8 +30,8 @@
 
 	let groupByDimA = $state('network');
 	let groupByDimB = $state('store_id');
-	let defaultDimA = {value:'network', label:'Network'};
-	let defaultDimB = {value:'store_id', label:'App'};
+	let defaultDimA = { value: 'network', label: 'Network' };
+	let defaultDimB = { value: 'store_id', label: 'App' };
 	let totalImpressions = $state(0);
 	let totalClicks = $state(0);
 	let totalInstalls = $state(0);
@@ -196,7 +194,7 @@
 		console.log('FINAL DATA ROWS:', finalData.length);
 	}
 
-	function formatNumber(num) {
+	function formatNumber(num: number) {
 		return num.toLocaleString();
 	}
 </script>
@@ -340,49 +338,48 @@
 					<div class="gap-2">
 						<Card.Title>My Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
-<div class='flex p-2 gap-4'>
+						<div class="flex p-2 gap-4">
+							<Select.Root portal={null} selected={defaultDimA}>
+								<Select.Trigger class="w-[180px]">
+									<Select.Value placeholder="Select Group By DimensionB" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.Label>Fruits</Select.Label>
+										{#each tableDimensions as dimension}
+											<Select.Item
+												value={dimension.value}
+												label={dimension.label}
+												on:click={() => handleSelectGroupByChange(dimension.value, 'A')}
+												>{dimension.label}</Select.Item
+											>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+								<Select.Input name="favoriteFruitA" />
+							</Select.Root>
 
-						<Select.Root portal={null} selected={defaultDimA}>
-							<Select.Trigger class="w-[180px]">
-								<Select.Value placeholder="Select Group By DimensionB" />
-							</Select.Trigger>
-							<Select.Content>
-								<Select.Group>
-									<Select.Label>Fruits</Select.Label>
-									{#each tableDimensions as dimension}
-										<Select.Item
-											value={dimension.value}
-											label={dimension.label}
-											on:click={() => handleSelectGroupByChange(dimension.value, 'A')}
-											>{dimension.label}</Select.Item
-										>
-									{/each}
-								</Select.Group>
-							</Select.Content>
-							<Select.Input name="favoriteFruitA" />
-						</Select.Root>
-
-						<Select.Root portal={null} selected={defaultDimB}>
-							<Select.Trigger class="w-[180px]">
-								<Select.Value placeholder="Select Group By DimensionB" />
-							</Select.Trigger>
-							<Select.Content>
-								<Select.Group>
-									<Select.Label>Ad Networks</Select.Label>
-									{#each tableDimensions as dimension}
-										<Select.Item
-											value={dimension.value}
-											label={dimension.label}
-											on:click={() => handleSelectGroupByChange(dimension.value, 'B')}
-											>{dimension.label}</Select.Item
-										>
-									{/each}
-								</Select.Group>
-							</Select.Content>
-							<Select.Input name="favoriteFruitB" />
-						</Select.Root>
+							<Select.Root portal={null} selected={defaultDimB}>
+								<Select.Trigger class="w-[180px]">
+									<Select.Value placeholder="Select Group By DimensionB" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.Label>Ad Networks</Select.Label>
+										{#each tableDimensions as dimension}
+											<Select.Item
+												value={dimension.value}
+												label={dimension.label}
+												on:click={() => handleSelectGroupByChange(dimension.value, 'B')}
+												>{dimension.label}</Select.Item
+											>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+								<Select.Input name="favoriteFruitB" />
+							</Select.Root>
+						</div>
 					</div>
-</div>
 				</Card.Header>
 				<Card.Content>
 					{#await data.respData}

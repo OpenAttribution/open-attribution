@@ -1,44 +1,31 @@
-import type { PageServerLoad } from './$types.js';
+import type { LayoutServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({}) => {
+async function fetchData(url: string) {
+	try {
+		const resp = await fetch(url);
+		if (resp.status === 200) {
+			return await resp.json();
+		} else if (resp.status === 404) {
+			console.log('Not found');
+			return { error: 'Not Found' };
+		} else if (resp.status === 500) {
+			console.log('API Server error');
+			return { error: 'Backend Error' };
+		}
+	} catch (error) {
+		console.log('Uncaught error', error);
+		return { error: 'Uncaught Error' };
+	}
+}
+
+export const load: LayoutServerLoad = async ({}) => {
+	const [respApps, respNets] = await Promise.all([
+		fetchData('http://dash-backend:8001/api/apps'),
+		fetchData('http://dash-backend:8001/api/networks')
+	]);
+
 	return {
-		respApps: fetch(`http://dash-backend:8001/api/apps`)
-			.then((resp) => {
-				if (resp.status === 200) {
-					return resp.json();
-				} else if (resp.status === 404) {
-					console.log('Not found');
-					return 'Not Found';
-				} else if (resp.status === 500) {
-					console.log('API Server error');
-					return 'Backend Error';
-				}
-			})
-			.then(
-				(json) => json,
-				(error) => {
-					console.log('Uncaught error', error);
-					return 'Uncaught Error';
-				}
-			),
-		respNets: fetch(`http://dash-backend:8001/api/networks`)
-			.then((resp) => {
-				if (resp.status === 200) {
-					return resp.json();
-				} else if (resp.status === 404) {
-					console.log('Not found');
-					return 'Not Found';
-				} else if (resp.status === 500) {
-					console.log('API Server error');
-					return 'Backend Error';
-				}
-			})
-			.then(
-				(json) => json,
-				(error) => {
-					console.log('Uncaught error', error);
-					return 'Uncaught Error';
-				}
-			)
+		respApps: respApps.error ? { error: respApps.error } : respApps,
+		respNets: respNets.error ? { error: respNets.error } : respNets
 	};
 };
