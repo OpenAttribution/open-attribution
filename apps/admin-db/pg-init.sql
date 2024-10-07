@@ -34,10 +34,11 @@ CREATE TABLE networks (
 
 INSERT INTO networks (name, postback_id) VALUES
 ('Google','google'),
-('Facebook', 'meta'),
+('Meta', 'meta'),
 ('AppLovin', 'applovin'),
 ('Unity Ads', 'unityads'),
-('Digital Turbine','digitalturbine');
+('Digital Turbine','digitalturbine'),
+('ironSource', 'ironsource');
 
 
 

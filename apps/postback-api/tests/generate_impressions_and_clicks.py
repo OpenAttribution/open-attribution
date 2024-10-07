@@ -10,7 +10,7 @@ from tests._simulate_network_calls import impression_or_click, make_inapp_reques
 
 logger = get_logger(__name__)
 
-NETWORKS = ["google", "ironsource", "facebook"]
+NETWORKS = ["google", "ironsource", "meta"]
 APPS = ["com.example.one", "com.game.eg.gg", "id123456789", "123456789"]
 
 CAMPAIGNS = ["CampaignA", "CampaignB"]
