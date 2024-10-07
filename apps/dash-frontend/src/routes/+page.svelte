@@ -44,7 +44,8 @@
 
 	let groubyDimA = $state('network');
 	let groubyDimB = $state('store_id');
-
+	let defaultDimA = {value:'network', label:'Network'};
+	let defaultDimB = {value:'store_id', label:'App'};
 	let totalImpressions = $state(0);
 	let totalClicks = $state(0);
 	let totalInstalls = $state(0);
@@ -349,7 +350,7 @@
 						<Card.Title>My Table</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 
-						<Select.Root portal={null}>
+						<Select.Root portal={null} selected={defaultDimA}>
 							<Select.Trigger class="w-[180px]">
 								<Select.Value placeholder="Select Group By DimensionB" />
 							</Select.Trigger>
@@ -369,13 +370,13 @@
 							<Select.Input name="favoriteFruitA" />
 						</Select.Root>
 
-						<Select.Root portal={null}>
+						<Select.Root portal={null} selected={defaultDimB}>
 							<Select.Trigger class="w-[180px]">
 								<Select.Value placeholder="Select Group By DimensionB" />
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Group>
-									<Select.Label>Fruits</Select.Label>
+									<Select.Label>Ad Networks</Select.Label>
 									{#each tableDimensions as dimension}
 										<Select.Item
 											value={dimension.value}
