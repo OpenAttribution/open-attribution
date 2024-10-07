@@ -8,6 +8,8 @@
 		dimensionA = 'network' as String,
 		dimensionB = 'store_id' as String
 	} = $props();
+
+	console.log('OVERVIEW DATA ROWS: ', Object.keys(overviewData).length);
 </script>
 
 <Table.Root>
@@ -22,7 +24,8 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#if overviewData && overviewData.length > 0}
+		{#if overviewData && Object.keys(overviewData).length > 0}
+			{console.log('OVERVIEW DATA ROWS: AFTER IF ', Object.keys(overviewData).length)}
 			{#each overviewData.slice(0, 10) as entry}
 				<Table.Row>
 					<Table.Cell>{entry[dimensionA]}</Table.Cell>

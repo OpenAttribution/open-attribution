@@ -115,8 +115,8 @@
 
 	function getFinalData(myData: OverviewEntry[]) {
 		// getFilteredData(myData);
-		if (filteredData && filteredData.length > 0) {
-			groupByDimensions(filteredData, groubyDimA, groubyDimB);
+		if (myData && myData.length > 0) {
+			groupByDimensions(myData, groubyDimA, groubyDimB);
 		}
 	}
 
@@ -169,13 +169,18 @@
 		// getFinalData(data.respData.overview);
 	}
 
+	interface GroupedData {
+		[groupKey: string]: GroupedEntry;
+	}
+
 	function groupByDimensions(
 		filteredData: OverviewEntry[],
 		dimensionA: string,
 		dimensionB: string
-	): { [groupKey: string]: GroupedEntry } {
+	) {
 		console.log('GROUPING');
-		finalData = filteredData.reduce<{ [groupKey: string]: GroupedEntry }>((acc, curr) => {
+		
+		const groupedData = filteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
 			const groupKey = `${keyA}|${keyB}`;
@@ -198,6 +203,9 @@
 
 			return acc;
 		}, {});
+
+		finalData = Object.values(groupedData);
+		console.log('FINAL DATA ROWS:', finalData.length);
 	}
 </script>
 
@@ -389,7 +397,7 @@
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
 							{getFinalData(filteredData)}
-							<OverviewTable overviewData={filteredData}></OverviewTable>
+							<OverviewTable overviewData={finalData}></OverviewTable>
 						{:else}
 							Loading...
 						{/if}
