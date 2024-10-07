@@ -32,7 +32,7 @@ export interface OverviewEntry {
 	impressions: number;
 	clicks: number;
 	installs: number;
-	revenue: string;
+	revenue: number;
 }
 
 export interface GroupedEntry {
@@ -52,7 +52,7 @@ export interface DatesOverviewEntry {
 	impressions: number;
 	clicks: number;
 	installs: number;
-	revenue: string;
+	revenue: number;
 }
 
 export type OverviewResponse = { overview: OverviewEntry[]; dates_overview: DatesOverviewEntry[] };

@@ -194,7 +194,7 @@
 			acc[groupKey].impressions += curr.impressions || 0;
 			acc[groupKey].clicks += curr.clicks || 0;
 			acc[groupKey].installs += curr.installs || 0;
-			acc[groupKey].revenue += Number(curr.revenue) || 0;
+			acc[groupKey].revenue += curr.revenue || 0;
 
 			return acc;
 		}, {});
@@ -389,7 +389,7 @@
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
 							{getFinalData(filteredData)}
-							<OverviewTable overviewData={finalData}></OverviewTable>
+							<OverviewTable overviewData={filteredData}></OverviewTable>
 						{:else}
 							Loading...
 						{/if}
