@@ -28,8 +28,8 @@
 
 	const { data } = $props<{ data: PageData }>();
 
-	let groupByDimA = $state('network');
-	let groupByDimB = $state('store_id');
+	let groupByDimA = $state('network_name');
+	let groupByDimB = $state('app_name');
 	let defaultDimA = { value: 'network', label: 'Network' };
 	let defaultDimB = { value: 'store_id', label: 'App' };
 	let totalImpressions = $state(0);

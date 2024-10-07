@@ -12,13 +12,7 @@
 		dimensionB
 	} = $props();
 
-	// console.log('OVERVIEW DATA ROWS: ', Object.keys(overviewData).length);
-	// console.log('OVERVIEW DATA DimA: ', dimensionA);
-
-	// let dimensionALabel = $state(tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA);
-	// let dimensionBLabel = $state(tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB);
-	// console.log('OVERVIEW DATA DimA LABEL: ', dimensionALabel);
-	// console.log('OVERVIEW DATA DimB LABEL: ', dimensionBLabel);
+	
 
 </script>
 
@@ -40,7 +34,7 @@
 				<Table.Row>
 					<Table.Cell>{entry[dimensionA as keyof typeof entry]}</Table.Cell>
 					<Table.Cell>{entry[dimensionB as keyof typeof entry]}</Table.Cell>
-					<Table.Cell class="text-right">{entry['impressions']}</Table.Cell>
+					<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
 					<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
 					<Table.Cell class="text-right">{entry.installs}</Table.Cell>
 					<Table.Cell class="text-right">{entry.revenue.toFixed(4)}</Table.Cell>

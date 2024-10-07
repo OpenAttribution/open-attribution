@@ -26,7 +26,9 @@ export type NetworkResponse = {
 export interface OverviewEntry {
 	[key: string]: string | number;
 	network: string;
+	network_name: string;
 	store_id: string;
+	app_name: string;
 	campaign_name: string;
 	campaign_id: string;
 	impressions: number;
@@ -46,7 +48,8 @@ export interface GroupedEntry {
 export interface DatesOverviewEntry {
 	on_date: string;
 	network: string;
-	store_id: string;
+	network_name: string;
+	app_name: string;
 	campaign_name: string;
 	campaign_id: string;
 	impressions: number;
