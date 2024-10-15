@@ -63,10 +63,17 @@ class OverviewController(Controller):
         apps_df = query_apps().rename(columns={"name": "app_name"})
         networks_df = query_networks().rename(columns={"name": "network_name"})
 
-        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="left")
+        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="outer")
         df = df.merge(
-            networks_df, left_on="network", right_on="postback_id", how="left",
+            networks_df, left_on="network", right_on="postback_id", how="outer",
         )
+
+        df.loc[df["app_name"].isna(), "app_name"] = df.loc[
+            df["app_name"].isna(), "store_id",
+        ]
+        df.loc[df["network_name"].isna(), "network_name"] = df.loc[
+            df["network_name"].isna(), "network",
+        ]
 
         df["revenue"] = df["revenue"].astype(float)
 
