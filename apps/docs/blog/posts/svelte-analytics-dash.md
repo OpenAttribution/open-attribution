@@ -36,4 +36,4 @@ Meanwhile, I've also completely revamped the docker environment for development 
 - [ ] Pull data from first ad network
 - [ ] Start iOS and/or Android SDK
 
-Some features are live at [demo.openattribution.com](http://demo.openattribution.com).
+Some features are live at [demo.openattribution.dev](http://demo.openattribution.dev).
