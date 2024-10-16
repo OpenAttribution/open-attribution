@@ -1,30 +1,10 @@
-I think that superset is still the best choice. It is infact the worst choice for later, but it has a huge pro that it is basically plug and play now. Given that I can't easily change the visuals, it is actually probably best so that it keeps me from spending too much time tinkering with the UI until much later when more of the backend is solidified.
+The dash is comprised of `dash-backend` and `dash-frontend` (svelte).
 
-## Superset
-Currently been using Superset and finding these issues:
-1. It does not drill down very well. The option to right click to drill down is bad UX.
-2. It is not flexible, or at least not easy, to implement themes on top. 
-3. Filters also seemed a bit tricky
+The dash is currently lacking these features
 
-## DIY with Svelte
-#### Pros
-1. Full control of UX/UI
-#### Cons
-1. Most work
 
-## Plotly Dash + Svelte
-#### Pros
-1. Good control of UX/UI
-2. Somewhat easy to use dash since I'm familiar with it
-#### Cons
-1. Is dash truly still being worked on?
-2. Drill down also not that great in dash
-
-## Analytics library that friend showed me?
-#### Pros
-1. Hopeful that it could out of box have support for drilldown
-2. Maybe plays better with js + js
-#### Cons
-1. Completely unknown, so might be hard.
-2. Still needs Python backend for db queries.
-
+- [ ] Auth Login: While required for any real use, as the main way of sharing this project is the demo, I think this can wait for now. Possibly use Lucia Auth as an easy way of getting a fully featured authentication setup.
+- [ ] Dash Plots: Currently the frontend does not have any plotting. These features are set to change hundreds of times, so the plotting library is not crucial now, but we do need something setup to help show how OpenAttribution can be used and for testing data. I think using shadcn-svelte's upcoming charts might be a good option for this as they are very basic, but have a unified style.
+- [ ] Drill down: The dash needs to start building out a drilldown feature for digging into deeply nested data. An alternative to drill down might be a more flexible group-by table like you find in various BI tools.
+- [ ] Network Authentication: CRUD tools for saving various network authentication secrets in the `admin-db`
+- [ ] Tracking links: Tracking link setups for marketers.
