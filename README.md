@@ -2,7 +2,7 @@
 
 An open source Mobile Measurement Platform (MMP) for tracking your mobile advertising spend and ROI.
 
-## 🏗️ Under Construction 🏗️
+## 🏗️🏗️🏗️ Under Construction 🏗️🏗️🏗️
 
 If you're insterested in this project please feel free to reach out for collaboartion or more information.
 
@@ -10,12 +10,20 @@ If you're insterested in this project please feel free to reach out for collaboa
 
 ## Description
 
-Open attribution tracks your mobile advertising spend from the ad impression and click then connects that to later in-app events. This is done with several parts:
+Open Attribution tracks your mobile advertising spend from the ad impression and click then connects that to later in-app events. This is done with several parts:
 
 1. Impression & Click Tracking
+   1. apps/postback-api (WIP)
 2. Attribution of Mobile Users to the impressions or clicks
+   1. apps/analytics-db
+      1. SQL in Clickhouse (WIP)
+      2. Ability for clients to set their own SQL for custom attribution logic (WIP)
 3. In-App Event Tracking via iOS and Android SDK
+   1. apps/sdk-ios (does not exist yet)
+   2. apps/sdk-android (does not exist yet)
 4. Analytics Dashboards
+   1. apps/dash-backend (WIP)
+   2. apps/dash-frontend (WIP)
 
 ## True ownership of your mobile app's data
 
