@@ -1,11 +1,11 @@
 This project was started around Nov 10th, 2023 and is still very pre-alpha stage. Thus this page will serve to help put some context for how much work is still needed for an MVP product.
 
 
-## Issues
-
-
 ## Testing
-Make plan for testing regimen. To test:
+
+The testing will be run by `postback-test` which will be run by the development docker. The idea would be for an easily checkable log of all the events that have occured via the frontend dash. Additionally, `postback-test` also checks itself the results in the database, but of course this needs to be replicated on the frontend as well.
+
+Make plan for daily testing regimen for `postback-api`. This is currently pending the `dash-frontend` MVP including the plotting functionality. This will test for:
 
 1. 5x per user: 
 - [ ] Test events
