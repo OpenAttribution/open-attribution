@@ -10,12 +10,13 @@ docs_dir: '.'
 nav:
   - Docs: index.md
   - TODO and Roadmap:
-      - TODOs: ./todo/todos.md
-      - Data Flow: ./todo/data_flow.md
+      - TODOs Overview: ./todo/todos.md
+      - Dash: ./todo/dash.md
+      - Batch Data Collection: ./todo/data_collection_batch.md
+      - SDKs: ./todo/sdk.md
       - Database Overview: ./todo/database_overview.md
   - Getting Started:
       - Installation: ./getting_started/installation.md
-      - Running after Installation: ./getting_started/running.md
       - Develop Locally: ./getting_started/develop_locally.md
   - About:
       - History: ./about/history.md

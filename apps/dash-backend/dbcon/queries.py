@@ -1,10 +1,11 @@
 """Query database for backend API."""
 
 import pathlib
+from typing import cast
 
 import pandas as pd
 from config import MODULE_DIR, get_logger
-from sqlalchemy import text
+from sqlalchemy import Engine, text
 
 from dbcon.connections import get_db_connection
 
@@ -57,7 +58,7 @@ def insert_network(network_name: str) -> None:
     """Insert a new network."""
     logger.info(f"Inserting new network: {network_name}")
 
-    with DBCON.engine.connect() as connection:
+    with ENGINE.connect() as connection:
         connection.execute(
             INSERT_NETWORK,
             {"network_name": network_name, "status": "active"},
@@ -69,7 +70,7 @@ def delete_network(network_id: int) -> None:
     """Delete custom network."""
     logger.info(f"Delete network: {network_id}")
 
-    with DBCON.engine.connect() as connection:
+    with ENGINE.connect() as connection:
         connection.execute(DELETE_NETWORK, {"network_id": network_id})
         connection.commit()
 
@@ -79,7 +80,7 @@ def query_apps() -> pd.DataFrame:
     logger.info("Query all apps.")
     df = pd.read_sql(
         QUERY_APPS,
-        con=DBCON.engine,
+        con=ENGINE,
     )
     return df
 
@@ -88,7 +89,7 @@ def insert_app(app_name: str, store_id: str, store: int) -> None:
     """Insert a new network."""
     logger.info(f"Inserting new app: {app_name}")
 
-    with DBCON.engine.connect() as connection:
+    with ENGINE.connect() as connection:
         connection.execute(
             INSERT_APP,
             {"app_name": app_name, "store_id": store_id, "store": store},
@@ -100,7 +101,7 @@ def delete_app(app_id: int) -> None:
     """Delete custom network."""
     logger.info(f"Delete app: {app_id}")
 
-    with DBCON.engine.connect() as connection:
+    with ENGINE.connect() as connection:
         connection.execute(DELETE_NETWORK, {"app_id": app_id})
         connection.commit()
 
@@ -108,3 +109,9 @@ def delete_app(app_id: int) -> None:
 logger.info("set db engine")
 DBCON = get_db_connection("admin-db")
 DBCON.set_engine()
+
+if DBCON.engine is None:
+    raise ValueError("DBCON.engine is None")
+
+assert DBCON.engine is not None, "DBCON.engine is None"
+ENGINE = cast(Engine, DBCON.engine)

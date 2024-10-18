@@ -1,11 +1,17 @@
 """Create SQLAlchemy database connection engine."""
 
+import sys
 from typing import Self
 
 from config import get_logger
 from sqlalchemy import Engine, create_engine
 
 logger = get_logger(__name__)
+
+# When testing locally, this needs to be localhost
+# When running in docker, it needs to be clickhouse
+DB_HOST = "localhost" if hasattr(sys, "ps1") else "admin-db"
+
 
 
 class PostgresCon:
@@ -14,16 +20,21 @@ class PostgresCon:
 
     Parameters
     ----------
-        my_db: String, passed on init, string name of db
-        my_env: String, passed on init, string name of env, 'staging' or 'prod'
+    db_name: str, name of the database
+    db_host: str, hostname of the database server
+    db_port: str, port number for the database connection
+    db_user: str, username for database authentication
+    db_password: str, password for database authentication
 
     """
 
-    engine: None | Engine = None
-    db_name = None
-    db_pass = None
-    db_uri = None
-    db_user = None
+    engine: Engine | None = None
+    db_name: str | None = None
+    db_pass: str | None = None
+    db_uri: str | None = None
+    db_user: str | None = None
+    db_ip: str | None = None
+    db_port: str | None = None
 
     def __init__(
         self: Self,
@@ -46,7 +57,7 @@ class PostgresCon:
         try:
             self.db_uri = f"postgresql://{self.db_user}:{self.db_pass}"
             self.db_uri += f"@{self.db_ip}:{self.db_port}/{self.db_name}"
-            self.engine: Engine = create_engine(
+            self.engine = create_engine(
                 self.db_uri,
                 connect_args={
                     "connect_timeout": 10,
@@ -73,7 +84,7 @@ def get_db_connection(db_name: str) -> PostgresCon:
        server_name: str String of server name for parsing config file
     """
     db_name = "admin_db"
-    db_host = "admin-db"
+    db_host = DB_HOST
     db_local_port = "5432"
     db_user = "postgres"
     db_password = "example"

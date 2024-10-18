@@ -2,15 +2,15 @@ import type { CalendarDate } from '@internationalized/date';
 
 export interface NetworkEntry {
 	id: number;
-	name: string;
-	postback_id: string;
+	network_name: string;
+	network: string;
 	status: string;
 	is_custom: boolean;
 }
 
 export interface AppEntry {
 	id: number;
-	name: string;
+	app_name: string;
 	store_id: string;
 	status: string;
 }
@@ -58,7 +58,12 @@ export interface DatesOverviewEntry {
 	revenue: number;
 }
 
-export type OverviewResponse = { overview: OverviewEntry[]; dates_overview: DatesOverviewEntry[] };
+export type OverviewResponse = {
+	overview: OverviewEntry[];
+	dates_overview: DatesOverviewEntry[];
+	networks: string[];
+	store_ids: string[];
+};
 
 export type OverviewEntries = OverviewEntry[];
 

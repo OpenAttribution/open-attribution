@@ -3,26 +3,34 @@ authors = [{ name = "James O'Claire" }]
 name = "open-attribution"
 description = "Tracking for apps and attribution"
 version = "0.0.1"
+requires-python = ">= 3.12"
+
+# Project is currently being run with docker, but these are useful for local dev/testing
+dependencies = [
+    "pandas",
+    "litestar[standard]",
+    "confluent_kafka",
+    "clickhouse_connect",
+    "sqlalchemy",
+    "psycopg2-binary"
+]
 
 [project.optional-dependencies]
 dev = ["pre-commit"]
 
-dependencies = [
-    "uvicorn",
-    "litestar[standard]",
-    "apache-superset",
-    "confluent_kafka",
-]
+
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
 
 
 [tool.ruff]
 #select = ["E", "W", "F", "B", "I", "N", "UP"]
 lint.select = ["ALL"]
 
-target-version = 'py311'
+target-version = 'py312'
 
 lint.ignore = [
     "E501",   # line length
