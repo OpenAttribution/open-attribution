@@ -111,19 +111,19 @@
 		let myOptions;
 
 		myOptions = myRows.map((row) => ({
-			value: row.postback_id,
-			label: row.name
+			value: row.network,
+			label: row.network_name
 		}));
 		return myOptions;
 	}
 
-	function handleAppOptions(myRows: AppEntry[], myType: string) {
+	function handleAppOptions(myRows: AppEntry[]) {
 		let myOptions;
 
 		// Fixing the second condition to check for apps
 		myOptions = myRows.map((app) => ({
 			value: app.store_id,
-			label: app.name
+			label: app.app_name
 		}));
 		return myOptions;
 	}
@@ -136,6 +136,7 @@
 		const params = new URLSearchParams($page.url.search);
 
 		// Set or update the 'networks' query parameter
+		// TODO I think not currently being used to check for networks!
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
@@ -207,12 +208,12 @@
 					<Card.Title class="text-sm font-large">Apps</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					{#await data.respApps}
+					{#await data.respData}
 						Loading...
-					{:then myapps}
-						{#if myapps.apps && myapps.apps.length > 0}
+					{:then mydata}
+						{#if mydata.store_ids && mydata.store_ids.length > 0}
 							<Multiselect
-								options={handleAppOptions(myapps.apps, 'apps')}
+								options={handleAppOptions(mydata.store_ids)}
 								placeholder="Filter by App"
 								on:change={handleAppChange}
 							/>
@@ -227,12 +228,12 @@
 					<Card.Title class="text-sm font-large">Networks</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					{#await data.respNets}
+					{#await data.respData}
 						Loading...
-					{:then mynets}
-						{#if mynets.networks && mynets.networks.length > 0}
+					{:then myData}
+						{#if myData.networks && myData.networks.length > 0}
 							<Multiselect
-								options={handleNetOptions(mynets.networks)}
+								options={handleNetOptions(myData.networks)}
 								placeholder="Filter by Network"
 								on:change={handleNetChange}
 							/>

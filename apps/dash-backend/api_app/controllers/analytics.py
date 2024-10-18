@@ -1,5 +1,6 @@
 """API for returning analytics data for dash."""
 
+import sys
 from typing import Self
 
 import clickhouse_connect
@@ -14,8 +15,13 @@ from api_app.models import (
 
 logger = get_logger(__name__)
 
-# Seems like this needs to be localhost, not docker specific clickhouse?
-client = clickhouse_connect.create_client(host="clickhouse")
+# When testing locally, this needs to be localhost
+# When running in docker, it needs to be clickhouse
+if hasattr(sys, "ps1"):
+    client = clickhouse_connect.create_client(host="localhost")
+else:
+    client = clickhouse_connect.create_client(host="clickhouse")
+
 
 
 def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
@@ -60,8 +66,10 @@ class OverviewController(Controller):
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
         df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
+
         apps_df = query_apps().rename(columns={"name": "app_name"})
         networks_df = query_networks().rename(columns={"name": "network_name"})
+
 
         df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="outer")
         df = df.merge(
@@ -112,7 +120,13 @@ class OverviewController(Controller):
         home_dict = home_df.to_dict(orient="records")
         dates_home_dict = dates_home_df.to_dict(orient="records")
 
-        myresp = OverviewData(overview=home_dict, dates_overview=dates_home_dict)
+
+        found_networks = home_df[["network", "network_name"]].drop_duplicates().to_dict(orient="records")
+        found_store_ids = home_df[["store_id", "app_name"]].drop_duplicates().to_dict(orient="records")
+
+        logger.info(f"{self.path} overview load {start_date=} {end_date=} {found_networks=} {found_store_ids=}")
+
+        myresp = OverviewData(overview=home_dict, dates_overview=dates_home_dict, networks=found_networks, store_ids=found_store_ids)
 
         logger.info(f"{self.path} return rows {home_df.shape}")
         return myresp
