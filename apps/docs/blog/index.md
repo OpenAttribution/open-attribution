@@ -1,3 +1,3 @@
-# Blog Home
+# Open Attribtuion Blog
 
-welcome. inside index.md of blog home
+Welcome to the Open Attribution Blog.
