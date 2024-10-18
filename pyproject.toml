@@ -10,6 +10,9 @@ dependencies = [
     "pandas",
     "litestar[standard]",
     "confluent_kafka",
+    "clickhouse_connect",
+    "sqlalchemy",
+    "psycopg2-binary"
 ]
 
 [project.optional-dependencies]
