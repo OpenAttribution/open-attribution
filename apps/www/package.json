@@ -14,7 +14,6 @@
   "dependencies": {
     "@skeletonlabs/skeleton": "^2.8.0",
     "@skeletonlabs/tw-plugin": "^0.3.1",
-    "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/adapter-node": "^4.0.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
@@ -30,14 +29,6 @@
     "vite-plugin-tailwind-purgecss": "^0.2.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.28.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-svelte": "^2.1.2",
-    "prettier": "^3.2.0",
-    "prettier-plugin-svelte": "^3.1.2",
-    "svelte-check": "^3.4.3"
   },
   "type": "module"
 }
