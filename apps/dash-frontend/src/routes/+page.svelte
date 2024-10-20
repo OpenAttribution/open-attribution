@@ -18,6 +18,8 @@
 	} from '../types';
 	import { goto } from '$app/navigation';
 
+	import StackedBar from '$lib/components/mycharts/StackedBar.svelte';
+
 	import { page } from '$app/stores';
 
 	import type { OverviewEntry } from '../types';
@@ -331,6 +333,11 @@
 					</Card.Content>
 				{/await}
 			</Card.Root>
+		</div>
+
+		<div class="h-[300px] p-4 border rounded">
+			Hi!
+			<StackedBar></StackedBar>
 		</div>
 
 		<div class="gap-4 md:gap-8">
