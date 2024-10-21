@@ -14,11 +14,12 @@
 		OverviewEntries,
 		NetworkEntry,
 		AppEntry,
-		GroupedEntry
+		GroupedEntry,
+		DatesOverviewEntry
 	} from '../types';
 	import { goto } from '$app/navigation';
 
-	import StackedBarChart from '$lib/components/mycharts/StackedBarChart.svelte';
+	import StackedBar from '$lib/components/mycharts/StackedBar.svelte';
 
 	import { page } from '$app/stores';
 
@@ -84,7 +85,9 @@
 	let filterApps = $state<string[]>([]);
 
 	let filteredData = $state(getFilteredData(data.respData.overview));
+	let filteredPlotData = $state(getFilteredPlotData(data.respData.dates_overview));
 	let finalData = $state<GroupedEntry[]>([]);
+	let finalPlotData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
 		console.log('START FILTER');
@@ -102,10 +105,32 @@
 		makeNewSum(filteredData);
 	}
 
-	function getFinalData(myData: OverviewEntry[]) {
-		// getFilteredData(myData);
+	function getFilteredPlotData(myData: DatesOverviewEntry[]) {
+		console.log('START PLOT FILTER');
 		if (myData && myData.length > 0) {
-			groupByDimensions(myData, groupByDimA, groupByDimB);
+			console.log('START PLOT FILTER2');
+			filteredPlotData = myData.filter((item) => {
+				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
+				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
+				return networkMatch && appMatch;
+			});
+		} else {
+			console.log('START FILTER PLOT FAIL');
+			return myData;
+		}
+	}
+
+	function getFinalData(myData: OverviewEntry[]) {
+		if (myData && myData.length > 0) {
+			const returnedFinalData = groupByDimensions(myData, groupByDimA, groupByDimB);
+			finalData = returnedFinalData;
+		}
+	}
+
+	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
+		if (myData && myData.length > 0) {
+			const returnedFinalPlotData = groupByDimensions(myData, 'on_date', groupByKey);
+			finalPlotData = returnedFinalPlotData;
 		}
 	}
 
@@ -193,7 +218,8 @@
 			return acc;
 		}, {});
 
-		finalData = Object.values(groupedData);
+		const myfinalData = Object.values(groupedData);
+		return myfinalData;
 		console.log('FINAL DATA ROWS:', finalData.length);
 	}
 
@@ -336,8 +362,22 @@
 		</div>
 
 		<div class="h-[300px] p-4 border rounded">
-			Hi!
-			<StackedBarChart></StackedBarChart>
+			{#await data.respData}
+				Loading...
+			{:then mydata}
+				{#if mydata.dates_overview && mydata.dates_overview.length > 0}
+					{getFilteredPlotData(mydata.dates_overview)}
+					{getFinalPlotData(filteredPlotData || [], (groupByKey = 'network'))}
+					<StackedBar plotData={finalPlotData}></StackedBar>
+					<!-- <OverviewTable
+								overviewData={finalDatao}
+								dimensionA={groupByDimA}
+								dimensionB={groupByDimB}
+							></OverviewTable> -->
+				{:else}
+					Loading...
+				{/if}
+			{/await}
 		</div>
 
 		<div class="gap-4 md:gap-8">

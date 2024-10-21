@@ -370,18 +370,63 @@
 		}
 	];
 
-	const colorKeys = [...new Set(['cherries', 'grapes', 'bananas', 'apples'])];
+	export let wideData = [
+		{
+			year: 2019,
+			apples: 3840,
+			bananas: 1920,
+			cherries: 960,
+			grapes: 400
+		},
+		{
+			year: 2018,
+			apples: 1600,
+			bananas: 1440,
+			cherries: 960,
+			grapes: 400
+		},
+		{
+			year: 2017,
+			apples: 820,
+			bananas: 1000,
+			cherries: 640,
+			grapes: 400
+		},
+		{
+			year: 2016,
+			apples: 820,
+			bananas: 560,
+			cherries: 720,
+			grapes: 400
+		}
+	];
+
+	export let plotData = [
+		{ year: '2021', group: 'apples', value: 29288 },
+		{ year: '2022', group: 'apples', value: 26783 },
+		{ year: '2023', group: 'apples', value: 22139 },
+		{ year: '2024', group: 'apples', value: 21724 },
+		{ year: '2021', group: 'cherries', value: 20852 },
+		{ year: '2022', group: 'cherries', value: 18725 },
+		{ year: '2023', group: 'grapes', value: 17417 },
+		{ year: '2024', group: 'cherries', value: 15402 }
+	];
+
+	// const colorKeys = [...new Set(['cherries', 'grapes', 'bananas', 'apples'])];
+
+	// Get the first 5 unique 'group' values
+	$: colorKeys = Array.from(new Set(plotData.map((d) => d.group))).slice(0, 5);
 	const keyColors = schemeObservable10;
 </script>
 
 <div class="h-[300px] p-4 border rounded">
 	<Chart
-		data={stackedData}
-		x="year"
+		data={plotData}
+		x="on_date"
 		xScale={scaleBand().paddingInner(0.4).paddingOuter(0.1)}
-		y="values"
+		y="installs"
 		yNice={4}
-		c="fruit"
+		c="network"
 		cScale={scaleOrdinal()}
 		cDomain={colorKeys}
 		cRange={keyColors}
@@ -396,7 +441,7 @@
 			<!-- <Highlight area /> -->
 		</Svg>
 
-		<Tooltip.Root let:data>
+		<!-- <Tooltip.Root let:data>
 			<Tooltip.Header>{data.year}</Tooltip.Header>
 			<Tooltip.List>
 				{#each data.data as d}
@@ -412,13 +457,13 @@
 				<Tooltip.Separator />
 
 				<!-- TODO: Remove [...] type hack to make svelte-check happy -->
-				<Tooltip.Item
+		<!-- <Tooltip.Item
 					label="total"
 					value={sum([...data.data], (d) => d.value)}
 					format="integer"
 					valueAlign="right"
-				/>
-			</Tooltip.List>
-		</Tooltip.Root>
+				/> -->
+		<!-- </Tooltip.List> -->
+		<!-- </Tooltip.Root> --> -->
 	</Chart>
 </div>
