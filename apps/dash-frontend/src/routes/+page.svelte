@@ -18,7 +18,7 @@
 	} from '../types';
 	import { goto } from '$app/navigation';
 
-	import StackedBar from '$lib/components/mycharts/StackedBar.svelte';
+	import StackedBarChart from '$lib/components/mycharts/StackedBarChart.svelte';
 
 	import { page } from '$app/stores';
 
@@ -337,7 +337,7 @@
 
 		<div class="h-[300px] p-4 border rounded">
 			Hi!
-			<StackedBar></StackedBar>
+			<StackedBarChart></StackedBarChart>
 		</div>
 
 		<div class="gap-4 md:gap-8">

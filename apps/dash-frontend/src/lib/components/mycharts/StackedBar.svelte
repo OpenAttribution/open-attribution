@@ -5,6 +5,8 @@
 
 	import { sum } from 'd3-array';
 
+	import { schemeAccent, schemePastel1, schemeObservable10 } from 'd3-scale-chromatic';
+
 	export let stackedData = [
 		{
 			year: 2019,
@@ -21,12 +23,6 @@
 					basket: 1,
 					fruit: 'apples',
 					value: 3840
-				},
-				{
-					year: 2019,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1920
 				},
 				{
 					year: 2019,
@@ -60,12 +56,6 @@
 				},
 				{
 					year: 2018,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1440
-				},
-				{
-					year: 2018,
 					basket: 2,
 					fruit: 'cherries',
 					value: 960
@@ -96,12 +86,6 @@
 				},
 				{
 					year: 2017,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1000
-				},
-				{
-					year: 2017,
 					basket: 2,
 					fruit: 'cherries',
 					value: 640
@@ -129,156 +113,6 @@
 					basket: 1,
 					fruit: 'apples',
 					value: 820
-				},
-				{
-					year: 2016,
-					basket: 1,
-					fruit: 'bananas',
-					value: 560
-				},
-				{
-					year: 2016,
-					basket: 2,
-					fruit: 'cherries',
-					value: 720
-				},
-				{
-					year: 2016,
-					basket: 2,
-					fruit: 'grapes',
-					value: 400
-				}
-			]
-		},
-		{
-			year: 2019,
-			fruit: 'bananas',
-			keys: {
-				year: 2019,
-				fruit: 'bananas'
-			},
-			value: 1920,
-			values: [3840, 5760],
-			data: [
-				{
-					year: 2019,
-					basket: 1,
-					fruit: 'apples',
-					value: 3840
-				},
-				{
-					year: 2019,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1920
-				},
-				{
-					year: 2019,
-					basket: 2,
-					fruit: 'cherries',
-					value: 960
-				},
-				{
-					year: 2019,
-					basket: 2,
-					fruit: 'grapes',
-					value: 400
-				}
-			]
-		},
-		{
-			year: 2018,
-			fruit: 'bananas',
-			keys: {
-				year: 2018,
-				fruit: 'bananas'
-			},
-			value: 1440,
-			values: [1600, 3040],
-			data: [
-				{
-					year: 2018,
-					basket: 1,
-					fruit: 'apples',
-					value: 1600
-				},
-				{
-					year: 2018,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1440
-				},
-				{
-					year: 2018,
-					basket: 2,
-					fruit: 'cherries',
-					value: 960
-				},
-				{
-					year: 2018,
-					basket: 2,
-					fruit: 'grapes',
-					value: 400
-				}
-			]
-		},
-		{
-			year: 2017,
-			fruit: 'bananas',
-			keys: {
-				year: 2017,
-				fruit: 'bananas'
-			},
-			value: 1000,
-			values: [820, 1820],
-			data: [
-				{
-					year: 2017,
-					basket: 1,
-					fruit: 'apples',
-					value: 820
-				},
-				{
-					year: 2017,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1000
-				},
-				{
-					year: 2017,
-					basket: 2,
-					fruit: 'cherries',
-					value: 640
-				},
-				{
-					year: 2017,
-					basket: 2,
-					fruit: 'grapes',
-					value: 400
-				}
-			]
-		},
-		{
-			year: 2016,
-			fruit: 'bananas',
-			keys: {
-				year: 2016,
-				fruit: 'bananas'
-			},
-			value: 560,
-			values: [820, 1380],
-			data: [
-				{
-					year: 2016,
-					basket: 1,
-					fruit: 'apples',
-					value: 820
-				},
-				{
-					year: 2016,
-					basket: 1,
-					fruit: 'bananas',
-					value: 560
 				},
 				{
 					year: 2016,
@@ -312,12 +146,6 @@
 				},
 				{
 					year: 2019,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1920
-				},
-				{
-					year: 2019,
 					basket: 2,
 					fruit: 'cherries',
 					value: 960
@@ -345,12 +173,6 @@
 					basket: 1,
 					fruit: 'apples',
 					value: 1600
-				},
-				{
-					year: 2018,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1440
 				},
 				{
 					year: 2018,
@@ -384,12 +206,6 @@
 				},
 				{
 					year: 2017,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1000
-				},
-				{
-					year: 2017,
 					basket: 2,
 					fruit: 'cherries',
 					value: 640
@@ -417,12 +233,6 @@
 					basket: 1,
 					fruit: 'apples',
 					value: 820
-				},
-				{
-					year: 2016,
-					basket: 1,
-					fruit: 'bananas',
-					value: 560
 				},
 				{
 					year: 2016,
@@ -456,12 +266,6 @@
 				},
 				{
 					year: 2019,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1920
-				},
-				{
-					year: 2019,
 					basket: 2,
 					fruit: 'cherries',
 					value: 960
@@ -489,12 +293,6 @@
 					basket: 1,
 					fruit: 'apples',
 					value: 1600
-				},
-				{
-					year: 2018,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1440
 				},
 				{
 					year: 2018,
@@ -528,12 +326,6 @@
 				},
 				{
 					year: 2017,
-					basket: 1,
-					fruit: 'bananas',
-					value: 1000
-				},
-				{
-					year: 2017,
 					basket: 2,
 					fruit: 'cherries',
 					value: 640
@@ -564,12 +356,6 @@
 				},
 				{
 					year: 2016,
-					basket: 1,
-					fruit: 'bananas',
-					value: 560
-				},
-				{
-					year: 2016,
 					basket: 2,
 					fruit: 'cherries',
 					value: 720
@@ -583,13 +369,9 @@
 			]
 		}
 	];
+
 	const colorKeys = [...new Set(['cherries', 'grapes', 'bananas', 'apples'])];
-	const keyColors = [
-		'hsl(var(--color-info))',
-		'hsl(var(--color-success))',
-		'hsl(var(--color-warning))',
-		'hsl(var(--color-danger))'
-	];
+	const keyColors = schemeObservable10;
 </script>
 
 <div class="h-[300px] p-4 border rounded">
@@ -611,7 +393,7 @@
 			<Axis placement="left" grid rule />
 			<Axis placement="bottom" rule />
 			<Bars radius={4} strokeWidth={1} />
-			<Highlight area />
+			<!-- <Highlight area /> -->
 		</Svg>
 
 		<Tooltip.Root let:data>
