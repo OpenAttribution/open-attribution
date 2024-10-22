@@ -1,59 +1,25 @@
 <script lang="ts">
-	import { Chart, Svg, Axis, Bars, Highlight, Tooltip } from 'layerchart';
+	import { Chart, Svg, Axis, Bars, Tooltip } from 'layerchart';
 
 	import { scaleBand, scaleOrdinal } from 'd3-scale';
-
 	import { sum } from 'd3-array';
+
 
 	import { type GroupedEntry } from '../../../types';
 
-	import { schemeAccent, schemePastel1, schemeObservable10 } from 'd3-scale-chromatic';
-
-	// export let wideData = [
-	// 	{
-	// 		year: 2019,
-	// 		apples: 3840,
-	// 		bananas: 1920,
-	// 		cherries: 960,
-	// 		grapes: 400
-	// 	},
-	// 	{
-	// 		year: 2018,
-	// 		apples: 1600,
-	// 		bananas: 1440,
-	// 		cherries: 960,
-	// 		grapes: 400
-	// 	},
-	// 	{
-	// 		year: 2017,
-	// 		apples: 820,
-	// 		bananas: 1000,
-	// 		cherries: 640,
-	// 		grapes: 400
-	// 	},
-	// 	{
-	// 		year: 2016,
-	// 		apples: 820,
-	// 		bananas: 560,
-	// 		cherries: 720,
-	// 		grapes: 400
-	// 	}
-	// ];
+	import { schemeObservable10 } from 'd3-scale-chromatic';
 
 	let { plotData = [] as GroupedEntry[], plotGroup = 'network' } = $props();
 
-	// const colorKeys = [...new Set(['cherries', 'grapes', 'bananas', 'apples'])];
-
 	let colorKeys = $state<string[]>(['google', 'ironsource']);
 
-	// Get the first 5 unique 'group' values
 
-	// $effect(() => {
-	// 	if (plotData) {
-	// 		colorKeys = Array.from(new Set(plotData.map((d) => d.network))).slice(0, 5);
-	// 	}
+		if (plotData) {
+			// Get the first 5 unique 'group' values
+			colorKeys = Array.from(new Set(plotData.map((d) => d.network))).slice(0, 5);
+		}
+
 	console.log('PLOT DATA KEYS: AFTER IF ', colorKeys);
-	// });
 
 	console.log('PLOT DATA ROWS: AFTER IF ', plotData);
 	const keyColors = schemeObservable10;
@@ -83,29 +49,29 @@
 			<!-- <Highlight area /> -->
 		</Svg>
 
-		<!-- <Tooltip.Root let:data>
-			<Tooltip.Header>{data.year}</Tooltip.Header>
+		<Tooltip.Root let:data>
+			<Tooltip.Header>{data.on_date}</Tooltip.Header>
 			<Tooltip.List>
-				{#each data.data as d}
+				<!-- {#each data as d} -->
 					<Tooltip.Item
-						label={d.fruit}
-						value={d.value}
-						color={cScale?.(d.fruit)}
+						label={data.network}
+						value={data.impressions}
+						color={cScale?.(d.network)}
 						format="integer"
 						valueAlign="right"
 					/>
-				{/each}
+				<!-- {/each} -->
 
 				<Tooltip.Separator />
 
 				<!-- TODO: Remove [...] type hack to make svelte-check happy -->
-		<!-- <Tooltip.Item
+				<!-- <Tooltip.Item
 					label="total"
-					value={sum([...data.data], (d) => d.value)}
+					value={sum([...plotData], (d) => d.impressions)}
 					format="integer"
 					valueAlign="right"
 				/> -->
-		<!-- </Tooltip.List> -->
-		<!-- </Tooltip.Root> --> -->
+		</Tooltip.List>
+		</Tooltip.Root>
 	</Chart>
 </div>
