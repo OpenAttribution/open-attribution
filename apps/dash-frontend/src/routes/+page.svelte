@@ -20,7 +20,6 @@
 	} from '../types';
 	import { goto } from '$app/navigation';
 
-	// import StackedBar from '$lib/components/mycharts/StackedBar.svelte';
 	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
 	import { page } from '$app/stores';
@@ -42,7 +41,7 @@
 	let totalInstalls = $state(0);
 	let totalRevenue = $state(0);
 
-	function makeNewSum(newData: OverviewEntries) {
+	function makeNewSum(newData: OverviewEntry[]) {
 		if (newData && newData.length > 0) {
 			// Generalize the summation for multiple fields
 			const fieldsToSum = ['impressions', 'clicks', 'installs', 'revenue'] as const;
@@ -88,7 +87,7 @@
 
 	let filteredPlotData = $state();
 	let filteredData = $state();
-	let finalPlotData = $state<GroupedPlotEntry[]>([]);
+	let finalPlotData = $state<DatesOverviewEntry[]>([]);
 	let finalData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
@@ -130,7 +129,7 @@
 
 	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
 		if (myData && myData.length > 0) {
-			const returnedFinalPlotData = groupByDimensionsPlot(myData,  groupByKey, 'impressions');
+			const returnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
 			finalPlotData = returnedFinalPlotData;
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
@@ -230,34 +229,43 @@
 		return myfinalData;
 	}
 
+	// 	interface PivotedPlotData {
+	// 	on_date: string;
+	// 	[dimensionB: string]: number;
+	// }
+
 	function groupByDimensionsPlot(
 		filteredData: OverviewEntry[],
 		dimensionB: string,
 		metric: string
-	) {
-		console.log('GROUPING', dimensionB);
+	): DatesOverviewEntry[] {
+		// Step 1: Group by on_date and dimensionB
+		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
+			const onDate = curr['on_date'] as string;
+			const dimensionValue = curr[dimensionB] as string;
+			const metricValue = (curr[metric] as number) || 0;
 
-		const groupedData = filteredData.reduce<GroupedPlotData>((acc, curr) => {
-			const keyA = curr['on_date'] as string;
-			const keyB = curr[dimensionB] as string;
-			const groupKey = `${keyA}|${keyB}`;
-
-			if (!acc[groupKey]) {
-				acc[groupKey] = {
-					['on_date']: keyA,
-					[dimensionB]: keyB,
-					value: 0,
-				};
+			// Initialize the on_date if not present
+			if (!acc[onDate]) {
+				acc[onDate] = {};
 			}
 
-			acc[groupKey].value += curr[metric] as number || 0;
+			// Add metric value for dimensionB
+			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
 
 			return acc;
 		}, {});
 
-		const myfinalData = Object.values(groupedData);
-		console.log('GROUPING: FINAL DATA ROWS:', 'on_date', dimensionB, finalData.length);
-		return myfinalData;
+		// Step 2: Pivot dimensionB into columns
+		const pivotedData = Object.entries(groupedData).map(([on_date, dimensionValues]) => {
+			return {
+				on_date,
+				...dimensionValues
+			};
+		});
+
+		console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
+		return pivotedData;
 	}
 
 	function formatNumber(num: number) {
@@ -406,8 +414,8 @@
 				{:then plotData}
 					{#if plotData.dates_overview && plotData.dates_overview.length > 0}
 						{getFilteredPlotData(plotData.dates_overview)}
-						{getFinalPlotData(filteredPlotData || [])}
-						<StackedBar plotData={finalPlotData} plotGroup="network"></StackedBar>
+						{getFinalPlotData(filteredPlotData)}
+						<StackedBar plotData={finalPlotData}></StackedBar>
 					{:else}
 						Loading...
 					{/if}
