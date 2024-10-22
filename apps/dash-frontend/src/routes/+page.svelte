@@ -15,11 +15,13 @@
 		NetworkEntry,
 		AppEntry,
 		GroupedEntry,
+		GroupedPlotEntry,
 		DatesOverviewEntry
 	} from '../types';
 	import { goto } from '$app/navigation';
 
-	import StackedBar from '$lib/components/mycharts/StackedBar.svelte';
+	// import StackedBar from '$lib/components/mycharts/StackedBar.svelte';
+	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
 	import { page } from '$app/stores';
 
@@ -86,7 +88,7 @@
 
 	let filteredPlotData = $state();
 	let filteredData = $state();
-	let finalPlotData = $state<GroupedEntry[]>([]);
+	let finalPlotData = $state<GroupedPlotEntry[]>([]);
 	let finalData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
@@ -128,7 +130,7 @@
 
 	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
 		if (myData && myData.length > 0) {
-			const returnedFinalPlotData = groupByDimensions(myData, 'on_date', groupByKey);
+			const returnedFinalPlotData = groupByDimensionsPlot(myData, 'on_date', groupByKey, 'impressions');
 			finalPlotData = returnedFinalPlotData;
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
@@ -188,6 +190,10 @@
 		[groupKey: string]: GroupedEntry;
 	}
 
+	interface GroupedPlotData {
+		[groupKey: string]: GroupedPlotEntry;
+	}
+
 	function groupByDimensions(
 		filteredData: OverviewEntry[],
 		dimensionA: string,
@@ -215,6 +221,37 @@
 			acc[groupKey].clicks += curr.clicks || 0;
 			acc[groupKey].installs += curr.installs || 0;
 			acc[groupKey].revenue += curr.revenue || 0;
+
+			return acc;
+		}, {});
+
+		const myfinalData = Object.values(groupedData);
+		console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, finalData.length);
+		return myfinalData;
+	}
+
+	function groupByDimensionsPlot(
+		filteredData: OverviewEntry[],
+		dimensionA: string,
+		dimensionB: string,
+		metric: string
+	) {
+		console.log('GROUPING', dimensionA, dimensionB);
+
+		const groupedData = filteredData.reduce<GroupedPlotData>((acc, curr) => {
+			const keyA = curr[dimensionA] as string;
+			const keyB = curr[dimensionB] as string;
+			const groupKey = `${keyA}|${keyB}`;
+
+			if (!acc[groupKey]) {
+				acc[groupKey] = {
+					[dimensionA]: keyA,
+					[dimensionB]: keyB,
+					value: 0,
+				};
+			}
+
+			acc[groupKey].value += curr[metric] as number || 0;
 
 			return acc;
 		}, {});

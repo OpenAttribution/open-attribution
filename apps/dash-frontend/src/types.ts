@@ -45,6 +45,11 @@ export interface GroupedEntry {
 	revenue: number;
 }
 
+export interface GroupedPlotEntry {
+	[key: string]: string | number;
+	value: number;
+}
+
 export interface DatesOverviewEntry extends OverviewEntry {
 	on_date: string;
 }
