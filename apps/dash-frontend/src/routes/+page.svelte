@@ -84,38 +84,35 @@
 	let filterNetworks = $state<string[]>([]);
 	let filterApps = $state<string[]>([]);
 
-	let filteredData = $state(getFilteredData(data.respData.overview));
-	let filteredPlotData = $state(getFilteredPlotData(data.respData.dates_overview));
-	let finalData = $state<GroupedEntry[]>([]);
+	let filteredPlotData = $state();
+	let filteredData = $state();
 	let finalPlotData = $state<GroupedEntry[]>([]);
+	let finalData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
-		console.log('START FILTER');
 		if (myData && myData.length > 0) {
-			console.log('START FILTER2');
 			filteredData = myData.filter((item) => {
 				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
 				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
 				return networkMatch && appMatch;
 			});
 		} else {
-			console.log('START FILTER FAIL');
+			console.log('DATA FILTER FAIL');
 			return myData;
 		}
 		makeNewSum(filteredData);
 	}
 
 	function getFilteredPlotData(myData: DatesOverviewEntry[]) {
-		console.log('START PLOT FILTER');
 		if (myData && myData.length > 0) {
-			console.log('START PLOT FILTER2');
 			filteredPlotData = myData.filter((item) => {
 				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
 				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
+				console.log('filterRow', networkMatch, appMatch);
 				return networkMatch && appMatch;
 			});
 		} else {
-			console.log('START FILTER PLOT FAIL');
+			console.log('PLOT FILTER FAIL myData=', myData);
 			return myData;
 		}
 	}
@@ -124,6 +121,8 @@
 		if (myData && myData.length > 0) {
 			const returnedFinalData = groupByDimensions(myData, groupByDimA, groupByDimB);
 			finalData = returnedFinalData;
+		} else {
+			console.log('DATA finalData was given empty list');
 		}
 	}
 
@@ -131,6 +130,8 @@
 		if (myData && myData.length > 0) {
 			const returnedFinalPlotData = groupByDimensions(myData, 'on_date', groupByKey);
 			finalPlotData = returnedFinalPlotData;
+		} else {
+			console.log('PLOT finalPlotData was given empty list');
 		}
 	}
 
@@ -192,7 +193,7 @@
 		dimensionA: string,
 		dimensionB: string
 	) {
-		console.log('GROUPING');
+		console.log('GROUPING', dimensionA, dimensionB);
 
 		const groupedData = filteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
@@ -219,8 +220,8 @@
 		}, {});
 
 		const myfinalData = Object.values(groupedData);
+		console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, finalData.length);
 		return myfinalData;
-		console.log('FINAL DATA ROWS:', finalData.length);
 	}
 
 	function formatNumber(num: number) {
@@ -361,24 +362,22 @@
 			</Card.Root>
 		</div>
 
-		<div class="h-[300px] p-4 border rounded">
-			{#await data.respData}
-				Loading...
-			{:then mydata}
-				{#if mydata.dates_overview && mydata.dates_overview.length > 0}
-					{getFilteredPlotData(mydata.dates_overview)}
-					{getFinalPlotData(filteredPlotData || [], (groupByKey = 'network'))}
-					<StackedBar plotData={finalPlotData}></StackedBar>
-					<!-- <OverviewTable
-								overviewData={finalDatao}
-								dimensionA={groupByDimA}
-								dimensionB={groupByDimB}
-							></OverviewTable> -->
-				{:else}
+		<Card.Root class="xl:col-span-2">
+			<Card.Header class="flex flex-row items-center">Plot</Card.Header>
+			<Card.Content>
+				{#await data.respData}
 					Loading...
-				{/if}
-			{/await}
-		</div>
+				{:then plotData}
+					{#if plotData.dates_overview && plotData.dates_overview.length > 0}
+						{getFilteredPlotData(plotData.dates_overview)}
+						{getFinalPlotData(filteredPlotData || [])}
+						<StackedBar plotData={finalPlotData} plotGroup="network"></StackedBar>
+					{:else}
+						Loading...
+					{/if}
+				{/await}
+			</Card.Content>
+		</Card.Root>
 
 		<div class="gap-4 md:gap-8">
 			<Card.Root class="xl:col-span-2">
@@ -436,7 +435,6 @@
 						{#if mydata.overview && mydata.overview.length > 0}
 							{getFilteredData(mydata.overview)}
 							{getFinalData(filteredData || [])}
-							{console.log('FINAL DATA GBA: ', groupByDimA)}
 							<OverviewTable
 								overviewData={finalData}
 								dimensionA={groupByDimA}
