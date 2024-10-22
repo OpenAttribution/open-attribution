@@ -32,6 +32,7 @@
 		data={plotData}
 		x="on_date"
 		xScale={scaleBand().paddingInner(0.4).paddingOuter(0.1)}
+		y="impressions"
 		yNice={4}
 		c="network"
 		cScale={scaleOrdinal()}

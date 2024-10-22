@@ -130,7 +130,7 @@
 
 	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
 		if (myData && myData.length > 0) {
-			const returnedFinalPlotData = groupByDimensionsPlot(myData, 'on_date', groupByKey, 'impressions');
+			const returnedFinalPlotData = groupByDimensionsPlot(myData,  groupByKey, 'impressions');
 			finalPlotData = returnedFinalPlotData;
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
@@ -232,20 +232,19 @@
 
 	function groupByDimensionsPlot(
 		filteredData: OverviewEntry[],
-		dimensionA: string,
 		dimensionB: string,
 		metric: string
 	) {
-		console.log('GROUPING', dimensionA, dimensionB);
+		console.log('GROUPING', dimensionB);
 
 		const groupedData = filteredData.reduce<GroupedPlotData>((acc, curr) => {
-			const keyA = curr[dimensionA] as string;
+			const keyA = curr['on_date'] as string;
 			const keyB = curr[dimensionB] as string;
 			const groupKey = `${keyA}|${keyB}`;
 
 			if (!acc[groupKey]) {
 				acc[groupKey] = {
-					[dimensionA]: keyA,
+					['on_date']: keyA,
 					[dimensionB]: keyB,
 					value: 0,
 				};
@@ -257,7 +256,7 @@
 		}, {});
 
 		const myfinalData = Object.values(groupedData);
-		console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, finalData.length);
+		console.log('GROUPING: FINAL DATA ROWS:', 'on_date', dimensionB, finalData.length);
 		return myfinalData;
 	}
 
