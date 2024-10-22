@@ -139,10 +139,13 @@
 	function handleNetOptions(myRows: NetworkEntry[]) {
 		let myOptions;
 
-		myOptions = myRows.map((row) => ({
-			value: row.network,
-			label: row.network_name
-		}));
+		myOptions = myRows
+			.filter((row) => row.network) // Ensures only rows with a network are processed
+			.map((row) => ({
+				value: row.network,
+				label: row.network_name || row.network
+			}));
+
 		return myOptions;
 	}
 
