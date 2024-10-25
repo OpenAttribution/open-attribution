@@ -85,8 +85,8 @@
 	let filterNetworks = $state<string[]>([]);
 	let filterApps = $state<string[]>([]);
 
-	let filteredPlotData = $state();
-	let filteredData = $state();
+	let filteredPlotData = $state<DatesOverviewEntry[]>([]);
+	let filteredData = $state<OverviewEntry[]>([]);
 	let finalPlotData = $state<DatesOverviewEntry[]>([]);
 	let finalData = $state<GroupedEntry[]>([]);
 
@@ -101,7 +101,7 @@
 			console.log('DATA FILTER FAIL');
 			return myData;
 		}
-		makeNewSum(filteredData);
+		makeNewSum(filteredData as OverviewEntry[]);
 	}
 
 	function getFilteredPlotData(myData: DatesOverviewEntry[]) {
@@ -410,7 +410,7 @@
 		</div>
 
 		<Card.Root class="xl:col-span-2">
-			<Card.Header class="flex flex-row items-center">Plot</Card.Header>
+			<Card.Header class="flex flex-row items-center">Installs by Network</Card.Header>
 			<Card.Content>
 				{#await data.respData}
 					Loading...
