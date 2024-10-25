@@ -96,6 +96,7 @@ class OverviewController(Controller):
                     "campaign_name",
                     "campaign_id",
                 ],
+                dropna=False,
             )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
@@ -112,14 +113,18 @@ class OverviewController(Controller):
                     "ad_name",
                     "ad_id",
                 ],
+                dropna=False,
             )[["impressions", "clicks", "installs", "revenue"]]
             .sum()
             .reset_index()
         )
 
         home_dict = home_df.to_dict(orient="records")
+        # N/As introduced above on outer merge apps and networks
+        dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
         dates_home_dict = dates_home_df.to_dict(orient="records")
 
+        logger.info(f"PLOT DF {len(dates_home_dict)=}")
 
         found_networks = home_df[["network", "network_name"]].drop_duplicates().to_dict(orient="records")
         found_store_ids = home_df[["store_id", "app_name"]].drop_duplicates().to_dict(orient="records")

@@ -45,17 +45,13 @@ export interface GroupedEntry {
 	revenue: number;
 }
 
-export interface DatesOverviewEntry {
+export interface GroupedPlotEntry {
+	[key: string]: string | number;
+	value: number;
+}
+
+export interface DatesOverviewEntry extends OverviewEntry {
 	on_date: string;
-	network: string;
-	network_name: string;
-	app_name: string;
-	campaign_name: string;
-	campaign_id: string;
-	impressions: number;
-	clicks: number;
-	installs: number;
-	revenue: number;
 }
 
 export type OverviewResponse = {
