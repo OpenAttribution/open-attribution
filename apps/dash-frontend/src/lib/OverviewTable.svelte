@@ -12,8 +12,6 @@
 		dimensionB
 	} = $props();
 
-	
-
 </script>
 
 <Table.Root>
