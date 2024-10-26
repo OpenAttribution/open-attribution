@@ -11,7 +11,6 @@
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
 	import type {
 		MyDateRange,
-		OverviewEntries,
 		NetworkEntry,
 		AppEntry,
 		GroupedEntry,
