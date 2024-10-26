@@ -1,7 +1,6 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, PageServerParentData } from './$types';
 
-export const load: PageServerLoad = async ({ parent, url }) => {
-	// depends(`page:${url.searchParams}`);
+export const load: PageServerLoad = async ({ parent, url }: { parent: () => Promise<PageServerParentData>, url: URL }) => {
 	const startDate = url.searchParams.get('start');
 	const endDate = url.searchParams.get('end');
 	const { respApps, respNets } = await parent();
@@ -11,6 +10,7 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 			`http://dash-backend:8001/api/overview?start_date=${startDate}&end_date=${endDate}`
 		)
 			.then((resp) => {
+				console.log('/api/overview: load overview data...');
 				if (resp.status === 200) {
 					return resp.json();
 				} else if (resp.status === 404) {
