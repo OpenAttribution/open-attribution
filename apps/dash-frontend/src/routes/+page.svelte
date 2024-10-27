@@ -31,10 +31,13 @@
 
 	const { data } = $props<{ data: PageData }>();
 
-	let groupByDimA = $state('network_name');
-	let groupByDimB = $state('app_name');
-	let defaultDimA = { value: 'network', label: 'Network' };
-	let defaultDimB = { value: 'store_id', label: 'App' };
+	const pageDefaultDimA = 'network';
+	const pageDefaultDimB = 'campaign_name';
+
+	let groupByDimA = $state(pageDefaultDimA);
+	let groupByDimB = $state(pageDefaultDimB);
+	let defaultDimA = { value: pageDefaultDimA, label: 'Network' };
+	let defaultDimB = { value: pageDefaultDimB, label: 'Campaign Name' };
 	let totalImpressions = $state(0);
 	let totalClicks = $state(0);
 	let totalInstalls = $state(0);
