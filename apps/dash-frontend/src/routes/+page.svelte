@@ -269,6 +269,8 @@
 			};
 		});
 
+		console.log('WE GOT WHAT', pivotedData)
+
 		console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
 		return pivotedData;
 	}

@@ -56,7 +56,8 @@ services:
       timeout: 5s
       retries: 10
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     ports:
       - '9000:9000'
       - '8123:8123'
