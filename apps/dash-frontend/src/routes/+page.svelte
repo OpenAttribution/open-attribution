@@ -31,12 +31,12 @@
 
 	const { data } = $props<{ data: PageData }>();
 
-	const pageDefaultDimA = 'network';
+	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);
-	let defaultDimA = { value: pageDefaultDimA, label: 'Network' };
+	let defaultDimA = { value: pageDefaultDimA, label: 'Ad Network' };
 	let defaultDimB = { value: pageDefaultDimB, label: 'Campaign Name' };
 	let totalImpressions = $state(0);
 	let totalClicks = $state(0);
@@ -268,8 +268,6 @@
 				...dimensionValues
 			};
 		});
-
-		console.log('WE GOT WHAT', pivotedData)
 
 		console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
 		return pivotedData;
