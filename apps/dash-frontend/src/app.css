@@ -65,6 +65,12 @@
 		--destructive-foreground: 210 40% 98%;
 
 		--ring: 212.7 26.8% 83.9%;
+
+		--grey: 220 10% 90%;
+		--grey-lighten-2: 220 10% 95%;
+		--grey-lighten-1: 220 10% 92%;
+		--grey-darken-1: 220 10% 85%;
+		--grey-darken-2: 220 10% 80%;
 	}
 }
 

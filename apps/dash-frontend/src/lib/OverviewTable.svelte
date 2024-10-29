@@ -3,43 +3,107 @@
 
 	import type { GroupedEntry } from '../types';
 
+    import Checkbox from './components/ui/checkbox/checkbox.svelte';
+
 	import { tableDimensions } from '$lib/constants';
 
-
+	
 	let {
 		overviewData = [] as GroupedEntry[],
 		dimensionA,
 		dimensionB
 	} = $props();
 
-	
+	//V
+	import { TableHandler, Datatable, ThSort, ThFilter } from '@vincjo/datatables'
+	const table = new TableHandler(overviewData, { rowsPerPage: 10 })
+
+
 
 </script>
 
-<Table.Root>
-	<Table.Header>
-		<Table.Row>
-			<Table.Head>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}</Table.Head>
-			<Table.Head>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}</Table.Head>
-			<Table.Head class="text-right">Impressions</Table.Head>
-			<Table.Head class="text-right">Clicks</Table.Head>
-			<Table.Head class="text-right">Installs</Table.Head>
-			<Table.Head class="text-right">Revenue</Table.Head>
-		</Table.Row>
-	</Table.Header>
-	<Table.Body>
-		{#if overviewData && Object.keys(overviewData).length > 0}
-			{console.log('OVERVIEW DATA ROWS: AFTER IF ', Object.keys(overviewData).length)}
-			{#each overviewData.slice(0, 10) as entry}
-				<Table.Row>
-					<Table.Cell>{entry[dimensionA as keyof typeof entry]}</Table.Cell>
-					<Table.Cell>{entry[dimensionB as keyof typeof entry]}</Table.Cell>
-					<Table.Cell class="text-right">{entry.impressions}</Table.Cell>
-					<Table.Cell class="text-right">{entry.clicks}</Table.Cell>
-					<Table.Cell class="text-right">{entry.installs}</Table.Cell>
-					<Table.Cell class="text-right">{entry.revenue.toFixed(4)}</Table.Cell>
-				</Table.Row>
-			{/each}
-		{/if}
-	</Table.Body>
-</Table.Root>
+
+
+<!-- basic here provides pagination and search -->
+<Datatable basic {table}>
+    <table>
+        <thead>
+
+			<tr>
+				<ThSort {table} field={dimensionA}>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}></ThSort>
+				<ThSort {table} field={dimensionB}>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}</ThSort>
+				<ThSort {table} field="impressions">Impressions</ThSort>
+				<ThSort {table} field="clicks">Clicks</ThSort>
+				<ThSort {table} field="installs">Installs</ThSort>
+				<ThSort {table} field="revenue">Revenue</ThSort>
+			</tr>
+
+			<tr>
+			<tr>
+				<ThFilter {table} field={dimensionA}>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}></ThFilter>
+				<ThFilter {table} field={dimensionB}>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}></ThFilter>
+			</tr>
+
+        </thead>
+        <tbody>
+            {#each table.rows as row}
+                <tr>
+					<td>{row[dimensionA as keyof typeof row]}</td>
+					<td>{row[dimensionB as keyof typeof row]}</td>
+					<td class="text-right">{row.impressions}</td>
+					<td class="text-right">{row.clicks}</td>
+					<td class="text-right">{row.installs}</td>
+					<td class="text-right">{row.revenue.toFixed(4)}</td>
+                    <td>{row.first_name}</td>
+                    <td>{row.last_name}</td>
+                    <td>{row.email}</td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</Datatable>
+
+<div class= 'p-8'></div>
+
+<style>
+    table {
+        border: 1px solid var(--grey);
+        border-radius: 8px;
+        margin: 16px 0 0 0;
+    }
+    
+    thead :global(th:last-child) {
+        border-radius: 0 8px 0 0;
+    }
+    td :global(svg) {
+        margin-right: 6px;
+    }
+    
+    tbody td {
+        border: none !important;
+        border-bottom: 1px solid var(--grey-lighten) !important;
+        padding: 10px 20px !important;
+    }
+    tr:last-child td{
+        border: none !important;
+    }
+    tbody tr:last-child td:first-child{
+        border-radius: 0 0 0 8px;
+    }
+    tbody tr:last-child td:last-child{
+        border-radius: 0 0 8px 0;
+    }
+    
+    tr.active {
+        background: var(--grey-lighten-3) !important;
+    }
+    tr.active:hover {
+        background: var(--grey);
+    }
+
+    tbody tr:hover {
+        background-color: rgb(33, 30, 34) !important;
+    }
+
+
+</style>

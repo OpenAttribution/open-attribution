@@ -26,14 +26,34 @@ else:
 
 def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
     """Query the main overview data."""
-    query_template = """
-    SELECT
-        *
-    FROM
-        daily_overview
-    WHERE
-        on_date >= %(start_date)s
-        AND on_date <= %(end_date)s
+    query_template = """SELECT
+                        on_date,
+                        network,
+                        store_id,
+                        campaign_name,
+                        campaign_id,
+                        ad_name,
+                        ad_id,
+                        sum(impressions) as impressions,
+                        sum(clicks) as clicks,
+                        sum(installs) as installs,
+                        sum(revenue) as revenue
+                    FROM
+                        daily_overview
+                    WHERE
+                        on_date BETWEEN toDate(%(start_date)s) AND toDate(%(end_date)s)
+                    GROUP BY
+                        on_date,
+                        network,
+                        store_id,
+                        campaign_name,
+                        campaign_id,
+                        ad_name,
+                        ad_id
+                    ORDER BY
+                        on_date
+                    WITH FILL
+                    FROM toDate(%(start_date)s) TO toDate(%(end_date)s) STEP INTERVAL 1 DAY
     """
     # Execute the query and fetch the data as pandas df
     df = client.query_df(
@@ -122,6 +142,7 @@ class OverviewController(Controller):
         home_dict = home_df.to_dict(orient="records")
         # N/As introduced above on outer merge apps and networks
         dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
+        dates_home_df['on_date'] = dates_home_df["on_date"].dt.date
         dates_home_dict = dates_home_df.to_dict(orient="records")
 
         logger.info(f"PLOT DF {len(dates_home_dict)=}")

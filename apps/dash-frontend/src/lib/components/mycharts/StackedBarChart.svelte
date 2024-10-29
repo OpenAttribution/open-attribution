@@ -16,7 +16,11 @@
 	}
 
 	function generateSeriesKeys(plotData: GroupedEntry[], keyColors: string[]): SeriesEntry[] {
-		const uniqueKeys = Object.keys(plotData[0]).filter((key) => key !== 'on_date');
+		const uniqueKeys = Array.from(
+  new Set(
+    plotData.flatMap((plotRow) => Object.keys(plotRow).filter((key) => key !== 'on_date'))
+  )
+);
 		const seriesKeys = uniqueKeys.slice(0, keyColors.length).map((key, index) => ({
 			key,
 			label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -36,7 +40,7 @@
 		series={seriesKeys}
 		seriesLayout="stack"
 		props={{
-			xAxis: { format: 'none' },
+			// xAxis: { format: 'date' },
 			yAxis: { format: 'metric' }
 		}}
 		legend={{ placement: 'top-right', classes: { root: 'mt-2' } }}
