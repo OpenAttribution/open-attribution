@@ -91,9 +91,9 @@ class OverviewController(Controller):
         networks_df = query_networks().rename(columns={"name": "network_name"})
 
 
-        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="outer")
+        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="left")
         df = df.merge(
-            networks_df, left_on="network", right_on="postback_id", how="outer",
+            networks_df, left_on="network", right_on="postback_id", how="left",
         )
 
         df.loc[df["app_name"].isna(), "app_name"] = df.loc[
@@ -141,7 +141,7 @@ class OverviewController(Controller):
 
         home_dict = home_df.to_dict(orient="records")
         # N/As introduced above on outer merge apps and networks
-        dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
+        # dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
         dates_home_df['on_date'] = dates_home_df["on_date"].dt.date
         dates_home_dict = dates_home_df.to_dict(orient="records")
 
