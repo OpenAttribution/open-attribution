@@ -16,7 +16,6 @@
 	}
 
 	function generateSeriesKeys(plotData: GroupedEntry[], keyColors: string[]): SeriesEntry[] {
-		// const uniqueKeys = Object.keys(plotData[0]).filter((key) => key !== 'on_date');
 		const uniqueKeys = Array.from(
   new Set(
     plotData.flatMap((plotRow) => Object.keys(plotRow).filter((key) => key !== 'on_date'))
