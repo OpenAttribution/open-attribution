@@ -40,7 +40,7 @@
 		series={seriesKeys}
 		seriesLayout="stack"
 		props={{
-			xAxis: { format: 'none' },
+			// xAxis: { format: 'date' },
 			yAxis: { format: 'metric' }
 		}}
 		legend={{ placement: 'top-right', classes: { root: 'mt-2' } }}
