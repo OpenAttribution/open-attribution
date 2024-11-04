@@ -1,16 +1,19 @@
 <script lang="ts">
-	import CalendarIcon from 'lucide-svelte/icons/calendar';
-	import { page } from '$app/stores';
+	import { DateFormatter, getLocalTimeZone, today, type DateValue } from "@internationalized/date";
+	import { RangeCalendar } from "$lib/components/ui/range-calendar/index.js";
+	import type { MyDateRange } from '../types';
+	type OnChangeCallback = (value: MyDateRange | undefined) => void;
 	import { goto } from '$app/navigation';
-	import { DateFormatter, type DateValue, getLocalTimeZone, today } from '@internationalized/date';
+	import { page } from '$app/stores';
+	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { cn } from '$lib/utils.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
+	import CalendarIcon from 'lucide-svelte/icons/calendar';
+   
+	const start = today(getLocalTimeZone());
+	const end = start.add({ days: 7 });
+   
 
-	import type { MyDateRange } from '../types';
-
-	type OnChangeCallback = (value: MyDateRange | undefined) => void;
 	let { onChange }: { onChange: OnChangeCallback } = $props();
 
 	let value: MyDateRange | undefined = $state({
@@ -23,8 +26,6 @@
 	});
 
 	let startValue: DateValue | undefined = $state(today(getLocalTimeZone()).add({ days: -7 }));
-
-	// let startValue = $state(value.start); // Track start value separately if needed
 
 	$effect(() => {
 		const queryStart = $page.url.searchParams.get('start');
@@ -47,19 +48,27 @@
 			onChange(value);
 		}
 	});
-</script>
 
+
+
+	
+</script>
+   
 <div class="grid gap-2">
-	<Popover.Root openFocus>
-		<Popover.Trigger asChild let:builder>
-			<Button
+	<Popover.Root>
+		<Popover.Trigger>Open</Popover.Trigger>
+		<Popover.Content>Place content for the popover here.</Popover.Content>
+	  </Popover.Root>
+
+	<Popover.Root>
+		<Popover.Trigger >
+			<!-- <Button
 				variant="outline"
 				class={cn(
 					'w-[300px] justify-start text-left font-normal',
 					!value && 'text-muted-foreground'
 				)}
-				builders={[builder]}
-			>
+			> -->
 				<CalendarIcon class="mr-2 h-4 w-4" />
 				{#if value && value.start}
 					{#if value.end}
@@ -74,16 +83,17 @@
 				{:else}
 					Pick a date
 				{/if}
-			</Button>
+
+			<!-- </Button> -->
 		</Popover.Trigger>
 		<Popover.Content class="w-auto p-0" align="start">
+			<div class="grid gap-4">
 			<RangeCalendar
 				bind:value
-				bind:startValue
-				initialFocus
 				numberOfMonths={2}
 				placeholder={value?.start}
 			/>
+			<div>
 		</Popover.Content>
 	</Popover.Root>
 </div>

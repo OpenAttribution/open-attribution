@@ -38,12 +38,19 @@
 	let groupByDimB = $state(pageDefaultDimB);
 	let defaultDimA = { value: pageDefaultDimA, label: 'Ad Network' };
 	let defaultDimB = { value: pageDefaultDimB, label: 'Campaign Name' };
-	let totalImpressions = $state(0);
-	let totalClicks = $state(0);
-	let totalInstalls = $state(0);
-	let totalRevenue = $state(0);
 
-	function makeNewSum(newData: OverviewEntry[]) {
+	// let filteredData = $state<OverviewEntry[]>([]);
+
+	// let stateData = $state(data.respData.overview);
+
+	let filteredData = $derived(getFilteredData(data.respData.overview));
+
+	let totalImpressions = $derived(makeNewSum(filteredData, 'impressions'));
+	let totalClicks = $derived(makeNewSum(filteredData, 'clicks'));
+	let totalInstalls = $derived(makeNewSum(filteredData, 'installs'));
+	let totalRevenue = $derived(makeNewSum(filteredData, 'revenue'));
+
+	function makeNewSum(newData: OverviewEntry[], metric: string) {
 		if (newData && newData.length > 0) {
 			// Generalize the summation for multiple fields
 			const fieldsToSum = ['impressions', 'clicks', 'installs', 'revenue'] as const;
@@ -65,13 +72,20 @@
 			}
 
 			// Update the reactive states
-			totalImpressions = totals.impressions;
-			totalClicks = totals.clicks;
-			totalInstalls = totals.installs;
-			totalRevenue = totals.revenue;
+			if (metric === 'impressions') {
+				return totals.impressions;
+			} else if (metric === 'clicks') {
+				return totals.clicks;
+			} else if (metric === 'installs') {
+				return totals.installs;
+			} else if (metric === 'revenue') {
+				return totals.revenue;
+			}
 		} else {
 			console.log('makeSum not working!');
+			return 0;
 		}
+		return -1
 	}
 
 	function handleDateChange(newRange: MyDateRange | undefined) {
@@ -88,22 +102,25 @@
 	let filterApps = $state<string[]>([]);
 
 	let filteredPlotData = $state<DatesOverviewEntry[]>([]);
-	let filteredData = $state<OverviewEntry[]>([]);
+	// let filteredData = $state<OverviewEntry[]>([]);
 	let finalPlotData = $state<DatesOverviewEntry[]>([]);
 	let finalData = $state<GroupedEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[]) {
+		let myFilteredData: OverviewEntry[] = [];
 		if (myData && myData.length > 0) {
-			filteredData = myData.filter((item) => {
+			myFilteredData = myData.filter((item) => {
 				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
 				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
 				return networkMatch && appMatch;
 			});
+
 		} else {
 			console.log('DATA FILTER FAIL');
-			return myData;
+			myFilteredData = myData;
 		}
-		makeNewSum(filteredData as OverviewEntry[]);
+		// makeNewSum(filteredData as OverviewEntry[]);
+		return myFilteredData;
 	}
 
 	function getFilteredPlotData(myData: DatesOverviewEntry[]) {
@@ -112,11 +129,11 @@
 				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
 				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
 				console.log('filterRow', networkMatch, appMatch);
-				return networkMatch && appMatch;
+				// return networkMatch && appMatch;
 			});
 		} else {
 			console.log('PLOT FILTER FAIL myData=', myData);
-			return myData;
+			// return myData;
 		}
 	}
 
@@ -326,6 +343,7 @@
 					<Card.Title class="text-sm font-large">Dates</Card.Title>
 				</Card.Header>
 				<Card.Content>
+					
 					<DateRangePicker onChange={handleDateChange} />
 				</Card.Content>
 			</Card.Root>
@@ -418,8 +436,8 @@
 					Loading...
 				{:then plotData}
 					{#if plotData.dates_overview && plotData.dates_overview.length > 0}
-						{getFilteredPlotData(plotData.dates_overview)}
-						{getFinalPlotData(filteredPlotData)}
+						<!-- {getFilteredPlotData(plotData.dates_overview)} -->
+						<!-- {getFinalPlotData(filteredPlotData)} -->
 						<StackedBar plotData={finalPlotData}></StackedBar>
 					{:else}
 						Loading...
@@ -435,45 +453,41 @@
 						<Card.Title>Overview</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 						<div class="flex p-2 gap-4">
-							<Select.Root portal={null} selected={defaultDimA}>
+							<Select.Root type="single" name="favoriteFruitA" bind:value={defaultDimA.value}>
 								<Select.Trigger class="w-[180px]">
-									<Select.Value placeholder="Select Group By DimensionB" />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Group>
-										<Select.Label>Fruits</Select.Label>
-										{#each tableDimensions as dimension}
-											<Select.Item
-												value={dimension.value}
-												label={dimension.label}
-												on:click={() => handleSelectGroupByChange(dimension.value, 'A')}
-												>{dimension.label}</Select.Item
-											>
-										{/each}
-									</Select.Group>
-								</Select.Content>
-								<Select.Input name="favoriteFruitA" />
-							</Select.Root>
+									{defaultDimA}
+							</Select.Trigger>
+							<Select.Content>
+							  <Select.Group>
+								<Select.GroupHeading>Fruits</Select.GroupHeading>
+								{#each tableDimensions as dimension}
+								  <Select.Item value={dimension.value} label={dimension.label}
+									>{dimension.label}</Select.Item
+								  >
+								{/each}
+							  </Select.Group>
+							</Select.Content>
+						  </Select.Root>
 
-							<Select.Root portal={null} selected={defaultDimB}>
-								<Select.Trigger class="w-[180px]">
-									<Select.Value placeholder="Select Group By DimensionB" />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Group>
-										<Select.Label>Ad Networks</Select.Label>
-										{#each tableDimensions as dimension}
-											<Select.Item
-												value={dimension.value}
-												label={dimension.label}
-												on:click={() => handleSelectGroupByChange(dimension.value, 'B')}
-												>{dimension.label}</Select.Item
-											>
-										{/each}
-									</Select.Group>
-								</Select.Content>
-								<Select.Input name="favoriteFruitB" />
-							</Select.Root>
+
+							<Select.Root type="single" name="favoriteFruitB" bind:value={defaultDimB.value}>
+							<Select.Trigger class="w-[180px]">
+							  {defaultDimB}
+							</Select.Trigger>
+							<Select.Content>
+							  <Select.Group>
+								<Select.GroupHeading>Fruits</Select.GroupHeading>
+								{#each tableDimensions as dimension}
+								  <Select.Item value={dimension.value} label={dimension.label}
+									>{dimension.label}</Select.Item
+								  >
+								{/each}
+							  </Select.Group>
+							</Select.Content>
+						  </Select.Root>
+
+
+
 						</div>
 					</div>
 				</Card.Header>
@@ -482,8 +496,8 @@
 						Loading...
 					{:then mydata}
 						{#if mydata.overview && mydata.overview.length > 0}
-							{getFilteredData(mydata.overview)}
-							{getFinalData(filteredData || [])}
+							<!-- {getFilteredData(mydata.overview)} -->
+							<!-- {getFinalData(filteredData || [])} -->
 							<OverviewTable
 								overviewData={finalData}
 								dimensionA={groupByDimA}

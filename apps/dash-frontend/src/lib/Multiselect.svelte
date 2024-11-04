@@ -38,13 +38,12 @@
 </script>
 
 <Popover.Root bind:open>
-	<Popover.Trigger asChild let:builder>
+	<Popover.Trigger>
 		<Button
 			variant="outline"
 			role="combobox"
 			aria-expanded={open}
 			class="w-full justify-between"
-			builders={[builder]}
 		>
 			{#if selected.length === 0}
 				<span class="text-muted-foreground">{placeholder}</span>
