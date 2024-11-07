@@ -1,9 +1,7 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table/index.js';
 
 	import type { GroupedEntry } from '../types';
 
-    import Checkbox from './components/ui/checkbox/checkbox.svelte';
 
 	import { tableDimensions } from '$lib/constants';
 
@@ -94,12 +92,6 @@
         border-radius: 0 0 8px 0;
     }
     
-    tr.active {
-        background: var(--grey-lighten-3) !important;
-    }
-    tr.active:hover {
-        background: var(--grey);
-    }
 
     tbody tr:hover {
         background-color: rgb(33, 30, 34) !important;

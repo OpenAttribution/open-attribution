@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ parent, url }: { parent: () => Prom
 	const { respApps, respNets } = await parent();
 
 	return {
-		respData: fetch(
+		respData: await fetch(
 			`http://dash-backend:8001/api/overview?start_date=${startDate}&end_date=${endDate}`
 		)
 			.then((resp) => {

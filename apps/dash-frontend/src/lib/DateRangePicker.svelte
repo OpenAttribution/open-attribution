@@ -56,11 +56,6 @@
    
 <div class="grid gap-2">
 	<Popover.Root>
-		<Popover.Trigger>Open</Popover.Trigger>
-		<Popover.Content>Place content for the popover here.</Popover.Content>
-	  </Popover.Root>
-
-	<Popover.Root>
 		<Popover.Trigger >
 			<!-- <Button
 				variant="outline"
