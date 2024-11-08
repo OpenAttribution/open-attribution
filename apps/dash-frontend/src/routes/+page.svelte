@@ -6,16 +6,9 @@
 
 	import { tableDimensions } from '$lib/constants';
 
-	import type { ColumnDef } from '@tanstack/table-core';
+	
 
-	// This type is used to define the shape of our data.
-	// You can use a Zod schema here if you want.
-	export type Payment = {
-		id: string;
-		amount: number;
-		status: 'pending' | 'processing' | 'success' | 'failed';
-		email: string;
-	};
+    
 
 	import MyOverviewTable from '$lib/my-table/MyOverviewTable.svelte';
 
@@ -47,8 +40,6 @@
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);
-	let defaultDimA = { value: pageDefaultDimA, label: 'Ad Network' };
-	let defaultDimB = { value: pageDefaultDimB, label: 'Campaign Name' };
 
 	interface Props {
 		data: PageData;
@@ -70,14 +61,20 @@
 		getFinalData(getFilteredData(stateData, filterNetworks, filterApps), groupByDimA, groupByDimB)
 	);
 
-	let columns = $derived<ColumnDef<Payment>[]>([
+	
+	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
+    let groupByDimALabel = 
+		tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
+	let groupByDimBLabel =
+		tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
+	let myCols = [
 		{
-			accessorKey: groupByDimA,
-			header: tableDimensions.find((dim) => dim.value === groupByDimA)?.label || groupByDimA
+				accessorKey: myGroupByDimA,
+				header: groupByDimALabel
 		},
 		{
-			accessorKey: groupByDimB,
-			header: tableDimensions.find((dim) => dim.value === groupByDimB)?.label || groupByDimB
+			accessorKey: myGroupByDimB,
+			header: groupByDimBLabel
 		},
 		{
 			accessorKey: 'impressions',
@@ -94,8 +91,13 @@
 		{
 			accessorKey: 'revenue',
 			header: 'Revenue'
-		}
-	]);
+			}
+		];
+		console.log('Data table columns CCCCC', myCols[0].accessorKey, myCols[1].accessorKey);
+		return myCols;
+	}
+	
+	let columns = $derived(getColumns(groupByDimA, groupByDimB));
 
 	function makeNewSum(newData: OverviewEntry[], metric: string) {
 		if (newData && newData.length > 0) {
@@ -252,13 +254,13 @@
 		filterApps = event.detail;
 	}
 
-	function handleSelectGroupByChange(dimension: string, whichSelect: string) {
-		if (whichSelect === 'A') {
-			groupByDimA = dimension;
-		} else if (whichSelect === 'B') {
-			groupByDimB = dimension;
-		}
-	}
+	// function handleSelectGroupByChange(dimension: string, whichSelect: string) {
+	// 	if (whichSelect === 'A') {
+	// 		groupByDimA = dimension;
+	// 	} else if (whichSelect === 'B') {
+	// 		groupByDimB = dimension;
+	// 	}
+	// }
 
 	interface GroupedData {
 		[groupKey: string]: GroupedEntry;
@@ -501,13 +503,13 @@
 						<Card.Title>Overview</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 						<div class="flex p-2 gap-4">
-							<Select.Root type="single" name="favoriteFruitA" bind:value={defaultDimA.value}>
+							<Select.Root type="single" name="groupByA" bind:value={groupByDimA}>
 								<Select.Trigger class="w-[180px]">
-									{defaultDimA}
+									{groupByDimA}
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
-										<Select.GroupHeading>Fruits</Select.GroupHeading>
+										<Select.GroupHeading>Group By</Select.GroupHeading>
 										{#each tableDimensions as dimension}
 											<Select.Item value={dimension.value} label={dimension.label}
 												>{dimension.label}</Select.Item
@@ -517,13 +519,13 @@
 								</Select.Content>
 							</Select.Root>
 
-							<Select.Root type="single" name="favoriteFruitB" bind:value={defaultDimB.value}>
+							<Select.Root type="single" name="groupByB" bind:value={groupByDimB}>
 								<Select.Trigger class="w-[180px]">
-									{defaultDimB}
+									{groupByDimB}
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
-										<Select.GroupHeading>Fruits</Select.GroupHeading>
+										<Select.GroupHeading>Group By</Select.GroupHeading>
 										{#each tableDimensions as dimension}
 											<Select.Item value={dimension.value} label={dimension.label}
 												>{dimension.label}</Select.Item
@@ -536,11 +538,15 @@
 					</div>
 				</Card.Header>
 				<Card.Content>
+
+					<MyOverviewTable data={finalData} columns={columns}></MyOverviewTable>
+
+					<div class="h-12"></div>
 					<OverviewTable overviewData={finalData} dimensionA={groupByDimA} dimensionB={groupByDimB}
 					></OverviewTable>
-					<div class="h-12"></div>
-					<h1>My Overview Table2</h1>
-					<MyOverviewTable data={finalData} {columns}></MyOverviewTable>
+
+
+					
 				</Card.Content>
 			</Card.Root>
 		</div>
