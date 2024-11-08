@@ -49,7 +49,7 @@
 	let filteredData = $derived(getFilteredData(stateData, filterNetworks, filterApps));
 	let finalData = $derived(getFinalData(filteredData, groupByDimA, groupByDimB));
 
-	let totalImpressions = $derived.by(() => makeNewSum(filteredData, 'impressions'));
+	let totalImpressions = $derived(makeNewSum(filteredData, 'impressions'));
 	let totalClicks = $derived(makeNewSum(filteredData, 'clicks'));
 	let totalInstalls = $derived(makeNewSum(filteredData, 'installs'));
 	let totalRevenue = $derived(makeNewSum(filteredData, 'revenue'));
@@ -138,15 +138,16 @@
 	}
 
 	function getFinalData(myData: OverviewEntry[], myGroupByDimA: string, myGroupByDimB: string) {
+		let myReturnedFinalData: GroupedEntry[] = [];
 		if (myData && myData.length > 0) {
 			console.log('DATA FINAL START:', myData.length);
-			const returnedFinalData = groupByDimensions(myData, myGroupByDimA, myGroupByDimB);
-			console.log('DATA FINAL:', returnedFinalData.length);
-			return returnedFinalData;
+			myReturnedFinalData = groupByDimensions(myData, myGroupByDimA, myGroupByDimB);
+			console.log('DATA FINAL:', myReturnedFinalData.length);
 		} else {
 			console.log('DATA finalData was given empty list');
-			return myData
+			myReturnedFinalData = myData;
 		}
+		return myReturnedFinalData;
 	}
 
 	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {

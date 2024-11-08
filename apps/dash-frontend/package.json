@@ -19,7 +19,7 @@
 		"@types/d3-scale-chromatic": "^3.0.3",
 		"@vincjo/datatables": "^2.0.5",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.0.0-next.39",
+		"bits-ui": "^1.0.0-next.46",
 		"formsnap": "^2.0.0-next.1",
 		"globals": "^15.0.0",
 		"lucide-svelte": "^0.454.0",
