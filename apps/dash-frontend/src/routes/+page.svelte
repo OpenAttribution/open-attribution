@@ -6,10 +6,6 @@
 
 	import { tableDimensions } from '$lib/constants';
 
-	
-
-    
-
 	import MyOverviewTable from '$lib/my-table/MyOverviewTable.svelte';
 
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -61,42 +57,41 @@
 		getFinalData(getFilteredData(stateData, filterNetworks, filterApps), groupByDimA, groupByDimB)
 	);
 
-	
 	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
-    let groupByDimALabel = 
-		tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
-	let groupByDimBLabel =
-		tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
-	let myCols = [
-		{
+		let groupByDimALabel =
+			tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
+		let groupByDimBLabel =
+			tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
+		let myCols = [
+			{
 				accessorKey: myGroupByDimA,
 				header: groupByDimALabel
-		},
-		{
-			accessorKey: myGroupByDimB,
-			header: groupByDimBLabel
-		},
-		{
-			accessorKey: 'impressions',
-			header: 'Impressions'
-		},
-		{
-			accessorKey: 'clicks',
-			header: 'Clicks'
-		},
-		{
-			accessorKey: 'installs',
-			header: 'Installs'
-		},
-		{
-			accessorKey: 'revenue',
-			header: 'Revenue'
+			},
+			{
+				accessorKey: myGroupByDimB,
+				header: groupByDimBLabel
+			},
+			{
+				accessorKey: 'impressions',
+				header: 'Impressions'
+			},
+			{
+				accessorKey: 'clicks',
+				header: 'Clicks'
+			},
+			{
+				accessorKey: 'installs',
+				header: 'Installs'
+			},
+			{
+				accessorKey: 'revenue',
+				header: 'Revenue'
 			}
 		];
 		console.log('Data table columns CCCCC', myCols[0].accessorKey, myCols[1].accessorKey);
 		return myCols;
 	}
-	
+
 	let columns = $derived(getColumns(groupByDimA, groupByDimB));
 
 	function makeNewSum(newData: OverviewEntry[], metric: string) {
@@ -538,15 +533,11 @@
 					</div>
 				</Card.Header>
 				<Card.Content>
-
-					<MyOverviewTable data={finalData} columns={columns}></MyOverviewTable>
+					<MyOverviewTable data={finalData} {columns}></MyOverviewTable>
 
 					<div class="h-12"></div>
 					<OverviewTable overviewData={finalData} dimensionA={groupByDimA} dimensionB={groupByDimB}
 					></OverviewTable>
-
-
-					
 				</Card.Content>
 			</Card.Root>
 		</div>

@@ -11,16 +11,17 @@
 
 	type DataTableProps<TData, TValue> = {
 		data: TData[];
-        columns: ColumnDef<TData, TValue>[];
+		columns: ColumnDef<TData, TValue>[];
 	};
 
 	let { data, columns }: DataTableProps<TData, TValue> = $props();
 
-    console.log('Data table columns XXXXX', columns[0].accessorKey, columns[1].accessorKey);
+	// this is confirming the columns are being passed in correctly
+	console.log('Data table columns', columns[0].accessorKey, columns[1].accessorKey);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
-	const table = $derived(createSvelteTable({
+	const table = createSvelteTable({
 		get data() {
 			return data;
 		},
@@ -39,12 +40,12 @@
 		},
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel()
-	}));
+	});
 </script>
 
 <div class="rounded-md border">
-    {columns[0].accessorKey}
-    {columns[1].accessorKey}
+	{columns[0].accessorKey}
+	{columns[1].accessorKey}
 	<Table.Root>
 		<Table.Header>
 			{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}

@@ -8,6 +8,7 @@ import pandas as pd
 from config import get_logger
 from dbcon.queries import query_apps, query_networks
 from litestar import Controller, get
+from litestar.exceptions import HTTPException
 
 from api_app.models import (
     OverviewData,
@@ -84,6 +85,10 @@ class OverviewController(Controller):
 
         """
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
+
+        if start_date == "null" or end_date == "null":
+            raise HTTPException(status_code=404, detail="Date range not specified")
+
         df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
 

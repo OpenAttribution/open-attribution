@@ -9,6 +9,7 @@ export const load: PageServerLoad = async ({
 }) => {
 	const startDate = url.searchParams.get('start');
 	const endDate = url.searchParams.get('end');
+
 	const { respApps, respNets } = await parent();
 
 	return {
@@ -20,8 +21,8 @@ export const load: PageServerLoad = async ({
 				if (resp.status === 200) {
 					return resp.json();
 				} else if (resp.status === 404) {
-					console.log('Not found');
-					return 'Not Found';
+					console.log('API server 404: Not found');
+					return { overview: [] };
 				} else if (resp.status === 500) {
 					console.log('API Server error');
 					return 'Backend Error';
