@@ -142,7 +142,7 @@ class OverviewController(Controller):
         home_dict = home_df.to_dict(orient="records")
         # N/As introduced above on outer merge apps and networks
         # dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
-        dates_home_df['on_date'] = dates_home_df["on_date"].dt.date
+        dates_home_df["on_date"] = dates_home_df["on_date"].dt.date
         dates_home_dict = dates_home_df.to_dict(orient="records")
 
         logger.info(f"PLOT DF {len(dates_home_dict)=}")

@@ -39,12 +39,7 @@
 
 <Popover.Root bind:open>
 	<Popover.Trigger>
-		<Button
-			variant="outline"
-			role="combobox"
-			aria-expanded={open}
-			class="w-full justify-between"
-		>
+		<Button variant="outline" role="combobox" aria-expanded={open} class="w-full justify-between">
 			{#if selected.length === 0}
 				<span class="text-muted-foreground">{placeholder}</span>
 			{:else}

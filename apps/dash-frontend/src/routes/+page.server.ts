@@ -1,6 +1,12 @@
 import type { PageServerLoad, PageServerParentData } from './$types';
 
-export const load: PageServerLoad = async ({ parent, url }: { parent: () => Promise<PageServerParentData>, url: URL }) => {
+export const load: PageServerLoad = async ({
+	parent,
+	url
+}: {
+	parent: () => Promise<PageServerParentData>;
+	url: URL;
+}) => {
 	const startDate = url.searchParams.get('start');
 	const endDate = url.searchParams.get('end');
 	const { respApps, respNets } = await parent();
