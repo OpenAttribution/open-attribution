@@ -1,32 +1,24 @@
 <script lang="ts">
-
+	import { TableHandler, Datatable, ThSort, ThFilter } from '@vincjo/datatables'
 	import type { GroupedEntry } from '../types';
-
-
 	import { tableDimensions } from '$lib/constants';
 
-	
 	let {
 		overviewData = [] as GroupedEntry[],
 		dimensionA,
 		dimensionB
 	} = $props();
 
-	//V
-	import { TableHandler, Datatable, ThSort, ThFilter } from '@vincjo/datatables'
 	const table = new TableHandler(overviewData, { rowsPerPage: 10 })
-
-
 
 </script>
 
-
+<h1 class='h1 text-center text-xl'>Overview Table {dimensionA} {dimensionB}: {overviewData.length}</h1>
 
 <!-- basic here provides pagination and search -->
 <Datatable basic {table}>
     <table>
         <thead>
-
 			<tr>
 				<ThSort {table} field={dimensionA}>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}></ThSort>
 				<ThSort {table} field={dimensionB}>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}</ThSort>
@@ -35,13 +27,10 @@
 				<ThSort {table} field="installs">Installs</ThSort>
 				<ThSort {table} field="revenue">Revenue</ThSort>
 			</tr>
-
-			<tr>
 			<tr>
 				<ThFilter {table} field={dimensionA}>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}></ThFilter>
 				<ThFilter {table} field={dimensionB}>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}></ThFilter>
 			</tr>
-
         </thead>
         <tbody>
             {#each table.rows as row}

@@ -47,12 +47,13 @@
 	let { data }: Props = $props();
 	let stateData = $state(data.respData.overview);
 	let filteredData = $derived(getFilteredData(stateData, filterNetworks, filterApps));
-	let finalData = $derived(getFinalData(filteredData, groupByDimA, groupByDimB));
 
 	let totalImpressions = $derived(makeNewSum(filteredData, 'impressions'));
 	let totalClicks = $derived(makeNewSum(filteredData, 'clicks'));
 	let totalInstalls = $derived(makeNewSum(filteredData, 'installs'));
 	let totalRevenue = $derived(makeNewSum(filteredData, 'revenue'));
+	
+	let finalData = $derived(getFinalData(getFilteredData(stateData, filterNetworks, filterApps), groupByDimA, groupByDimB));
 
 	function makeNewSum(newData: OverviewEntry[], metric: string) {
 		if (newData && newData.length > 0) {
@@ -108,8 +109,10 @@
 	let finalPlotData = $state<DatesOverviewEntry[]>([]);
 
 	function getFilteredData(myData: OverviewEntry[], myFilterNetworks: string[], myFilterApps: string[]) {
+		console.log('DATA FILTER START:', myData.length);
 		let myFilteredData: OverviewEntry[] = [];
 		if (myData && myData.length > 0) {
+			console.log('DATA FILTER LOOP:', myData.length);
 			myFilteredData = myData.filter((item) => {
 				const networkMatch = myFilterNetworks.length === 0 || myFilterNetworks.includes(item.network);
 				const appMatch = myFilterApps.length === 0 || myFilterApps.includes(item.store_id);
@@ -120,7 +123,7 @@
 			console.log('DATA FILTER FAIL');
 			myFilteredData = myData;
 		}
-		// console.log('DATA FILTERED:', myFilteredData.length);
+		console.log('DATA FILTER END:', myFilteredData.length);
 		return myFilteredData;
 	}
 
@@ -138,26 +141,28 @@
 	}
 
 	function getFinalData(myData: OverviewEntry[], myGroupByDimA: string, myGroupByDimB: string) {
+		console.log('DATA FINAL START:', myData.length);
 		let myReturnedFinalData: GroupedEntry[] = [];
 		if (myData && myData.length > 0) {
-			console.log('DATA FINAL START:', myData.length);
+			console.log('DATA FINAL LOOP:', myData.length);
 			myReturnedFinalData = groupByDimensions(myData, myGroupByDimA, myGroupByDimB);
-			console.log('DATA FINAL:', myReturnedFinalData.length);
+			console.log('DATA FINAL LOOP END:', myReturnedFinalData.length);
 		} else {
 			console.log('DATA finalData was given empty list');
 			myReturnedFinalData = myData;
 		}
+		console.log('DATA FINAL END:', myReturnedFinalData.length);
 		return myReturnedFinalData;
 	}
 
-	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
-		if (myData && myData.length > 0) {
-			const returnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
-			finalPlotData = returnedFinalPlotData;
-		} else {
-			console.log('PLOT finalPlotData was given empty list');
-		}
-	}
+	// function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
+	// 	if (myData && myData.length > 0) {
+	// 		const returnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
+	// 		finalPlotData = returnedFinalPlotData;
+	// 	} else {
+	// 		console.log('PLOT finalPlotData was given empty list');
+	// 	}
+	// }
 
 	function handleNetOptions(myRows: NetworkEntry[]) {
 		let myOptions;
@@ -184,7 +189,7 @@
 	}
 
 	function handleNetChange(event: CustomEvent<string[]>) {
-		console.log('Selected net options:', event.detail);
+		console.log('SELECT net options:', event.detail);
 		filterNetworks = event.detail;
 		// Create a new URL object from the current location const url = new URL(window.location.href);
 		// Get the existing query params
@@ -199,7 +204,7 @@
 	}
 
 	function handleAppChange(event: CustomEvent<string[]>) {
-		console.log('Selected app options:', event.detail);
+		console.log('SELECT app options:', event.detail);
 		filterApps = event.detail;
 	}
 
@@ -260,39 +265,39 @@
 	// 	[dimensionB: string]: number;
 	// }
 
-	function groupByDimensionsPlot(
-		filteredData: OverviewEntry[],
-		dimensionB: string,
-		metric: string
-	): DatesOverviewEntry[] {
-		// Step 1: Group by on_date and dimensionB
-		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
-			const onDate = curr['on_date'] as string;
-			const dimensionValue = curr[dimensionB] as string;
-			const metricValue = (curr[metric] as number) || 0;
+	// function groupByDimensionsPlot(
+	// 	filteredData: OverviewEntry[],
+	// 	dimensionB: string,
+	// 	metric: string
+	// ): DatesOverviewEntry[] {
+	// 	// Step 1: Group by on_date and dimensionB
+	// 	const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
+	// 		const onDate = curr['on_date'] as string;
+	// 		const dimensionValue = curr[dimensionB] as string;
+	// 		const metricValue = (curr[metric] as number) || 0;
 
-			// Initialize the on_date if not present
-			if (!acc[onDate]) {
-				acc[onDate] = {};
-			}
+	// 		// Initialize the on_date if not present
+	// 		if (!acc[onDate]) {
+	// 			acc[onDate] = {};
+	// 		}
 
-			// Add metric value for dimensionB
-			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
+	// 		// Add metric value for dimensionB
+	// 		acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
 
-			return acc;
-		}, {});
+	// 		return acc;
+	// 	}, {});
 
-		// Step 2: Pivot dimensionB into columns
-		const pivotedData = Object.entries(groupedData).map(([on_date, dimensionValues]) => {
-			return {
-				on_date,
-				...dimensionValues
-			};
-		});
+	// 	// Step 2: Pivot dimensionB into columns
+	// 	const pivotedData = Object.entries(groupedData).map(([on_date, dimensionValues]) => {
+	// 		return {
+	// 			on_date,
+	// 			...dimensionValues
+	// 		};
+	// 	});
 
-		console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
-		return pivotedData;
-	}
+	// 	console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
+	// 	return pivotedData;
+	// }
 
 	function formatNumber(num: number) {
 		return num.toLocaleString();
