@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@tanstack/table-core": "^8.20.5",
 		"clsx": "^2.1.1",
 		"d3-array": "^3.2.4",
 		"d3-scale": "^4.0.2",

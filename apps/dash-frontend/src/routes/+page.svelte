@@ -6,6 +6,19 @@
 
 	import { tableDimensions } from '$lib/constants';
 
+	import type { ColumnDef } from '@tanstack/table-core';
+
+	// This type is used to define the shape of our data.
+	// You can use a Zod schema here if you want.
+	export type Payment = {
+		id: string;
+		amount: number;
+		status: 'pending' | 'processing' | 'success' | 'failed';
+		email: string;
+	};
+
+	import MyOverviewTable from '$lib/my-table/MyOverviewTable.svelte';
+
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
@@ -52,8 +65,37 @@
 	let totalClicks = $derived(makeNewSum(filteredData, 'clicks'));
 	let totalInstalls = $derived(makeNewSum(filteredData, 'installs'));
 	let totalRevenue = $derived(makeNewSum(filteredData, 'revenue'));
-	
-	let finalData = $derived(getFinalData(getFilteredData(stateData, filterNetworks, filterApps), groupByDimA, groupByDimB));
+
+	let finalData = $derived(
+		getFinalData(getFilteredData(stateData, filterNetworks, filterApps), groupByDimA, groupByDimB)
+	);
+
+	let columns = $derived<ColumnDef<Payment>[]>([
+		{
+			accessorKey: groupByDimA,
+			header: tableDimensions.find((dim) => dim.value === groupByDimA)?.label || groupByDimA
+		},
+		{
+			accessorKey: groupByDimB,
+			header: tableDimensions.find((dim) => dim.value === groupByDimB)?.label || groupByDimB
+		},
+		{
+			accessorKey: 'impressions',
+			header: 'Impressions'
+		},
+		{
+			accessorKey: 'clicks',
+			header: 'Clicks'
+		},
+		{
+			accessorKey: 'installs',
+			header: 'Installs'
+		},
+		{
+			accessorKey: 'revenue',
+			header: 'Revenue'
+		}
+	]);
 
 	function makeNewSum(newData: OverviewEntry[], metric: string) {
 		if (newData && newData.length > 0) {
@@ -90,7 +132,7 @@
 			console.log('makeSum not working! metric=', metric);
 			return 0;
 		}
-		return -1
+		return -1;
 	}
 
 	function handleDateChange(newRange: MyDateRange | undefined) {
@@ -103,22 +145,24 @@
 		}
 	}
 
-	
-
 	let filteredPlotData = $state<DatesOverviewEntry[]>([]);
 	let finalPlotData = $state<DatesOverviewEntry[]>([]);
 
-	function getFilteredData(myData: OverviewEntry[], myFilterNetworks: string[], myFilterApps: string[]) {
+	function getFilteredData(
+		myData: OverviewEntry[],
+		myFilterNetworks: string[],
+		myFilterApps: string[]
+	) {
 		console.log('DATA FILTER START:', myData.length);
 		let myFilteredData: OverviewEntry[] = [];
 		if (myData && myData.length > 0) {
 			console.log('DATA FILTER LOOP:', myData.length);
 			myFilteredData = myData.filter((item) => {
-				const networkMatch = myFilterNetworks.length === 0 || myFilterNetworks.includes(item.network);
+				const networkMatch =
+					myFilterNetworks.length === 0 || myFilterNetworks.includes(item.network);
 				const appMatch = myFilterApps.length === 0 || myFilterApps.includes(item.store_id);
 				return networkMatch && appMatch;
 			});
-
 		} else {
 			console.log('DATA FILTER FAIL');
 			myFilteredData = myData;
@@ -352,7 +396,6 @@
 					<Card.Title class="text-sm font-large">Dates</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					
 					<DateRangePicker onChange={handleDateChange} />
 				</Card.Content>
 			</Card.Root>
@@ -399,19 +442,19 @@
 					Installs
 					<Activity class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
-					<Card.Content>
-						<div class="text-2xl font-bold">
-							{formatNumber(totalInstalls)}
-						</div>
-						<p class="text-muted-foreground text-xs">
-							{#if totalImpressions > 0}
-								{(totalInstalls / (totalImpressions / 1000)).toFixed(2)}
-								Installs Per Mille
-							{:else}
-								--
-							{/if}
-						</p>
-					</Card.Content>
+				<Card.Content>
+					<div class="text-2xl font-bold">
+						{formatNumber(totalInstalls)}
+					</div>
+					<p class="text-muted-foreground text-xs">
+						{#if totalImpressions > 0}
+							{(totalInstalls / (totalImpressions / 1000)).toFixed(2)}
+							Installs Per Mille
+						{:else}
+							--
+						{/if}
+					</p>
+				</Card.Content>
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -461,47 +504,43 @@
 							<Select.Root type="single" name="favoriteFruitA" bind:value={defaultDimA.value}>
 								<Select.Trigger class="w-[180px]">
 									{defaultDimA}
-							</Select.Trigger>
-							<Select.Content>
-							  <Select.Group>
-								<Select.GroupHeading>Fruits</Select.GroupHeading>
-								{#each tableDimensions as dimension}
-								  <Select.Item value={dimension.value} label={dimension.label}
-									>{dimension.label}</Select.Item
-								  >
-								{/each}
-							  </Select.Group>
-							</Select.Content>
-						  </Select.Root>
-
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.GroupHeading>Fruits</Select.GroupHeading>
+										{#each tableDimensions as dimension}
+											<Select.Item value={dimension.value} label={dimension.label}
+												>{dimension.label}</Select.Item
+											>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+							</Select.Root>
 
 							<Select.Root type="single" name="favoriteFruitB" bind:value={defaultDimB.value}>
-							<Select.Trigger class="w-[180px]">
-							  {defaultDimB}
-							</Select.Trigger>
-							<Select.Content>
-							  <Select.Group>
-								<Select.GroupHeading>Fruits</Select.GroupHeading>
-								{#each tableDimensions as dimension}
-								  <Select.Item value={dimension.value} label={dimension.label}
-									>{dimension.label}</Select.Item
-								  >
-								{/each}
-							  </Select.Group>
-							</Select.Content>
-						  </Select.Root>
-
-
-
+								<Select.Trigger class="w-[180px]">
+									{defaultDimB}
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.GroupHeading>Fruits</Select.GroupHeading>
+										{#each tableDimensions as dimension}
+											<Select.Item value={dimension.value} label={dimension.label}
+												>{dimension.label}</Select.Item
+											>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+							</Select.Root>
 						</div>
 					</div>
 				</Card.Header>
 				<Card.Content>
-					<OverviewTable
-						overviewData={finalData}
-						dimensionA={groupByDimA}
-						dimensionB={groupByDimB}
+					<OverviewTable overviewData={finalData} dimensionA={groupByDimA} dimensionB={groupByDimB}
 					></OverviewTable>
+					<div class="h-12"></div>
+					<h1>My Overview Table2</h1>
+					<MyOverviewTable data={finalData} {columns}></MyOverviewTable>
 				</Card.Content>
 			</Card.Root>
 		</div>

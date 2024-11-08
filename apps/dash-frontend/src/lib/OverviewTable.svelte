@@ -13,7 +13,7 @@
 
 </script>
 
-<h1 class='h1 text-center text-xl'>Overview Table {dimensionA} {dimensionB}: {overviewData.length}</h1>
+<!-- <h1 class='h1 text-center text-xl'>Overview Table {dimensionA} {dimensionB}: {overviewData.length}</h1> -->
 
 <!-- basic here provides pagination and search -->
 <Datatable basic {table}>
