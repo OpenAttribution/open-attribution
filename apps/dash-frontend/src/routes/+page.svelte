@@ -70,13 +70,13 @@
 			}
 		];
 
-		// Create columns for all remaining dimensions
-		const remainingDimensionColumns = tableDimensions
-			.filter((dim) => dim.value !== myGroupByDimA && dim.value !== myGroupByDimB)
-			.map((dim) => ({
-				accessorKey: dim.value,
-				header: dim.label
-			}));
+		// // Create columns for all remaining dimensions
+		// const remainingDimensionColumns = tableDimensions
+		// 	.filter((dim) => dim.value !== myGroupByDimA && dim.value !== myGroupByDimB)
+		// 	.map((dim) => ({
+		// 		accessorKey: dim.value,
+		// 		header: dim.label
+		// 	}));
 
 		// Add the metric columns
 		const metricColumns = [
@@ -98,7 +98,8 @@
 			}
 		];
 
-		const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
+		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
+		const myCols = [...selectedDimensionColumns, ...metricColumns];
 		console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}

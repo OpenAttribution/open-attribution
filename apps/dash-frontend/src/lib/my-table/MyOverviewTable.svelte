@@ -26,26 +26,26 @@
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
-		let columnFilters = $state<ColumnFiltersState>([]);
-			let columnVisibility = $state<VisibilityState>({});
-
-	// let dataState = $derived<TData[]>(data);
+	let columnFilters = $state<ColumnFiltersState>([]);
+	let columnVisibility = $state<VisibilityState>({});
 
 
 	const table = createSvelteTable({
 		get data() {
 			return data;
 		},
-		columns,
+		get columns() {
+			return columns;
+		},
 		state: {
 			get pagination() {
 				return pagination;
 			},
 			get columnFilters() {
-        return columnFilters;
-      },
-      get columnVisibility() {
-        return columnVisibility;
+				return columnFilters;
+			},
+			get columnVisibility() {
+				return columnVisibility;
       }
 		},
 		onPaginationChange: (updater) => {
