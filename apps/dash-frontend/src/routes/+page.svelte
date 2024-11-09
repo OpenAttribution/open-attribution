@@ -58,19 +58,28 @@
 	);
 
 	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
-		let groupByDimALabel =
-			tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
-		let groupByDimBLabel =
-			tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
-		let myCols = [
+		// Create columns for the selected dimensions first
+		const selectedDimensionColumns = [
 			{
 				accessorKey: myGroupByDimA,
-				header: groupByDimALabel
+				header: tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA
 			},
 			{
 				accessorKey: myGroupByDimB,
-				header: groupByDimBLabel
-			},
+				header: tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB
+			}
+		];
+
+		// Create columns for all remaining dimensions
+		const remainingDimensionColumns = tableDimensions
+			.filter((dim) => dim.value !== myGroupByDimA && dim.value !== myGroupByDimB)
+			.map((dim) => ({
+				accessorKey: dim.value,
+				header: dim.label
+			}));
+
+		// Add the metric columns
+		const metricColumns = [
 			{
 				accessorKey: 'impressions',
 				header: 'Impressions'
@@ -88,7 +97,9 @@
 				header: 'Revenue'
 			}
 		];
-		console.log('Data table columns CCCCC', myCols[0].accessorKey, myCols[1].accessorKey);
+
+		const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
+		console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}
 
