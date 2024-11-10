@@ -4,6 +4,11 @@
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
 
+	// import { renderComponent } from '$lib/components/ui/data-table/index';
+	import { renderComponent } from '$lib/my-table/render-helpers';
+
+	import DataTableColumnHeader from '$lib/my-table/column-header.svelte';
+
 	import { tableDimensions } from '$lib/constants';
 
 	import MyOverviewTable from '$lib/my-table/MyOverviewTable.svelte';
@@ -58,15 +63,31 @@
 	);
 
 	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
+		const columnATitle =
+			tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
+		const columnBTitle =
+			tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
+
 		// Create columns for the selected dimensions first
 		const selectedDimensionColumns = [
 			{
-				accessorKey: myGroupByDimA,
-				header: tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA
+				accessorKey: myGroupByDimA
+				// header: ({ column }) =>
+				// 	renderComponent(DataTableColumnHeader, {
+				// 		column,
+				// 		title: columnATitle
+				// 	})
+				// header: columnATitle
+				// header:  ({column}) => (DataTableColumnHeader, {column, title:columnATitle})
 			},
 			{
 				accessorKey: myGroupByDimB,
-				header: tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB
+				// header: ({ column }) =>
+				// 	renderComponent(DataTableColumnHeader<GroupedEntry, unknown>, {
+				// 		column,
+				// 		title: columnBTitle
+				// 	})
+				header: columnBTitle
 			}
 		];
 

@@ -8,6 +8,8 @@
 		getPaginationRowModel
 	} from '@tanstack/table-core';
 
+	import DataTablePagination from './pagination.svelte';
+
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
@@ -136,4 +138,8 @@
 			{/each}
 		</Table.Body>
 	</Table.Root>
+</div>
+
+<div class="flex items-center justify-end space-x-2 py-4">
+	<DataTablePagination {table} />
 </div>

@@ -9,18 +9,30 @@
 		dimensionB
 	} = $props();
 
-	const table = new TableHandler(overviewData, { rowsPerPage: 10 })
+
+    function getData(data: GroupedEntry[]) {
+        return data;
+    }
+
+
+    let stateData = $state(getData(overviewData));
+
+
+	const table = new TableHandler(
+        stateData,
+         { rowsPerPage: 10 }
+        )
 
 </script>
 
-<!-- <h1 class='h1 text-center text-xl'>Overview Table {dimensionA} {dimensionB}: {overviewData.length}</h1> -->
+<h1 class='h1 text-center text-xl'>Overview Table {dimensionA} {dimensionB}: {overviewData.length}</h1>
 
 <!-- basic here provides pagination and search -->
 <Datatable basic {table}>
     <table>
         <thead>
 			<tr>
-				<ThSort {table} field={dimensionA}>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}></ThSort>
+				<ThSort {table} field={dimensionA}>{tableDimensions.find(dim => dim.value === dimensionA)?.label || dimensionA}</ThSort>
 				<ThSort {table} field={dimensionB}>{tableDimensions.find(dim => dim.value === dimensionB)?.label || dimensionB}</ThSort>
 				<ThSort {table} field="impressions">Impressions</ThSort>
 				<ThSort {table} field="clicks">Clicks</ThSort>
