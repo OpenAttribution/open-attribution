@@ -75,7 +75,7 @@
 		</Popover.Trigger>
 		<Popover.Content class="w-auto p-0" align="start">
 			<div class="grid gap-4">
-				<RangeCalendar bind:value numberOfMonths={2} placeholder={value?.start} />
+				<RangeCalendar bind:value numberOfMonths={2} />
 				<div></div>
 			</div></Popover.Content
 		>

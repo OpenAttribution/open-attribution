@@ -3,6 +3,7 @@
 	import CreditCard from 'lucide-svelte/icons/credit-card';
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
+	import { onMount } from 'svelte';
 
 	// Can't get this working due to renderComponent not working, not sure if this is the right way to do it
 	// https://github.com/huntabyte/shadcn-svelte/blob/next/sites/docs/src/routes/(app)/examples/tasks/(components)/columns.ts
@@ -23,7 +24,7 @@
 		GroupedPlotEntry,
 		DatesOverviewEntry
 	} from '../types';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll, invalidate } from '$app/navigation';
 
 	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
@@ -163,8 +164,17 @@
 			const startDate = newRange.start.toString();
 			const endDate = newRange.end.toString();
 
+			console.log('handleDateChange', startDate, endDate);
+
+			invalidate('app:dates');
+
 			// Navigate to the same page with query parameters for start and end dates
-			goto(`?start=${startDate}&end=${endDate}`);
+			goto(`?start=${startDate}&end=${endDate}`, {
+				invalidateAll: true,
+				replaceState: true
+			});
+
+			invalidateAll();
 		}
 	}
 
@@ -275,7 +285,10 @@
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
-		goto(`${$page.url.pathname}?${params.toString()}`);
+		goto(`${$page.url.pathname}?${params.toString()}`, {
+			invalidateAll: true,
+			replaceState: true
+		});
 	}
 
 	function handleAppChange(event: CustomEvent<string[]>) {
@@ -373,13 +386,20 @@
 			};
 		});
 
-		console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
+		// console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
 		return pivotedData;
 	}
 
 	function formatNumber(num: number) {
 		return num.toLocaleString();
 	}
+
+
+	onMount(() => {
+		invalidate('app:dates');
+	});
+	
+
 </script>
 
 <div class="flex min-h-screen w-full flex-col">
