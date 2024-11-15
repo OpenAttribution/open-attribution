@@ -4,10 +4,9 @@
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
 
-	// import { renderComponent } from '$lib/components/ui/data-table/index';
-	import { renderComponent } from '$lib/my-table/render-helpers';
-
-	import DataTableColumnHeader from '$lib/my-table/column-header.svelte';
+	// Can't get this working due to renderComponent not working, not sure if this is the right way to do it
+	// https://github.com/huntabyte/shadcn-svelte/blob/next/sites/docs/src/routes/(app)/examples/tasks/(components)/columns.ts
+	// import DataTableColumnHeader from '$lib/my-table/column-header.svelte';
 
 	import { tableDimensions } from '$lib/constants';
 
@@ -71,22 +70,11 @@
 		// Create columns for the selected dimensions first
 		const selectedDimensionColumns = [
 			{
-				accessorKey: myGroupByDimA
-				// header: ({ column }) =>
-				// 	renderComponent(DataTableColumnHeader, {
-				// 		column,
-				// 		title: columnATitle
-				// 	})
-				// header: columnATitle
-				// header:  ({column}) => (DataTableColumnHeader, {column, title:columnATitle})
+				accessorKey: myGroupByDimA,
+				header: columnATitle
 			},
 			{
 				accessorKey: myGroupByDimB,
-				// header: ({ column }) =>
-				// 	renderComponent(DataTableColumnHeader<GroupedEntry, unknown>, {
-				// 		column,
-				// 		title: columnBTitle
-				// 	})
 				header: columnBTitle
 			}
 		];
@@ -280,6 +268,13 @@
 	function handleAppChange(event: CustomEvent<string[]>) {
 		console.log('SELECT app options:', event.detail);
 		filterApps = event.detail;
+	}
+
+	let titleGroupByA = $derived(handleGroupByChange(groupByDimA));
+	let titleGroupByB = $derived(handleGroupByChange(groupByDimB));
+
+	function handleGroupByChange(dimension: string) {
+		return tableDimensions.find((dim) => dim.value === dimension)?.label || dimension;
 	}
 
 	// function handleSelectGroupByChange(dimension: string, whichSelect: string) {
@@ -533,7 +528,7 @@
 						<div class="flex p-2 gap-4">
 							<Select.Root type="single" name="groupByA" bind:value={groupByDimA}>
 								<Select.Trigger class="w-[180px]">
-									{groupByDimA}
+									{titleGroupByA}
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
@@ -549,7 +544,7 @@
 
 							<Select.Root type="single" name="groupByB" bind:value={groupByDimB}>
 								<Select.Trigger class="w-[180px]">
-									{groupByDimB}
+									{titleGroupByB}
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
