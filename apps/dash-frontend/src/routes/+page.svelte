@@ -3,7 +3,6 @@
 	import CreditCard from 'lucide-svelte/icons/credit-card';
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
-	import { onMount } from 'svelte';
 
 	// Can't get this working due to renderComponent not working, not sure if this is the right way to do it
 	// https://github.com/huntabyte/shadcn-svelte/blob/next/sites/docs/src/routes/(app)/examples/tasks/(components)/columns.ts
@@ -157,25 +156,6 @@
 			return 0;
 		}
 		return -1;
-	}
-
-	function handleDateChange(newRange: MyDateRange | undefined) {
-		if (newRange && newRange.start && newRange.end) {
-			const startDate = newRange.start.toString();
-			const endDate = newRange.end.toString();
-
-			console.log('handleDateChange', startDate, endDate);
-
-			invalidate('app:dates');
-
-			// Navigate to the same page with query parameters for start and end dates
-			goto(`?start=${startDate}&end=${endDate}`, {
-				invalidateAll: true,
-				replaceState: true
-			});
-
-			invalidateAll();
-		}
 	}
 
 	function getFilteredData(
@@ -394,12 +374,24 @@
 		return num.toLocaleString();
 	}
 
+	function handleDateChange(newRange: MyDateRange | undefined) {
+		if (newRange && newRange.start && newRange.end) {
+			const startDate = newRange.start.toString();
+			const endDate = newRange.end.toString();
 
-	onMount(() => {
-		invalidate('app:dates');
-	});
-	
+			// Get existing query parameters
+			const params = new URLSearchParams($page.url.search);
 
+			// Update date parameters
+			params.set('start', startDate);
+			params.set('end', endDate);
+
+			// Preserve the current pathname and append the new search params
+			goto(`${$page.url.pathname}?${params.toString()}`, {
+				invalidateAll: true
+			});
+		}
+	}
 </script>
 
 <div class="flex min-h-screen w-full flex-col">

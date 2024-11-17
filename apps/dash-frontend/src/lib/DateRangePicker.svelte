@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { DateFormatter, getLocalTimeZone, today, type DateValue } from '@internationalized/date';
-	import { onMount } from 'svelte';
 	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
 	import type { MyDateRange } from '../types';
 	type OnChangeCallback = (value: MyDateRange | undefined) => void;
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import CalendarIcon from 'lucide-svelte/icons/calendar';
 
@@ -21,21 +18,6 @@
 
 	const df = new DateFormatter('en-CA', {
 		dateStyle: 'medium'
-	});
-
-	onMount(() => {
-		const queryStart = $page.url.searchParams.get('start');
-		const queryEnd = $page.url.searchParams.get('end');
-
-		console.log('Query start', queryStart);
-
-		// Only update URL if either param is missing AND we have valid value
-		if ((!queryStart || !queryEnd) && value?.start && value?.end) {
-			goto(`?start=${value.start.toString()}&end=${value.end.toString()}`, {
-				replaceState: true,
-				invalidateAll: true
-			});
-		}
 	});
 
 	$effect(() => {
