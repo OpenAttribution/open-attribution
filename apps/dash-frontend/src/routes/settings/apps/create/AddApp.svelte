@@ -11,7 +11,8 @@
 
 	import { goto } from '$app/navigation';
 
-	export let data: SuperValidated<Infer<FormSchema>>;
+	// export let data: SuperValidated<Infer<FormSchema>>;
+	let { data } = $props();
 	type Message = { status: 'error' | 'success' | 'warning'; text: string };
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -25,18 +26,22 @@
 <form method="POST" use:enhance class="space-y-6" action="?/createApp">
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 		<Form.Field {form} name="appName">
-			<Form.Control let:attrs>
+			<Form.Control>
+				{#snippet children({ props })}
 				<Form.Label>App Name</Form.Label>
-				<Input {...attrs} bind:value={$formData.appName} />
+				<Input {...props} bind:value={$formData.appName} />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>Your app's display name.</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 
 		<Form.Field {form} name="storeId">
-			<Form.Control let:attrs>
+			<Form.Control>
+				{#snippet children({ props })}
 				<Form.Label>Store ID</Form.Label>
-				<Input {...attrs} bind:value={$formData.storeId} />
+				<Input {...props} bind:value={$formData.storeId} />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>
 				Store ID. iOS example: "1234567890" Android: "com.example.app"
@@ -45,9 +50,9 @@
 		</Form.Field>
 
 		<Form.Field {form} name="appStore" class="col-span-full">
-			<Form.Control let:attrs>
+			<Form.Control>
 				<Form.Label>App Store</Form.Label>
-				<RadioGroup.Root value={$formData.appStore} class="flex flex-col space-y-2">
+				<RadioGroup.Root bind:value={$formData.appStore} class="flex flex-col space-y-2" name="appStore">
 					<div class="flex items-center space-x-2">
 						<RadioGroup.Item value="ios" id="ios" />
 						<Label for="ios">iOS App Store</Label>
@@ -56,7 +61,7 @@
 						<RadioGroup.Item value="android" id="android" />
 						<Label for="android">Google Play Store</Label>
 					</div>
-					<RadioGroup.Input name="appStore" />
+					<!-- <RadioGroup.Input name="appStore" /> -->
 				</RadioGroup.Root>
 			</Form.Control>
 			<Form.Description>Select the app store.</Form.Description>

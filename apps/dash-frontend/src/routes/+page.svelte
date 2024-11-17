@@ -10,7 +10,7 @@
 
 	import { tableDimensions } from '$lib/constants';
 
-	import MyOverviewTable from '$lib/my-table/MyOverviewTable.svelte';
+	import OverviewTable from '$lib/my-table/OverviewTable.svelte';
 
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
@@ -567,7 +567,7 @@
 					</div>
 				</Card.Header>
 				<Card.Content>
-					<MyOverviewTable data={tableData} {columns}></MyOverviewTable>
+					<OverviewTable data={tableData} {columns}></OverviewTable>
 				</Card.Content>
 			</Card.Root>
 		</div>
