@@ -23,7 +23,7 @@
 		GroupedPlotEntry,
 		DatesOverviewEntry
 	} from '../types';
-	import { goto, invalidateAll, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 
 	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
@@ -32,7 +32,6 @@
 	import type { OverviewEntry } from '../types';
 
 	import { type PageData } from './$types';
-	import OverviewTable from '$lib/OverviewTable.svelte';
 	import Multiselect from '$lib/Multiselect.svelte';
 
 	const pageDefaultDimA = 'network_name';
@@ -49,21 +48,27 @@
 	let filterApps = $state<string[]>([]);
 
 	let { data }: Props = $props();
-	let stateData = $state(data.respData.overview);
-	let statePlotData = $state(data.respData.dates_overview);
-	let filteredData = $derived(getFilteredData(stateData, filterNetworks, filterApps));
+
+	let filteredData = $derived(getFilteredData(data.respData.overview, filterNetworks, filterApps));
 
 	let totalImpressions = $derived(makeNewSum(filteredData, 'impressions'));
 	let totalClicks = $derived(makeNewSum(filteredData, 'clicks'));
 	let totalInstalls = $derived(makeNewSum(filteredData, 'installs'));
 	let totalRevenue = $derived(makeNewSum(filteredData, 'revenue'));
 
-	let finalData = $derived(
-		getFinalData(getFilteredData(stateData, filterNetworks, filterApps), groupByDimA, groupByDimB)
+	let tableData = $derived(
+		getFinalData(
+			getFilteredData(data.respData.overview, filterNetworks, filterApps),
+			groupByDimA,
+			groupByDimB
+		)
 	);
 
 	let finalPlotData = $derived(
-		getFinalPlotData(getFilteredPlotData(statePlotData, filterNetworks, filterApps), groupByDimA)
+		getFinalPlotData(
+			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
+			groupByDimA
+		)
 	);
 
 	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
@@ -284,21 +289,13 @@
 		return myTitle;
 	}
 
-	// function handleSelectGroupByChange(dimension: string, whichSelect: string) {
-	// 	if (whichSelect === 'A') {
-	// 		groupByDimA = dimension;
-	// 	} else if (whichSelect === 'B') {
-	// 		groupByDimB = dimension;
-	// 	}
-	// }
-
 	interface GroupedData {
 		[groupKey: string]: GroupedEntry;
 	}
 
-	interface GroupedPlotData {
-		[groupKey: string]: GroupedPlotEntry;
-	}
+	// interface GroupedPlotData {
+	// 	[groupKey: string]: GroupedPlotEntry;
+	// }
 
 	function groupByDimensions(
 		myFilteredData: OverviewEntry[],
@@ -379,17 +376,7 @@
 			const startDate = newRange.start.toString();
 			const endDate = newRange.end.toString();
 
-			// Get existing query parameters
-			const params = new URLSearchParams($page.url.search);
-
-			// Update date parameters
-			params.set('start', startDate);
-			params.set('end', endDate);
-
-			// Preserve the current pathname and append the new search params
-			goto(`${$page.url.pathname}?${params.toString()}`, {
-				invalidateAll: true
-			});
+			goto(`?start=${startDate}&end=${endDate}`);
 		}
 	}
 </script>
@@ -580,7 +567,7 @@
 					</div>
 				</Card.Header>
 				<Card.Content>
-					<MyOverviewTable data={finalData} {columns}></MyOverviewTable>
+					<MyOverviewTable data={tableData} {columns}></MyOverviewTable>
 				</Card.Content>
 			</Card.Root>
 		</div>

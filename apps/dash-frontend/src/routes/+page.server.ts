@@ -20,6 +20,8 @@ export const load: PageServerLoad = async ({ parent, url, depends }) => {
 		throw redirect(302, `${url.pathname}?${newSearchParams.toString()}`);
 	}
 
+	console.log('Start data fetch: startDate', startDate);
+	console.log('Start data fetch: endDate', endDate);
 	const respData = await fetch(
 		`http://dash-backend:8001/api/overview?start_date=${startDate}&end_date=${endDate}`
 	);
