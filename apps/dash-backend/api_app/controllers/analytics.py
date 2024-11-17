@@ -8,6 +8,7 @@ import pandas as pd
 from config import get_logger
 from dbcon.queries import query_apps, query_networks
 from litestar import Controller, get
+from litestar.exceptions import HTTPException
 
 from api_app.models import (
     OverviewData,
@@ -84,6 +85,10 @@ class OverviewController(Controller):
 
         """
         logger.info(f"{self.path} overview load {start_date=} {end_date=}")
+
+        if start_date == "null" or end_date == "null":
+            raise HTTPException(status_code=404, detail="Date range not specified")
+
         df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
 
@@ -91,9 +96,9 @@ class OverviewController(Controller):
         networks_df = query_networks().rename(columns={"name": "network_name"})
 
 
-        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="outer")
+        df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="left")
         df = df.merge(
-            networks_df, left_on="network", right_on="postback_id", how="outer",
+            networks_df, left_on="network", right_on="postback_id", how="left",
         )
 
         df.loc[df["app_name"].isna(), "app_name"] = df.loc[
@@ -141,8 +146,8 @@ class OverviewController(Controller):
 
         home_dict = home_df.to_dict(orient="records")
         # N/As introduced above on outer merge apps and networks
-        dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
-        dates_home_df['on_date'] = dates_home_df["on_date"].dt.date
+        # dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
+        dates_home_df["on_date"] = dates_home_df["on_date"].dt.date
         dates_home_dict = dates_home_df.to_dict(orient="records")
 
         logger.info(f"PLOT DF {len(dates_home_dict)=}")

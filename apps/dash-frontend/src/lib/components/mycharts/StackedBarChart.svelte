@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { BarChart } from 'layerchart';
 
-	import type { GroupedEntry } from '../../../types';
+	import type { GroupedPlotEntry } from '../../../types';
 
 	const catppMocha = ['#f5e0dc', '#cba6f7', '#94e2d5', '#f5c2e7', '#f9e2af', '#74c7ec'];
 	// const edgyColors = ['#dc8a78','#8839ef','#179299','#ea76cb','#fe640b', '#209fb5'];
 	const keyColors = catppMocha;
 
-	let { plotData = [] as GroupedEntry[] } = $props();
+	let { plotData = [] as GroupedPlotEntry[] } = $props();
 
 	interface SeriesEntry {
 		key: string;
@@ -15,12 +15,12 @@
 		color: string;
 	}
 
-	function generateSeriesKeys(plotData: GroupedEntry[], keyColors: string[]): SeriesEntry[] {
+	function generateSeriesKeys(plotData: GroupedPlotEntry[], keyColors: string[]): SeriesEntry[] {
 		const uniqueKeys = Array.from(
-  new Set(
-    plotData.flatMap((plotRow) => Object.keys(plotRow).filter((key) => key !== 'on_date'))
-  )
-);
+			new Set(
+				plotData.flatMap((plotRow) => Object.keys(plotRow).filter((key) => key !== 'on_date'))
+			)
+		);
 		const seriesKeys = uniqueKeys.slice(0, keyColors.length).map((key, index) => ({
 			key,
 			label: key.charAt(0).toUpperCase() + key.slice(1),

@@ -4,7 +4,13 @@
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
 
+	// Can't get this working due to renderComponent not working, not sure if this is the right way to do it
+	// https://github.com/huntabyte/shadcn-svelte/blob/next/sites/docs/src/routes/(app)/examples/tasks/(components)/columns.ts
+	// import DataTableColumnHeader from '$lib/my-table/column-header.svelte';
+
 	import { tableDimensions } from '$lib/constants';
+
+	import OverviewTable from '$lib/my-table/OverviewTable.svelte';
 
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
@@ -26,24 +32,100 @@
 	import type { OverviewEntry } from '../types';
 
 	import { type PageData } from './$types';
-	import OverviewTable from '$lib/OverviewTable.svelte';
 	import Multiselect from '$lib/Multiselect.svelte';
-
-	const { data } = $props<{ data: PageData }>();
 
 	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);
-	let defaultDimA = { value: pageDefaultDimA, label: 'Ad Network' };
-	let defaultDimB = { value: pageDefaultDimB, label: 'Campaign Name' };
-	let totalImpressions = $state(0);
-	let totalClicks = $state(0);
-	let totalInstalls = $state(0);
-	let totalRevenue = $state(0);
 
-	function makeNewSum(newData: OverviewEntry[]) {
+	interface Props {
+		data: PageData;
+	}
+
+	let filterNetworks = $state<string[]>([]);
+	let filterApps = $state<string[]>([]);
+
+	let { data }: Props = $props();
+
+	let filteredData = $derived(getFilteredData(data.respData.overview, filterNetworks, filterApps));
+
+	let totalImpressions = $derived(makeNewSum(filteredData, 'impressions'));
+	let totalClicks = $derived(makeNewSum(filteredData, 'clicks'));
+	let totalInstalls = $derived(makeNewSum(filteredData, 'installs'));
+	let totalRevenue = $derived(makeNewSum(filteredData, 'revenue'));
+
+	let tableData = $derived(
+		getFinalData(
+			getFilteredData(data.respData.overview, filterNetworks, filterApps),
+			groupByDimA,
+			groupByDimB
+		)
+	);
+
+	let finalPlotData = $derived(
+		getFinalPlotData(
+			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
+			groupByDimA
+		)
+	);
+
+	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
+		const columnATitle =
+			tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
+		const columnBTitle =
+			tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
+
+		// Create columns for the selected dimensions first
+		const selectedDimensionColumns = [
+			{
+				accessorKey: myGroupByDimA,
+				header: columnATitle
+			},
+			{
+				accessorKey: myGroupByDimB,
+				header: columnBTitle
+			}
+		];
+
+		// // Create columns for all remaining dimensions
+		// const remainingDimensionColumns = tableDimensions
+		// 	.filter((dim) => dim.value !== myGroupByDimA && dim.value !== myGroupByDimB)
+		// 	.map((dim) => ({
+		// 		accessorKey: dim.value,
+		// 		header: dim.label
+		// 	}));
+
+		// Add the metric columns
+		const metricColumns = [
+			{
+				accessorKey: 'impressions',
+				header: 'Impressions'
+			},
+			{
+				accessorKey: 'clicks',
+				header: 'Clicks'
+			},
+			{
+				accessorKey: 'installs',
+				header: 'Installs'
+			},
+			{
+				accessorKey: 'revenue',
+				header: 'Revenue'
+			}
+		];
+
+		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
+		const myCols = [...selectedDimensionColumns, ...metricColumns];
+		console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
+		return myCols;
+	}
+
+	let columns = $derived(getColumns(groupByDimA, groupByDimB));
+
+	function makeNewSum(newData: OverviewEntry[], metric: string) {
 		if (newData && newData.length > 0) {
 			// Generalize the summation for multiple fields
 			const fieldsToSum = ['impressions', 'clicks', 'installs', 'revenue'] as const;
@@ -65,77 +147,91 @@
 			}
 
 			// Update the reactive states
-			totalImpressions = totals.impressions;
-			totalClicks = totals.clicks;
-			totalInstalls = totals.installs;
-			totalRevenue = totals.revenue;
+			if (metric === 'impressions') {
+				return totals.impressions;
+			} else if (metric === 'clicks') {
+				return totals.clicks;
+			} else if (metric === 'installs') {
+				return totals.installs;
+			} else if (metric === 'revenue') {
+				return totals.revenue;
+			}
 		} else {
-			console.log('makeSum not working!');
+			console.log('makeSum not working! metric=', metric);
+			return 0;
 		}
+		return -1;
 	}
 
-	function handleDateChange(newRange: MyDateRange | undefined) {
-		if (newRange && newRange.start && newRange.end) {
-			const startDate = newRange.start.toString();
-			const endDate = newRange.end.toString();
-
-			// Navigate to the same page with query parameters for start and end dates
-			goto(`?start=${startDate}&end=${endDate}`);
-		}
-	}
-
-	let filterNetworks = $state<string[]>([]);
-	let filterApps = $state<string[]>([]);
-
-	let filteredPlotData = $state<DatesOverviewEntry[]>([]);
-	let filteredData = $state<OverviewEntry[]>([]);
-	let finalPlotData = $state<DatesOverviewEntry[]>([]);
-	let finalData = $state<GroupedEntry[]>([]);
-
-	function getFilteredData(myData: OverviewEntry[]) {
+	function getFilteredData(
+		myData: OverviewEntry[],
+		myFilterNetworks: string[],
+		myFilterApps: string[]
+	) {
+		// console.log('DATA FILTER START:', myData.length);
+		let myFilteredData: OverviewEntry[] = [];
 		if (myData && myData.length > 0) {
-			filteredData = myData.filter((item) => {
-				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
-				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
+			// console.log('DATA FILTER LOOP:', myData.length);
+			myFilteredData = myData.filter((item) => {
+				const networkMatch =
+					myFilterNetworks.length === 0 || myFilterNetworks.includes(item.network);
+				const appMatch = myFilterApps.length === 0 || myFilterApps.includes(item.store_id);
 				return networkMatch && appMatch;
 			});
 		} else {
-			console.log('DATA FILTER FAIL');
-			return myData;
+			// console.log('DATA FILTER FAIL');
+			myFilteredData = myData;
 		}
-		makeNewSum(filteredData as OverviewEntry[]);
+		// console.log('DATA FILTER END:', myFilteredData.length);
+		return myFilteredData;
 	}
 
-	function getFilteredPlotData(myData: DatesOverviewEntry[]) {
+	function getFilteredPlotData(
+		myData: DatesOverviewEntry[],
+		myFilterNetworks: string[],
+		myFilterApps: string[]
+	) {
+		let myFilteredData: DatesOverviewEntry[] = [];
+		console.log('PLOT FILTER START myData=', myData.length);
 		if (myData && myData.length > 0) {
-			filteredPlotData = myData.filter((item) => {
-				const networkMatch = filterNetworks.length === 0 || filterNetworks.includes(item.network);
-				const appMatch = filterApps.length === 0 || filterApps.includes(item.store_id);
-				console.log('filterRow', networkMatch, appMatch);
+			myFilteredData = myData.filter((item) => {
+				const networkMatch =
+					myFilterNetworks.length === 0 || myFilterNetworks.includes(item.network);
+				const appMatch = myFilterApps.length === 0 || myFilterApps.includes(item.store_id);
 				return networkMatch && appMatch;
 			});
 		} else {
-			console.log('PLOT FILTER FAIL myData=', myData);
-			return myData;
+			// console.log('PLOT FILTER FAIL myData=', myData);
+			myFilteredData = myData;
 		}
+		console.log('PLOT FILTER END myFilteredData=', myFilteredData.length);
+		return myFilteredData;
 	}
 
-	function getFinalData(myData: OverviewEntry[]) {
+	function getFinalData(myData: OverviewEntry[], myGroupByDimA: string, myGroupByDimB: string) {
+		// console.log('DATA FINAL START:', myData.length);
+		let myReturnedFinalData: GroupedEntry[] = [];
 		if (myData && myData.length > 0) {
-			const returnedFinalData = groupByDimensions(myData, groupByDimA, groupByDimB);
-			finalData = returnedFinalData;
+			// console.log('DATA FINAL LOOP:', myData.length);
+			myReturnedFinalData = groupByDimensions(myData, myGroupByDimA, myGroupByDimB);
+			// console.log('DATA FINAL LOOP END:', myReturnedFinalData.length);
 		} else {
-			console.log('DATA finalData was given empty list');
+			// console.log('DATA finalData was given empty list');
+			myReturnedFinalData = myData;
 		}
+		// console.log('DATA FINAL END:', myReturnedFinalData.length);
+		return myReturnedFinalData;
 	}
 
 	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
+		let myReturnedFinalPlotData: GroupedPlotEntry[] = [];
 		if (myData && myData.length > 0) {
-			const returnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
-			finalPlotData = returnedFinalPlotData;
+			myReturnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
+			myReturnedFinalPlotData = [];
 		}
+		return myReturnedFinalPlotData;
 	}
 
 	function handleNetOptions(myRows: NetworkEntry[]) {
@@ -163,7 +259,7 @@
 	}
 
 	function handleNetChange(event: CustomEvent<string[]>) {
-		console.log('Selected net options:', event.detail);
+		console.log('SELECT net options:', event.detail);
 		filterNetworks = event.detail;
 		// Create a new URL object from the current location const url = new URL(window.location.href);
 		// Get the existing query params
@@ -174,38 +270,41 @@
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
-		goto(`${$page.url.pathname}?${params.toString()}`);
+		goto(`${$page.url.pathname}?${params.toString()}`, {
+			invalidateAll: true,
+			replaceState: true
+		});
 	}
 
 	function handleAppChange(event: CustomEvent<string[]>) {
-		console.log('Selected app options:', event.detail);
+		console.log('SELECT app options:', event.detail);
 		filterApps = event.detail;
 	}
 
-	function handleSelectGroupByChange(dimension: string, whichSelect: string) {
-		if (whichSelect === 'A') {
-			groupByDimA = dimension;
-		} else if (whichSelect === 'B') {
-			groupByDimB = dimension;
-		}
+	let titleGroupByA = $derived(handleGroupByChange(groupByDimA));
+	let titleGroupByB = $derived(handleGroupByChange(groupByDimB));
+
+	function handleGroupByChange(dimension: string) {
+		let myTitle = tableDimensions.find((dim) => dim.value === dimension)?.label || dimension;
+		return myTitle;
 	}
 
 	interface GroupedData {
 		[groupKey: string]: GroupedEntry;
 	}
 
-	interface GroupedPlotData {
-		[groupKey: string]: GroupedPlotEntry;
-	}
+	// interface GroupedPlotData {
+	// 	[groupKey: string]: GroupedPlotEntry;
+	// }
 
 	function groupByDimensions(
-		filteredData: OverviewEntry[],
+		myFilteredData: OverviewEntry[],
 		dimensionA: string,
 		dimensionB: string
 	) {
-		console.log('GROUPING', dimensionA, dimensionB);
+		// console.log('GROUPING', dimensionA, dimensionB);
 
-		const groupedData = filteredData.reduce<GroupedData>((acc, curr) => {
+		const groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
 			const groupKey = `${keyA}|${keyB}`;
@@ -230,20 +329,15 @@
 		}, {});
 
 		const myfinalData = Object.values(groupedData);
-		console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, finalData.length);
+		// console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, myfinalData.length);
 		return myfinalData;
 	}
 
-	// 	interface PivotedPlotData {
-	// 	on_date: string;
-	// 	[dimensionB: string]: number;
-	// }
-
 	function groupByDimensionsPlot(
-		filteredData: OverviewEntry[],
+		filteredData: DatesOverviewEntry[],
 		dimensionB: string,
 		metric: string
-	): DatesOverviewEntry[] {
+	): GroupedPlotEntry[] {
 		// Step 1: Group by on_date and dimensionB
 		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
 			const onDate = curr['on_date'] as string;
@@ -269,12 +363,21 @@
 			};
 		});
 
-		console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
+		// console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
 		return pivotedData;
 	}
 
 	function formatNumber(num: number) {
 		return num.toLocaleString();
+	}
+
+	function handleDateChange(newRange: MyDateRange | undefined) {
+		if (newRange && newRange.start && newRange.end) {
+			const startDate = newRange.start.toString();
+			const endDate = newRange.end.toString();
+
+			goto(`?start=${startDate}&end=${endDate}`);
+		}
 	}
 </script>
 
@@ -372,23 +475,19 @@
 					Installs
 					<Activity class="text-muted-foreground h-4 w-4" />
 				</Card.Header>
-				{#await data.respData}
-					Loading...
-				{:then mydatas}
-					<Card.Content>
-						<div class="text-2xl font-bold">
-							{formatNumber(totalInstalls)}
-						</div>
-						<p class="text-muted-foreground text-xs">
-							{#if totalImpressions > 0}
-								{(totalInstalls / (totalImpressions / 1000)).toFixed(2)}
-								Installs Per Mille
-							{:else}
-								--
-							{/if}
-						</p>
-					</Card.Content>
-				{/await}
+				<Card.Content>
+					<div class="text-2xl font-bold">
+						{formatNumber(totalInstalls)}
+					</div>
+					<p class="text-muted-foreground text-xs">
+						{#if totalImpressions > 0}
+							{(totalInstalls / (totalImpressions / 1000)).toFixed(2)}
+							Installs Per Mille
+						{:else}
+							--
+						{/if}
+					</p>
+				</Card.Content>
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -418,8 +517,6 @@
 					Loading...
 				{:then plotData}
 					{#if plotData.dates_overview && plotData.dates_overview.length > 0}
-						{getFilteredPlotData(plotData.dates_overview)}
-						{getFinalPlotData(filteredPlotData)}
 						<StackedBar plotData={finalPlotData}></StackedBar>
 					{:else}
 						Loading...
@@ -435,64 +532,42 @@
 						<Card.Title>Overview</Card.Title>
 						<Card.Description>Recent data.</Card.Description>
 						<div class="flex p-2 gap-4">
-							<Select.Root portal={null} selected={defaultDimA}>
+							<Select.Root type="single" name="groupByA" bind:value={groupByDimA}>
 								<Select.Trigger class="w-[180px]">
-									<Select.Value placeholder="Select Group By DimensionB" />
+									{titleGroupByA}
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
-										<Select.Label>Fruits</Select.Label>
+										<Select.GroupHeading>Group By</Select.GroupHeading>
 										{#each tableDimensions as dimension}
-											<Select.Item
-												value={dimension.value}
-												label={dimension.label}
-												on:click={() => handleSelectGroupByChange(dimension.value, 'A')}
+											<Select.Item value={dimension.value} label={dimension.label}
 												>{dimension.label}</Select.Item
 											>
 										{/each}
 									</Select.Group>
 								</Select.Content>
-								<Select.Input name="favoriteFruitA" />
 							</Select.Root>
 
-							<Select.Root portal={null} selected={defaultDimB}>
+							<Select.Root type="single" name="groupByB" bind:value={groupByDimB}>
 								<Select.Trigger class="w-[180px]">
-									<Select.Value placeholder="Select Group By DimensionB" />
+									{titleGroupByB}
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
-										<Select.Label>Ad Networks</Select.Label>
+										<Select.GroupHeading>Group By</Select.GroupHeading>
 										{#each tableDimensions as dimension}
-											<Select.Item
-												value={dimension.value}
-												label={dimension.label}
-												on:click={() => handleSelectGroupByChange(dimension.value, 'B')}
+											<Select.Item value={dimension.value} label={dimension.label}
 												>{dimension.label}</Select.Item
 											>
 										{/each}
 									</Select.Group>
 								</Select.Content>
-								<Select.Input name="favoriteFruitB" />
 							</Select.Root>
 						</div>
 					</div>
 				</Card.Header>
 				<Card.Content>
-					{#await data.respData}
-						Loading...
-					{:then mydata}
-						{#if mydata.overview && mydata.overview.length > 0}
-							{getFilteredData(mydata.overview)}
-							{getFinalData(filteredData || [])}
-							<OverviewTable
-								overviewData={finalData}
-								dimensionA={groupByDimA}
-								dimensionB={groupByDimB}
-							></OverviewTable>
-						{:else}
-							Loading...
-						{/if}
-					{/await}
+					<OverviewTable data={tableData} {columns}></OverviewTable>
 				</Card.Content>
 			</Card.Root>
 		</div>

@@ -43,8 +43,8 @@
 		</Tabs.List>
 		<div class="ml-auto flex items-center gap-2">
 			<DropdownMenu.Root>
-				<DropdownMenu.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="outline" size="sm" class="h-8 gap-1">
+				<DropdownMenu.Trigger>
+					<Button variant="outline" size="sm" class="h-8 gap-1">
 						<ListFilter class="h-3.5 w-3.5" />
 						<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Filter </span>
 					</Button>
@@ -58,7 +58,7 @@
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
-			<Button on:click={toggleForm} size="sm" class="h-8 gap-1">
+			<Button onclick={toggleForm} size="sm" class="h-8 gap-1">
 				<CirclePlus class="h-3.5 w-3.5" />
 				<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Custom Network (pop)</span>
 			</Button>
