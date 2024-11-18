@@ -9,7 +9,7 @@ name: openattribution
 
 services:
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.9.2
+    image: docker.io/bitnami/zookeeper:3.9
     container_name: zookeeper
     ports:
       - '2181:2181'
@@ -24,7 +24,7 @@ services:
       retries: 3
 
   kafka:
-    image: docker.io/bitnami/kafka:3.6.2
+    image: docker.io/bitnami/kafka:3.6
     container_name: kafka
     ports:
       - '9093:9093'
@@ -49,7 +49,7 @@ services:
 
   clickhouse:
     container_name: clickhouse
-    image: clickhouse/clickhouse-server:24.8.4
+    image: clickhouse/clickhouse-server:24.10.1
     healthcheck:
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
