@@ -6,7 +6,7 @@ WITH
 merged_impression_event AS (
     -- Ranked rows by impression time
     SELECT 
-            app.event_time AS app_event_time,
+            app.install_time AS app_event_time,
             app.store_id AS store_id,
             app.event_id,
             app.ifa,
@@ -28,18 +28,7 @@ merged_impression_event AS (
             impression.event_time DESC
         ) AS rn
     FROM 
-            (
-            SELECT 
-                    *,
-                    MIN(event_time) OVER (
-                        PARTITION BY client_ip,
-                        ifa
-                ) AS earliest_app_event_time
-            FROM 
-                    events
-            WHERE 
-                    event_id = 'app_open'
-        ) app
+        installs_base app
     LEFT JOIN 
             (
             SELECT 
@@ -58,7 +47,7 @@ merged_impression_event AS (
 merged_click_event AS (
     -- Ranked rows by click time
     SELECT 
-            app.event_time AS app_event_time,
+            app.install_time AS app_event_time,
             app.store_id AS store_id,
             app.event_id,
             app.ifa,
@@ -80,18 +69,7 @@ merged_click_event AS (
             click.event_time DESC
         ) AS rn
     FROM 
-            (
-            SELECT 
-                    *,
-                    MIN(event_time) OVER (
-                        PARTITION BY client_ip,
-                        ifa
-                ) AS earliest_app_event_time
-            FROM 
-                    events
-            WHERE 
-                    event_id = 'app_open'
-        ) app
+        installs_base app
     LEFT JOIN 
             (
             SELECT 
