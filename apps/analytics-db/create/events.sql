@@ -8,5 +8,6 @@ CREATE TABLE events
     `client_ip` String,
     `event_uid` UUID,
     `received_at` DateTime64(3, 'UTC'),
+    `errors` String,
 )
 ENGINE = MergeTree() ORDER BY (`store_id`, `event_id`, `event_time`);
