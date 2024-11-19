@@ -38,10 +38,6 @@ my_tables=(
 	"attribute_installs_mv"
 	"daily_overview"
 	"daily_overview_mv"
-	# Uncomment the following lines if needed
-	# "daily_overview_impressions_mv"
-	# "daily_overview_clicks_mv"
-	# "daily_overview_attributed_installs_mv"
 )
 
 # Loop through each SQL file in the directory and execute it
@@ -58,13 +54,14 @@ for table in "${my_tables[@]}"; do
 			modified_sql=$(cat "$sql_file")
 		fi
 
-		# Execute setting and SQL file in the same session
-		(
-			echo "SET allow_experimental_refreshable_materialized_view = 1;"
-			echo "$modified_sql"
-		) | clickhouse-client -n
+		# Execute using heredoc syntax
+		clickhouse-client -n <<-EOSQL
+			SET allow_experimental_refreshable_materialized_view = 1;
+			${modified_sql}
+		EOSQL
 	else
 		echo "No SQL files found in $INIT_SQL_DIR"
+		exit 1
 	fi
 done
 
