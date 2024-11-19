@@ -14,7 +14,6 @@ CREATE TABLE attributed_clicks
     campaign_id LowCardinality(String) DEFAULT '',
     ad_name LowCardinality(String) DEFAULT '',
     ad_id LowCardinality(String) DEFAULT '',
-    revenue Nullable (Decimal (9, 4)) DEFAULT 0
 )
 ENGINE = MergeTree()
 PRIMARY KEY (store_id, ifa, client_ip)

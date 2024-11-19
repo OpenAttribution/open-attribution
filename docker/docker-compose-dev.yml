@@ -24,7 +24,7 @@ services:
       retries: 3
 
   kafka:
-    image: docker.io/bitnami/kafka:3.6
+    image: docker.io/bitnami/kafka:3.9
     container_name: kafka
     ports:
       - '9093:9093'
@@ -49,7 +49,7 @@ services:
 
   clickhouse:
     container_name: clickhouse
-    image: clickhouse/clickhouse-server:24.10.1
+    image: clickhouse/clickhouse-server:24.10.2.80
     healthcheck:
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
       interval: 5s
@@ -69,14 +69,24 @@ services:
 
   postback-api:
     container_name: postback-api
+    command: litestar run --host 0.0.0.0 --port 8000 --reload
     build:
       context: ../apps/postback-api
-      dockerfile: Dockerfile.python
+      dockerfile: Dockerfile.dev
+    working_dir: /app
     ports:
       - '8000:8000'
     depends_on:
       clickhouse:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --timeout=3 --tries=1 -qO- http://postback-api:8000/collect/health > /dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ../apps/postback-api:/app
+
 
   postback-test:
     container_name: postback-test
@@ -86,7 +96,8 @@ services:
     working_dir: /app
     command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
     depends_on:
-      - postback-api
+      postback-api:
+        condition: service_healthy
     environment:
       - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
 

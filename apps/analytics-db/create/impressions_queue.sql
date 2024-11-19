@@ -12,5 +12,8 @@ CREATE TABLE impressions_queue
     link_uid UUID,
     received_at DateTime64(3, 'UTC'),
 ) 
-ENGINE = Kafka('localhost:9092', 'impressions', 'clickhouse',
-            'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1;
+ENGINE = Kafka('localhost:9092', 'impressions', 'clickhouse') 
+            SETTINGS kafka_format = 'JSONEachRow', 
+            kafka_thread_per_consumer = 0, 
+            kafka_num_consumers = 1, 
+            kafka_handle_error_mode = 'stream';

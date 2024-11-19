@@ -10,6 +10,10 @@ Endpoints for In App Events
 =========
 /collect/events/
 
+Endpoint for Health Check
+=========
+/health
+
 """
 
 import datetime
@@ -48,6 +52,31 @@ from litestar.exceptions import HTTPException
 from litestar.params import Parameter
 
 logger = get_logger(__name__)
+
+import uuid
+
+
+def is_valid_ifa(ifa:str)->bool:
+    try:
+        uuid_obj = uuid.UUID(ifa)
+        return (
+            (uuid_obj.version == 4
+            and str(uuid_obj) == ifa.lower())
+            or ifa == "00000000-0000-0000-0000-000000000000"
+        )
+    except ValueError:
+        return False
+
+def is_valid_uuid(val:str)->bool:
+    try:
+        uuid_obj = uuid.UUID(val)
+        return (
+            uuid_obj.version == 4
+            and str(uuid_obj) == val.lower()
+        )
+    except ValueError:
+        return False
+
 
 
 # If inside docker: "bootstrap.servers": "kafka:9093",
@@ -157,6 +186,12 @@ class PostbackController(Controller):
         """
         client_host = request.client.host
 
+        if not is_valid_ifa(ifa):
+            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+        if not is_valid_uuid(link_uid):
+            raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
+
+
         data = {
             "event_time": event_time,
             DB_NETWORK: source,
@@ -262,6 +297,12 @@ class PostbackController(Controller):
             DB_RECEIVED_AT: now(),
         }
 
+        if not is_valid_ifa(ifa):
+            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+        if not is_valid_uuid(link_uid):
+            raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
+
+
         try:
             enc_data = json.dumps(data).encode("utf-8")
             reg_producer.produce("clicks", value=enc_data)
@@ -331,6 +372,11 @@ class PostbackController(Controller):
         """
         client_host = request.client.host
 
+        if not is_valid_ifa(ifa):
+            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+        if not is_valid_uuid(event_uid):
+            raise HTTPException(status_code=400, detail="Invalid event_uid format, use a v4 UUID")
+
         data = {
             DB_STORE_ID: app,
             APP_EVENT_ID: event_id,
@@ -349,3 +395,8 @@ class PostbackController(Controller):
         except KafkaException as ex:
             logger.exception("Processing event postback for kafka failed")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
+
+    @get(path="health")
+    async def health(self: Self) -> dict:
+        """Health check endpoint for the postback API."""
+        return {"status": "ok"}

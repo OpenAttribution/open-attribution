@@ -1,0 +1,4 @@
+# Other directories or files to ignore
+
+node_modules/
+.svelte-kit/
