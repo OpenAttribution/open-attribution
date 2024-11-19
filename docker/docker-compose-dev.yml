@@ -24,7 +24,7 @@ services:
       retries: 3
 
   kafka:
-    image: docker.io/bitnami/kafka:3.6
+    image: docker.io/bitnami/kafka:3.9
     container_name: kafka
     ports:
       - '9093:9093'
