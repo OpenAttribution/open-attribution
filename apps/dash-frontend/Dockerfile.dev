@@ -9,10 +9,10 @@ COPY package-lock.json /apps/dash-frontend/
 
 RUN npm install
 
-COPY ./ ./
+# COPY ./ ./
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 5173
 
-CMD ["npm", "run", "preview"]
+# CMD ["npm", "run", "dev"]

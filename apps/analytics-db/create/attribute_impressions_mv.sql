@@ -6,7 +6,7 @@ WITH
 merged_impression_event AS (
     -- Ranked rows by impression time
     SELECT 
-            app.event_time AS app_event_time,
+            app.install_time AS app_event_time,
             app.store_id AS store_id,
             app.event_id,
             app.ifa,
@@ -20,7 +20,6 @@ merged_impression_event AS (
             impression.ad_name,
             impression.ad_id,
             impression.link_uid,
-            app.revenue,
             ROW_NUMBER() OVER (
                 PARTITION BY app.client_ip,
             app.ifa
@@ -28,18 +27,7 @@ merged_impression_event AS (
             impression.event_time DESC
         ) AS rn
     FROM 
-            (
-            SELECT 
-                    *,
-                    MIN(event_time) OVER (
-                        PARTITION BY client_ip,
-                        ifa
-                ) AS earliest_app_event_time
-            FROM 
-                    events
-            WHERE 
-                    event_id = 'app_open'
-        ) app
+        installs_base app
     LEFT JOIN 
             (
             SELECT 
@@ -51,14 +39,14 @@ merged_impression_event AS (
             app.client_ip = impression.client_ip
         AND app.ifa = impression.ifa
     WHERE 
-            impression.event_time <= app.earliest_app_event_time
+            impression.event_time <= app.install_time
         -- TODO: This will need to be parameterized
-        AND impression.event_time >= app.earliest_app_event_time - INTERVAL 1 DAY
+        AND impression.event_time >= app.install_time - INTERVAL 1 DAY
 ),
 merged_click_event AS (
     -- Ranked rows by click time
     SELECT 
-            app.event_time AS app_event_time,
+            app.install_time AS app_event_time,
             app.store_id AS store_id,
             app.event_id,
             app.ifa,
@@ -72,7 +60,6 @@ merged_click_event AS (
             click.ad_name,
             click.ad_id,
             click.link_uid,
-            app.revenue,
             ROW_NUMBER() OVER (
                 PARTITION BY app.client_ip,
             app.ifa
@@ -80,18 +67,7 @@ merged_click_event AS (
             click.event_time DESC
         ) AS rn
     FROM 
-            (
-            SELECT 
-                    *,
-                    MIN(event_time) OVER (
-                        PARTITION BY client_ip,
-                        ifa
-                ) AS earliest_app_event_time
-            FROM 
-                    events
-            WHERE 
-                    event_id = 'app_open'
-        ) app
+        installs_base app
     LEFT JOIN 
             (
             SELECT 
@@ -103,7 +79,7 @@ merged_click_event AS (
             app.client_ip = click.client_ip
         AND app.ifa = click.ifa
     WHERE 
-            click.event_time <= app.earliest_app_event_time
+            click.event_time <= app.install_time
         -- TODO: This will need to be parameterized
         AND click.event_time >= now() - INTERVAL 7 DAY
 ),
@@ -145,7 +121,6 @@ SELECT
     campaign_id,
     ad_name,
     ad_id,
-    0 as revenue
 FROM
     latest_attributed_impression_events
 ;

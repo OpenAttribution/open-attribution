@@ -3,14 +3,14 @@ FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
-COPY . /app
+# COPY . /app
 
 # hadolint ignore=DL3042
 RUN pip install uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0 requests==2.32.3 pandas==2.2.3
 
 COPY . /app/
 
-EXPOSE 8000
+# EXPOSE 8000
 
 # Run the app with the Litestar CLI
 CMD ["bash", "-c", "python run_data_generation.py -i && python run_data_generation.py"]
