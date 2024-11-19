@@ -1,0 +1,17 @@
+
+FROM python:3.12-slim-bookworm
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir --upgrade uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0
+
+COPY . /app/
+
+EXPOSE 8000
+
+# Run the app with the Litestar CLI
+CMD ["litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
+
+
