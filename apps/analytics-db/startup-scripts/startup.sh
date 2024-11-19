@@ -28,6 +28,8 @@ my_tables=(
 	"events"
 	"events_queue"
 	"events_mv"
+	"installs_base"
+	"installs_base_mv"
 	"attributed_impressions"
 	"attributed_clicks"
 	"attributed_installs"
