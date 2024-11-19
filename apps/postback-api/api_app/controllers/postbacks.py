@@ -344,6 +344,7 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
+            logger.info(f"XXXXXXXXXXX EVENTS {enc_data}")
             event_producer.produce("events", value=enc_data)
             event_producer.poll(0)
         except KafkaException as ex:

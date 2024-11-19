@@ -71,7 +71,7 @@ services:
     container_name: postback-api
     build:
       context: ../apps/postback-api
-      dockerfile: Dockerfile.python
+      dockerfile: Dockerfile.build
     ports:
       - '8000:8000'
     depends_on:

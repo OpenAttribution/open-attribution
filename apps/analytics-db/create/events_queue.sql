@@ -10,4 +10,4 @@ CREATE TABLE events_queue
     received_at DateTime64(3, 'UTC'),
 )
 ENGINE = Kafka('localhost:9092', 'events', 'clickhouse',
-            'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1;
+            'JSONEachRow') settings kafka_thread_per_consumer = 0, kafka_num_consumers = 1, kafka_handle_error_mode = 'default';
