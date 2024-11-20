@@ -22,7 +22,7 @@ merged_impression_event AS (
             impression.ad_id,
             impression.link_uid,
             ROW_NUMBER() OVER (
-                PARTITION BY app.client_ip,
+                PARTITION BY app.oa_uid,
             app.ifa
         ORDER BY
             impression.event_time DESC

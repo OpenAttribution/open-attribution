@@ -91,7 +91,7 @@ SELECT
     0 AS clicks,
     count() AS installs,
     0 AS revenue
-FROM installs_base ib WHERE ib.event_uid not in (SELECT event_uid FROM attributed_installs)
+FROM installs_base ib WHERE ib.oa_uid not in (SELECT oa_uid FROM attributed_installs)
 GROUP BY
     toDate(install_time) AS on_date,
     store_id,

@@ -4,6 +4,7 @@ CREATE TABLE attributed_clicks
     store_id LowCardinality(String),
     event_id LowCardinality(String),
     ifa UUID,
+    oa_uid UUID,
     client_ip String DEFAULT '',
     attribution_type LowCardinality(String),
     attribution_event_time DateTime64(3, Utc),
@@ -16,5 +17,5 @@ CREATE TABLE attributed_clicks
     ad_id LowCardinality(String) DEFAULT '',
 )
 ENGINE = MergeTree()
-PRIMARY KEY (store_id, ifa, client_ip)
-ORDER BY (store_id, ifa, client_ip, event_id, app_event_time);
+PRIMARY KEY (store_id, ifa, oa_uid)
+ORDER BY (store_id, ifa, oa_uid, event_id, app_event_time);

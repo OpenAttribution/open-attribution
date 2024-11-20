@@ -19,4 +19,4 @@ CREATE TABLE attributed_installs
 )
 ENGINE = MergeTree()
 PRIMARY KEY (store_id, ifa, oa_uid)
-ORDER BY (store_id, ifa, oa_uid, event_id, app_event_time);
+ORDER BY (store_id, ifa, oa_uid, app_event_time);

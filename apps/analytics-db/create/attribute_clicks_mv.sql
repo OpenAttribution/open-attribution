@@ -21,7 +21,7 @@ merged_click_event AS (
             click.ad_id,
             click.link_uid,
             ROW_NUMBER() OVER (
-                PARTITION BY app.client_ip,
+                PARTITION BY app.oa_uid,
             app.ifa
         ORDER BY
             -- Sorted by earliest app events but latest click
