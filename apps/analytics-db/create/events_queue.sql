@@ -5,6 +5,7 @@ CREATE TABLE events_queue
     event_id LowCardinality(String),
     revenue Nullable(Decimal32(4)),
     ifa UUID,
+    oa_uid UUID,
     client_ip String,
     event_uid UUID,
     received_at DateTime64(3, 'UTC'),

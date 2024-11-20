@@ -6,7 +6,7 @@ WITH
         SELECT 
             *,
             MIN(event_time) OVER (
-                PARTITION BY client_ip,
+                PARTITION BY oa_uid,
                         ifa
                 ) AS install_time
         FROM 
@@ -19,6 +19,7 @@ SELECT
     store_id,
     event_id,
     ifa,
+    oa_uid,
     client_ip,
     event_uid,
     received_at
