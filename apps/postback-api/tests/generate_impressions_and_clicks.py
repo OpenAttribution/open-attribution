@@ -31,10 +31,12 @@ def main(endpoint: str) -> None:
                 if random.random() < INSTALL_RATE:  # noqa: S311
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
+                    oa_uid = str(uuid.uuid4())
                     make_inapp_request(
                         event_id="app_open",
                         myapp=app,
                         myifa=ifa,
+                        my_oa_uid=oa_uid,
                         endpoint=endpoint,
                     )
                     continue
@@ -52,6 +54,7 @@ def main(endpoint: str) -> None:
                         )
                         # Decide if a click should be generated
                         if random.random() < CLICK_THROUGH_RATE:  # noqa: S311
+                            oa_uid = str(uuid.uuid4())
                             time.sleep(random.uniform(0.1, 1.0))  # noqa: S311
                             impression_or_click(
                                 mytype="clicks",
@@ -68,5 +71,6 @@ def main(endpoint: str) -> None:
                                     event_id="app_open",
                                     myapp=app,
                                     myifa=ifa,
+                                    my_oa_uid=oa_uid,
                                     endpoint=endpoint,
                                 )
