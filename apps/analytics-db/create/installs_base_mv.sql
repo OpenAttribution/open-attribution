@@ -1,25 +1,28 @@
 CREATE MATERIALIZED VIEW installs_base_mv
 REFRESH EVERY 5 SECOND
 TO installs_base AS
-WITH
-    installs AS (
-        SELECT 
-            *,
-            MIN(event_time) OVER (
-                PARTITION BY client_ip,
-                        ifa
-                ) AS install_time
-        FROM 
-            events
-        WHERE 
-            event_id = 'app_open'
-    )
+WITH installs AS (
+    SELECT 
+        *,
+        ROW_NUMBER() OVER (
+            PARTITION BY oa_uid, ifa
+            ORDER BY event_time ASC
+        ) AS row_num
+    FROM 
+        events
+    WHERE 
+        event_id = 'app_open'
+)
 SELECT 
-    install_time,
+    event_time AS install_time,
     store_id,
     event_id,
     ifa,
+    oa_uid,
     client_ip,
     event_uid,
     received_at
-FROM installs;
+FROM 
+    installs
+WHERE 
+    row_num = 1;

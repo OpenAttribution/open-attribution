@@ -12,6 +12,7 @@ from config.dimensions import (
     LINK_EVENT_TIME,
     LINK_IFA,
     LINK_NETWORK,
+    LINK_OA_UID,
     LINK_UID,
 )
 
@@ -78,7 +79,7 @@ def impression_or_click(
     logger.info(f"GET {response.status_code} {url=} {uid=} ")
 
 
-def make_inapp_request(myapp: str, event_id: str, myifa: str, endpoint: str) -> None:
+def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, endpoint: str) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.UTC).timestamp() * 1000),
     )
@@ -88,6 +89,7 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str, endpoint: str) -> 
         LINK_IFA: myifa,
         APP_EVENT_TIME: tmstmp,
         APP_EVENT_UID: uid,
+        LINK_OA_UID: my_oa_uid,
     }
     url = endpoint + f"/collect/events/{myapp}"
     logger.info(url)

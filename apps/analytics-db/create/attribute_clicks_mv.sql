@@ -10,6 +10,7 @@ merged_click_event AS (
             app.event_id,
             app.ifa,
             app.client_ip,
+            app.oa_uid,
             app.event_uid,
             'click' AS attribution_type,
             click.event_time AS attribution_event_time,
@@ -20,7 +21,7 @@ merged_click_event AS (
             click.ad_id,
             click.link_uid,
             ROW_NUMBER() OVER (
-                PARTITION BY app.client_ip,
+                PARTITION BY app.oa_uid,
             app.ifa
         ORDER BY
             -- Sorted by earliest app events but latest click
@@ -58,6 +59,7 @@ SELECT
     store_id,
     event_id,
     ifa,
+    oa_uid,
     client_ip,
     attribution_type,
     attribution_event_time,

@@ -404,6 +404,7 @@ def check_install_results(run_tests: dict, time_part: str) -> None:
 
 
 def main(endpoint: str, test_names: list[str] | None = None) -> None:
+    """Run tests and check results."""
     time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
     for network, tests in ALL_TESTS.items():
         if test_names:
@@ -431,6 +432,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
             campaign = _campaign + "_" + time_part
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
+                oa_uid = str(uuid.uuid4())  # User start
                 ad = secrets.choice(ADS)
                 for idx, item in enumerate(my_events):
                     if item in ["impression", "click"]:
@@ -464,6 +466,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                             event_id=item,
                             myapp=APP,
                             myifa=ifa,
+                            my_oa_uid=oa_uid,
                             endpoint=endpoint,
                         )
                         _total_events += 1

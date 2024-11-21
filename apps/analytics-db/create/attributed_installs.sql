@@ -8,6 +8,7 @@ CREATE TABLE attributed_installs
     attribution_type LowCardinality(String),
     attribution_event_time DateTime64(3, Utc),
     link_uid UUID,
+    oa_uid UUID,
     event_uid UUID,
     network LowCardinality(String) DEFAULT '',
     campaign_name LowCardinality(String) DEFAULT '',
@@ -17,5 +18,5 @@ CREATE TABLE attributed_installs
     revenue Nullable (Decimal (9, 4)) DEFAULT 0
 )
 ENGINE = MergeTree()
-PRIMARY KEY (store_id, ifa, client_ip)
-ORDER BY (store_id, ifa, client_ip, event_id, app_event_time);
+PRIMARY KEY (store_id, ifa, oa_uid)
+ORDER BY (store_id, ifa, oa_uid, app_event_time);

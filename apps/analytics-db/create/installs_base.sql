@@ -4,12 +4,13 @@ CREATE TABLE installs_base
     store_id LowCardinality(String),
     event_id LowCardinality(String),
     ifa UUID,
+    oa_uid UUID,
     client_ip String,
     event_uid UUID,
     received_at DateTime64(3, 'UTC'),
 )
 ENGINE = MergeTree()
-PRIMARY KEY (store_id, ifa, event_id)
-ORDER BY (store_id, ifa, event_id, install_time);
+PRIMARY KEY (store_id, ifa, oa_uid)
+ORDER BY (store_id, ifa, oa_uid, install_time);
 
 
