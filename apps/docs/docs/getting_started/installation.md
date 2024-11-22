@@ -20,7 +20,7 @@ docker compose -f ~/open-attribution/docker/docker-compose.yml up -d
 
 This installs several services:
 
-## Services
+### Services
 
 #### Zookeeper
 - Image: `docker.io/bitnami/zookeeper:3.9.2`
@@ -62,8 +62,46 @@ This installs several services:
 - Depends on Dashboard Backend
 
 
-## Usage
+## Deployment in Production
 
-Currently the design is that only the `postback-api` on port `8000` and `dash-frontend` on port `5173` would be shared to the world with a proxy like `nginx`. This is how the `demo.openattribution.dev` page is setup, but this seems open for users to customize as they see fit.
+The `postback-api` on port `8000` and `dash-frontend` on port `5173` need to be opened to external internet. This can be done with Nginx reverse proxy. In the below example, this is assuming that the domain is `demo.openattribution.dev`. 
+
+So postbacks would be sent to:
+`https://demo.openattribution.dev/collect/impressions/com.myapp&c=...`
+
+And the dashboard would be viewed at:
+`https://demo.openattribution.dev/`
+
+The nginx proxy below does not include SSL, as that should be setup with certbot or your own SSL provider. For example, simply running Certbot on the config below will automatically add the correct SSL settings and certificates.
+
+Example `nginx` config, to setup on the same machine, just replace the `server_name` with your domain:
+```nginx
+server {
+
+  # Replace your domain_name here 
+  server_name demo.openattribution.dev;
+
+  add_header Access-Control-Allow-Origin '*';
+
+  # Forward to the dash-frontend
+  location / {
+    proxy_pass http://localhost:5173;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_hide_header 'Access-Control-Allow-Origin';
+  }
+
+  # Forward to the postback-api
+   location /collect {
+    proxy_pass http://localhost:8000;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_hide_header 'Access-Control-Allow-Origin';
+  }
+}
+
+```
 
  
