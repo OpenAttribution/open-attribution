@@ -9,16 +9,17 @@ LINK_CAMPAIGN_ID = "cid"
 LINK_AD = "ad"
 LINK_AD_ID = "adid"
 LINK_IFA = "ifa"
-LINK_OA_UID = "oa_uid"
 LINK_APP_EVENT_ID = "event_id"
 LINK_EVENT_TIME = "event_time"
 LINK_UID = "link_uid"
 
 # In App IDs
+# sent from the app sdk to the database
 APP_EVENT_UID = "event_uid"
 APP_EVENT_ID = "event_id"
 APP_EVENT_TIME = "event_time"
 APP_EVENT_REV = "revenue"
+APP_OA_USER_ID = "oa_uid"
 
 
 # values for kafka -> db columns

@@ -27,6 +27,7 @@ from config.dimensions import (
     APP_EVENT_REV,
     APP_EVENT_TIME,
     APP_EVENT_UID,
+    APP_OA_USER_ID,
     DB_AD_ID,
     DB_AD_NAME,
     DB_C,
@@ -46,7 +47,6 @@ from config.dimensions import (
     LINK_EVENT_TIME,
     LINK_IFA,
     LINK_NETWORK,
-    LINK_OA_UID,
     LINK_UID,
 )
 from confluent_kafka import KafkaException, Producer
@@ -327,7 +327,7 @@ class PostbackController(Controller):
         event_uid: Annotated[str, Parameter(str, query=APP_EVENT_UID)],
         oa_uid: Annotated[
             str,
-            Parameter(str, query=LINK_OA_UID),
+            Parameter(str, query=APP_OA_USER_ID),
         ],
         ifa: Annotated[
             str | None,
