@@ -74,9 +74,8 @@ def impression_or_click(
         LINK_UID: uid,
     }
     url = endpoint + f"/collect/{mytype}/{myapp}"
-    logger.info(url)
     response = requests.get(url, params=params, timeout=10)
-    logger.info(f"GET {response.status_code} {url=} {uid=} ")
+    logger.info(f"GET {response.status_code} {mytype.upper()} {url=} {uid=} ")
 
 
 def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, endpoint: str) -> None:
@@ -93,4 +92,4 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, en
     }
     url = endpoint + f"/collect/events/{myapp}"
     response = requests.get(url, params=params, timeout=10)
-    logger.info(f"GET EVENT {response.status_code} {url=} {params=} ")
+    logger.info(f"GET {response.status_code} EVENTS {url=} {params=} ")
