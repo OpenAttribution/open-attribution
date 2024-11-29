@@ -92,6 +92,5 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, en
         APP_OA_USER_ID: my_oa_uid,
     }
     url = endpoint + f"/collect/events/{myapp}"
-    logger.info(url)
     response = requests.get(url, params=params, timeout=10)
-    logger.info(f"GET {response.status_code} {url=} ")
+    logger.info(f"GET EVENT {response.status_code} {url=} {params=} ")
