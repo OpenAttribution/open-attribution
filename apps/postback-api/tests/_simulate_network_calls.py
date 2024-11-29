@@ -26,7 +26,7 @@ def impression(
     mynetwork: str,
     myad: str,
     endpoint: str,
-) -> None:  # noqa: PLR0913
+) -> None:
     impression_or_click(
         mytype="impressions",
         myapp=myapp,
@@ -40,7 +40,7 @@ def impression(
 
 def click(
     myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str, endpoint: str,
-) -> None:  # noqa: PLR0913
+) -> None:
     impression_or_click(
         mytype="clicks",
         myapp=myapp,
@@ -60,7 +60,7 @@ def impression_or_click(
     mynetwork: str,
     myad: str,
     endpoint: str,
-) -> None:  # noqa: PLR0913
+) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.UTC).timestamp() * 1000),
     )
