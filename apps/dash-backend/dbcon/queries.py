@@ -111,7 +111,8 @@ DBCON = get_db_connection("admin-db")
 DBCON.set_engine()
 
 if DBCON.engine is None:
-    raise ValueError("DBCON.engine is None")
+    msg = "DBCON.engine is None"
+    logger.error(msg)
+    raise ValueError(msg)
 
-assert DBCON.engine is not None, "DBCON.engine is None"
 ENGINE = cast(Engine, DBCON.engine)

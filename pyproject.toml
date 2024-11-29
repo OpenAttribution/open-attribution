@@ -52,6 +52,7 @@ exclude = ["tests/*"]
 
 [tool.ruff.lint.per-file-ignores]
 "postbacks.py" = ["PLR0913"]
+"_simulate_network_calls.py" = ["PLR0913"]
 
 
 [tool.mypy]

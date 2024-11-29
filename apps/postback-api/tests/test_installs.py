@@ -1,3 +1,7 @@
+"""
+Test installs.
+"""
+
 import datetime
 import secrets
 import time
