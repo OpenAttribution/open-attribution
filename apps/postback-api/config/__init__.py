@@ -22,8 +22,8 @@ def is_docker() -> bool:
     path = pathlib.Path("/proc/self/cgroup")
     return (
         pathlib.Path("/.dockerenv").exists()
-        or path.is_file()
-        and any("docker" in line for line in path.open())
+        or (path.is_file()
+        and any("docker" in line for line in path.open()))
     )
 
 
