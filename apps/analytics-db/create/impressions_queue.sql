@@ -9,10 +9,10 @@ CREATE TABLE impressions_queue
     ad_id LowCardinality(String),
     ifa UUID,
     client_ip String,
-    link_uid UUID,
     country_iso LowCardinality(String),
     state_iso LowCardinality(String),
     city_name LowCardinality(String),
+    link_uid UUID,
     received_at DateTime64(3, 'UTC'),
 ) 
 ENGINE = Kafka('localhost:9092', 'impressions', 'clickhouse') 

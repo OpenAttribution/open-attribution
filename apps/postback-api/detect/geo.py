@@ -2,10 +2,10 @@
 Get geo data for an ip address.
 """
 import os
+import pathlib
 import tarfile
 
 import geoip2.database
-import Path
 import requests
 from config import TOP_CONFIGDIR, get_logger
 
@@ -35,7 +35,7 @@ def update_geo_dbs():
         with open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
             with tarfile.open("/tmp/maxmind.tar.gz", "r:gz") as tar:
                 for member in tar.getmembers():
-                    if Path(member.name).suffix == ".mmdb":
+                    if pathlib.Path(member.name).suffix == ".mmdb":
                         r = tar.extractfile(member)
                         if r is not None:
                             content = r.read()
@@ -44,18 +44,7 @@ def update_geo_dbs():
             tar.close()
         w.close()
 
-
-def get_geo(ip:str)->dict:
-    """
-    Get geo data for an ip address.
-
-    Args:
-        ip (str): The ip address to get geo data for.
-
-    Returns:
-        dict: A dictionary containing the geo data for the ip address.
-
-    """
+def lookup_ip(ip:str)->dict:
     with geoip2.database.Reader(f"{TOP_CONFIGDIR}/GeoLite2-City.mmdb") as reader:
         response = reader.city(ip)
         country_code = response.country.iso_code
@@ -87,6 +76,24 @@ def get_geo(ip:str)->dict:
     }
     return msg
 
+def get_geo(ip:str)->dict:
+    """
+    Get geo data for an ip address.
+
+    Args:
+        ip (str): The ip address to get geo data for.
+
+    Returns:
+        dict: A dictionary containing the geo data for the ip address.
+
+    """
+    try:
+        msg = lookup_ip(ip)
+    except Exception:
+        logger.exception(f"failed to get geo info for {ip}")
+        msg = {"country_iso":"", "state_iso":"", "city_name":""}
+    return msg
 
 
 
+get_geo("172.18.0.10")

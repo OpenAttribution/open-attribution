@@ -109,6 +109,17 @@ def now() -> str:
     )
     return timestamp_with_ms_int
 
+def get_client_ip(request: Request) -> str:
+    """
+    Get the real client IP, checking X-Forwarded-For header first.
+    If the X-Forwarded-For header is not present, return the client host.
+    Todo: This will need to be tested.
+    """
+    forwarded_for = request.headers.get("X-Forwarded-For")
+    if forwarded_for:
+        # Get the first IP in the chain
+        return forwarded_for.split(",")[0].strip()
+    return request.client.host
 
 class PostbackController(Controller):
     """
@@ -194,7 +205,7 @@ class PostbackController(Controller):
         ```
 
         """
-        client_host = request.client.host
+        client_host = get_client_ip(request)
 
         if not is_valid_ifa(ifa):
             raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
@@ -298,7 +309,7 @@ class PostbackController(Controller):
         ```
 
         """
-        client_host = request.client.host
+        client_host = get_client_ip(request)
 
 
         if not is_valid_ifa(ifa):
@@ -400,7 +411,7 @@ class PostbackController(Controller):
         ```
 
         """
-        client_host = request.client.host
+        client_host = get_client_ip(request)
 
 
         if not is_valid_ifa(ifa):
