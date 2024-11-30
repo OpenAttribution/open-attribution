@@ -1,4 +1,2 @@
-"""
-Detect module
-"""
+"""Detect module."""
 

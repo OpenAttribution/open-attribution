@@ -32,13 +32,16 @@ from config.dimensions import (
     DB_AD_NAME,
     DB_C,
     DB_C_ID,
+    DB_CITY_NAME,
     DB_CLIENT_IP,
+    DB_COUNTRY_ISO,
     DB_EVENT_UID,
     DB_IFA,
     DB_LINK_UID,
     DB_NETWORK,
     DB_OA_UID,
     DB_RECEIVED_AT,
+    DB_STATE_ISO,
     DB_STORE_ID,
     LINK_AD,
     LINK_AD_ID,
@@ -50,6 +53,7 @@ from config.dimensions import (
     LINK_UID,
 )
 from confluent_kafka import KafkaException, Producer
+from detect.geo import get_geo
 from litestar import Controller, Request, get
 from litestar.exceptions import HTTPException
 from litestar.params import Parameter
@@ -197,6 +201,10 @@ class PostbackController(Controller):
         if not is_valid_uuid(link_uid):
             raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
 
+        geo_data = get_geo(client_host)
+        country_iso = geo_data.get("country_iso")
+        state_iso = geo_data.get("state_iso")
+        city_name = geo_data.get("city_name")
 
         data = {
             "event_time": event_time,
@@ -209,6 +217,9 @@ class PostbackController(Controller):
             DB_IFA: ifa,
             DB_CLIENT_IP: client_host,
             DB_LINK_UID: link_uid,
+            DB_COUNTRY_ISO: country_iso,
+            DB_STATE_ISO: state_iso,
+            DB_CITY_NAME: city_name,
             DB_RECEIVED_AT: now(),
         }
 
@@ -289,6 +300,17 @@ class PostbackController(Controller):
         """
         client_host = request.client.host
 
+
+        if not is_valid_ifa(ifa):
+            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+        if not is_valid_uuid(link_uid):
+            raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
+
+        geo_data = get_geo(client_host)
+        country_iso = geo_data.get("country_iso")
+        state_iso = geo_data.get("state_iso")
+        city_name = geo_data.get("city_name")
+
         data = {
             "event_time": event_time,
             DB_NETWORK: source,
@@ -300,14 +322,11 @@ class PostbackController(Controller):
             DB_IFA: ifa,
             DB_CLIENT_IP: client_host,
             DB_LINK_UID: link_uid,
+            DB_COUNTRY_ISO: country_iso,
+            DB_STATE_ISO: state_iso,
+            DB_CITY_NAME: city_name,
             DB_RECEIVED_AT: now(),
         }
-
-        if not is_valid_ifa(ifa):
-            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
-        if not is_valid_uuid(link_uid):
-            raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
-
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
@@ -383,6 +402,7 @@ class PostbackController(Controller):
         """
         client_host = request.client.host
 
+
         if not is_valid_ifa(ifa):
             if ifa is None:
                 ifa = "00000000-0000-0000-0000-000000000000"
@@ -393,6 +413,11 @@ class PostbackController(Controller):
         if not is_valid_uuid(oa_uid):
             raise HTTPException(status_code=400, detail="Invalid oa_uid format, use a v4 UUID")
 
+        geo_data = get_geo(client_host)
+        country_iso = geo_data.get("country_iso")
+        state_iso = geo_data.get("state_iso")
+        city_name = geo_data.get("city_name")
+
         data = {
             DB_STORE_ID: app,
             APP_EVENT_ID: event_id,
@@ -402,6 +427,9 @@ class PostbackController(Controller):
             DB_CLIENT_IP: client_host,
             DB_OA_UID: oa_uid,
             DB_EVENT_UID: event_uid,
+            DB_COUNTRY_ISO: country_iso,
+            DB_STATE_ISO: state_iso,
+            DB_CITY_NAME: city_name,
             DB_RECEIVED_AT: now(),
         }
 

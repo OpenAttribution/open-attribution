@@ -9,7 +9,6 @@ from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig, OpenAPIController
 
-
 cors_config = CORSConfig(
     allow_origins=[
         "*",

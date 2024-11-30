@@ -19,6 +19,9 @@ merged_click_event AS (
             click.campaign_id,
             click.ad_name,
             click.ad_id,
+            click.country_iso,
+            click.state_iso,
+            click.city_name,
             click.link_uid,
             ROW_NUMBER() OVER (
                 PARTITION BY app.oa_uid,
@@ -70,6 +73,9 @@ SELECT
     campaign_id,
     ad_name,
     ad_id,
+    country_iso,
+    state_iso,
+    city_name,
 FROM
     latest_attributed_click_events
 ;

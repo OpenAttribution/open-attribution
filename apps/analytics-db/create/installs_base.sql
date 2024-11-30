@@ -6,6 +6,9 @@ CREATE TABLE installs_base
     ifa UUID,
     oa_uid UUID,
     client_ip String,
+    country_iso LowCardinality(String) DEFAULT '',
+    state_iso LowCardinality(String) DEFAULT '',
+    city_name LowCardinality(String) DEFAULT '',
     event_uid UUID,
     received_at DateTime64(3, 'UTC'),
 )
