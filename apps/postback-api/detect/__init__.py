@@ -1,0 +1,4 @@
+"""
+Detect module
+"""
+
