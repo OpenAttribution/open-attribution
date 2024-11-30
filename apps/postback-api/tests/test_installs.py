@@ -12,6 +12,7 @@ from clickhouse_connect import create_client
 from config import get_logger
 
 from tests._simulate_network_calls import click, impression, make_inapp_request
+from tests.generate_impressions_and_clicks import generate_random_ip
 
 logger = get_logger(__name__)
 
@@ -437,6 +438,10 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
                 oa_uid = str(uuid.uuid4())  # User start
+                headers = {
+                    "X-Forwarded-For": generate_random_ip(),
+                    "X-Real-IP": generate_random_ip(),
+                }
                 ad = secrets.choice(ADS)
                 for idx, item in enumerate(my_events):
                     if item in ["impression", "click"]:
@@ -451,6 +456,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                                headers=headers,
                                 endpoint=endpoint,
                             )
                             _total_impressions += 1
@@ -461,6 +467,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                                headers=headers,
                                 endpoint=endpoint,
                             )
                             _total_clicks += 1
@@ -471,6 +478,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                             myapp=APP,
                             myifa=ifa,
                             my_oa_uid=oa_uid,
+                            headers=headers,
                             endpoint=endpoint,
                         )
                         _total_events += 1
