@@ -5,7 +5,7 @@ site_url: https://openattribution.dev/blog/
 
 # This sets the export location as well as relative HTML links /documentation/todos
 site_dir: ../../www/static/generated-blog/
-docs_dir: '.'
+docs_dir: 'blog'
 
 markdown_extensions:
   - attr_list
