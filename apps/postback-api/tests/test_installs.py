@@ -1,6 +1,4 @@
-"""
-Test installs.
-"""
+"""Test installs."""
 
 import datetime
 import secrets
@@ -243,6 +241,7 @@ ALL_TESTS = {
 
 
 def get_expected_test_df(run_tests: dict, time_part: str) -> pd.DataFrame:
+    """Get expected results for a single campaign."""
     test_df = pd.DataFrame.from_dict(run_tests, orient="index")
     test_df = test_df.reset_index().rename(columns={"index": "campaign_name"})
     test_df = (
@@ -314,6 +313,7 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
 
 
 def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
+    """Get db data for a single campaign."""
     tables = ["impressions", "clicks", "attributed_installs"]
     dfs = []
     for table in tables:
@@ -353,6 +353,7 @@ def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
 
 
 def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
+    """Get db data for all campaigns."""
     db_dfs = []
     for _campaign in run_tests:
         campaign = _campaign + "_" + time_part
@@ -374,6 +375,7 @@ def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
 
 
 def check_install_results(run_tests: dict, time_part: str) -> None:
+    """Check results from db and expected results."""
     logger.info("Begin checking results")
     test_df = get_expected_test_df(run_tests, time_part)
     db_df = get_db_dfs(run_tests, time_part)

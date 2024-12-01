@@ -111,9 +111,13 @@ def now() -> str:
 
 def get_client_ip(request: Request) -> str:
     """
+
     Get the real client IP, checking X-Forwarded-For header first.
+
     If the X-Forwarded-For header is not present, return the client host.
+
     Todo: This will need to be tested.
+
     """
     forwarded_for = request.headers.get("X-Forwarded-For")
     if forwarded_for:

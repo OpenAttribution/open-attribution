@@ -1,9 +1,7 @@
-"""
-Get geo data for an ip address.
-"""
-import os
+"""Get geo data for an ip address."""
 import pathlib
 import tarfile
+import tempfile
 
 import geoip2.database
 import requests
@@ -15,25 +13,25 @@ GITSQUARED_GEOLITE2_RAW_DATA="https://raw.githubusercontent.com/GitSquared/node-
 
 MAXMIND_GEO_DBS=["GeoLite2-City", "GeoLite2-ASN"]
 
-def update_geo_dbs():
-    """
-    Update the geo databases.
-    """
+def update_geo_dbs()->None:
+    """Update the geo databases."""
     for db in MAXMIND_GEO_DBS:
-        if os.path.exists(f"{TOP_CONFIGDIR}/{db}.mmdb"):
+        if pathlib.Path.exists(f"{TOP_CONFIGDIR}/{db}.mmdb"):
             logger.info(f"{db}.mmdb exists, skipping download")
             continue
         logger.info(f"{db}: Unable to find ip geo data")
         logger.info(f"{db}: Downloading {db}.tar.gz")
         url = GITSQUARED_GEOLITE2_RAW_DATA.format(db=db)
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         logger.info(f"{db}: Unzipping {db}.tar.gz")
-        with open("/tmp/maxmind.tar.gz", "wb") as f:
+        # with open("/tmp/maxmind.tar.gz", "wb") as f:
+        mytmp = tempfile.NamedTemporaryFile()
+        with open(mytmp.name, "wb") as f:
             f.write(response.content)
         f.close()
         logger.info(f"{db}: Write {db}.mmdb to {TOP_CONFIGDIR}")
         with open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
-            with tarfile.open("/tmp/maxmind.tar.gz", "r:gz") as tar:
+            with tarfile.open(mytmp.name, "r:gz") as tar:
                 for member in tar.getmembers():
                     if pathlib.Path(member.name).suffix == ".mmdb":
                         r = tar.extractfile(member)

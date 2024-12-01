@@ -289,10 +289,6 @@
 		[groupKey: string]: GroupedEntry;
 	}
 
-	// interface GroupedPlotData {
-	// 	[groupKey: string]: GroupedPlotEntry;
-	// }
-
 	function groupByDimensions(
 		myFilteredData: OverviewEntry[],
 		dimensionA: string,

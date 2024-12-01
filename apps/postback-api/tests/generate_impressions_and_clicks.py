@@ -1,5 +1,7 @@
 """Generate impressions and clicks for testing."""
 
+# noqa: S311
+
 import random
 import time
 import uuid
