@@ -15,16 +15,48 @@ Since developement is quite early, tables and data in the `analytics-db` and `ad
 `docker compose -f ~/open-attribution/docker/docker-compose-dev.yml down -v`
 
 
-## Writing Docs
+## Updating the Documentation Content
 
-This documentation is written in mkdocs and is included in the repository under `apps/docs`.  All doc files should be in markdown. 
+All documentation is written in markdown and thus can be edited in any markdown editor.
+
+## Serving the Documenation
+
+This documentation is written in the python library`mkdocs` and is included in the repository under `apps/docs`.
 
 Changes in docs can be previewed locally with:
 
 In the a python environment, run:
 ```sh
 pip install mkdocs-material mkdocs-rss-plugin
+```
+
+serving the docs happens from the where the mkdocs.yml file is located.
+
+```sh
+cd apps/docs/docs/
 mkdocs serve
+```
+
+and for the blog
+
+```sh
+cd apps/docs/blog/
+mkdocs serve
+```
+
+## Developing the website
+
+The website is built with sveltekit and is located in `apps/www`. Install dependencies with:
+
+```sh
+cd apps/www
+npm install
+```
+
+and run the development server with:
+
+```sh
+npm run dev
 ```
 
 
