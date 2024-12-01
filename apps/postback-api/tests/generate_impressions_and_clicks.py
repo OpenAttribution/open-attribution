@@ -1,6 +1,6 @@
 """Generate impressions and clicks for testing."""
 
-# noqa: S311
+# ruff: noqa: S311
 
 import random
 import time
@@ -24,6 +24,13 @@ CLICK_THROUGH_RATE = 0.5
 D1_APP_OPEN_RATE = 0.4
 
 def generate_random_ip() -> str:
+    """
+    Generate a random ip address.
+
+    Returns:
+        str: A random ip address.
+
+    """
     # Avoid reserved ranges by using common public IP ranges
     first_octet = random.choice([203, 8, 34, 50, 66, 98, 172, 177, 178])
     return f"{first_octet}.{random.randint(0,255)}.{random.randint(0,255)}.{random.randint(0,255)}"
@@ -36,7 +43,7 @@ def main(endpoint: str) -> None:
     while True:
         for network in NETWORKS:
             for app in APPS:
-                if random.random() < INSTALL_RATE:  # noqa: S311
+                if random.random() < INSTALL_RATE:
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
                     oa_uid = str(uuid.uuid4())
@@ -73,9 +80,9 @@ def main(endpoint: str) -> None:
                             endpoint=endpoint,
                         )
                         # Decide if a click should be generated
-                        if random.random() < CLICK_THROUGH_RATE:  # noqa: S311
+                        if random.random() < CLICK_THROUGH_RATE:
                             oa_uid = str(uuid.uuid4())
-                            time.sleep(random.uniform(0.1, 1.0))  # noqa: S311
+                            time.sleep(random.uniform(0.1, 1.0))
                             impression_or_click(
                                 mytype="clicks",
                                 myapp=app,
@@ -85,8 +92,8 @@ def main(endpoint: str) -> None:
                                 myad=ad,
                                 endpoint=endpoint,
                             )
-                            if random.random() < D1_APP_OPEN_RATE:  # noqa: S311
-                                time.sleep(random.uniform(0.1, 1.0))  # noqa: S311
+                            if random.random() < D1_APP_OPEN_RATE:
+                                time.sleep(random.uniform(0.1, 1.0))
                                 make_inapp_request(
                                     event_id="app_open",
                                     myapp=app,

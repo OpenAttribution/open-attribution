@@ -26,23 +26,31 @@ def update_geo_dbs()->None:
         logger.info(f"{db}: Unzipping {db}.tar.gz")
         # with open("/tmp/maxmind.tar.gz", "wb") as f:
         mytmp = tempfile.NamedTemporaryFile()
-        with open(mytmp.name, "wb") as f:
+        with pathlib.Path.open(mytmp.name, "wb") as f:
             f.write(response.content)
         f.close()
         logger.info(f"{db}: Write {db}.mmdb to {TOP_CONFIGDIR}")
-        with open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
+        with pathlib.Path.open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
             with tarfile.open(mytmp.name, "r:gz") as tar:
                 for member in tar.getmembers():
                     if pathlib.Path(member.name).suffix == ".mmdb":
-                        r = tar.extractfile(member)
-                        if r is not None:
-                            content = r.read()
-                        r.close
-                        w.write(content)
-            tar.close()
-        w.close()
+                        with tar.extractfile(member) as r:
+                            if r is not None:
+                                content = r.read()
+                                w.write(content)
+
 
 def lookup_ip(ip:str)->dict:
+    """
+    Lookup ip address.
+
+    Args:
+        ip (str): The ip address to lookup.
+
+    Returns:
+        dict: A dictionary containing the geo data for the ip address.
+
+    """
     with geoip2.database.Reader(f"{TOP_CONFIGDIR}/GeoLite2-City.mmdb") as reader:
         response = reader.city(ip)
         country_code = response.country.iso_code
