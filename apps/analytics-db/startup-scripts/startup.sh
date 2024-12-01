@@ -40,13 +40,6 @@ my_tables=(
 	"daily_overview_mv"
 )
 
-# Add drop tables section before creating new ones
-echo "Dropping existing tables..."
-for table in "${my_tables[@]}"; do
-	echo "Dropping table: $table"
-	clickhouse-client --query "DROP TABLE IF EXISTS $table"
-done
-
 # Loop through each SQL file in the directory and execute it
 for table in "${my_tables[@]}"; do
 	echo "Processing table: $table"
