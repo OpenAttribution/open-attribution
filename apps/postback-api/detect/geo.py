@@ -16,7 +16,7 @@ MAXMIND_GEO_DBS=["GeoLite2-City", "GeoLite2-ASN"]
 def update_geo_dbs()->None:
     """Update the geo databases."""
     for db in MAXMIND_GEO_DBS:
-        if pathlib.Path.exists(f"{TOP_CONFIGDIR}/{db}.mmdb"):
+        if pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").exists():
             logger.info(f"{db}.mmdb exists, skipping download")
             continue
         logger.info(f"{db}: Unable to find ip geo data")
