@@ -26,7 +26,7 @@ def update_geo_dbs()->None:
         logger.info(f"{db}: Unzipping {db}.tar.gz")
         with tempfile.NamedTemporaryFile(delete=True) as mytmp:  # Temp file context
             # Write the downloaded content to the temp file
-            with pathlib.Path.open(mytmp.name, "wb") as f:
+            with pathlib.Path(mytmp.name).open("w+b") as f:
                 f.write(response.content)
             logger.info(f"{db}: Write {db}.mmdb to {TOP_CONFIGDIR}")
             # Open the tar file and extract the desired member
@@ -35,7 +35,7 @@ def update_geo_dbs()->None:
                     if pathlib.Path(member.name).suffix == ".mmdb":
                         with tar.extractfile(member) as r:
                             if r is not None:
-                                with pathlib.Path.open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
+                                with pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").open("w+b") as w:
                                     w.write(r.read())
                                 break  # Stop once the target file is written
 

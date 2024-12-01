@@ -90,6 +90,7 @@ def main(endpoint: str) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                                headers=headers,
                                 endpoint=endpoint,
                             )
                             if random.random() < D1_APP_OPEN_RATE:
@@ -99,5 +100,6 @@ def main(endpoint: str) -> None:
                                     myapp=app,
                                     myifa=ifa,
                                     my_oa_uid=oa_uid,
+                                    headers=headers,
                                     endpoint=endpoint,
                                 )
