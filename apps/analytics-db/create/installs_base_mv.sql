@@ -20,6 +20,7 @@ SELECT
     ifa,
     oa_uid,
     client_ip,
+    country_iso,
     event_uid,
     received_at
 FROM 

@@ -20,6 +20,9 @@ merged_impression_event AS (
             impression.campaign_id,
             impression.ad_name,
             impression.ad_id,
+            impression.country_iso as country_iso,
+            impression.state_iso,
+            impression.city_name,
             impression.link_uid,
             ROW_NUMBER() OVER (
                 PARTITION BY app.oa_uid,
@@ -61,6 +64,9 @@ merged_click_event AS (
             click.campaign_id,
             click.ad_name,
             click.ad_id,
+            click.country_iso as country_ios,
+            click.state_iso,
+            click.city_name,
             click.link_uid,
             ROW_NUMBER() OVER (
                 PARTITION BY app.client_ip,
@@ -124,6 +130,9 @@ SELECT
     campaign_id,
     ad_name,
     ad_id,
+    country_iso,
+    state_iso,
+    city_name,
 FROM
     latest_attributed_impression_events
 ;

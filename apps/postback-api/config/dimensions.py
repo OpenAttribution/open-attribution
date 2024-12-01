@@ -35,6 +35,9 @@ DB_CLIENT_IP = "client_ip"
 DB_LINK_UID = "link_uid"
 DB_EVENT_UID = "event_uid"
 DB_RECEIVED_AT = "received_at"
+DB_COUNTRY_ISO = "country_iso"
+DB_STATE_ISO = "state_iso"
+DB_CITY_NAME = "city_name"
 
 
 AD_SHARED_DIMENSIONS = [

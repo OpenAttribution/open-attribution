@@ -15,6 +15,9 @@ CREATE TABLE attributed_impressions
     campaign_id LowCardinality(String) DEFAULT '',
     ad_name LowCardinality(String) DEFAULT '',
     ad_id LowCardinality(String) DEFAULT '',
+    country_iso LowCardinality(String) DEFAULT '',
+    state_iso LowCardinality(String) DEFAULT '',
+    city_name LowCardinality(String) DEFAULT '',
 )
 ENGINE = MergeTree()
 PRIMARY KEY (store_id, ifa, oa_uid)

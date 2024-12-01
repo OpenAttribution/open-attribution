@@ -19,6 +19,7 @@ from config.dimensions import (
 logger = get_logger(__name__)
 
 
+
 def impression(
     myapp: str,
     mycampaign: str,
@@ -26,6 +27,7 @@ def impression(
     mynetwork: str,
     myad: str,
     endpoint: str,
+    headers: dict,
 ) -> None:
     impression_or_click(
         mytype="impressions",
@@ -34,12 +36,13 @@ def impression(
         mynetwork=mynetwork,
         myifa=myifa,
         myad=myad,
+        headers=headers,
         endpoint=endpoint,
     )
 
 
 def click(
-    myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str, endpoint: str,
+    myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str, endpoint: str, headers: dict,
 ) -> None:
     impression_or_click(
         mytype="clicks",
@@ -48,6 +51,7 @@ def click(
         mynetwork=mynetwork,
         myifa=myifa,
         myad=myad,
+        headers=headers,
         endpoint=endpoint,
     )
 
@@ -59,6 +63,7 @@ def impression_or_click(
     myifa: str,
     mynetwork: str,
     myad: str,
+    headers: dict,
     endpoint: str,
 ) -> None:
     tmstmp: str = str(
@@ -74,12 +79,11 @@ def impression_or_click(
         LINK_UID: uid,
     }
     url = endpoint + f"/collect/{mytype}/{myapp}"
-    logger.info(url)
-    response = requests.get(url, params=params, timeout=10)
-    logger.info(f"GET {response.status_code} {url=} {uid=} ")
+    response = requests.get(url, params=params, headers=headers, timeout=10)
+    logger.info(f"GET {response.status_code} {mytype.upper()} {url=} {uid=} ")
 
 
-def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, endpoint: str) -> None:
+def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, headers: dict, endpoint: str) -> None:
     tmstmp: str = str(
         round(datetime.datetime.now(datetime.UTC).timestamp() * 1000),
     )
@@ -92,5 +96,5 @@ def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, en
         APP_OA_USER_ID: my_oa_uid,
     }
     url = endpoint + f"/collect/events/{myapp}"
-    response = requests.get(url, params=params, timeout=10)
-    logger.info(f"GET EVENT {response.status_code} {url=} {params=} ")
+    response = requests.get(url, params=params, headers=headers, timeout=10)
+    logger.info(f"GET {response.status_code} EVENTS {url=} {params=} ")

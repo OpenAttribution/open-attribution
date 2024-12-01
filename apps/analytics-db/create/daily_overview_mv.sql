@@ -12,6 +12,7 @@ WITH combined AS (
             campaign_id,
             ad_name,
             ad_id,
+            country_iso,
             count() AS impressions,
             0 AS clicks,
             0 AS installs,
@@ -25,7 +26,8 @@ WITH combined AS (
             campaign_name,
             campaign_id,
             ad_name,
-            ad_id
+            ad_id,
+            country_iso
     )
 UNION ALL
 (
@@ -37,6 +39,7 @@ UNION ALL
             campaign_id,
             ad_name,
             ad_id,
+            country_iso,
             0 AS impressions,
             count() AS clicks,
             0 AS installs,
@@ -50,7 +53,8 @@ UNION ALL
             campaign_name,
             campaign_id,
             ad_name,
-            ad_id
+            ad_id,
+            country_iso
 )
 UNION ALL
 (
@@ -62,6 +66,7 @@ SELECT
             campaign_id,
             ad_name,
             ad_id,
+            country_iso,
             0 AS impressions,
             0 AS clicks,
             count() AS installs,
@@ -75,7 +80,8 @@ GROUP BY
             campaign_name,
             campaign_id,
             ad_name,
-            ad_id
+            ad_id,
+            country_iso
 )
 UNION ALL
 (
@@ -87,6 +93,7 @@ SELECT
     '' as campaign_id,
     '' as ad_name,
     '' as ad_id,
+    ib.country_iso,
     0 AS impressions,
     0 AS clicks,
     count() AS installs,
@@ -99,7 +106,8 @@ GROUP BY
     campaign_name,
     campaign_id,
     ad_name,
-    ad_id
+    ad_id,
+    country_iso
 )
 )
 SELECT
@@ -110,6 +118,7 @@ SELECT
     campaign_id,
     ad_name,
     ad_id,
+    country_iso,
     sum(impressions) AS impressions,
     sum(clicks) AS clicks,
     sum(installs) AS installs,
@@ -123,4 +132,5 @@ GROUP BY
     campaign_name,
     campaign_id,
     ad_name,
-    ad_id;
+    ad_id,
+    country_iso;

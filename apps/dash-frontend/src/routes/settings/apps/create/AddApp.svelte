@@ -28,8 +28,8 @@
 		<Form.Field {form} name="appName">
 			<Form.Control>
 				{#snippet children({ props })}
-				<Form.Label>App Name</Form.Label>
-				<Input {...props} bind:value={$formData.appName} />
+					<Form.Label>App Name</Form.Label>
+					<Input {...props} bind:value={$formData.appName} />
 				{/snippet}
 			</Form.Control>
 			<Form.Description>Your app's display name.</Form.Description>
@@ -39,8 +39,8 @@
 		<Form.Field {form} name="storeId">
 			<Form.Control>
 				{#snippet children({ props })}
-				<Form.Label>Store ID</Form.Label>
-				<Input {...props} bind:value={$formData.storeId} />
+					<Form.Label>Store ID</Form.Label>
+					<Input {...props} bind:value={$formData.storeId} />
 				{/snippet}
 			</Form.Control>
 			<Form.Description>
@@ -52,7 +52,11 @@
 		<Form.Field {form} name="appStore" class="col-span-full">
 			<Form.Control>
 				<Form.Label>App Store</Form.Label>
-				<RadioGroup.Root bind:value={$formData.appStore} class="flex flex-col space-y-2" name="appStore">
+				<RadioGroup.Root
+					bind:value={$formData.appStore}
+					class="flex flex-col space-y-2"
+					name="appStore"
+				>
 					<div class="flex items-center space-x-2">
 						<RadioGroup.Item value="ios" id="ios" />
 						<Label for="ios">iOS App Store</Label>

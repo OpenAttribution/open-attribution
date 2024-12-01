@@ -1,6 +1,4 @@
-"""
-Test installs.
-"""
+"""Test installs."""
 
 import datetime
 import secrets
@@ -12,6 +10,7 @@ from clickhouse_connect import create_client
 from config import get_logger
 
 from tests._simulate_network_calls import click, impression, make_inapp_request
+from tests.generate_impressions_and_clicks import generate_random_ip
 
 logger = get_logger(__name__)
 
@@ -242,6 +241,7 @@ ALL_TESTS = {
 
 
 def get_expected_test_df(run_tests: dict, time_part: str) -> pd.DataFrame:
+    """Get expected results for a single campaign."""
     test_df = pd.DataFrame.from_dict(run_tests, orient="index")
     test_df = test_df.reset_index().rename(columns={"index": "campaign_name"})
     test_df = (
@@ -313,6 +313,7 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
 
 
 def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
+    """Get db data for a single campaign."""
     tables = ["impressions", "clicks", "attributed_installs"]
     dfs = []
     for table in tables:
@@ -352,6 +353,7 @@ def get_db_data_for_single_campaign(campaign: str) -> pd.DataFrame:
 
 
 def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
+    """Get db data for all campaigns."""
     db_dfs = []
     for _campaign in run_tests:
         campaign = _campaign + "_" + time_part
@@ -373,6 +375,7 @@ def get_db_dfs(run_tests: dict, time_part: str) -> pd.DataFrame:
 
 
 def check_install_results(run_tests: dict, time_part: str) -> None:
+    """Check results from db and expected results."""
     logger.info("Begin checking results")
     test_df = get_expected_test_df(run_tests, time_part)
     db_df = get_db_dfs(run_tests, time_part)
@@ -437,6 +440,10 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
             for _ in range(NUM_INSTALLS):
                 ifa = str(uuid.uuid4())  # User start
                 oa_uid = str(uuid.uuid4())  # User start
+                headers = {
+                    "X-Forwarded-For": generate_random_ip(),
+                    "X-Real-IP": generate_random_ip(),
+                }
                 ad = secrets.choice(ADS)
                 for idx, item in enumerate(my_events):
                     if item in ["impression", "click"]:
@@ -451,6 +458,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                                headers=headers,
                                 endpoint=endpoint,
                             )
                             _total_impressions += 1
@@ -461,6 +469,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                                 mynetwork=network,
                                 myifa=ifa,
                                 myad=ad,
+                                headers=headers,
                                 endpoint=endpoint,
                             )
                             _total_clicks += 1
@@ -471,6 +480,7 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
                             myapp=APP,
                             myifa=ifa,
                             my_oa_uid=oa_uid,
+                            headers=headers,
                             endpoint=endpoint,
                         )
                         _total_events += 1

@@ -10,7 +10,7 @@ from dbcon.queries import query_apps, query_networks
 from litestar import Controller, get
 from litestar.exceptions import HTTPException
 
-from api_app.models import (
+from dash_api.models import (
     OverviewData,
 )
 
@@ -33,6 +33,7 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                         store_id,
                         campaign_name,
                         campaign_id,
+                        country_iso,
                         ad_name,
                         ad_id,
                         sum(impressions) as impressions,
@@ -49,6 +50,7 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                         store_id,
                         campaign_name,
                         campaign_id,
+                        country_iso,
                         ad_name,
                         ad_id
                     ORDER BY
@@ -120,6 +122,7 @@ class OverviewController(Controller):
                     "app_name",
                     "campaign_name",
                     "campaign_id",
+                    "country_iso",
                 ],
                 dropna=False,
             )[["impressions", "clicks", "installs", "revenue"]]
@@ -135,6 +138,7 @@ class OverviewController(Controller):
                     "app_name",
                     "campaign_name",
                     "campaign_id",
+                    "country_iso",
                     "ad_name",
                     "ad_id",
                 ],
@@ -145,8 +149,6 @@ class OverviewController(Controller):
         )
 
         home_dict = home_df.to_dict(orient="records")
-        # N/As introduced above on outer merge apps and networks
-        # dates_home_df = dates_home_df[~dates_home_df["on_date"].isna()]
         dates_home_df["on_date"] = dates_home_df["on_date"].dt.date
         dates_home_dict = dates_home_df.to_dict(orient="records")
 

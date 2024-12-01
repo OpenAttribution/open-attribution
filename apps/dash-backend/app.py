@@ -2,9 +2,9 @@
 
 import logging
 
-from api_app.controllers.analytics import OverviewController
-from api_app.controllers.apps import AppController
-from api_app.controllers.networks import NetworkController
+from dash_api.controllers.analytics import OverviewController
+from dash_api.controllers.apps import AppController
+from dash_api.controllers.networks import NetworkController
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig

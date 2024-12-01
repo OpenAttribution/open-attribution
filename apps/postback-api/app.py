@@ -3,6 +3,7 @@
 import logging
 
 from api_app.controllers.postbacks import PostbackController
+from detect.geo import update_geo_dbs
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig
@@ -28,6 +29,7 @@ logging_config = LoggingConfig(
     },
 )
 
+update_geo_dbs()
 
 app = Litestar(
     route_handlers=[PostbackController],

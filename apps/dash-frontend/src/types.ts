@@ -31,6 +31,7 @@ export interface OverviewEntry {
 	app_name: string;
 	campaign_name: string;
 	campaign_id: string;
+	country_iso: string;
 	impressions: number;
 	clicks: number;
 	installs: number;
@@ -46,8 +47,9 @@ export interface GroupedEntry {
 }
 
 export interface GroupedPlotEntry {
+	on_date: string;
 	[key: string]: string | number;
-	value: number;
+	// value: number;
 }
 
 export interface DatesOverviewEntry extends OverviewEntry {

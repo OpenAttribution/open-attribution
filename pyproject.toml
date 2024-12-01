@@ -41,6 +41,7 @@ lint.ignore = [
     "D212",
     "PD901",  # Avoid using 'df', but this often is concise and informative when there is only one df in the function
     "PD015",  # I like using pd.merge since it's more declarative for left / right than df.merge
+    "PD010",  # I am OK to use .pivot_table
 ]
 
 # Avoid trying to fix flake8-bugbear (`B`) violations.

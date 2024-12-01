@@ -7,6 +7,7 @@ CREATE TABLE daily_overview
     campaign_id LowCardinality(String),
     ad_name LowCardinality(String),
     ad_id LowCardinality(String),
+    country_iso LowCardinality(String),
     impressions SimpleAggregateFunction(Sum, UInt64),
     clicks SimpleAggregateFunction(Sum, UInt64),
     installs SimpleAggregateFunction(Sum, UInt64),

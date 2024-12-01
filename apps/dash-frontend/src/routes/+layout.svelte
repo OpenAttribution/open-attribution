@@ -44,15 +44,14 @@
 			<div class="relative"></div>
 		</div>
 
-
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
-			 <Button variant="secondary" size="icon" class="rounded-full">
+				<Button variant="secondary" size="icon" class="rounded-full">
 					<CircleUser class="h-5 w-5" />
 					<span class="sr-only">Toggle user menu</span>
 				</Button>
-			 </DropdownMenu.Trigger>
-			 <DropdownMenu.Content align="end">
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content align="end">
 				<DropdownMenu.Label><a href="/account">My Account</a></DropdownMenu.Label>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item><a href="/settings/general">Settings</a></DropdownMenu.Item>
@@ -60,7 +59,7 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item>Logout</DropdownMenu.Item>
 			</DropdownMenu.Content>
-		  </DropdownMenu.Root>
+		</DropdownMenu.Root>
 	</div>
 
 	<Button onclick={toggleMode} variant="outline" size="icon">
