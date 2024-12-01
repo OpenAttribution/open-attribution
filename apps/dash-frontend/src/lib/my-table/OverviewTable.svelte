@@ -16,15 +16,16 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
+
 	type DataTableProps<TData, TValue> = {
-		data: TData[];
-		columns: ColumnDef<TData, TValue>[];
-	};
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+  };
 
 	let { data, columns }: DataTableProps<TData, TValue> = $props();
 
 	// this is confirming the columns are being passed in correctly
-	console.log('Data table columns', columns[0].accessorKey, columns[1].accessorKey);
+	// console.log('Data table columns', columns[0].accessorKey, columns[1].accessorKey);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
@@ -103,8 +104,6 @@
 
 
 <div class="rounded-md border">
-	{columns[0].accessorKey}
-	{columns[1].accessorKey}
 	<Table.Root>
 		<Table.Header>
 			{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}

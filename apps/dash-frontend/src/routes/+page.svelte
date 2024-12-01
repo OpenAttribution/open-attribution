@@ -4,10 +4,6 @@
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
 
-	// Can't get this working due to renderComponent not working, not sure if this is the right way to do it
-	// https://github.com/huntabyte/shadcn-svelte/blob/next/sites/docs/src/routes/(app)/examples/tasks/(components)/columns.ts
-	// import DataTableColumnHeader from '$lib/my-table/column-header.svelte';
-
 	import { tableDimensions } from '$lib/constants';
 
 	import OverviewTable from '$lib/my-table/OverviewTable.svelte';
