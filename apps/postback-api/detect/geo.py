@@ -25,19 +25,21 @@ def update_geo_dbs()->None:
         response = requests.get(url, timeout=10)
         logger.info(f"{db}: Unzipping {db}.tar.gz")
         # with open("/tmp/maxmind.tar.gz", "wb") as f:
-        mytmp = tempfile.NamedTemporaryFile()
-        with pathlib.Path.open(mytmp.name, "wb") as f:
-            f.write(response.content)
-        f.close()
-        logger.info(f"{db}: Write {db}.mmdb to {TOP_CONFIGDIR}")
-        with pathlib.Path.open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
+        with tempfile.NamedTemporaryFile(delete=True) as mytmp:  # Temp file context
+            # Write the downloaded content to the temp file
+            with pathlib.Path.open(mytmp.name, "wb") as f:
+                f.write(response.content)
+            logger.info(f"{db}: Write {db}.mmdb to {TOP_CONFIGDIR}")
+            # Open the tar file and extract the desired member
             with tarfile.open(mytmp.name, "r:gz") as tar:
                 for member in tar.getmembers():
                     if pathlib.Path(member.name).suffix == ".mmdb":
                         with tar.extractfile(member) as r:
                             if r is not None:
-                                content = r.read()
-                                w.write(content)
+                                with pathlib.Path.open(f"{TOP_CONFIGDIR}/{db}.mmdb", "wb") as w:
+                                    w.write(r.read())
+                                break  # Stop once the target file is written
+
 
 
 def lookup_ip(ip:str)->dict:
