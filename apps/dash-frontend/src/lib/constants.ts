@@ -3,6 +3,7 @@ export const tableDimensions = [
 	{ value: 'app_name', label: 'App' },
 	{ value: 'campaign_name', label: 'Campaign Name' },
 	{ value: 'campaign_id', label: 'Campaign ID' },
+	{ value: 'country_iso', label: 'Country Code' },
 	{ value: 'ad_name', label: 'Ad Name' },
 	{ value: 'ad_id', label: 'Ad ID' }
 ];

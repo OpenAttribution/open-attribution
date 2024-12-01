@@ -31,6 +31,7 @@ export interface OverviewEntry {
 	app_name: string;
 	campaign_name: string;
 	campaign_id: string;
+	country_iso: string;
 	impressions: number;
 	clicks: number;
 	installs: number;
