@@ -25,7 +25,7 @@
 				restrictions for exporting or connecting other tools.
 			</p>
 		</h4>
-		<div class=" flex items-center" />
+		<div class=" flex items-center"></div>
 	</div>
 </div>
 

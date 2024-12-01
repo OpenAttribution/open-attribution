@@ -4,12 +4,17 @@
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import githubIcon from '$lib/assets/github-mark-white.svg?raw';
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <!-- App Shell -->
 <AppShell>
 	<!-- Large only header -->
-	<svelte:fragment slot="header">
+	{#snippet header()}
 		<!-- App Bar -->
 		<AppBar
 			gridColumns="grid-cols-[1fr_0_1fr] md:grid-cols-[0.4fr_1fr_0.3fr]"
@@ -18,15 +23,15 @@
 			spacing="space-y-0"
 			padding="p-0"
 		>
-			<svelte:fragment slot="lead">
+			{#snippet lead()}
 				<strong class=" ml-4 text- xl md:text-2xl uppercase">Open Attribution</strong>
-			</svelte:fragment>
+			{/snippet}
 
 			<div class="hidden lg:inline-flex">
 				<NavTabs />
 			</div>
 
-			<svelte:fragment slot="trail">
+			{#snippet trail()}
 				<a href="mailto:hello@openattribution.dev">
 					<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
 						>Contact</button
@@ -53,12 +58,12 @@
 						<h6 class="h6 p-2 justify-center text-center">Open Source on GitHub</h6>
 					</div>
 				</a>
-			</svelte:fragment>
+			{/snippet}
 		</AppBar>
-	</svelte:fragment>
+	{/snippet}
 
 	<!--  Mobile only footer -->
-	<svelte:fragment slot="footer">
+	{#snippet footer()}
 		<AppBar
 			slotLead="p-0"
 			slotTrail="p-2"
@@ -68,14 +73,14 @@
 			class="lg:hidden"
 			gridColumns="grid-cols-[auto_1fr_auto]"
 		>
-			<svelte:fragment slot="lead">
+			{#snippet lead()}
 				<div class="inline-flex">
 					<NavTabs />
 				</div>
-			</svelte:fragment>
+			{/snippet}
 		</AppBar>
-	</svelte:fragment>
+	{/snippet}
 
 	<!-- Page Route Content -->
-	<slot />
+	{@render children?.()}
 </AppShell>

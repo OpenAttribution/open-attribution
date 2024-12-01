@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	function redirectToProduct() {
 		goto('/product');
@@ -31,9 +31,9 @@
 			<button
 				type="button"
 				class="btn variant-outline-secondary mr-4 justify-center"
-				on:click={redirectToProduct}>Learn More</button
+				onclick={redirectToProduct}>Learn More</button
 			>
-			<button type="button" class="btn variant-outline-primary" on:click={redirectToDocs}
+			<button type="button" class="btn variant-outline-primary" onclick={redirectToDocs}
 				>Documentation</button
 			>
 		</div>
