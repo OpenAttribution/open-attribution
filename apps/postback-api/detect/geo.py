@@ -24,7 +24,6 @@ def update_geo_dbs()->None:
         url = GITSQUARED_GEOLITE2_RAW_DATA.format(db=db)
         response = requests.get(url, timeout=10)
         logger.info(f"{db}: Unzipping {db}.tar.gz")
-        # with open("/tmp/maxmind.tar.gz", "wb") as f:
         with tempfile.NamedTemporaryFile(delete=True) as mytmp:  # Temp file context
             # Write the downloaded content to the temp file
             with pathlib.Path.open(mytmp.name, "wb") as f:
