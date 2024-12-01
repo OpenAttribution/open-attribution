@@ -41,6 +41,7 @@ services:
     depends_on:
       zookeeper:
         condition: service_healthy
+    restart: always
     healthcheck:
       test: ['CMD-SHELL', 'kafka-topics.sh --bootstrap-server localhost:9092 --list']
       interval: 30s
