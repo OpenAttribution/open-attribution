@@ -21,7 +21,7 @@
 				<a href="/settings/team">Team</a>
 			</nav>
 			<div class="grid gap-6">
-                {@render children()}	
+				{@render children()}
 			</div>
 		</div>
 	</main>

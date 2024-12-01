@@ -16,11 +16,10 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
-
 	type DataTableProps<TData, TValue> = {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-  };
+		columns: ColumnDef<TData, TValue>[];
+		data: TData[];
+	};
 
 	let { data, columns }: DataTableProps<TData, TValue> = $props();
 
@@ -31,7 +30,6 @@
 
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
-
 
 	const table = createSvelteTable({
 		get data() {
@@ -49,7 +47,7 @@
 			},
 			get columnVisibility() {
 				return columnVisibility;
-      }
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -61,47 +59,43 @@
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		onColumnFiltersChange: (updater) => {
-      if (typeof updater === "function") {
-        columnFilters = updater(columnFilters);
-      } else {
-        columnFilters = updater;
-      }
-    },
-	onColumnVisibilityChange: (updater) => {
-      if (typeof updater === "function") {
-        columnVisibility = updater(columnVisibility);
-      } else {
-        columnVisibility = updater;
-      }
-    }
+			if (typeof updater === 'function') {
+				columnFilters = updater(columnFilters);
+			} else {
+				columnFilters = updater;
+			}
+		},
+		onColumnVisibilityChange: (updater) => {
+			if (typeof updater === 'function') {
+				columnVisibility = updater(columnVisibility);
+			} else {
+				columnVisibility = updater;
+			}
+		}
 	});
 </script>
 
-
 <div class="flex items-center py-4">
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger>
-        {#snippet child({ props })}
-          <Button {...props} variant="outline" class="ml-auto">Columns</Button>
-        {/snippet}
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Content align="end">
-        {#each table
-          .getAllColumns()
-          .filter((col) => col.getCanHide()) as column (column.id)}
-          <DropdownMenu.CheckboxItem
-            class="capitalize"
-            controlledChecked
-            checked={column.getIsVisible()}
-            onCheckedChange={(value) => column.toggleVisibility(!!value)}
-          >
-            {column.id}
-          </DropdownMenu.CheckboxItem>
-        {/each}
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
-  </div>
-
+	<DropdownMenu.Root>
+		<DropdownMenu.Trigger>
+			{#snippet child({ props })}
+				<Button {...props} variant="outline" class="ml-auto">Columns</Button>
+			{/snippet}
+		</DropdownMenu.Trigger>
+		<DropdownMenu.Content align="end">
+			{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column.id)}
+				<DropdownMenu.CheckboxItem
+					class="capitalize"
+					controlledChecked
+					checked={column.getIsVisible()}
+					onCheckedChange={(value) => column.toggleVisibility(!!value)}
+				>
+					{column.id}
+				</DropdownMenu.CheckboxItem>
+			{/each}
+		</DropdownMenu.Content>
+	</DropdownMenu.Root>
+</div>
 
 <div class="rounded-md border">
 	<Table.Root>
