@@ -17,7 +17,7 @@ Since developement is quite early, tables and data in the `analytics-db` and `ad
 
 ## Updating the Documentation Content
 
-All documentation is written in markdown and thus can be edited in any markdown editor.
+All documentation is written in markdown and thus can be edited in any markdown editor. Documentation can be contributed to without servering or running the docs or site unless you want to change menu items or other configurations.
 
 ## Serving the Documenation
 
