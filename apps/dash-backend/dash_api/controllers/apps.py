@@ -8,7 +8,7 @@ import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
 
-from api_app.models import Apps
+from dash_api.models import Apps
 
 logger = get_logger(__name__)
 

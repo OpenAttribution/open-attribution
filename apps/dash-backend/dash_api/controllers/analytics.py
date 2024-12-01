@@ -10,7 +10,7 @@ from dbcon.queries import query_apps, query_networks
 from litestar import Controller, get
 from litestar.exceptions import HTTPException
 
-from api_app.models import (
+from dash_api.models import (
     OverviewData,
 )
 
