@@ -20,7 +20,7 @@ async function fetchContent(url: URL) {
 	return htmlContent;
 }
 
-export async function load({ url }) {
+export async function load({ url }: { url: URL }) {
 	const myhtml = await fetchContent(url);
 	return {
 		props: {

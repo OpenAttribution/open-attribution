@@ -1,20 +1,24 @@
 <script lang="ts">
 </script>
 
-<div class="card mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center">
+<div
+	class="card preset-filled-surface-100-900 mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center"
+>
 	<div class="py-12">
 		<h1 class="h1 text-center">Full Ownership & Data Privacy</h1>
-		<h1 class="h1 text-center text-secondary-500">Control who sees your company's ad data.</h1>
+		<h2 class="h2 text-center text-secondary-500">Control who sees your company's ad data.</h2>
 		<h4 class="h4 text-center p-2 lg:p-4">
 			Fully hosted means your user data sits on your servers and is only seen by your teams.
 		</h4>
 	</div>
 </div>
 
-<div class="card mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center">
+<div
+	class="card preset-filled-surface-100-900 mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center"
+>
 	<div class="py-12">
-		<h1 class="h1 text-center">Own Your Data</h1>
-		<h1 class="h1 text-center text-secondary-500">Control Your Ad Attribution</h1>
+		<h2 class="h2 text-center">Own Your Data</h2>
+		<h2 class="h2 text-center text-secondary-500">Control Your Ad Attribution</h2>
 		<h4 class="h4 text-center p-2 lg:p-4">
 			<p>
 				Data processing pipelines efficiently store raw data and aggregate for fast dash queries.
@@ -29,10 +33,12 @@
 	</div>
 </div>
 
-<div class="card mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center">
+<div
+	class="card preset-filled-surface-100-900 mx-8 lg:mx-96 my-12 lg:mt-8 flex items-center justify-center text-center"
+>
 	<div class="py-12">
-		<h1 class="h1 text-center">Attribution Models</h1>
-		<h1 class="h1 text-center text-secondary-500">Full control over the attribution models</h1>
+		<h2 class="h2 text-center">Attribution Models</h2>
+		<h2 class="h2 text-center text-secondary-500">Full control over the attribution models</h2>
 		<h4 class="h4 text-center p-2 lg:p-4">
 			Control your attribution models. Last click too old? Try new multi-touch models or modern CTV
 			models. Attribution models are not set in stone, you can flip between attribution models at

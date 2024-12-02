@@ -2,22 +2,19 @@
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
 </script>
 
-<div class="mx-8 mt-8">
+<div class="mx-16 lg:mx-48 mt-8">
 	<h1 class="h1">About Open Attribution</h1>
 
-	<aside class="alert variant-filled-secondary p-4 mx-8 lg:mx-96 mt-8">
-		<div class="alert-message">
-			<h3 class="h3">Mission Statement</h3>
-			<p>
-				Give app and game developers advertising tools that do not require 3rd party processing.
-				Bring more data to the app developers by helping them to collect their impression and click
-				data to leverage for better fraud detection, better data for AI tooling and business
-				decisions.
-			</p>
-		</div>
-	</aside>
+	<div class="card preset-filled-primary-100-900 p-4 mx-16 lg:mx-32 mt-8">
+		<h3 class="h3">Mission Statement</h3>
+		<p>
+			Give app and game developers advertising tools that do not require 3rd party processing. Bring
+			more data to the app developers by helping them to collect their impression and click data to
+			leverage for better fraud detection, better data for AI tooling and business decisions.
+		</p>
+	</div>
 
-	<div class="mx-8 lg:mx-32 mt-16">
+	<div class="card preset-filled-surface-100-900 p-4 mt-16">
 		<h3 class="h3">Data Ownership</h3>
 		<p>
 			Own your company's advertising data without resorting to third party control. Our goal is to
@@ -49,7 +46,7 @@
 
 		<h3 class="h3">Want to get in touch?</h3>
 		<a
-			class="btn btn-sm variant-ghost-surface"
+			class="btn preset-filled-tertiary-100-900"
 			href="https://discord.gg/Z5ueYE3Ct3"
 			target="_blank"
 			rel="noreferrer"
@@ -60,9 +57,7 @@
 		</a>
 		<br />
 		<a href="mailto:hello@openattribution.dev">
-			<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
-				>Contact</button
-			>
+			<button type="button" class="btn preset-outlined-tertiary-100-900">Contact via Email</button>
 		</a>
 	</div>
 	<br />

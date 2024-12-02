@@ -59,6 +59,14 @@ and run the development server with:
 npm run dev
 ```
 
+If you want to see the whole site (with static docs and blog) you would need to run the `mkdocs build` command from `/apps`:
+`mkdocs build -f docs/docs/mkdocs.yml`
+`mkdocs build -f docs/blog/mkdocs.yml`
+
+If you have issues, you might want to check the `.github/workflows/actions-deploy-www.yml` file to see how the site is built and deployed. Generally, this isn't something contributors need to worry about, so if you have questions please don't hesitate to reach out.
+
+Which will generate the HTML files into the `www/static` folder.
+
 
 
 

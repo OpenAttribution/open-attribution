@@ -2,11 +2,9 @@
 	let { data } = $props();
 </script>
 
-<div class="border-b border-gray-200"></div>
-
 <iframe
 	srcdoc={data.props.mydocs}
-	class="w-full h-full"
+	class="w-full h-screen"
 	frameborder="0"
 	title="Docs Content"
 	id="frame"
