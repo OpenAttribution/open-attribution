@@ -24,12 +24,13 @@
 <div
 	class="card preset-filled-surface-100-900 mx-8 md:mx-16 lg:mx-32 my-12 lg:mt-8 flex items-center justify-center text-center"
 >
-	<div class="py-12">
-		<h1 class="h1 text-center">Own Your Data</h1>
+	<div class="p-2 md:p-4">
+		<h1 class="h1 text-center">Own Your MMP Data</h1>
 		<h2 class="h2 text-center text-primary-500">Control Your Ad Attribution</h2>
 		<h4 class="h4 text-center p-2 lg:p-4">
-			Open Attribution is an open source MMP. Fully host your data by overseeing it's storage,
-			manage your data pipeline and control your advertising campaign attribution rules.
+			Open Attribution is an open source Ad Attribution platform. Fully host your advertising data
+			by overseeing its storage, manage your data pipeline and control your advertising campaign
+			attribution rules.
 		</h4>
 
 		<div class="flex justify-center gap-2">
@@ -57,7 +58,8 @@
 		<div class="card-header"><h3 class="h3 text-primary-900-100">Data Pipeline & Storage</h3></div>
 		<div class="card-footer">
 			<p>
-				Data processing pipelines efficiently store raw data and aggregate for fast dash queries.
+				Data processing pipelines efficiently store raw data and aggregate for fast analytics and
+				dash queries.
 			</p>
 			<p>Analytics</p>
 		</div>
