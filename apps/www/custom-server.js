@@ -1,12 +1,14 @@
 import { handler } from './build/handler.js';
 import express from 'express';
-import { join } from 'desm';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
-// Get absolute path to assets folder
-const docsAssetsPath = join(import.meta.url, './static/generated-docs/assets');
-const blogAssetsPath = join(import.meta.url, './static/generated-blog/assets');
+// Get absolute path to assets folder using native Node.js modules
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const docsAssetsPath = path.join(__dirname, './static/generated-docs/assets');
+const blogAssetsPath = path.join(__dirname, './static/generated-blog/assets');
 
 app.use('/blog/assets', express.static(blogAssetsPath));
 app.use('/docs/assets', express.static(docsAssetsPath));
