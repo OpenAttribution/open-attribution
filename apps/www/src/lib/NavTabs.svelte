@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	const topBarFont = 'text-base hover:text-primary-900-100';
-	const topBarHighlightedFont = 'text-base text-primary-900-100';
-	const horizontalDivider = 'h-12 w-px bg-surface-500';
-	const topDivider = 'w-full border-t-[1px] md:border-t-0 md:border-b-[1px] border-surface-500 p-2';
+	const topBarFont = 'text-base text-tertiary-800-200 hover:text-primary-800-200';
+	const topBarHighlightedFont = 'text-base text-primary-800-200';
+	const horizontalDivider = 'h-12 w-px md:hidden bg-surface-500';
+	const mainClass = 'w-full p-2';
+	const bottomDivider = 'md:hidden w-full border-b-[1px] border-surface-500 p-2';
 	function isHighlighted(path: string) {
 		if (path === '/') {
 			if ($page.url.pathname === '/') {
@@ -17,27 +18,30 @@
 	}
 </script>
 
-<div class="flex flex-row gap-2 md:gap-6 text-center items-center {topDivider} mx-2">
-	<a href="/">
-		<p class={isHighlighted('/') ? topBarHighlightedFont : topBarFont}>Home</p>
-	</a>
-	<div class={horizontalDivider}></div>
+<div class="flex flex-col gap-2">
+	<div class={bottomDivider}></div>
+	<div class="flex flex-row gap-2 md:gap-6 {mainClass} mx-2 place-content-center">
+		<a href="/">
+			<p class={isHighlighted('/') ? topBarHighlightedFont : topBarFont}>Home</p>
+		</a>
+		<div class={horizontalDivider}></div>
 
-	<a href="/product" class={topBarFont}>
-		<p class={isHighlighted('/product') ? topBarHighlightedFont : topBarFont}>Product</p>
-	</a>
+		<a href="/product" class={topBarFont}>
+			<p class={isHighlighted('/product') ? topBarHighlightedFont : topBarFont}>Product</p>
+		</a>
 
-	<div class={horizontalDivider}></div>
-	<a href="/docs" class={topBarFont}>
-		<p class={isHighlighted('/docs') ? topBarHighlightedFont : topBarFont}>Documentation</p>
-	</a>
-	<div class={horizontalDivider}></div>
-	<a href="/blog" class={topBarFont}>
-		<p class={isHighlighted('/blog') ? topBarHighlightedFont : topBarFont}>Blog</p>
-	</a>
+		<div class={horizontalDivider}></div>
+		<a href="/docs" class={topBarFont}>
+			<p class={isHighlighted('/docs') ? topBarHighlightedFont : topBarFont}>Documentation</p>
+		</a>
+		<div class={horizontalDivider}></div>
+		<a href="/blog" class={topBarFont}>
+			<p class={isHighlighted('/blog') ? topBarHighlightedFont : topBarFont}>Blog</p>
+		</a>
 
-	<div class={horizontalDivider}></div>
-	<a href="/about" class={topBarFont}>
-		<p class={isHighlighted('/about') ? topBarHighlightedFont : topBarFont}>About</p>
-	</a>
+		<div class={horizontalDivider}></div>
+		<a href="/about" class={topBarFont}>
+			<p class={isHighlighted('/about') ? topBarHighlightedFont : topBarFont}>About</p>
+		</a>
+	</div>
 </div>

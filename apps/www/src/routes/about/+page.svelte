@@ -2,11 +2,9 @@
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
 </script>
 
-<div class="mx-16 lg:mx-48 mt-8">
-	<h1 class="h1 text-primary-900-100">About Open Attribution</h1>
-
-	<div class="card preset-filled-primary-100-900 p-4 mx-16 lg:mx-32 mt-8">
-		<h3 class="h3 text-primary-900-100">Mission Statement</h3>
+<div class="mx-8 md:mx-16 lg:mx-32">
+	<div class="card preset-outlined-primary-500 p-4 mx-16 lg:mx-32 mt-8 text-center">
+		<h3 class="h3 text-primary-500">Mission Statement</h3>
 		<p>
 			Give app and game developers advertising tools that do not require 3rd party processing. Bring
 			more data to the app developers by helping them to collect their impression and click data to
@@ -23,8 +21,9 @@
 			takes power away from app creators. Open Attribution is a suite of open source tools so that
 			you can manage your advertising data ownership.
 		</p>
-		<br />
+	</div>
 
+	<div class="card preset-filled-surface-100-900 p-4 mt-16">
 		<h3 class="h3 text-primary-900-100">Open source community</h3>
 		<p>
 			Open Attribution is committed to building a community of developers who work together to build
@@ -32,8 +31,9 @@
 			please reach out before putting it into production. To learn more head to Getting Started to
 			learn more.
 		</p>
+	</div>
 
-		<br />
+	<div class="card preset-filled-surface-100-900 p-4 mt-16">
 		<h3 class="h3 text-primary-900-100">Why do apps NEED attribution?</h3>
 		<p>
 			If you want to buy in-app advertisements, attribution a technical
@@ -42,8 +42,9 @@
 			complex problem but by doing so became the arbiters of large amounts of data that some apps
 			may wish to maintain control over. Read more about the historical background here.
 		</p>
-		<br />
+	</div>
 
+	<div class="card preset-filled-surface-100-900 p-4 mt-16">
 		<h3 class="h3 text-primary-900-100">Want to get in touch?</h3>
 		Feel free to join our small but growing community on Discord or reach our directly via email.
 		<div class="flex items-center gap-8 p-8">
