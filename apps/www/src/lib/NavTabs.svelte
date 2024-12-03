@@ -1,33 +1,47 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+	const topBarFont = 'text-base text-tertiary-800-200 hover:text-primary-800-200';
+	const topBarHighlightedFont = 'text-base text-primary-800-200';
+	const horizontalDivider = 'h-12 w-px md:hidden bg-surface-500';
+	const mainClass = 'w-full p-1 md:p-2';
+	const bottomDivider = 'md:hidden w-full border-b-[1px] border-surface-500 p-2';
+	function isHighlighted(path: string) {
+		if (path === '/') {
+			if ($page.url.pathname === '/') {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		return $page.url.pathname.startsWith(path);
+	}
 </script>
 
-<TabGroup
-	active="variant-filled-primary"
-	hover="hover:variant-soft-primary"
-	flex="flex-1"
-	rounded=""
-	border=""
-	class="w-full p-0"
->
-	<TabAnchor class="p-0 px-0" href="/" selected={$page.url.pathname == '/'}>
-		<h5 class="h6 md:h5 md:p-2">Home</h5>
-	</TabAnchor>
+<div class="flex flex-col">
+	<div class={bottomDivider}></div>
+	<div class="flex flex-row gap-2 md:gap-6 {mainClass} mx-2 place-content-center">
+		<a href="/" class="hidden md:block">
+			<p class={isHighlighted('/') ? topBarHighlightedFont : topBarFont}>Home</p>
+		</a>
+		<div class="hidden md:block {horizontalDivider}"></div>
 
-	<TabAnchor class="p-0 px-0" href="/product" selected={$page.url.pathname.startsWith('/product')}>
-		<h3 class="h6 md:h5 md:p-2">Product</h3>
-	</TabAnchor>
+		<a href="/product" class={topBarFont}>
+			<p class={isHighlighted('/product') ? topBarHighlightedFont : topBarFont}>Product</p>
+		</a>
 
-	<TabAnchor class="p-0 px-0" href="/docs/" selected={$page.url.pathname.startsWith('/docs/')}>
-		<h3 class="h6 md:h5 md:p-2">Documentation</h3>
-	</TabAnchor>
+		<div class={horizontalDivider}></div>
+		<a href="/docs" class={topBarFont}>
+			<p class={isHighlighted('/docs') ? topBarHighlightedFont : topBarFont}>Documentation</p>
+		</a>
+		<div class={horizontalDivider}></div>
+		<a href="/blog" class={topBarFont}>
+			<p class={isHighlighted('/blog') ? topBarHighlightedFont : topBarFont}>Blog</p>
+		</a>
 
-	<TabAnchor class="p-0 px-0" href="/blog/" selected={$page.url.pathname.startsWith('/blog/')}>
-		<h3 class="h6 md:h5 md:p-2">Blog</h3>
-	</TabAnchor>
-
-	<TabAnchor class="p-0 px-0" href="/about" selected={$page.url.pathname === '/about'}
-		><h3 class="h6 md:h5 md:p-2">About</h3></TabAnchor
-	>
-</TabGroup>
+		<div class={horizontalDivider}></div>
+		<a href="/about" class={topBarFont}>
+			<p class={isHighlighted('/about') ? topBarHighlightedFont : topBarFont}>About</p>
+		</a>
+	</div>
+</div>

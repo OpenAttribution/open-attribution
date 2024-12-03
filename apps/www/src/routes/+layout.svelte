@@ -1,81 +1,85 @@
 <script lang="ts">
+	import '../app.css';
 	import NavTabs from '$lib/NavTabs.svelte';
-	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppBar } from '@skeletonlabs/skeleton-svelte';
 	import githubIcon from '$lib/assets/github-mark-white.svg?raw';
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
-<!-- App Shell -->
-<AppShell>
-	<!-- Large only header -->
-	<svelte:fragment slot="header">
-		<!-- App Bar -->
-		<AppBar
-			gridColumns="grid-cols-[1fr_0_1fr] md:grid-cols-[0.4fr_1fr_0.3fr]"
-			slotLead="p-2"
-			slotTrail="p-2"
-			spacing="space-y-0"
+<div class="grid h-screen grid-rows-[auto_1fr_auto]">
+	<header class="sticky top-0 z-10">
+		<!-- <AppBar
+			leadBase="p-2 md:items-center"
+			trailBase="p-2 items-center"
+			centerBase="hidden md:flex items-center"
 			padding="p-0"
-		>
-			<svelte:fragment slot="lead">
-				<strong class=" ml-4 text- xl md:text-2xl uppercase">Open Attribution</strong>
-			</svelte:fragment>
+		> -->
+		<AppBar padding="p-1 sm:p-2 md:p-4" centerClasses="hidden md:flex">
+			{#snippet lead()}
+				<a href="/">
+					<strong class="ml-4 text-xl md:text-2xl uppercase break-words justify-start"
+						>Open Attribution</strong
+					>
+				</a>
+			{/snippet}
 
-			<div class="hidden lg:inline-flex">
+			<div class="items-center justify-center">
 				<NavTabs />
 			</div>
 
-			<svelte:fragment slot="trail">
-				<a href="mailto:hello@openattribution.dev">
-					<button type="button" class="btn variant-outline-secondary mr-4 justify-center"
-						>Contact</button
+			{#snippet trail()}
+				<div class="flex flex-col lg:flex-row gap-2 md:gap-4">
+					<a
+						class="btn preset-outlined-primary-900-100 p-2 md:p-4"
+						href="mailto:hello@openattribution.dev"
 					>
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/Z5ueYE3Ct3"
-					target="_blank"
-					rel="noreferrer"
-				>
-					<div class="inline-flex items-center">
-						{@html discordIcon}
+						Email Contact
+					</a>
+					<div class="grid grid-cols-2 gap-2 md:gap-4">
+						<a
+							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
+							href="https://discord.gg/Z5ueYE3Ct3"
+							target="_blank"
+							rel="noreferrer"
+						>
+							<div class="h-4 md:h-8 w-full flex items-center">
+								{@html discordIcon}
+							</div>
+						</a>
+						<a
+							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
+							href="https://github.com/OpenAttribution/open-attribution"
+							target="_blank"
+							rel="noreferrer"
+						>
+							<div class="flex items-center gap-2">
+								<div class="h-4 w-4 md:h-8 md:w-8 md:p-1">
+									{@html githubIcon}
+								</div>
+								<h6 class="h6 text-center">GitHub</h6>
+							</div>
+						</a>
 					</div>
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/OpenAttribution/open-attribution"
-					target="_blank"
-					rel="noreferrer"
-				>
-					<div class="inline-flex items-center">
-						{@html githubIcon}
-						<h6 class="h6 p-2 justify-center text-center">Open Source on GitHub</h6>
-					</div>
-				</a>
-			</svelte:fragment>
+				</div>
+			{/snippet}
 		</AppBar>
-	</svelte:fragment>
+	</header>
+
+	<main>
+		{@render children?.()}
+	</main>
 
 	<!--  Mobile only footer -->
-	<svelte:fragment slot="footer">
-		<AppBar
-			slotLead="p-0"
-			slotTrail="p-2"
-			spacing="space-y-0"
-			padding="p-0"
-			gap="gap-0"
-			class="lg:hidden"
-			gridColumns="grid-cols-[auto_1fr_auto]"
-		>
-			<svelte:fragment slot="lead">
-				<div class="inline-flex">
-					<NavTabs />
-				</div>
-			</svelte:fragment>
+	<footer class="sticky bottom-0 z-10 bg-surface-50-950">
+		<AppBar padding="p-0">
+			<div class="inline-flex md:hidden p-2">
+				<NavTabs />
+			</div>
 		</AppBar>
-	</svelte:fragment>
-
-	<!-- Page Route Content -->
-	<slot />
-</AppShell>
+	</footer>
+</div>
