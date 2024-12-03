@@ -45,7 +45,7 @@
 	</div>
 </div>
 
-<div class="grid grid-cols-2 gap-4 lg:gap-16 p-4 lg:px-48">
+<div class="grid grid-cols-2 gap-4 lg:gap-16 mx-8 md:mx-16 lg:mx-32">
 	<div class="card preset-filled-surface-100-900 p-4">
 		<div class="card-header"><h3 class="h3 text-primary-900-100">Full Ownership & Privacy</h3></div>
 		<div class="card-footer">

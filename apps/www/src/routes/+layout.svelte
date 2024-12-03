@@ -13,47 +13,58 @@
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<header class="sticky top-0 z-10">
-		<AppBar
-			leadBase="p-2 flex items-center"
-			trailBase="p-2 flex items-center"
+		<!-- <AppBar
+			leadBase="p-2 md:items-center"
+			trailBase="p-2 items-center"
 			centerBase="hidden md:flex items-center"
 			padding="p-0"
-		>
+		> -->
+		<AppBar padding="p-1 sm:p-2 md:p-4" centerClasses="hidden md:flex">
 			{#snippet lead()}
-				<a href="/" class="flex items-center">
-					<strong class=" ml-4 text- xl md:text-2xl uppercase">Open Attribution</strong>
+				<a href="/">
+					<strong class="ml-4 text-xl md:text-2xl uppercase break-words justify-start"
+						>Open Attribution</strong
+					>
 				</a>
 			{/snippet}
 
-			<div class="hidden lg:flex items-center justify-center">
+			<div class="items-center justify-center">
 				<NavTabs />
 			</div>
 
 			{#snippet trail()}
-				<div class="inline">
+				<div class="flex flex-col lg:flex-row gap-2 md:gap-4">
 					<a
+						class="btn preset-outlined-primary-900-100 p-2 md:p-4"
 						href="mailto:hello@openattribution.dev"
-						class="btn preset-outlined-primary-900-100 p-4"
 					>
 						Email Contact
 					</a>
-					<a
-						class="btn preset-outlined-tertiary-500 p-4"
-						href="https://discord.gg/Z5ueYE3Ct3"
-						target="_blank"
-						rel="noreferrer"
-					>
-						{@html discordIcon}
-					</a>
-					<a
-						class="btn preset-outlined-tertiary-500 p-4"
-						href="https://github.com/OpenAttribution/open-attribution"
-						target="_blank"
-						rel="noreferrer"
-					>
-						{@html githubIcon}
-						<h6 class="h6 justify-center text-center">GitHub</h6>
-					</a>
+					<div class="grid grid-cols-2 gap-2 md:gap-4">
+						<a
+							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
+							href="https://discord.gg/Z5ueYE3Ct3"
+							target="_blank"
+							rel="noreferrer"
+						>
+							<div class="h-4 md:h-8 w-full flex items-center">
+								{@html discordIcon}
+							</div>
+						</a>
+						<a
+							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
+							href="https://github.com/OpenAttribution/open-attribution"
+							target="_blank"
+							rel="noreferrer"
+						>
+							<div class="flex items-center gap-2">
+								<div class="h-4 w-4 md:h-8 md:w-8 md:p-1">
+									{@html githubIcon}
+								</div>
+								<h6 class="h6 text-center">GitHub</h6>
+							</div>
+						</a>
+					</div>
 				</div>
 			{/snippet}
 		</AppBar>

@@ -47,14 +47,14 @@
 	<div class="card preset-filled-surface-100-900 p-4 mt-16">
 		<h3 class="h3 text-primary-900-100">Want to get in touch?</h3>
 		Feel free to join our small but growing community on Discord or reach our directly via email.
-		<div class="flex items-center gap-8 p-8">
+		<div class="flex flex-col md:flex-row items-center gap-4 md:gap-8 p-8">
 			<a
 				class="btn preset-filled-tertiary-500"
 				href="https://discord.gg/Z5ueYE3Ct3"
 				target="_blank"
 				rel="noreferrer"
 			>
-				<div class="inline-flex items-center">
+				<div class="inline-flex items-center h-12 w-24">
 					{@html discordIcon}
 				</div>
 			</a>
