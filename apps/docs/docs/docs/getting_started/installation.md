@@ -10,15 +10,30 @@
 While this was originally being built with `bash` and `python` scripts it seems that the more features that were added the less that made sense as a way for different users to deploy. Currently OpenAttribution only supports Docker as a deployment method.
 
 
-## Installation
+## Step 1: Clone / Copy and Installation
 
+### Clone the repo
+The only file you technically need is the `docker-compose.yml` file. But you can get it by cloning the repo:
+```sh
+git clone https://github.com/openattribution/open-attribution.git
 ```
+
+
+### Pull and run ONE of the docker compose files
+
+For development, requires building but many services are have hot reloading for immediate feedback when editing code. Runs random fake data to localhost:8000 which you can see immediately on http://localhost:5173 or in the various services logs. An overview of the services via Dozzle is available at http://localhost:8080.
+```sh
+docker compose -f ~/open-attribution/docker/docker-compose-dev.yml pull
+docker compose -f ~/open-attribution/docker/docker-compose-dev.yml up -d
+```
+
+For regular use. Does not require building, instead using prebuilt images so much faster. No initial data or hot reloading.
+```sh
 docker compose -f ~/open-attribution/docker/docker-compose.yml pull
 docker compose -f ~/open-attribution/docker/docker-compose.yml up -d
 ```
 
-
-This installs several services:
+This installs all the following services:
 
 ### Services
 
@@ -62,7 +77,15 @@ This installs several services:
 - Depends on Dashboard Backend
 
 
-## Deployment in Production
+## Step 2: Deployment in Production
+
+Check out the Open Attribution SDKs for integration with your preferred platform:
+
+- [iOS SDK](https://github.com/openattribution/oa-ios-sdk)
+- [Android SDK](https://github.com/openattribution/oa-android-sdk)
+- Let us know which SDKs you are interested in so we can prioritize development!
+
+## Step 3: Expose to the internet
 
 The `postback-api` on port `8000` and `dash-frontend` on port `5173` need to be opened to external internet. This can be done with Nginx reverse proxy. In the below example, this is assuming that the domain is `demo.openattribution.dev`. 
 
