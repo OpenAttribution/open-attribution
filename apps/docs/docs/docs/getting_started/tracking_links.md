@@ -19,6 +19,7 @@ ifa: The IFA (Identifier for Advertisers) of the user.
 event_id: The event ID from the attribution platform.
 event_time: The timestamp of the event in milliseconds since epoch.
 link_uid: The unique identifier for the link.
+oa_uid: The unique identifier for the user.
 
 ### In App IDs
 event_uid: The unique identifier for the event. This is a randomly generated UUID to deduplicate events.
@@ -28,7 +29,7 @@ revenue: The revenue of the event.
 
 App Open Example:
 ```
-https://myapp.com/collect/events/com.example.one?event_id=oa_app_open&ifa={ANDROID_ID}&event_time=1716192000000&event_uid=123456789
+https://demo.openattribution.dev/collect/events/123456789?ifa=00000000-0000-0000-0000-000000000000&event_time=1732003510046&event_uid=5730a99e-b009-41da-9d52-1315e26941c1&event_id=app_open&oa_uid=3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2
 ```
 
 
