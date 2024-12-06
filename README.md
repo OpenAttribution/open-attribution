@@ -23,7 +23,7 @@ If you're insterested in this project please feel free to reach out for collaboa
 3. In-App Event Tracking  SDKs
    1. [OpenAttribution/oa-ios-sdk](https://github.com/OpenAttribution/oa-ios-sdk)
    2. [OpenAttribution/oa-android-sdk](https://github.com/OpenAttribution/oa-android-sdk)
-4. Analytics Dashboard
+4. Analytics Dashboard & Admin Panels
    1. `apps/dash-backend`
    2. `apps/dash-frontend`
    3. `apps/backend-db`
