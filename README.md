@@ -10,20 +10,23 @@ If you're insterested in this project please feel free to reach out for collaboa
 
 ## Description
 
-Open Attribution tracks your mobile advertising spend from the ad impression and click then connects that to later in-app events. This is done with several parts:
+[OpenAttribution](https://openattribution.dev) is an open source mobile measurement platform (MMP) that tracks your mobile advertising spend from the ad impression and click then connects that to later in-app events. 
 
-1. Impression & Click Tracking
-   1. apps/postback-api (WIP)
-2. Attribution of Mobile Users to the impressions or clicks
-   1. apps/analytics-db
-      1. SQL in Clickhouse (WIP)
-      2. Ability for clients to set their own SQL for custom attribution logic (WIP)
-3. In-App Event Tracking via iOS and Android SDK
-   1. apps/sdk-ios (does not exist yet)
-   2. apps/sdk-android (does not exist yet)
-4. Analytics Dashboards
-   1. apps/dash-backend (WIP)
-   2. apps/dash-frontend (WIP)
+### This is done with several parts:
+
+1. Impression, Click & Event Tracking on your domain
+   1. `apps/postback-api`
+2. Attribution of Mobile users and events to the impressions or clicks
+   1. `apps/analytics-db`
+      1. SQL in Clickhouse
+      2. Ability for clients to set their own SQL for custom attribution logic
+3. In-App Event Tracking  SDKs
+   1. [OpenAttribution/oa-ios-sdk](https://github.com/OpenAttribution/oa-ios-sdk)
+   2. [OpenAttribution/oa-android-sdk](https://github.com/OpenAttribution/oa-android-sdk)
+4. Analytics Dashboard
+   1. `apps/dash-backend`
+   2. `apps/dash-frontend`
+   3. `apps/backend-db`
 
 ## True ownership of your mobile app's data
 
@@ -39,7 +42,7 @@ Open Attribution is committed to building a community of developers who work tog
 
 🏗️ This project is just starting, so if you're interested in using it please reach out before putting it into production. You can reach out on [Discord](https://discord.gg/Z5ueYE3Ct3) or email [hello@openattribution.dev](mailto:hello@openattribution.dev)
 
-To read the work in progress documentation head to [Getting Started]([https://openattribution.dev/docs/getting_started/installation](https://openattribution.dev/docs/getting_started/installation/)) to learn more.
+To read the work in progress documentation head to [Open Attribution Docs](https://openattribution.dev/docs/) to learn more.
 
 ### Why do apps NEED attribution?
 
