@@ -12,24 +12,11 @@
 	}
 
 	let { children }: Props = $props();
-
-	const title = 'OpenAttribution';
-	const description =
-		'OpenAttribution is an open source mobile attribution platform (MMP) for tracking and analyzing ad campaigns.';
-	const keywords =
-		'openattribution, open attribution, mmp, mobile, ad tracking, ad analysis, ad platform';
 </script>
 
 <svelte:head>
-	<title>{title}</title>
 	<link rel="canonical" href={$page.url.href} />
-	<meta name="description" content={description} />
-	<meta name="keywords" content={keywords} />
-	<meta property="og:title" content={title} />
-	<meta property="og:description" content={description} />
-	<meta name="twitter:title" content={title} />
-	<meta name="twitter:description" content={description} />
-	<meta property="og:url" content="https://openattribution.dev/" />
+	<meta property="og:url" content={$page.url.href} />
 	<meta property="og:type" content="website" />
 </svelte:head>
 

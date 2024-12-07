@@ -6,9 +6,15 @@
 	function redirectToDocs() {
 		window.location.href = '/docs';
 	}
+	let h1title = 'Own Your MMP Data';
+	let h2title = 'Control Your Ad Attribution';
+	const description =
+		'OpenAttribution is an open source mobile attribution platform (MMP) for tracking and analyzing ad campaigns.';
+	const keywords =
+		'openattribution, open attribution, mmp, mobile, ad tracking, ad analysis, ad platform';
 </script>
 
-<div class="card preset-outlined-primary-500 p-4 mx-16 lg:mx-32 mt-8 text-center">
+<div class="card preset-outlined-primary-500 mx-16 mt-8 p-4 text-center lg:mx-32">
 	<h3 class="h3 text-primary-500">🏗️ Early Alpha: Under Construction 🏗️</h3>
 	<p class="">
 		This open source project is under construction in the very early alpha stages and is not yet
@@ -22,12 +28,12 @@
 </div>
 
 <div
-	class="card preset-filled-surface-100-900 mx-8 md:mx-16 lg:mx-32 my-12 lg:mt-8 flex items-center justify-center text-center"
+	class="card preset-filled-surface-100-900 mx-8 my-12 flex items-center justify-center text-center md:mx-16 lg:mx-32 lg:mt-8"
 >
 	<div class="p-2 md:p-4">
-		<h1 class="h1 text-center">Own Your MMP Data</h1>
-		<h2 class="h2 text-center text-primary-500">Control Your Ad Attribution</h2>
-		<h4 class="h4 text-center p-2 lg:p-4">
+		<h1 class="h1 text-center">{h1title}</h1>
+		<h2 class="h2 text-primary-500 text-center">{h2title}</h2>
+		<h4 class="h4 p-2 text-center lg:p-4">
 			Open Attribution is an open source Ad Attribution platform. Fully host your advertising data
 			by overseeing its storage, manage your data pipeline and control your advertising campaign
 			attribution rules.
@@ -46,7 +52,7 @@
 	</div>
 </div>
 
-<div class="grid grid-cols-2 gap-4 lg:gap-16 mx-8 md:mx-16 lg:mx-32">
+<div class="mx-8 grid grid-cols-2 gap-4 md:mx-16 lg:mx-32 lg:gap-16">
 	<div class="card preset-filled-surface-100-900 p-4">
 		<div class="card-header"><h3 class="h3 text-primary-900-100">Full Ownership & Privacy</h3></div>
 		<div class="card-footer">
