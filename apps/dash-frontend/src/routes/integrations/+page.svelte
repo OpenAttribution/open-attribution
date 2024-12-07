@@ -3,7 +3,7 @@
 	import * as Table from '$lib/components/ui/table/index';
 	import * as Tabs from '$lib/components/ui/tabs/index';
 
-	import AddNetwork from './AddNetwork.svelte';
+	import AddNetwork from '../../lib/AddCustomNetworkPopup.svelte';
 
 	import { ListFilter, Trash2 } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';

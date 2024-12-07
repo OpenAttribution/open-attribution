@@ -4,7 +4,7 @@
 	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 
-	import IntegrationForm from './IntegrationForm.svelte';
+	import IntegrationForm from '$lib/CreateIntegrationForm.svelte';
 
 	let open = false;
 	const isDesktop = new MediaQuery('(min-width: 768px)');
