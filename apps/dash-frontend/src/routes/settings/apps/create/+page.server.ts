@@ -1,13 +1,14 @@
 import type { Actions, PageServerLoad } from './$types.js';
+import { redirect } from '@sveltejs/kit';
 import { superValidate, message } from 'sveltekit-superforms';
-import { formSchema } from './schema';
+import { appSchema } from '$schemas';
 import { zod } from 'sveltekit-superforms/adapters';
 
 import { fail } from '@sveltejs/kit';
 
 export const actions = {
 	createApp: async (event) => {
-		const form = await superValidate(event, zod(formSchema));
+		const form = await superValidate(event, zod(appSchema));
 
 		if (!form.valid) {
 			return fail(400, {
@@ -36,14 +37,12 @@ export const actions = {
 			);
 		}
 
-		return {
-			form
-		};
+		throw redirect(302, '/settings/apps');
 	}
 } satisfies Actions;
 
 export const load: PageServerLoad = async ({}) => {
 	return {
-		form: await superValidate(zod(formSchema))
+		form: await superValidate(zod(appSchema))
 	};
 };

@@ -17,9 +17,9 @@ def update_geo_dbs()->None:
     """Update the geo databases."""
     for db in MAXMIND_GEO_DBS:
         if pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").exists():
-            logger.info(f"{db}.mmdb exists, skipping download")
+            logger.info(f"{db}.mmdb found")
             continue
-        logger.info(f"{db}: Unable to find ip geo data")
+        logger.info(f"{db}: Unable to find {db}.mmdb file")
         logger.info(f"{db}: Downloading {db}.tar.gz")
         url = GITSQUARED_GEOLITE2_RAW_DATA.format(db=db)
         response = requests.get(url, timeout=10)
@@ -103,4 +103,3 @@ def get_geo(ip:str)->dict:
 
 
 
-get_geo("172.18.0.10")

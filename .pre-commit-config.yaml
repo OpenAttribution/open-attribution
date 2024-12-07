@@ -13,6 +13,7 @@ repos:
       - id: mypy
         args: [--namespace-packages, --explicit-package-bases]
         additional_dependencies: ['types-requests', 'pandas-stubs']
+
   ### DOCKER
   - repo: https://github.com/hadolint/hadolint
     rev: v2.13.1-beta
@@ -29,7 +30,7 @@ repos:
       - id: shellcheck
         args: ['-x']
   ### JS / YML
-  - repo: https://github.com/rbubley/mirrors-prettier 
+  - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.4.1
     hooks:
       - id: prettier

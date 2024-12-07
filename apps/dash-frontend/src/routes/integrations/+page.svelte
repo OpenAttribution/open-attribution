@@ -3,7 +3,9 @@
 	import * as Table from '$lib/components/ui/table/index';
 	import * as Tabs from '$lib/components/ui/tabs/index';
 
-	import { CirclePlus, ListFilter, Trash2 } from 'lucide-svelte';
+	import AddNetwork from './AddNetwork.svelte';
+
+	import { ListFilter, Trash2 } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { type PageData } from './$types';
@@ -11,12 +13,6 @@
 	import { CheckCircle, XCircle, AlertCircle } from 'lucide-svelte';
 
 	const { data } = $props<{ data: PageData }>();
-
-	let showForm = $state(false);
-
-	function toggleForm() {
-		showForm = !showForm;
-	}
 
 	// Helper function to get the appropriate icon and color for status
 	const getStatusIcon = (status: String) => {
@@ -58,22 +54,7 @@
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
-			<Button onclick={toggleForm} size="sm" class="h-8 gap-1">
-				<CirclePlus class="h-3.5 w-3.5" />
-				<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Custom Network (pop)</span>
-			</Button>
-
-			{#if showForm}
-				<div class="modal">
-					<form method="POST" action="?/integrations">
-						<label>
-							Network Name
-							<input name="name" type="text" />
-						</label>
-						<button type="submit">-> Save</button>
-					</form>
-				</div>
-			{/if}
+			<AddNetwork {data} />
 		</div>
 	</div>
 
