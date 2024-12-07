@@ -35,10 +35,10 @@ class NetworkController(Controller):
         return myresp
 
     @post(path="/{network_name:str}")
-    async def add_custom_networks(self: Self, network_name: str) -> None:
+    async def add_custom_networks(self: Self, network_name: str, postback_id: str) -> None:
         """Create a custom network."""
-        logger.info(f"{self.path} networks add {network_name=}")
-        dbcon.queries.insert_network(network_name)
+        logger.info(f"{self.path} networks add {network_name=} {postback_id=}")
+        dbcon.queries.insert_network(network_name, postback_id)
 
     @delete(path="/{network_id:int}")
     async def delete_custom_networks(self: Self, network_id: int) -> None:

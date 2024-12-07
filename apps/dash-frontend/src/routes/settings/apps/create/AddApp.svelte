@@ -65,7 +65,6 @@
 						<RadioGroup.Item value="android" id="android" />
 						<Label for="android">Google Play Store</Label>
 					</div>
-					<!-- <RadioGroup.Input name="appStore" /> -->
 				</RadioGroup.Root>
 			</Form.Control>
 			<Form.Description>Select the app store.</Form.Description>

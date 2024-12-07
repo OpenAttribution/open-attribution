@@ -4,8 +4,9 @@ export const actions = {
 	integrations: async ({ request }) => {
 		const data = await request.formData();
 		const name = data.get('name');
+		const postback_id = data.get('postback_id');
 
-		console.log(`Network Name: ${name}`);
+		console.log(`Network Name: ${name} Postback ID: ${postback_id}`);
 
 		const response = await fetch(`http://dash-backend:8001/api/networks/${name}`, {
 			method: 'POST'
