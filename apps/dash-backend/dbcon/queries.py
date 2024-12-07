@@ -61,7 +61,7 @@ def insert_network(network_name: str, postback_id:str) -> None:
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_NETWORK,
-            {"network_name": network_name, "status": "active", "postback_id": postback_id, "status": "active"},
+            {"network_name": network_name, "status": "active", "postback_id": postback_id},
         )
         connection.commit()
 

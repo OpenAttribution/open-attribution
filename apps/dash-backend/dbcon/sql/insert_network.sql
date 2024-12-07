@@ -1,4 +1,4 @@
-INSERT INTO networks (name, status, is_custom, postback_id, status)
-VALUES (:network_name, :status, True, :postback_id, :status)
+INSERT INTO networks (name, status, is_custom, postback_id)
+VALUES (:network_name, :status, True, :postback_id)
 ;
 

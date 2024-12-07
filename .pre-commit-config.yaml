@@ -29,7 +29,7 @@ repos:
       - id: shellcheck
         args: ['-x']
   ### JS / YML
-  - repo: https://github.com/rbubley/mirrors-prettier 
+  - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.4.1
     hooks:
       - id: prettier

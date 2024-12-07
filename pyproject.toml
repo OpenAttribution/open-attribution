@@ -12,18 +12,16 @@ dependencies = [
     "confluent_kafka",
     "clickhouse_connect",
     "sqlalchemy",
-    "psycopg2-binary"
+    "psycopg2-binary",
 ]
 
 [project.optional-dependencies]
 dev = ["pre-commit"]
 
 
-
 [build-system]
 requires = ["setuptools>=64", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
-
 
 
 [tool.ruff]
@@ -60,6 +58,8 @@ exclude = ["tests/*"]
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+# Ignore missing imports, had trouble getting it to work with sqlalchemy and monorepo?
+ignore_missing_imports = true
 
 
 [tool.sqlfluff.core]
