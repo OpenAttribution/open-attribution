@@ -3,5 +3,5 @@
 @import 'tailwindcss/utilities';
 
 a {
-	@apply text-tertiary-900-100;
+	@apply text-tertiary-700-300;
 }

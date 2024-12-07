@@ -20,7 +20,7 @@
 	<meta name="twitter:description" content={description} />
 </svelte:head>
 
-<div class="mx-8 md:mx-16 lg:mx-32">
+<div class="mx-8 md:mx-16 lg:mx-96">
 	<div
 		class="card preset-filled-surface-100-900 my-12 flex items-center justify-center text-center lg:mt-8"
 	>
