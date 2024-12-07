@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import { redirect } from '@sveltejs/kit';
 
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { networkSchema, type NetworkSchema } from '$schemas';
