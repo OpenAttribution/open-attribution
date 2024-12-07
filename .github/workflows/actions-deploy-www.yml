@@ -27,7 +27,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           envs: TARGETDIR
-          script_stop: true
           script: |
             cd $TARGETDIR
             pwd

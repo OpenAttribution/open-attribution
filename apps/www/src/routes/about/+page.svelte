@@ -26,6 +26,23 @@
 			more data to the app developers by helping them to collect their impression and click data to
 			leverage for better fraud detection, better data for AI tooling and business decisions.
 		</p>
+
+		<h4 class="h4">Support the Project</h4>
+
+		<div class="flex justify-center gap-2">
+			<a
+				href="https://github.com/OpenAttribution/open-attribution"
+				target="_blank"
+				rel="noreferrer"
+			>
+				<button type="button" class="btn preset-outlined-primary-500 mr-4 justify-center"
+					>Star on Github</button
+				>
+			</a>
+			<a href="https://discord.gg/Z5ueYE3Ct3" target="_blank" rel="noreferrer">
+				<button type="button" class="btn preset-outlined-tertiary-500">Join Discord</button>
+			</a>
+		</div>
 	</div>
 
 	<div class="card preset-filled-surface-100-900 mt-16 p-4">
