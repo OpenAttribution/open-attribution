@@ -1,4 +1,5 @@
 import type { Actions, PageServerLoad } from './$types.js';
+import { redirect } from '@sveltejs/kit';
 import { superValidate, message } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -36,9 +37,8 @@ export const actions = {
 			);
 		}
 
-		return {
-			form
-		};
+		throw redirect(302, '/settings/apps');
+
 	}
 } satisfies Actions;
 
