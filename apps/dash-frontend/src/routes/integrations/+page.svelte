@@ -54,7 +54,7 @@
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
-			<AddNetwork />
+			<AddNetwork {data} />
 		</div>
 	</div>
 

@@ -4,10 +4,14 @@
 	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 
+	import type { PageData } from './$types';
+
 	import IntegrationForm from './IntegrationForm.svelte';
 
 	let open = false;
 	const isDesktop = new MediaQuery('(min-width: 768px)');
+
+	export let data: PageData;
 </script>
 
 {#if isDesktop.matches}
@@ -23,7 +27,7 @@
 					my_cross_promotion
 				</Dialog.Description>
 			</Dialog.Header>
-			<IntegrationForm />
+			<IntegrationForm data={data.form} success={() => (open = false)} />
 		</Dialog.Content>
 	</Dialog.Root>
 {:else}
@@ -39,7 +43,7 @@
 					my_cross_promotion
 				</Drawer.Description>
 			</Drawer.Header>
-			<IntegrationForm />
+			<IntegrationForm data={data.form} success={() => (open = false)} />
 			<Drawer.Footer class="pt-2">
 				<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
 			</Drawer.Footer>

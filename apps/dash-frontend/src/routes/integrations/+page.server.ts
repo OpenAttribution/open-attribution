@@ -1,23 +1,46 @@
-import type { Actions, PageServerLoad } from './$types.js';
+import type { Actions, PageServerLoad } from './$types';
+
+import { superValidate, message } from 'sveltekit-superforms';
+
+import { networkSchema } from '$schemas';
+import { zod } from 'sveltekit-superforms/adapters';
+
+import { fail } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 export const actions = {
-	integrations: async ({ request }) => {
-		const data = await request.formData();
-		const name = data.get('name');
-		const postback_id = data.get('postback_id');
+	createIntegration: async (event) => {
+		console.log('createIntegration');
+		const form = await superValidate(event, zod(networkSchema));
 
-		console.log(`Network Name: ${name} Postback ID: ${postback_id}`);
-
-		const response = await fetch(`http://dash-backend:8001/api/networks/${name}`, {
-			method: 'POST'
-		});
-
-		// Check if the request was successful
-		if (!response.ok) {
-			console.error('Failed to add the network');
-			// Optionally, you could return some error state or message here
-			return { error: 'Failed to add the network' };
+		if (!form.valid) {
+			return fail(400, {
+				form
+			});
 		}
+
+		const name = form.data.networkName;
+		const postback_id = form.data.postbackId;
+
+		console.log(`Actions: Network Name: ${name} Postback ID: ${postback_id}`);
+
+		const response = await fetch(
+			`http://dash-backend:8001/api/networks/${postback_id}?network_name=${name}`,
+			{
+				method: 'POST'
+			}
+		);
+
+		if (!response.ok) {
+			const resText = await response.text();
+			const truncatedText = resText.substring(0, 100);
+			console.log(`Server failed to save the network (${response.status}): ${truncatedText}`);
+			return message(form, `backend error:	 (${response.status}): ${truncatedText}`, {
+				status: 500
+			});
+		}
+
+		return message(form, 'success');
 	},
 
 	deleteIntegration: async ({ request }) => {
@@ -59,6 +82,7 @@ export const load: PageServerLoad = async ({}) => {
 					console.log('Uncaught error', error);
 					return 'Uncaught Error';
 				}
-			)
+			),
+		form: await superValidate(zod(networkSchema))
 	};
 };
