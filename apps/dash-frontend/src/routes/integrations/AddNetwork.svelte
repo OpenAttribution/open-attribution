@@ -2,9 +2,7 @@
 	import { MediaQuery } from 'runed';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import * as Drawer from '$lib/components/ui/drawer/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
 
 	import IntegrationForm from './IntegrationForm.svelte';
 
@@ -25,7 +23,6 @@
 					my_cross_promotion
 				</Dialog.Description>
 			</Dialog.Header>
-
 			<IntegrationForm />
 		</Dialog.Content>
 	</Dialog.Root>

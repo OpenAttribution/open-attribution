@@ -3,19 +3,17 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as RadioGroup from '$lib/components/ui/radio-group';
-	import { formSchema, type FormSchema } from './schema';
+	import { appSchema, type AppSchema } from '$schemas';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Loader } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 
-	import { goto } from '$app/navigation';
-
-	// export let data: SuperValidated<Infer<FormSchema>>;
+	// export let data: SuperValidated<Infer<AppSchema>>;
 	let { data } = $props();
 	type Message = { status: 'error' | 'success' | 'warning'; text: string };
 	const form = superForm(data, {
-		validators: zodClient(formSchema),
+		validators: zodClient(appSchema),
 
 		multipleSubmits: 'prevent'
 	});

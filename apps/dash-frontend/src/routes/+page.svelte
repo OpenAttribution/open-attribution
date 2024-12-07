@@ -18,14 +18,14 @@
 		GroupedEntry,
 		GroupedPlotEntry,
 		DatesOverviewEntry
-	} from '../types';
+	} from '$types';
 	import { goto } from '$app/navigation';
 
 	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
 	import { page } from '$app/stores';
 
-	import type { OverviewEntry } from '../types';
+	import type { OverviewEntry } from '$types';
 
 	import { type PageData } from './$types';
 	import Multiselect from '$lib/Multiselect.svelte';
