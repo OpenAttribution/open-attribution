@@ -1,9 +1,25 @@
 <script lang="ts">
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
+
+	let title = 'About Open Attribution';
+	const description =
+		"About OpenAttribution's mission, and why we want to provide an open source mobile attribution platform (MMP) for tracking and analyzing ad campaigns.";
+	const keywords =
+		'about, history, openattribution, open source, mmp, mobile, ad tracking, ad analysis, ad platform';
 </script>
 
+<svelte:head>
+	<title>{title}</title>
+	<meta property="og:title" content={title} />
+	<meta name="twitter:title" content={title} />
+	<meta name="description" content={description} />
+	<meta name="keywords" content={keywords} />
+	<meta property="og:description" content={description} />
+	<meta name="twitter:description" content={description} />
+</svelte:head>
+
 <div class="mx-8 md:mx-16 lg:mx-32">
-	<div class="card preset-outlined-primary-500 p-4 mx-16 lg:mx-32 mt-8 text-center">
+	<div class="card preset-outlined-primary-500 mx-16 mt-8 p-4 text-center lg:mx-32">
 		<h3 class="h3 text-primary-500">Mission Statement</h3>
 		<p>
 			Give app and game developers advertising tools that do not require 3rd party processing. Bring
@@ -12,7 +28,7 @@
 		</p>
 	</div>
 
-	<div class="card preset-filled-surface-100-900 p-4 mt-16">
+	<div class="card preset-filled-surface-100-900 mt-16 p-4">
 		<h3 class="h3 text-primary-900-100">Data Ownership</h3>
 		<p>
 			Own your company's advertising data without resorting to third party control. Our goal is to
@@ -23,7 +39,7 @@
 		</p>
 	</div>
 
-	<div class="card preset-filled-surface-100-900 p-4 mt-16">
+	<div class="card preset-filled-surface-100-900 mt-16 p-4">
 		<h3 class="h3 text-primary-900-100">Open source community</h3>
 		<p>
 			Open Attribution is committed to building a community of developers who work together to build
@@ -33,7 +49,7 @@
 		</p>
 	</div>
 
-	<div class="card preset-filled-surface-100-900 p-4 mt-16">
+	<div class="card preset-filled-surface-100-900 mt-16 p-4">
 		<h3 class="h3 text-primary-900-100">Why do apps NEED attribution?</h3>
 		<p>
 			If you want to buy in-app advertisements, attribution a technical
@@ -44,17 +60,17 @@
 		</p>
 	</div>
 
-	<div class="card preset-filled-surface-100-900 p-4 mt-16">
+	<div class="card preset-filled-surface-100-900 mt-16 p-4">
 		<h3 class="h3 text-primary-900-100">Want to get in touch?</h3>
 		Feel free to join our small but growing community on Discord or reach our directly via email.
-		<div class="flex flex-col md:flex-row items-center gap-4 md:gap-8 p-8">
+		<div class="flex flex-col items-center gap-4 p-8 md:flex-row md:gap-8">
 			<a
 				class="btn preset-filled-tertiary-500"
 				href="https://discord.gg/Z5ueYE3Ct3"
 				target="_blank"
 				rel="noreferrer"
 			>
-				<div class="inline-flex items-center h-12 w-24">
+				<div class="inline-flex h-12 w-24 items-center">
 					{@html discordIcon}
 				</div>
 			</a>

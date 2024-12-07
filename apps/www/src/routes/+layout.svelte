@@ -4,12 +4,21 @@
 	import { AppBar } from '@skeletonlabs/skeleton-svelte';
 	import githubIcon from '$lib/assets/github-mark-white.svg?raw';
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
+
+	import { page } from '$app/stores';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
 
 	let { children }: Props = $props();
 </script>
+
+<svelte:head>
+	<link rel="canonical" href={$page.url.href} />
+	<meta property="og:url" content={$page.url.href} />
+	<meta property="og:type" content="website" />
+</svelte:head>
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<header class="sticky top-0 z-10">
@@ -22,7 +31,7 @@
 		<AppBar padding="p-1 sm:p-2 md:p-4" centerClasses="hidden md:flex">
 			{#snippet lead()}
 				<a href="/">
-					<strong class="ml-4 text-xl md:text-2xl uppercase break-words justify-start"
+					<strong class="ml-4 justify-start break-words text-xl uppercase md:text-2xl"
 						>Open Attribution</strong
 					>
 				</a>
@@ -33,7 +42,7 @@
 			</div>
 
 			{#snippet trail()}
-				<div class="flex flex-col lg:flex-row gap-2 md:gap-4">
+				<div class="flex flex-col gap-2 md:gap-4 lg:flex-row">
 					<a
 						class="btn preset-outlined-primary-900-100 p-2 md:p-4"
 						href="mailto:hello@openattribution.dev"
@@ -47,7 +56,7 @@
 							target="_blank"
 							rel="noreferrer"
 						>
-							<div class="h-4 md:h-8 w-full flex items-center">
+							<div class="flex h-4 w-full items-center md:h-8">
 								{@html discordIcon}
 							</div>
 						</a>
@@ -75,9 +84,9 @@
 	</main>
 
 	<!--  Mobile only footer -->
-	<footer class="sticky bottom-0 z-10 bg-surface-50-950">
+	<footer class="bg-surface-50-950 sticky bottom-0 z-10">
 		<AppBar padding="p-0">
-			<div class="inline-flex md:hidden p-2">
+			<div class="inline-flex p-2 md:hidden">
 				<NavTabs />
 			</div>
 		</AppBar>
