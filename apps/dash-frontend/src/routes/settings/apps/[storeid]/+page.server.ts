@@ -20,9 +20,7 @@ export const actions = {
 } satisfies Actions;
 
 export const load: PageServerLoad = async ({ params }) => {
-
 	const storeid = params.storeid;
-
 
 	return {
 		appData: fetch(`http://dash-backend:8001/api/apps/${storeid}`)
