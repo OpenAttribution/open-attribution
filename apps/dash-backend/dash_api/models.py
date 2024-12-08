@@ -40,3 +40,9 @@ class Apps:
     """All apps."""
 
     apps: dict
+
+@dataclass
+class App:
+    """A single app."""
+
+    app: dict

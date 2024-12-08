@@ -18,7 +18,12 @@
 	const { form: formData, enhance, message } = form;
 </script>
 
-<form class="grid items-start gap-4 px-4" method="POST" action="?/createIntegration" use:enhance>
+<form
+	class="grid items-start gap-4 px-4"
+	method="POST"
+	action="?/createCustomIntegration"
+	use:enhance
+>
 	<div class="grid gap-2">
 		<Form.Field {form} name="networkName">
 			<Form.Control>

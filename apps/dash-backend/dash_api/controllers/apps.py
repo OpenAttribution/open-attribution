@@ -8,7 +8,7 @@ import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
 
-from dash_api.models import Apps
+from dash_api.models import App, Apps
 
 logger = get_logger(__name__)
 
@@ -41,6 +41,25 @@ class AppController(Controller):
         myresp = Apps(apps=apps_dict)
         logger.info(f"{self.path} return rows {apps_df.shape}")
         return myresp
+
+    @get(path="/{store_id:str}")
+    async def app(self: Self, store_id: str) -> App:
+        """
+        Handle GET request for a single app.
+
+        Returns
+        -------
+            Data for a single app
+
+        """
+        logger.info(f"{self.path} apps load")
+        app_df = dbcon.queries.query_apps(store_id)
+        app_dict = app_df.to_dict(orient="records")[0]
+        myresp = App(app=app_dict)
+        logger.info(f"{self.path} return {app_dict=}")
+        return myresp
+
+
 
     @post(path="/{store_id:str}")
     async def add_app(

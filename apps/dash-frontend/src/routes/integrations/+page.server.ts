@@ -6,11 +6,10 @@ import { networkSchema } from '$schemas';
 import { zod } from 'sveltekit-superforms/adapters';
 
 import { fail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 
 export const actions = {
-	createIntegration: async (event) => {
-		console.log('createIntegration');
+	createCustomIntegration: async (event) => {
+		console.log('createCustomIntegration');
 		const form = await superValidate(event, zod(networkSchema));
 
 		if (!form.valid) {

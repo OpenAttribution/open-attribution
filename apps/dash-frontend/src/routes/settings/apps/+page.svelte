@@ -59,7 +59,6 @@
 							<Table.Row>
 								<Table.Head>App</Table.Head>
 								<Table.Head></Table.Head>
-								<Table.Head>Status</Table.Head>
 								<Table.Head>Store</Table.Head>
 								<Table.Head>Store ID</Table.Head>
 							</Table.Row>
@@ -68,8 +67,9 @@
 							{#if mydata.apps && mydata.apps.length > 0}
 								{#each mydata.apps.slice(0, 10) as entry ((entry.id, entry.store_id, entry.name))}
 									<Table.Row>
-										<Table.Cell>{entry.name}</Table.Cell>
-
+										<a href="/settings/apps/{entry.store_id}">
+											<Table.Cell>{entry.name}</Table.Cell>
+										</a>
 										<Table.Cell>
 											{#if entry.is_custom}
 												<form method="POST" action="?/deleteIntegration">

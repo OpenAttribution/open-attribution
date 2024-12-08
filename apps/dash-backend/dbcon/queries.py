@@ -36,6 +36,10 @@ DELETE_NETWORK = load_sql_file(
 QUERY_APPS = load_sql_file(
     "apps.sql",
 )
+QUERY_APP = load_sql_file(
+    "app.sql",
+)
+
 INSERT_APP = load_sql_file(
     "insert_app.sql",
 )
@@ -54,14 +58,14 @@ def query_networks() -> pd.DataFrame:
     return df
 
 
-def insert_network(network_name: str, postback_id:str) -> None:
+def insert_custom_network(network_name: str, postback_id:str ) -> None:
     """Insert a new network."""
     logger.info(f"Inserting new network: {network_name} {postback_id=}")
 
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_NETWORK,
-            {"network_name": network_name, "status": "active", "postback_id": postback_id},
+            {"network_name": network_name, "status": "active", "postback_id": postback_id, "is_custom": True},
         )
         connection.commit()
 
@@ -75,13 +79,21 @@ def delete_network(network_id: int) -> None:
         connection.commit()
 
 
-def query_apps() -> pd.DataFrame:
-    """Get all networks."""
-    logger.info("Query all apps.")
-    df = pd.read_sql(
-        QUERY_APPS,
-        con=ENGINE,
-    )
+def query_apps(store_id: str | None = None) -> pd.DataFrame:
+    """Get all apps or a single app."""
+    logger.info(f"Query {'all' if store_id is None else f'app: {store_id}'} apps.")
+
+    if store_id is None:
+        df = pd.read_sql(
+            QUERY_APPS,
+            con=ENGINE,
+        )
+    else:
+        df = pd.read_sql(
+            QUERY_APP,
+            params={"store_id": store_id},
+            con=ENGINE,
+        )
     return df
 
 
