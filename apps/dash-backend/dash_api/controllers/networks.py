@@ -29,9 +29,13 @@ class NetworkController(Controller):
         """
         logger.info(f"{self.path} networks load")
         nets_df = dbcon.queries.query_networks()
+        is_custom = nets_df["is_custom"] == True
+        nets_df = nets_df[~is_custom]
+        custom_nets_df = nets_df[is_custom]
         networks_dict = nets_df.to_dict(orient="records")
-        myresp = Networks(networks=networks_dict)
-        logger.info(f"{self.path} return rows {nets_df.shape}")
+        custom_networks_dict = custom_nets_df.to_dict(orient="records")
+        myresp = Networks(networks=networks_dict, custom_networks=custom_networks_dict)
+        logger.info(f"{self.path} return {nets_df.shape=} {custom_nets_df.shape=}")
         return myresp
 
     @post(path="/{postback_id:str}")

@@ -39,12 +39,20 @@ QUERY_APPS = load_sql_file(
 QUERY_APP = load_sql_file(
     "app.sql",
 )
+QUERY_APP_LINKS = load_sql_file(
+    "app_links.sql",
+)
+
 
 INSERT_APP = load_sql_file(
     "insert_app.sql",
 )
 DELETE_APP = load_sql_file(
     "delete_app.sql",
+)
+
+INSERT_APP_LINK = load_sql_file(
+    "insert_app_link.sql",
 )
 
 
@@ -58,14 +66,30 @@ def query_networks() -> pd.DataFrame:
     return df
 
 
-def insert_custom_network(network_name: str, postback_id:str ) -> None:
+def query_app_links(app_id: int) -> pd.DataFrame:
+    """Get all apps links."""
+    logger.info(f"Query all apps links for {app_id}.")
+    df = pd.read_sql(
+        QUERY_APP_LINKS,
+        params={"app": app_id},
+        con=DBCON.engine,
+    )
+    return df
+
+
+def insert_custom_network(network_name: str, postback_id: str) -> None:
     """Insert a new network."""
     logger.info(f"Inserting new network: {network_name} {postback_id=}")
 
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_NETWORK,
-            {"network_name": network_name, "status": "active", "postback_id": postback_id, "is_custom": True},
+            {
+                "network_name": network_name,
+                "status": "active",
+                "postback_id": postback_id,
+                "is_custom": True,
+            },
         )
         connection.commit()
 
@@ -115,6 +139,28 @@ def delete_app(app_id: int) -> None:
 
     with ENGINE.connect() as connection:
         connection.execute(DELETE_NETWORK, {"app_id": app_id})
+        connection.commit()
+
+
+def insert_app_link(
+    share_id: str, network: str, campaign_name: str, ad_name: str, app_id: int,
+) -> None:
+    """Insert a new app link."""
+    logger.info(
+        f"Inserting new app link: {share_id} {network} {campaign_name} {ad_name} {app_id}",
+    )
+
+    with ENGINE.connect() as connection:
+        connection.execute(
+            INSERT_APP_LINK,
+            {
+                "app_id": app_id,
+                "share_id": share_id,
+                "network": network,
+                "campaign_name": campaign_name,
+                "ad_name": ad_name,
+            },
+        )
         connection.commit()
 
 

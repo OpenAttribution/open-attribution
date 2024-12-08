@@ -24,7 +24,6 @@ else:
     client = clickhouse_connect.create_client(host="clickhouse")
 
 
-
 def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
     """Query the main overview data."""
     query_template = """SELECT
@@ -93,21 +92,24 @@ class OverviewController(Controller):
 
         df = query_campaign_overview(start_date=start_date, end_date=end_date)
 
-
         apps_df = query_apps().rename(columns={"name": "app_name"})
         networks_df = query_networks().rename(columns={"name": "network_name"})
 
-
         df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="left")
         df = df.merge(
-            networks_df, left_on="network", right_on="postback_id", how="left",
+            networks_df,
+            left_on="network",
+            right_on="postback_id",
+            how="left",
         )
 
         df.loc[df["app_name"].isna(), "app_name"] = df.loc[
-            df["app_name"].isna(), "store_id",
+            df["app_name"].isna(),
+            "store_id",
         ]
         df.loc[df["network_name"].isna(), "network_name"] = df.loc[
-            df["network_name"].isna(), "network",
+            df["network_name"].isna(),
+            "network",
         ]
 
         df["revenue"] = df["revenue"].astype(float)
@@ -154,12 +156,27 @@ class OverviewController(Controller):
 
         logger.info(f"PLOT DF {len(dates_home_dict)=}")
 
-        found_networks = home_df[["network", "network_name"]].drop_duplicates().to_dict(orient="records")
-        found_store_ids = home_df[["store_id", "app_name"]].drop_duplicates().to_dict(orient="records")
+        found_networks = (
+            home_df[["network", "network_name"]]
+            .drop_duplicates()
+            .to_dict(orient="records")
+        )
+        found_store_ids = (
+            home_df[["store_id", "app_name"]]
+            .drop_duplicates()
+            .to_dict(orient="records")
+        )
 
-        logger.info(f"{self.path} overview load {start_date=} {end_date=} {found_networks=} {found_store_ids=}")
+        logger.info(
+            f"{self.path} overview load {start_date=} {end_date=} {found_networks=} {found_store_ids=}",
+        )
 
-        myresp = OverviewData(overview=home_dict, dates_overview=dates_home_dict, networks=found_networks, store_ids=found_store_ids)
+        myresp = OverviewData(
+            overview=home_dict,
+            dates_overview=dates_home_dict,
+            networks=found_networks,
+            store_ids=found_store_ids,
+        )
 
         logger.info(f"{self.path} return rows {home_df.shape}")
         return myresp

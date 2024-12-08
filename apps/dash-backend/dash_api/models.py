@@ -33,6 +33,7 @@ class Networks:
     """All networks."""
 
     networks: dict
+    custom_networks: dict
 
 
 @dataclass

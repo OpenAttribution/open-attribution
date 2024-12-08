@@ -21,26 +21,18 @@ export const actions = {
 
 export const load: PageServerLoad = async ({ params }) => {
 	const storeid = params.storeid;
+	const appData = await fetch(`http://dash-backend:8001/api/apps/${storeid}`).then((res) =>
+		res.json()
+	);
+
+	const appLinks = await fetch(`http://dash-backend:8001/api/apps/${appData.id}/links`).then(
+		(res) => res.json()
+	);
+
+	console.log(`root layout load apps, networks end`);
 
 	return {
-		appData: fetch(`http://dash-backend:8001/api/apps/${storeid}`)
-			.then((resp) => {
-				if (resp.status === 200) {
-					return resp.json();
-				} else if (resp.status === 404) {
-					console.log('Not found');
-					return 'Not Found';
-				} else if (resp.status === 500) {
-					console.log('API Server error');
-					return 'Backend Error';
-				}
-			})
-			.then(
-				(json) => json,
-				(error) => {
-					console.log('Uncaught error', error);
-					return 'Uncaught Error';
-				}
-			)
+		appData: appData,
+		appLinks: appLinks
 	};
 };

@@ -34,6 +34,7 @@ CREATE TABLE networks (
 CREATE TABLE app_links (
     id SERIAL PRIMARY KEY,
     app INTEGER NOT NULL REFERENCES apps(id) ON DELETE CASCADE,
+    share_id INTEGER UNIQUE NOT NULL,
     network INTEGER NOT NULL REFERENCES networks(id) ON DELETE CASCADE,
     campaign_name VARCHAR(100) NOT NULL,
     campaign_id VARCHAR(100) DEFAULT '',

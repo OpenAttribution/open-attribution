@@ -59,7 +59,44 @@ class AppController(Controller):
         logger.info(f"{self.path} return {app_dict=}")
         return myresp
 
+    @get(path="/{app_id:int}/links")
+    async def app_links(self: Self, app_id: int) -> App:
+        """
+        Handle GET request for a single app links.
 
+        Returns
+        -------
+            Data for a single app links
+
+        """
+        logger.info(f"{self.path} apps load")
+        app_df = dbcon.queries.query_app_links(app_id)
+        app_dict = app_df.to_dict(orient="records")[0]
+        myresp = App(app=app_dict)
+        logger.info(f"{self.path} return {app_dict=}")
+        return myresp
+
+    @post(path="/{app_id:int}/links")
+    async def add_app_link(
+        self: Self,
+        app_id: int,
+        share_id: str,
+        network: str,
+        campaign_name: str,
+        ad_name: str,
+    ) -> None:
+        """Create an app link."""
+        logger.info(
+            f"{self.path} apps add {app_id=} {share_id=} {network=} {campaign_name=}",
+        )
+
+        dbcon.queries.insert_app_link(
+            share_id=share_id,
+            network=network,
+            campaign_name=campaign_name,
+            ad_name=ad_name,
+            app_id=app_id,
+        )
 
     @post(path="/{store_id:str}")
     async def add_app(
