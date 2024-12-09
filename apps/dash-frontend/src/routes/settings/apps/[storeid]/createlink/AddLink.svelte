@@ -29,16 +29,16 @@
 		<input type="hidden" name="appId" value={appId} />
 		<input type="hidden" name="storeId" value={$page.params.storeid} />
 
-		<Form.Field {form} name="shareId">
+		<Form.Field {form} name="shareSlug">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>URL Share ID</Form.Label>
-					<Input {...props} bind:value={$formData.shareId} />
+					<Input {...props} bind:value={$formData.shareSlug} />
 				{/snippet}
 			</Form.Control>
 			<Form.Description
 				>Your app link's URL ID. If your id is 'tiktoksocial' it will correspond to
-				'https://your.domain.com/tiktoksocial'. This will be tied this app but needs to be unique
+				'https://your.domain.com/s/tiktoksocial'. This will be tied this app but needs to be unique
 				across your selected domain.
 			</Form.Description>
 			<Form.FieldErrors />

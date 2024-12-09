@@ -80,18 +80,18 @@ class AppController(Controller):
     async def add_app_link(
         self: Self,
         app_id: int,
-        share_id: str,
+        share_slug: str,
         network_id: int,
         campaign_name: str,
         ad_name: str,
     ) -> None:
         """Create an app link."""
         logger.info(
-            f"{self.path} apps add {app_id=} {share_id=} {network_id=} {campaign_name=}",
+            f"{self.path} apps add {app_id=} {share_slug=} {network_id=} {campaign_name=}",
         )
 
         dbcon.queries.insert_app_link(
-            share_id=share_id,
+            share_slug=share_slug,
             network_id=network_id,
             campaign_name=campaign_name,
             ad_name=ad_name,

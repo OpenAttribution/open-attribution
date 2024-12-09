@@ -7,6 +7,8 @@ from logging.handlers import RotatingFileHandler
 from types import TracebackType
 from typing import Any
 
+from confluent_kafka import Producer
+
 PROJECT_NAME = "open-attribution"
 
 HOME = pathlib.Path.home()
@@ -20,10 +22,8 @@ LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
 def is_docker() -> bool:
     """Decide if we are in docker."""
     path = pathlib.Path("/proc/self/cgroup")
-    return (
-        pathlib.Path("/.dockerenv").exists()
-        or (path.is_file()
-        and any("docker" in line for line in path.open()))
+    return pathlib.Path("/.dockerenv").exists() or (
+        path.is_file() and any("docker" in line for line in path.open())
     )
 
 
@@ -100,4 +100,14 @@ logger = get_logger(__name__)
 DATE_FORMAT = "%Y-%m-%d"
 
 
-DATE_FORMAT = "%Y-%m-%d"
+# If inside docker: "bootstrap.servers": "kafka:9093",
+reg_config = {
+    "bootstrap.servers": KAFKA_LOCATION,
+}
+
+event_config = {
+    "bootstrap.servers": KAFKA_LOCATION,
+    "linger.ms": 1000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
+}
+CLICK_PRODUCER = Producer(reg_config)
+EVENT_PRODUCER = Producer(event_config)

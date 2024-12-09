@@ -1,5 +1,5 @@
 SELECT 
-    al.share_id,
+    al.share_slug,
     n.name as network_name,
     al.campaign_name,
     al.ad_name,

@@ -5,8 +5,8 @@
 
 	const columns = [
 		{
-			accessorKey: 'share_id',
-			header: 'Share ID'
+			accessorKey: 'share_slug',
+			header: 'URL Slug'
 		},
 		{
 			accessorKey: 'network_name',

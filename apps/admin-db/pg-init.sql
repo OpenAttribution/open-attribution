@@ -20,7 +20,6 @@ CREATE TABLE apps (
 );
 
 
--- Update networks table to exclude custom networks
 CREATE TABLE networks (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
@@ -30,14 +29,25 @@ CREATE TABLE networks (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Update app_links to reference only custom_networks
+
+CREATE TABLE client_domains (
+    id SERIAL PRIMARY KEY,
+    domain_url VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
 CREATE TABLE app_links (
     id SERIAL PRIMARY KEY,
-    app INTEGER NOT NULL REFERENCES apps(id) ON DELETE CASCADE,
-    share_id VARCHAR(100) UNIQUE NOT NULL,
+    client_domain INTEGER NOT NULL REFERENCES client_domains(id) ON DELETE CASCADE,
+    share_slug VARCHAR(100) UNIQUE NOT NULL,
     network INTEGER NOT NULL REFERENCES networks(id) ON DELETE CASCADE,
+    play_store_app INTEGER NOT NULL REFERENCES apps(id) ON DELETE CASCADE,
+    ios_app INTEGER NOT NULL REFERENCES apps(id) ON DELETE CASCADE,
     campaign_name VARCHAR(100) NOT NULL,
     ad_name VARCHAR(100) DEFAULT '',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

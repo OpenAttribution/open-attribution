@@ -21,17 +21,17 @@ export const actions = {
 
 		const app_id = form.data.appId;
 		const store_id = form.data.storeId;
-		const share_id = form.data.shareId;
+		const share_slug = form.data.shareSlug;
 		const network_id = form.data.networkId;
 		const campaign_name = form.data.campaignName;
 		const ad_name = form.data.adName;
 
 		console.log(
-			`Create share link app:${app_id}, share:${share_id}, network:${network_id}, campaign:${campaign_name}, ad:${ad_name}`
+			`Create share link app:${app_id}, share:${share_slug}, network:${network_id}, campaign:${campaign_name}, ad:${ad_name}`
 		);
 
 		const response = await fetch(
-			`http://dash-backend:8001/api/apps/${app_id}/links?share_id=${share_id}&network_id=${network_id}&campaign_name=${campaign_name}&ad_name=${ad_name}`,
+			`http://dash-backend:8001/api/apps/${app_id}/links?share_slug=${share_slug}&network_id=${network_id}&campaign_name=${campaign_name}&ad_name=${ad_name}`,
 			{
 				method: 'POST'
 			}

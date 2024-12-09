@@ -38,6 +38,17 @@
 			<Settings></Settings>
 			Settings
 		</a>
+		<a
+			href="/settings/apps"
+			class="flex text-muted-foreground hover:text-foreground transition-colors"
+		>
+			<Settings></Settings>
+			App Settings
+		</a>
+		<a href="/links" class="flex text-muted-foreground hover:text-foreground transition-colors">
+			<Settings></Settings>
+			Link Settings
+		</a>
 	</nav>
 	<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
 		<div class="ml-auto flex-1 sm:flex-initial">
