@@ -32,7 +32,7 @@
 			</Card.Content>
 			<Card.Footer>
 				<div class="flex items-center gap-2 my-4">
-					<a href="apps/create">
+					<a href="links/create">
 						<Button size="sm" class="h-8 gap-1">
 							<CirclePlus class="h-3.5 w-3.5" />
 							<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New Link</span>
