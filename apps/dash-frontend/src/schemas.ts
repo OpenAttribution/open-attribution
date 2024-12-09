@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const linkSchema = z.object({
 	appId: z.number(),
 	storeId: z.string(),
+	domainId: z.number(),
 	shareSlug: z.string().min(2).max(50),
 	networkId: z.number(),
 	networkName: z.string(),

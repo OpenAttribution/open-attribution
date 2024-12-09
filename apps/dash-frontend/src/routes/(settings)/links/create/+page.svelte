@@ -21,6 +21,7 @@
 					data={data.form}
 					myApps={data.respApps.apps}
 					networks={data.respNets.custom_networks}
+					myDomains={data.respDomains.links}
 				/>
 			</Card.Content>
 			<Card.Footer></Card.Footer>
