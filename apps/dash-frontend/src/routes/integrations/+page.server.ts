@@ -32,6 +32,13 @@ export const actions = {
 
 		if (!response.ok) {
 			const resText = await response.text();
+
+			if (resText.includes('already exists')) {
+				return message(form, 'This name or postback ID already exists.', {
+					status: 400
+				});
+			}
+
 			const truncatedText = resText.substring(0, 100);
 			console.log(`Server failed to save the network (${response.status}): ${truncatedText}`);
 			return message(form, `backend error:	 (${response.status}): ${truncatedText}`, {

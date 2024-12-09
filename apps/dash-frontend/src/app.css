@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+a {
+	@apply text-purple-200;
+}
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;

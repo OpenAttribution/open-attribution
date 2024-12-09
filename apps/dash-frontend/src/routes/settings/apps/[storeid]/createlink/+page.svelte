@@ -9,7 +9,7 @@
 	import AddLink from './AddLink.svelte';
 </script>
 
-<h1 class="text-2xl">Create New App</h1>
+<h1 class="text-2xl">Create New Share Link</h1>
 
 <Tabs.Root value="all">
 	<Tabs.Content value="all">

@@ -143,7 +143,11 @@ def delete_app(app_id: int) -> None:
 
 
 def insert_app_link(
-    share_id: str, network: str, campaign_name: str, ad_name: str, app_id: int,
+    share_id: str,
+    network: str,
+    campaign_name: str,
+    ad_name: str,
+    app_id: int,
 ) -> None:
     """Insert a new app link."""
     logger.info(

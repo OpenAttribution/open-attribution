@@ -32,11 +32,15 @@
 		<Form.Field {form} name="shareId">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>Share ID</Form.Label>
+					<Form.Label>URL Share ID</Form.Label>
 					<Input {...props} bind:value={$formData.shareId} />
 				{/snippet}
 			</Form.Control>
-			<Form.Description>Your app's share ID.</Form.Description>
+			<Form.Description
+				>Your app link's URL ID. If your id is 'tiktoksocial' it will correspond to
+				'https://your.domain.com/tiktoksocial'. This will be tied this app but needs to be unique
+				across your selected domain.
+			</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 
@@ -57,19 +61,8 @@
 				{/snippet}
 			</Form.Control>
 			<Form.Description>
-				You can manage email address in your <a href="/examples/forms">email settings</a>.
+				You can add custom network in your <a href="/integrations/">integration setttings</a>.
 			</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
-
-		<Form.Field {form} name="network">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Network</Form.Label>
-					<Input {...props} bind:value={$formData.network} />
-				{/snippet}
-			</Form.Control>
-			<Form.Description>The network you want to use.</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 
