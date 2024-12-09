@@ -7,7 +7,7 @@
 	const domainColumns = [
 		{ accessorKey: 'domain_url', header: 'Domain' },
 		{ accessorKey: 'created_at', header: 'Created At' },
-		{ accessorKey: 'id', header: 'Delete' }
+		{ accessorKey: 'db_id', header: 'Delete' }
 	];
 
 	const linkColumns = [
@@ -41,7 +41,7 @@
 			header: 'Created At'
 		},
 		{
-			accessorKey: 'id',
+			accessorKey: 'db_id',
 			header: 'Delete'
 		}
 	];

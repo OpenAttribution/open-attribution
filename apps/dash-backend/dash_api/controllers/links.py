@@ -2,7 +2,6 @@
 
 from typing import Self
 
-import dbcon
 import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
@@ -66,4 +65,4 @@ class LinkController(Controller):
     async def delete_domain(self: Self, domain_id: int) -> None:
         """Delete a domain from the database."""
         logger.info(f"{self.path} DELETE domain {domain_id=}")
-        dbcon.queries.delete_client_domains(id=domain_id)
+        dbcon.queries.delete_client_domain(domain_id=domain_id)

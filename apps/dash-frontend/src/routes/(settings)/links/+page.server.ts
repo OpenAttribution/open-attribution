@@ -46,19 +46,19 @@ export const actions = {
 	},
 	deleteClientDomain: async ({ request }) => {
 		const data = await request.formData();
-		const id = data.get('id');
+		const id = data.get('db_id');
 
-		console.log(`Domain id: ${id}`);
+		console.log(`Domain db_id: ${id}`);
 
 		const response = await fetch(`http://dash-backend:8001/api/links/domains/${id}`, {
 			method: 'DELETE'
 		});
 
-		// Check if the request was successful
 		if (!response.ok) {
-			console.error('Failed to delete the domain');
-			// Optionally, you could return some error state or message here
-			return { error: 'Failed to delete the domain' };
+			console.error(`Failed to delete the domain (${response.status})`);
+			return fail(500, {
+				message: `Failed to delete domain: (${response.status})`
+			});
 		}
 	}
 } satisfies Actions;

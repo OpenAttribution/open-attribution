@@ -18,7 +18,6 @@
 				return { icon: AlertCircle, color: 'text-red-500' };
 		}
 	};
-	console.log('MYDATA', tableData);
 </script>
 
 <Table.Root>
