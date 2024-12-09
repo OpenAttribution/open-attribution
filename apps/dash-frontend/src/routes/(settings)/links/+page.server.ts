@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
 import { superValidate, message } from 'sveltekit-superforms';
 
@@ -43,8 +43,25 @@ export const actions = {
 		}
 
 		return message(form, 'success');
+	},
+	deleteClientDomain: async ({ request }) => {
+		const data = await request.formData();
+		const id = data.get('id');
+
+		console.log(`Domain id: ${id}`);
+
+		const response = await fetch(`http://dash-backend:8001/api/links/domains/${id}`, {
+			method: 'DELETE'
+		});
+
+		// Check if the request was successful
+		if (!response.ok) {
+			console.error('Failed to delete the domain');
+			// Optionally, you could return some error state or message here
+			return { error: 'Failed to delete the domain' };
+		}
 	}
-};
+} satisfies Actions;
 
 export const load: PageServerLoad = async ({ parent }) => {
 	const { clientDomains } = await parent();
@@ -69,6 +86,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 					return 'Uncaught Error';
 				}
 			),
-		clientDomains
+		clientDomains,
+		form: await superValidate(zod(domainSchema))
 	};
 };

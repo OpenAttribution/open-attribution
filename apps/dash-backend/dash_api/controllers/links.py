@@ -5,7 +5,7 @@ from typing import Self
 import dbcon
 import dbcon.queries
 from config import get_logger
-from litestar import Controller, get, post
+from litestar import Controller, delete, get, post
 
 from dash_api.models import AppLinks
 
@@ -51,7 +51,7 @@ class LinkController(Controller):
         logger.info(f"{self.path} return {domains_dict=}")
         return myresp
 
-    @post(path="/domains")
+    @post(path="/domains/{domain_url:str}")
     async def add_domain(self: Self, domain_url: str) -> None:
         """Add a domain to the database."""
         logger.info(f"{self.path} add domain {domain_url=}")
@@ -61,3 +61,9 @@ class LinkController(Controller):
         if domain_url.endswith("/"):
             domain_url = domain_url[:-1]
         dbcon.queries.insert_client_domains(domain_url=domain_url)
+
+    @delete(path="/domains/{domain_id:int}")
+    async def delete_domain(self: Self, domain_id: int) -> None:
+        """Delete a domain from the database."""
+        logger.info(f"{self.path} DELETE domain {domain_id=}")
+        dbcon.queries.delete_client_domains(id=domain_id)

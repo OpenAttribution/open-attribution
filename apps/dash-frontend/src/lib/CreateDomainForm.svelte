@@ -20,14 +20,21 @@
 
 <form class="grid items-start gap-4 px-4" method="POST" action="?/createClientDomain" use:enhance>
 	<div class="grid gap-2">
-		https://<Form.Field {form} name="clientDomain">
+		<Form.Field {form} name="clientDomain">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Domain</Form.Label>
-					<Input {...props} bind:value={$formData.clientDomain} />
+					<div class="flex items-center gap-2">
+						<span class="text-sm text-muted-foreground">https://</span>
+						<Input {...props} bind:value={$formData.clientDomain} />
+					</div>
 				{/snippet}
 			</Form.Control>
-			<Form.Description>This is the display name of your custom network.</Form.Description>
+			<Form.Description>
+				This a domain you will want to use for custom share links. Usually these are short
+				subdomains like app.mydomain.com or oa.mydomain.com. Avoid using subdomain like 'ads' or
+				'track' to avoid conflicts with ad blockers.
+			</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 

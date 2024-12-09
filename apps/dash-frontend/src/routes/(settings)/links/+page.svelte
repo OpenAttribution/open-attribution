@@ -24,7 +24,7 @@
 		{#await data.clientDomains}
 			Loading...
 		{:then tableData}
-			<LinksTable tableData={tableData.links} />
+			<LinksTable tableData={tableData.links} isDomains={true} />
 		{/await}
 	</Card.Content>
 	<Card.Footer>
@@ -52,7 +52,7 @@
 		{#await data.linksData}
 			Loading...
 		{:then tableData}
-			<LinksTable tableData={tableData.links} />
+			<LinksTable tableData={tableData.links} isDomains={false} />
 		{/await}
 	</Card.Content>
 	<Card.Footer>

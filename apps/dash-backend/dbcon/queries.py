@@ -32,6 +32,9 @@ INSERT_NETWORK = load_sql_file(
 DELETE_NETWORK = load_sql_file(
     "delete_network.sql",
 )
+DELETE_CLIENT_DOMAIN = load_sql_file(
+    "delete_client_domain.sql",
+)
 
 QUERY_APPS = load_sql_file(
     "apps.sql",
@@ -157,11 +160,20 @@ def insert_app(app_name: str, store_id: str, store: int) -> None:
 
 
 def delete_app(app_id: int) -> None:
-    """Delete custom network."""
+    """Delete app."""
     logger.info(f"Delete app: {app_id}")
 
     with ENGINE.connect() as connection:
-        connection.execute(DELETE_NETWORK, {"app_id": app_id})
+        connection.execute(DELETE_APP, {"app_id": app_id})
+        connection.commit()
+
+
+def delete_client_domain(domain_id: int) -> None:
+    """Delete custom network."""
+    logger.info(f"Delete client domain: {domain_id}")
+
+    with ENGINE.connect() as connection:
+        connection.execute(DELETE_CLIENT_DOMAIN, {"id": domain_id})
         connection.commit()
 
 

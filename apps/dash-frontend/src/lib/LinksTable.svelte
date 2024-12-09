@@ -1,9 +1,16 @@
 <script lang="ts">
-	import OverviewTable from '$lib/my-table/OverviewTable.svelte';
+	import SettingsTable from '$lib/my-table/SettingsTable.svelte';
+	import { Trash2 } from 'lucide-svelte';
 
-	let { tableData } = $props();
+	let { tableData, isDomains } = $props();
 
-	const columns = [
+	const domainColumns = [
+		{ accessorKey: 'domain_url', header: 'Domain' },
+		{ accessorKey: 'created_at', header: 'Created At' },
+		{ accessorKey: 'id', header: 'Delete' }
+	];
+
+	const linkColumns = [
 		{ accessorKey: 'client_domain', header: 'Domain' },
 
 		{
@@ -32,12 +39,18 @@
 		{
 			accessorKey: 'created_at',
 			header: 'Created At'
+		},
+		{
+			accessorKey: 'id',
+			header: 'Delete'
 		}
 	];
+
+	const columns = isDomains ? domainColumns : linkColumns;
 </script>
 
 {#await tableData}
 	Loading...
 {:then tableData}
-	<OverviewTable {columns} data={tableData} />
+	<SettingsTable {columns} data={tableData} includeDelete={true} />
 {/await}
