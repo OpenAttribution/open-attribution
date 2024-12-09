@@ -19,7 +19,7 @@
 	</Table.Header>
 	<Table.Body>
 		{#if tableData.apps && tableData.apps.length > 0}
-			{#each tableData.apps.slice(0, 10) as entry ((entry.id, entry.store_id, entry.name))}
+			{#each tableData.apps.slice(0, 10) as entry (entry.id)}
 				<Table.Row>
 					<a href="/settings/apps/{entry.store_id}">
 						<Table.Cell>{entry.name}</Table.Cell>

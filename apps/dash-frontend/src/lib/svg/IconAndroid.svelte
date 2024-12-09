@@ -6,6 +6,7 @@
 	xmlns="http://www.w3.org/2000/svg"
 	class="w-[{size}px] h-[{size}px] flex justify-center items-center"
 	viewBox="0 0 50 50"
+	fill="currentColor"
 	width="1em"
 	height="1em"
 	><path
