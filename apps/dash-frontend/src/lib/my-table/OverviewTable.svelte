@@ -73,8 +73,6 @@
 			}
 		}
 	});
-
-	console.log('HIIII0001111');
 </script>
 
 <div class="flex items-center py-4">
@@ -85,9 +83,7 @@
 			{/snippet}
 		</DropdownMenu.Trigger>
 		<DropdownMenu.Content align="end">
-			{console.log('HIIII000')}
 			{#if table.getRowModel().rows.length > 0}
-				{console.log('HIIII', table.getRowModel().rows)}
 				{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column.id)}
 					<DropdownMenu.CheckboxItem
 						class="capitalize"

@@ -7,12 +7,15 @@
 	import { Loader } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 
+	import IconAndroid from '$lib/svg/IconAndroid.svelte';
+	import IconIOS from '$lib/svg/IconiOS.svelte';
+
 	import * as Select from '$lib/components/ui/select';
 
 	import { page } from '$app/stores';
 
 	// export let data: SuperValidated<Infer<AppSchema>>;
-	let { data, appId, networks } = $props();
+	let { data, myApps, networks } = $props();
 	type Message = { status: 'error' | 'success' | 'warning'; text: string };
 	const form = superForm(data, {
 		validators: zodClient(linkSchema),
@@ -24,9 +27,9 @@
 </script>
 
 <form method="POST" use:enhance class="space-y-6" action="?/createLink">
-	<h2 class="h2">Create Link for Store ID: {$page.params.storeid}</h2>
-	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-		<input type="hidden" name="appId" value={appId} />
+	<h2 class="h2">Create Link</h2>
+	<div class="grid grid-cols-1 gap-6">
+		<!-- <input type="hidden" name="appId" value={appId} /> -->
 		<input type="hidden" name="storeId" value={$page.params.storeid} />
 
 		<Form.Field {form} name="shareSlug">
@@ -42,6 +45,76 @@
 				across your selected domain.
 			</Form.Description>
 			<Form.FieldErrors />
+		</Form.Field>
+
+		<Form.Field {form} name="androidAppId">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Android App</Form.Label>
+					<Select.Root type="single" bind:value={$formData.androidAppId} name={props.name}>
+						<Select.Trigger {...props}>
+							{$formData.androidAppId ? $formData.androidAppId : 'Select an android app'}
+						</Select.Trigger>
+						<Select.Content>
+							{#each myApps as app}
+								{#if app.store === 1}
+									<Select.Item value={app.name} label={app.name}>
+										<div class="flex items-center gap-2">
+											{#if app.store === 1}
+												<IconAndroid size="40" />
+											{/if}
+											{#if app.store === 2}
+												<IconIOS size="40" />
+											{/if}
+											{app.name}
+										</div>
+									</Select.Item>
+								{/if}
+							{/each}
+						</Select.Content>
+					</Select.Root>
+					<input
+						type="hidden"
+						name="androidAppId"
+						value={myApps.find((n: any) => n.name === $formData.androidAppId)?.id ?? ''}
+					/>
+				{/snippet}
+			</Form.Control>
+		</Form.Field>
+
+		<Form.Field {form} name="iosAppId">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>iOS App</Form.Label>
+					<Select.Root type="single" bind:value={$formData.iosAppId} name={props.name}>
+						<Select.Trigger {...props}>
+							{$formData.iosAppId ? $formData.iosAppId : 'Select an iOS app'}
+						</Select.Trigger>
+						<Select.Content>
+							{#each myApps as app}
+								{#if app.store === 2}
+									<Select.Item value={app.name} label={app.name}>
+										<div class="flex items-center gap-2">
+											{#if app.store === 1}
+												<IconAndroid size="50" />
+											{/if}
+											{#if app.store === 2}
+												<IconIOS size="40" />
+											{/if}
+											{app.name}
+										</div>
+									</Select.Item>
+								{/if}
+							{/each}
+						</Select.Content>
+					</Select.Root>
+					<input
+						type="hidden"
+						name="iosAppId"
+						value={myApps.find((n: any) => n.name === $formData.iosAppId)?.id ?? ''}
+					/>
+				{/snippet}
+			</Form.Control>
 		</Form.Field>
 
 		<Form.Field {form} name="network">
@@ -65,6 +138,7 @@
 					/>
 				{/snippet}
 			</Form.Control>
+
 			<Form.Description>
 				You can add custom network in your <a href="/integrations/">integration setttings</a>.
 			</Form.Description>

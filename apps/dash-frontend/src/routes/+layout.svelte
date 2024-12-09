@@ -6,7 +6,7 @@
 	import Moon from 'lucide-svelte/icons/moon';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 	import LineChart from 'lucide-svelte/icons/chart-column';
-	import { Blocks, Settings } from 'lucide-svelte';
+	import { Blocks, Settings, Link } from 'lucide-svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 	let { children } = $props();
 </script>
@@ -22,32 +22,32 @@
 		</a>
 
 		<a href="/" class="flex text-muted-foreground hover:text-foreground transition-colors"
-			><LineChart></LineChart> Dashboard
+			><LineChart /> Dashboard
 		</a>
 		<a
 			href="/integrations"
 			class="flex text-muted-foreground hover:text-foreground transition-colors"
 		>
-			<Blocks></Blocks>
+			<Blocks />
 			Integrations
 		</a>
 		<a
 			href="/settings/general"
 			class="flex text-muted-foreground hover:text-foreground transition-colors"
 		>
-			<Settings></Settings>
+			<Settings />
 			Settings
 		</a>
 		<a
 			href="/settings/apps"
 			class="flex text-muted-foreground hover:text-foreground transition-colors"
 		>
-			<Settings></Settings>
-			App Settings
+			<Settings />
+			Apps
 		</a>
 		<a href="/links" class="flex text-muted-foreground hover:text-foreground transition-colors">
-			<Settings></Settings>
-			Link Settings
+			<Link />
+			Links
 		</a>
 	</nav>
 	<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">

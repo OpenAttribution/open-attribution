@@ -50,10 +50,11 @@ export const actions = {
 } satisfies Actions;
 
 export const load: PageServerLoad = async ({ parent }) => {
-	const { appData } = await parent();
+	const { respApps, respNets } = await parent();
 
 	return {
-		appData: appData,
+		respApps: respApps,
+		respNets: respNets,
 		form: await superValidate(zod(linkSchema))
 	};
 };

@@ -18,17 +18,11 @@
 				<Card.Description>Setup your Links.</Card.Description>
 			</Card.Header>
 			<Card.Content>
-				{#await data.appData}
-					<Loader />
-				{:then}
-					<AddLink
-						data={data.form}
-						appId={data.appData.app.id}
-						networks={data.respNets.custom_networks}
-					/>
-				{:catch}
-					<div class="text-red-500">Error loading app data</div>
-				{/await}
+				<AddLink
+					data={data.form}
+					myApps={data.respApps.apps}
+					networks={data.respNets.custom_networks}
+				/>
 			</Card.Content>
 			<Card.Footer></Card.Footer>
 		</Card.Root>

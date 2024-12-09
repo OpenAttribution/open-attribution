@@ -42,7 +42,12 @@ QUERY_APP = load_sql_file(
 QUERY_APP_LINKS = load_sql_file(
     "app_links.sql",
 )
-
+QUERY_CLIENT_DOMAINS = load_sql_file(
+    "client_domains.sql",
+)
+INSERT_CLIENT_DOMAINS = load_sql_file(
+    "insert_client_domains.sql",
+)
 
 INSERT_APP = load_sql_file(
     "insert_app.sql",
@@ -74,6 +79,25 @@ def query_app_links() -> pd.DataFrame:
         con=DBCON.engine,
     )
     return df
+
+
+def query_client_domains() -> pd.DataFrame:
+    """Get all client domains."""
+    logger.info("Query all client domains.")
+    df = pd.read_sql(
+        QUERY_CLIENT_DOMAINS,
+        con=DBCON.engine,
+    )
+    return df
+
+
+def insert_client_domains(domain_url: str) -> None:
+    """Insert a new client domain."""
+    logger.info(f"Inserting new client domain: {domain_url}")
+
+    with ENGINE.connect() as connection:
+        connection.execute(INSERT_CLIENT_DOMAINS, {"domain_url": domain_url})
+        connection.commit()
 
 
 def insert_custom_network(network_name: str, postback_id: str) -> None:

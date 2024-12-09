@@ -2,7 +2,7 @@
 	import * as Card from '$lib/components/ui/card/index';
 	import * as Tabs from '$lib/components/ui/tabs/index';
 
-	import AddNetwork from '../../lib/AddCustomNetworkPopup.svelte';
+	import AddNetwork from '$lib/AddCustomNetworkPopup.svelte';
 
 	import { ListFilter } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';

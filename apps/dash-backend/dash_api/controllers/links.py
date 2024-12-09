@@ -5,7 +5,7 @@ from typing import Self
 import dbcon
 import dbcon.queries
 from config import get_logger
-from litestar import Controller, get
+from litestar import Controller, get, post
 
 from dash_api.models import AppLinks
 
@@ -34,24 +34,30 @@ class LinkController(Controller):
         logger.info(f"{self.path} return {links_dict=}")
         return myresp
 
-    # @post(path="/{app_id:int}/links")
-    # async def add_app_link(
-    #     self: Self,
-    #     app_id: int,
-    #     share_slug: str,
-    #     network_id: int,
-    #     campaign_name: str,
-    #     ad_name: str,
-    # ) -> None:
-    #     """Create an app link."""
-    #     logger.info(
-    #         f"{self.path} apps add {app_id=} {share_slug=} {network_id=} {campaign_name=}",
-    #     )
+    @get(path="/domains")
+    async def domains(self: Self) -> AppLinks:
+        """
+        Handle GET request for a list of domains.
 
-    #     dbcon.queries.insert_app_link(
-    #         share_slug=share_slug,
-    #         network_id=network_id,
-    #         campaign_name=campaign_name,
-    #         ad_name=ad_name,
-    #         app_id=app_id,
-    #     )
+        Returns
+        -------
+            Data for a list of domains
+
+        """
+        logger.info(f"{self.path} domains load")
+        df = dbcon.queries.query_client_domains()
+        domains_dict = df.to_dict(orient="records")
+        myresp = AppLinks(links=domains_dict)
+        logger.info(f"{self.path} return {domains_dict=}")
+        return myresp
+
+    @post(path="/domains")
+    async def add_domain(self: Self, domain_url: str) -> None:
+        """Add a domain to the database."""
+        logger.info(f"{self.path} add domain {domain_url=}")
+        domain_url = domain_url.replace("https://", "")
+        domain_url = domain_url.replace("http://", "")
+        domain_url = domain_url.replace("www.", "")
+        if domain_url.endswith("/"):
+            domain_url = domain_url[:-1]
+        dbcon.queries.insert_client_domains(domain_url=domain_url)

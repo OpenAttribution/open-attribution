@@ -14,8 +14,8 @@
 			accessorKey: 'network_name',
 			header: 'Network'
 		},
-		{ accessorKey: 'play_store_app', header: 'Play Store App' },
-		{ accessorKey: 'ios_app', header: 'iOS App' },
+		{ accessorKey: 'google_store_app', header: 'Google Play Store App' },
+		{ accessorKey: 'apple_store_app', header: 'Apple Store App' },
 
 		{
 			accessorKey: 'campaign_name',

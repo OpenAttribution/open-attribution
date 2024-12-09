@@ -31,3 +31,8 @@ export const networkSchema = z.object({
 		})
 });
 export type NetworkSchema = typeof networkSchema;
+
+export const domainSchema = z.object({
+	clientDomain: z.string().min(2).max(50)
+});
+export type DomainSchema = typeof domainSchema;
