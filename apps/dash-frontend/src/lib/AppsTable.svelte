@@ -1,37 +1,11 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table';
-	import { CheckCircle, XCircle, AlertCircle, CirclePlus, Trash2 } from 'lucide-svelte';
+	import { Trash2 } from 'lucide-svelte';
 
 	import IconAndroid from '$lib/svg/IconAndroid.svelte';
 	import IconIOS from '$lib/svg/IconiOS.svelte';
 
 	let { tableData } = $props();
-
-	// Helper function to get the appropriate icon and color for status
-	const getStatusIcon = (status: String) => {
-		switch (status) {
-			case 'active':
-				return { icon: CheckCircle, color: 'text-green-200' };
-			case 'inactive':
-				return { icon: XCircle, color: 'text-gray-500' };
-			case 'error':
-				return { icon: AlertCircle, color: 'text-red-500' };
-			default:
-				return { icon: AlertCircle, color: 'text-red-500' };
-		}
-	};
-
-	// Helper function to get the appropriate icon and color for status
-	const getStoreIcon = (storeId: number) => {
-		switch (storeId) {
-			case 1:
-				return { icon: IconAndroid, color: 'text-green-200' };
-			case 2:
-				return { icon: IconIOS, color: 'text-gray-500' };
-			default:
-				return { icon: AlertCircle, color: 'text-red-500' };
-		}
-	};
 </script>
 
 <Table.Root>
@@ -65,12 +39,6 @@
 									</button>
 								</label>
 							</form>
-						{/if}
-					</Table.Cell>
-					<Table.Cell>
-						{#if entry.status}
-							{@const statusInfo = getStatusIcon(entry.status)}
-							<statusInfo.icon class={statusInfo.color} size={20} />
 						{/if}
 					</Table.Cell>
 					<Table.Cell>
