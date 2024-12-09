@@ -21,10 +21,6 @@
 			header: 'Ad Name'
 		},
 		{
-			accessorKey: 'ad_id',
-			header: 'Ad ID'
-		},
-		{
 			accessorKey: 'created_at',
 			header: 'Created At'
 		}
