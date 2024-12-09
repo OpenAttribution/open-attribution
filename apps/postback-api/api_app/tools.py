@@ -1,7 +1,8 @@
 """Shared tools to standardize enriching postbacks."""
 
-import uuid
 import datetime
+import uuid
+
 from litestar import Request
 
 EMPTY_IFA = "00000000-0000-0000-0000-000000000000"

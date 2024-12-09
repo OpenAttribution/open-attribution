@@ -1,6 +1,5 @@
 """API for returning analytics data for dash."""
 
-from enum import Enum
 from typing import Self
 
 import dbcon

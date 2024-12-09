@@ -15,9 +15,8 @@ Endpoints for Share Links
 import json
 from typing import Self
 
-from api_app.tools import get_client_ip, now, EMPTY_IFA, generate_link_uid
-
-from config import get_logger, CLICK_PRODUCER
+import requests
+from config import CLICK_PRODUCER, get_logger
 from config.dimensions import (
     DB_AD_ID,
     DB_AD_NAME,
@@ -35,10 +34,10 @@ from config.dimensions import (
 )
 from confluent_kafka import KafkaException
 from detect.geo import get_geo
-from litestar import Controller, Request, get, RedirectResponse, BackgroundTask
+from litestar import BackgroundTask, Controller, RedirectResponse, Request, get
 from litestar.exceptions import HTTPException
 
-import requests
+from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
 logger = get_logger(__name__)
 
@@ -146,7 +145,6 @@ class ShareController(Controller):
         ```
 
         """
-
         link_uid = generate_link_uid()
 
         # TODO: move this to process_share_link?
@@ -158,6 +156,6 @@ class ShareController(Controller):
         return RedirectResponse(
             url=redirect_url,
             background=BackgroundTask(
-                process_share_link, share_slug, client_host, link_uid
+                process_share_link, share_slug, client_host, link_uid,
             ),
         )
