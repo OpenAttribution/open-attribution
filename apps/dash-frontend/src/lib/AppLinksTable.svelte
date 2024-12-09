@@ -1,11 +1,15 @@
 <script lang="ts">
 	import OverviewTable from '$lib/my-table/OverviewTable.svelte';
 
-	let { appLinks } = $props();
+	let { tableData } = $props();
 
 	const columns = [
 		{
-			accessorKey: 'network',
+			accessorKey: 'share_id',
+			header: 'Share ID'
+		},
+		{
+			accessorKey: 'network_name',
 			header: 'Network'
 		},
 		{
@@ -27,8 +31,8 @@
 	];
 </script>
 
-{#await appLinks}
+{#await tableData}
 	Loading...
-{:then appLinks}
-	<OverviewTable {columns} data={appLinks} />
+{:then tableData}
+	<OverviewTable {columns} data={tableData} />
 {/await}

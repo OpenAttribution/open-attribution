@@ -4,9 +4,10 @@ export const linkSchema = z.object({
 	appId: z.number(),
 	storeId: z.string(),
 	shareId: z.string().min(2).max(50),
-	network: z.string().min(2).max(50),
+	networkId: z.number(),
+	networkName: z.string(),
 	campaignName: z.string().min(2).max(50),
-	adName: z.string().min(2).max(50).optional()
+	adName: z.string().max(50).optional().default('')
 });
 export type LinkSchema = typeof linkSchema;
 

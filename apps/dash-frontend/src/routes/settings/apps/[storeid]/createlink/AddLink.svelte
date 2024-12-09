@@ -58,6 +58,11 @@
 							{/each}
 						</Select.Content>
 					</Select.Root>
+					<input
+						type="hidden"
+						name="networkId"
+						value={networks.find((n: any) => n.name === $formData.network)?.id ?? ''}
+					/>
 				{/snippet}
 			</Form.Control>
 			<Form.Description>

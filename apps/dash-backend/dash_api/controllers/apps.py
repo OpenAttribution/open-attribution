@@ -8,7 +8,7 @@ import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
 
-from dash_api.models import App, Apps
+from dash_api.models import App, AppLinks, Apps
 
 logger = get_logger(__name__)
 
@@ -60,7 +60,7 @@ class AppController(Controller):
         return myresp
 
     @get(path="/{app_id:int}/links")
-    async def app_links(self: Self, app_id: int) -> App:
+    async def app_links(self: Self, app_id: int) -> AppLinks:
         """
         Handle GET request for a single app links.
 
@@ -70,10 +70,10 @@ class AppController(Controller):
 
         """
         logger.info(f"{self.path} apps load")
-        app_df = dbcon.queries.query_app_links(app_id)
-        app_dict = app_df.to_dict(orient="records")[0]
-        myresp = App(app=app_dict)
-        logger.info(f"{self.path} return {app_dict=}")
+        df = dbcon.queries.query_app_links(app_id)
+        links_dict = df.to_dict(orient="records")
+        myresp = AppLinks(links=links_dict)
+        logger.info(f"{self.path} return {links_dict=}")
         return myresp
 
     @post(path="/{app_id:int}/links")
@@ -81,18 +81,18 @@ class AppController(Controller):
         self: Self,
         app_id: int,
         share_id: str,
-        network: str,
+        network_id: int,
         campaign_name: str,
         ad_name: str,
     ) -> None:
         """Create an app link."""
         logger.info(
-            f"{self.path} apps add {app_id=} {share_id=} {network=} {campaign_name=}",
+            f"{self.path} apps add {app_id=} {share_id=} {network_id=} {campaign_name=}",
         )
 
         dbcon.queries.insert_app_link(
             share_id=share_id,
-            network=network,
+            network_id=network_id,
             campaign_name=campaign_name,
             ad_name=ad_name,
             app_id=app_id,

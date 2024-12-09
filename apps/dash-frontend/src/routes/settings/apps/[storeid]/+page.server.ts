@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		res.json()
 	);
 
-	const appLinks = await fetch(`http://dash-backend:8001/api/apps/${appData.id}/links`).then(
+	const appLinks = await fetch(`http://dash-backend:8001/api/apps/${appData.app.id}/links`).then(
 		(res) => res.json()
 	);
 

@@ -10,6 +10,7 @@ class Network:
     network: str
     network_name: str
 
+
 @dataclass
 class StoreId:
     """Store ID."""
@@ -40,10 +41,18 @@ class Networks:
 class Apps:
     """All apps."""
 
-    apps: dict
+    apps: list[dict]
+
 
 @dataclass
 class App:
     """A single app."""
 
     app: dict
+
+
+@dataclass
+class AppLinks:
+    """All app links."""
+
+    links: list[dict]

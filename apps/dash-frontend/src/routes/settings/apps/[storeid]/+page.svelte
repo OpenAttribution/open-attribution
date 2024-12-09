@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index';
 	import * as Card from '$lib/components/ui/card/index';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import { page } from '$app/stores';
 	import { CirclePlus } from 'lucide-svelte';
 	import AppLinksTable from '$lib/AppLinksTable.svelte';
@@ -69,7 +68,7 @@
 		{#await data.appLinks}
 			Loading...
 		{:then appLinks}
-			<AppLinksTable {appLinks} />
+			<AppLinksTable tableData={appLinks.links} />
 		{/await}
 	</Card.Content>
 </Card.Root>

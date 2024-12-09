@@ -144,23 +144,23 @@ def delete_app(app_id: int) -> None:
 
 def insert_app_link(
     share_id: str,
-    network: str,
+    network_id: int,
     campaign_name: str,
     ad_name: str,
     app_id: int,
 ) -> None:
     """Insert a new app link."""
     logger.info(
-        f"Inserting new app link: {share_id} {network} {campaign_name} {ad_name} {app_id}",
+        f"Inserting new app link: {share_id} {network_id} {campaign_name} {ad_name} {app_id}",
     )
 
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_APP_LINK,
             {
-                "app_id": app_id,
+                "app": app_id,
                 "share_id": share_id,
-                "network": network,
+                "network": network_id,
                 "campaign_name": campaign_name,
                 "ad_name": ad_name,
             },
