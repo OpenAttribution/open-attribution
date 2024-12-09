@@ -1,8 +1,10 @@
 <script lang="ts">
 	import SettingsTable from '$lib/my-table/SettingsTable.svelte';
-	import { Trash2 } from 'lucide-svelte';
 
 	let { tableData, isDomains } = $props();
+
+	let columns = $state([{ accessorKey: '', header: '' }]);
+	let actionDeleteString: string = $state('');
 
 	const domainColumns = [
 		{ accessorKey: 'domain_url', header: 'Domain' },
@@ -46,11 +48,17 @@
 		}
 	];
 
-	const columns = isDomains ? domainColumns : linkColumns;
+	if (isDomains) {
+		columns = domainColumns;
+		actionDeleteString = '?/deleteClientDomain';
+	} else {
+		columns = linkColumns;
+		actionDeleteString = '?/deleteLink';
+	}
 </script>
 
 {#await tableData}
 	Loading...
 {:then tableData}
-	<SettingsTable {columns} data={tableData} includeDelete={true} />
+	<SettingsTable {columns} data={tableData} {actionDeleteString} />
 {/await}

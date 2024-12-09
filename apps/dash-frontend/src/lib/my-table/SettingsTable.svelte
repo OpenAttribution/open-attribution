@@ -21,10 +21,10 @@
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
 		data: TData[];
-		includeDelete?: boolean;
+		actionDeleteString?: string;
 	};
 
-	let { data, columns, includeDelete = false }: DataTableProps<TData, TValue> = $props();
+	let { data, columns, actionDeleteString = '' }: DataTableProps<TData, TValue> = $props();
 
 	// this is confirming the columns are being passed in correctly
 	// console.log('Data table columns', columns[0].accessorKey, columns[1].accessorKey);
@@ -125,8 +125,8 @@
 				<Table.Row data-state={row.getIsSelected() && 'selected'}>
 					{#each row.getVisibleCells() as cell (cell.id)}
 						<Table.Cell>
-							{#if includeDelete && cell.column.columnDef.accessorKey === 'db_id'}
-								<form method="POST" action="?/deleteClientDomain">
+							{#if actionDeleteString && cell.column.columnDef.accessorKey === 'db_id'}
+								<form method="POST" action={actionDeleteString}>
 									<input type="hidden" name="db_id" value={cell.row.original.db_id} />
 									<label class="inline-flex items-center">
 										<button

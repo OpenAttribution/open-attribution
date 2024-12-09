@@ -27,16 +27,6 @@
 			<LinksTable tableData={tableData.links} isDomains={true} />
 		{/await}
 	</Card.Content>
-	<Card.Footer>
-		<div class="flex items-center gap-2 my-4">
-			<a href="links/create">
-				<Button size="sm" class="h-8 gap-1">
-					<CirclePlus class="h-3.5 w-3.5" />
-					<span class="sr-only sm:not-sr-only sm:whitespace-nowrap">New Link</span>
-				</Button>
-			</a>
-		</div>
-	</Card.Footer>
 </Card.Root>
 
 <h2 class="text-xl">Link Settings</h2>
@@ -49,13 +39,6 @@
 		<Card.Description>Manage your Links and their settings.</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		{#await data.linksData}
-			Loading...
-		{:then tableData}
-			<LinksTable tableData={tableData.links} isDomains={false} />
-		{/await}
-	</Card.Content>
-	<Card.Footer>
 		<div class="flex items-center gap-2 my-4">
 			<a href="links/create">
 				<Button size="sm" class="h-8 gap-1">
@@ -64,5 +47,10 @@
 				</Button>
 			</a>
 		</div>
-	</Card.Footer>
+		{#await data.linksData}
+			Loading...
+		{:then tableData}
+			<LinksTable tableData={tableData.links} isDomains={false} />
+		{/await}
+	</Card.Content>
 </Card.Root>

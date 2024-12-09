@@ -59,6 +59,10 @@ DELETE_APP = load_sql_file(
     "delete_app.sql",
 )
 
+DELETE_APP_LINK = load_sql_file(
+    "delete_app_link.sql",
+)
+
 INSERT_APP_LINK = load_sql_file(
     "insert_app_link.sql",
 )
@@ -165,6 +169,15 @@ def delete_app(app_id: int) -> None:
 
     with ENGINE.connect() as connection:
         connection.execute(DELETE_APP, {"app_id": app_id})
+        connection.commit()
+
+
+def delete_app_link(link_id: int) -> None:
+    """Delete app link."""
+    logger.info(f"Delete app link: {link_id}")
+
+    with ENGINE.connect() as connection:
+        connection.execute(DELETE_APP_LINK, {"link_id": link_id})
         connection.commit()
 
 

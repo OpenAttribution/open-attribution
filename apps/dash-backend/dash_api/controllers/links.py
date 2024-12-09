@@ -33,6 +33,19 @@ class LinkController(Controller):
         logger.info(f"{self.path} return {links_dict=}")
         return myresp
 
+    @delete(path="/{link_id:int}")
+    async def delete_link(self: Self, link_id: int) -> None:
+        """
+        Handle DELETE request for a link.
+
+        Returns
+        -------
+            Data for a list of links
+
+        """
+        logger.info(f"{self.path} DELETE link {link_id=}")
+        dbcon.queries.delete_app_link(link_id=link_id)
+
     @get(path="/domains")
     async def domains(self: Self) -> AppLinks:
         """

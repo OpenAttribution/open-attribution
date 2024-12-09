@@ -44,6 +44,7 @@ export const actions = {
 
 		return message(form, 'success');
 	},
+
 	deleteClientDomain: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('db_id');
@@ -58,6 +59,24 @@ export const actions = {
 			console.error(`Failed to delete the domain (${response.status})`);
 			return fail(500, {
 				message: `Failed to delete domain: (${response.status})`
+			});
+		}
+	},
+
+	deleteLink: async ({ request }) => {
+		const data = await request.formData();
+		const id = data.get('db_id');
+
+		console.log(`Link db_id: ${id}`);
+
+		const response = await fetch(`http://dash-backend:8001/api/links/${id}`, {
+			method: 'DELETE'
+		});
+
+		if (!response.ok) {
+			console.error(`Failed to delete the link (${response.status})`);
+			return fail(500, {
+				message: `Failed to delete link: (${response.status})`
 			});
 		}
 	}

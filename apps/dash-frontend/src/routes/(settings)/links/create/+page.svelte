@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card/index';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { Loader } from 'lucide-svelte';
 	import type { PageData } from '../$types';
 
 	const { data } = $props<{ data: PageData }>();
