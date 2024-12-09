@@ -3,7 +3,7 @@
 	import * as Card from '$lib/components/ui/card/index';
 	import { page } from '$app/stores';
 	import { CirclePlus } from 'lucide-svelte';
-	import AppLinksTable from '$lib/AppLinksTable.svelte';
+	import AppLinksTable from '$lib/LinksTable.svelte';
 	import { format } from 'date-fns';
 
 	import IconAndroid from '$lib/svg/IconAndroid.svelte';
