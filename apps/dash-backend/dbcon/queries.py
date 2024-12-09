@@ -66,12 +66,11 @@ def query_networks() -> pd.DataFrame:
     return df
 
 
-def query_app_links(app_id: int) -> pd.DataFrame:
+def query_app_links() -> pd.DataFrame:
     """Get all apps links."""
-    logger.info(f"Query all apps links for {app_id}.")
+    logger.info("Query all apps links.")
     df = pd.read_sql(
         QUERY_APP_LINKS,
-        params={"app": app_id},
         con=DBCON.engine,
     )
     return df

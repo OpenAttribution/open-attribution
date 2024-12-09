@@ -7,5 +7,4 @@ SELECT
 FROM app_links al
 LEFT JOIN networks n
 ON al.network = n.id
-WHERE al.play_store_app = :app OR al.ios_app = :app
 ;

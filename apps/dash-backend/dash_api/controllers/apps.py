@@ -8,7 +8,7 @@ import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
 
-from dash_api.models import App, AppLinks, Apps
+from dash_api.models import App, Apps
 
 logger = get_logger(__name__)
 
@@ -58,45 +58,6 @@ class AppController(Controller):
         myresp = App(app=app_dict)
         logger.info(f"{self.path} return {app_dict=}")
         return myresp
-
-    @get(path="/{app_id:int}/links")
-    async def app_links(self: Self, app_id: int) -> AppLinks:
-        """
-        Handle GET request for a single app links.
-
-        Returns
-        -------
-            Data for a single app links
-
-        """
-        logger.info(f"{self.path} apps load")
-        df = dbcon.queries.query_app_links(app_id)
-        links_dict = df.to_dict(orient="records")
-        myresp = AppLinks(links=links_dict)
-        logger.info(f"{self.path} return {links_dict=}")
-        return myresp
-
-    @post(path="/{app_id:int}/links")
-    async def add_app_link(
-        self: Self,
-        app_id: int,
-        share_slug: str,
-        network_id: int,
-        campaign_name: str,
-        ad_name: str,
-    ) -> None:
-        """Create an app link."""
-        logger.info(
-            f"{self.path} apps add {app_id=} {share_slug=} {network_id=} {campaign_name=}",
-        )
-
-        dbcon.queries.insert_app_link(
-            share_slug=share_slug,
-            network_id=network_id,
-            campaign_name=campaign_name,
-            ad_name=ad_name,
-            app_id=app_id,
-        )
 
     @post(path="/{store_id:str}")
     async def add_app(
