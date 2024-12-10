@@ -27,12 +27,18 @@ export const actions = {
 		const campaign_name = form.data.campaignName;
 		const ad_name = form.data.adName;
 
-		const apiUrl = `links/${domain_id}?google_app_id=${android_app_id}&apple_app_id=${ios_app_id}&share_slug=${share_slug}&network_id=${network_id}&campaign_name=${campaign_name}&ad_name=${ad_name}`;
+		console.log(`Form data: ${JSON.stringify(form.data)}`);
 
-		console.log(`Create share link ${apiUrl}`);
-
-		const response = await fetch(`http://dash-backend:8001/api/${apiUrl}`, {
-			method: 'POST'
+		const response = await fetch(`http://dash-backend:8001/api/links/${domain_id}`, {
+			method: 'POST',
+			body: JSON.stringify({
+				google_app_id: android_app_id,
+				apple_app_id: ios_app_id,
+				share_slug: share_slug,
+				network_id: network_id,
+				campaign_name: campaign_name,
+				ad_name: ad_name
+			})
 		});
 
 		if (!response.ok) {

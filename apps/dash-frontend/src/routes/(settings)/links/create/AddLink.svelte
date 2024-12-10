@@ -43,31 +43,30 @@
 	</h2>
 	<div class="grid grid-cols-3 gap-6">
 		<div class="col-span-1 text-lg">Domain</div>
-		<Form.Field {form} name="domain" class="col-span-2">
+		<Form.Field {form} name="domainId" class="col-span-2">
 			<div class={mainRowClass}>
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<Select.Root type="single" bind:value={$formData.domain_url} name={props.name}>
+							<Select.Root type="single" bind:value={$formData.domainId} name={props.name}>
 								<Select.Trigger {...props}>
-									{$formData.domain_url ? $formData.domain_url : 'Select a domain to display'}
+									{$formData.domainId
+										? myDomains.find((domain: any) => domain.db_id === $formData.domainId)
+												?.domain_url
+										: 'Select a domain to display'}
 								</Select.Trigger>
 								<Select.Content>
 									{#each myDomains as domain}
-										<Select.Item value={domain.domain_url} label={domain.domain_url} />
+										<Select.Item value={domain.db_id} label={domain.domain_url} />
 									{/each}
 								</Select.Content>
 							</Select.Root>
-							<input
-								type="hidden"
-								name="domainId"
-								value={myDomains.find((n: any) => n.domain_url === $formData.domain_url)?.id ?? ''}
-							/>
 						{/snippet}
 					</Form.Control>
 				</div>
 				<Form.Description class="col-span-8">
 					You can add custom domains in your <a href="/integrations/">integration setttings </a>.
+					Stored in database and associated with the URL you choose.
 				</Form.Description>
 				<Form.FieldErrors />
 			</div>
@@ -87,41 +86,37 @@
 					</Form.Control>
 				</div>
 				<Form.Description class="col-span-8">
-					Your app link's URL slug. This value must be urlsafe, and likely shorter is better for
-					sharing. If your slug is 'tiktoksocial' it will correspond to
-					'https://your.domain.com/s/tiktoksocial'. This will be tied this app but needs to be
-					unique across your selected domain.
+					Your share link's URL suffix slug. Can be 1-50 characters. This value must be urlsafe.
+					Shorter is better for sharing. If your slug is 'fb' it will correspond to
+					'https://your.domain.com/fb'. This will need to be unique across your selected domain.
 				</Form.Description>
 			</div>
 			<Form.FieldErrors />
 		</Form.Field>
 
 		<div class="col-span-1 text-lg">Network</div>
-		<Form.Field {form} name="network" class="col-span-2">
+		<Form.Field {form} name="networkId" class="col-span-2">
 			<div class={mainRowClass}>
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<Select.Root type="single" bind:value={$formData.network} name={props.name}>
+							<Select.Root type="single" bind:value={$formData.networkId} name={props.name}>
 								<Select.Trigger {...props}>
-									{$formData.network ? $formData.network : 'Select a network to display'}
+									{$formData.networkId
+										? networks.find((network: any) => network.id === $formData.networkId)?.name
+										: 'Select a network to display'}
 								</Select.Trigger>
 								<Select.Content>
 									{#each networks as network}
-										<Select.Item value={network.name} label={network.name} />
+										<Select.Item value={network.id} label={network.name} />
 									{/each}
 								</Select.Content>
 							</Select.Root>
-							<input
-								type="hidden"
-								name="networkId"
-								value={networks.find((n: any) => n.name === $formData.network)?.id ?? ''}
-							/>
 						{/snippet}
 					</Form.Control>
 				</div>
 				<Form.Description class="col-span-8">
-					You can add custom network in your <a href="/integrations/">integration setttings </a>.
+					You can add new custom networks in <a href="/integrations/">integration setttings</a>.
 				</Form.Description>
 				<Form.FieldErrors />
 			</div>
@@ -153,18 +148,11 @@
 									{/each}
 								</Select.Content>
 							</Select.Root>
-							<!-- <input
-								type="hidden"
-								name="googleAppId"
-								value={myApps.find((n: any) => n.id === $formData.googleAppId)?.id ?? ''}
-							/> -->
 						{/snippet}
 					</Form.Control>
 				</div>
 				<Form.Description class="col-span-8">
-					Your app link's URL ID. If your id is 'tiktoksocial' it will correspond to
-					'https://your.domain.com/s/tiktoksocial'. This will be tied this app but needs to be
-					unique across your selected domain.
+					Optional. The Google Play Store App you'd like to redirect to when Android is detected.
 				</Form.Description>
 			</div>
 			<Form.FieldErrors />
@@ -196,18 +184,11 @@
 									{/each}
 								</Select.Content>
 							</Select.Root>
-							<!-- <input
-								type="hidden"
-								name="appleAppId"
-								value={myApps.find((n: any) => n.name === $formData.appleAppId)?.id ?? ''}
-							/> -->
 						{/snippet}
 					</Form.Control>
 				</div>
 				<Form.Description class="col-span-8">
-					Your app link's URL ID. If your id is 'tiktoksocial' it will correspond to
-					'https://your.domain.com/s/tiktoksocial'. This will be tied this app but needs to be
-					unique across your selected domain.
+					Optional. The iOS App you'd like to redirect to when iOS is detected.
 				</Form.Description>
 			</div>
 			<Form.FieldErrors />
@@ -219,12 +200,14 @@
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<!-- <Form.Label class={labelClass}>Campaign Name</Form.Label> -->
 							<Input {...props} bind:value={$formData.campaignName} />
 						{/snippet}
 					</Form.Control>
 				</div>
-				<Form.Description class="col-span-8">The campaign name you want to use.</Form.Description>
+				<Form.Description class="col-span-8"
+					>2 - 50 characters. The campaign name you want to use. This is stored in the backend and
+					will be associated with the URL you choose.</Form.Description
+				>
 				<Form.FieldErrors />
 			</div>
 		</Form.Field>
@@ -235,12 +218,14 @@
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<!-- <Form.Label class={labelClass}>Ad Name</Form.Label> -->
 							<Input {...props} bind:value={$formData.adName} />
 						{/snippet}
 					</Form.Control>
 				</div>
-				<Form.Description class="col-span-8">The ad name you want to use.</Form.Description>
+				<Form.Description class="col-span-8"
+					>Optional. 2-50 characters. The ad name you want to use. Stored in the backend and
+					associated with the URL you choose.</Form.Description
+				>
 				<Form.FieldErrors />
 			</div>
 		</Form.Field>

@@ -85,6 +85,7 @@ def query_app_links() -> pd.DataFrame:
         QUERY_APP_LINKS,
         con=DBCON.engine,
     )
+    df["full_url"] = df["domain_url"] + "/" + df["share_slug"]
     return df
 
 
@@ -192,12 +193,12 @@ def delete_client_domain(domain_id: int) -> None:
 
 def insert_app_link(
     domain_id: int,
-    google_app_id: int,
-    apple_app_id: int,
+    google_app_id: int | None,
+    apple_app_id: int | None,
     share_slug: str,
     network_id: int,
     campaign_name: str,
-    ad_name: str,
+    ad_name: str | None,
 ) -> None:
     """Insert a new app link."""
     logger.info(

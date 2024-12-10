@@ -1,6 +1,6 @@
 """Data models for APIs."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -56,3 +56,15 @@ class AppLinks:
     """All app links."""
 
     links: list[dict]
+
+
+@dataclass
+class LinkData:
+    """Link data."""
+
+    share_slug: str
+    network_id: int
+    campaign_name: str
+    google_app_id: int | None = field(default=None)
+    apple_app_id: int | None = field(default=None)
+    ad_name: str | None = field(default="")

@@ -68,7 +68,7 @@
 		{#await data.appLinks}
 			Loading...
 		{:then appLinks}
-			<AppLinksTable tableData={appLinks.links} />
+			<AppLinksTable tableData={appLinks.links} isDomains={false} />
 		{/await}
 	</Card.Content>
 </Card.Root>

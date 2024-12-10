@@ -6,7 +6,7 @@ import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
 
-from dash_api.models import AppLinks
+from dash_api.models import AppLinks, LinkData
 
 logger = get_logger(__name__)
 
@@ -37,42 +37,36 @@ class LinkController(Controller):
     async def add_link(
         self: Self,
         domain_id: int,
-        google_app_id: int,
-        apple_app_id: int,
-        share_slug: str,
-        network_id: int,
-        campaign_name: str,
-        ad_name: str,
+        data: LinkData,
     ) -> None:
         """
         Handle POST request for a new share link.
 
-        Returns
-        -------
-            Data for a new share link
+        Request body should contain:
+        {
+            "google_app_id": int | null,
+            "apple_app_id": int | null,
+            "share_slug": string,
+            "network_id": int,
+            "campaign_name": string,
+            "ad_name": string | null
+        }
 
         """
         logger.info(f"{self.path} links load")
         dbcon.queries.insert_app_link(
             domain_id=domain_id,
-            google_app_id=google_app_id,
-            apple_app_id=apple_app_id,
-            share_slug=share_slug,
-            network_id=network_id,
-            campaign_name=campaign_name,
-            ad_name=ad_name,
+            share_slug=data.share_slug,
+            network_id=data.network_id,
+            campaign_name=data.campaign_name,
+            google_app_id=data.google_app_id,
+            apple_app_id=data.apple_app_id,
+            ad_name=data.ad_name,
         )
 
     @delete(path="/{link_id:int}")
     async def delete_link(self: Self, link_id: int) -> None:
-        """
-        Handle DELETE request for a link.
-
-        Returns
-        -------
-            Data for a list of links
-
-        """
+        """Handle DELETE request for a link."""
         logger.info(f"{self.path} DELETE link {link_id=}")
         dbcon.queries.delete_app_link(link_id=link_id)
 

@@ -1,14 +1,20 @@
 import { z } from 'zod';
 
 export const linkSchema = z.object({
-	googleAppId: z.number(),
-	googleAppName: z.string(), // Used for display
-	appleAppId: z.number(),
-	appleAppName: z.string(), // Used for display
+	googleAppId: z.number().optional().nullable().default(null),
+	// googleAppName: z.string(), // Used for display
+	appleAppId: z.number().optional().nullable().default(null),
+	// appleAppName: z.string(), // Used for display
 	domainId: z.number(),
-	shareSlug: z.string().min(1).max(50),
+	shareSlug: z
+		.string()
+		.min(1)
+		.max(50)
+		.regex(/^[a-zA-Z0-9-_]+$/, {
+			message: 'Share slug can only contain alphanumeric characters, dashes, and underscores.'
+		}),
 	networkId: z.number(),
-	networkName: z.string(), // Used for display
+	// networkName: z.string(), // Used for display
 	campaignName: z.string().min(2).max(50),
 	adName: z.string().max(50).optional().default('')
 });
@@ -36,6 +42,12 @@ export const networkSchema = z.object({
 export type NetworkSchema = typeof networkSchema;
 
 export const domainSchema = z.object({
-	clientDomain: z.string().min(2).max(50)
+	clientDomain: z
+		.string()
+		.min(2)
+		.max(50)
+		.regex(/^[a-zA-Z0-9-_]+$/, {
+			message: 'Domain can only contain alphanumeric characters, dashes, and underscores.'
+		})
 });
 export type DomainSchema = typeof domainSchema;
