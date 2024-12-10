@@ -22,12 +22,6 @@
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<header class="sticky top-0 z-10">
-		<!-- <AppBar
-			leadBase="p-2 md:items-center"
-			trailBase="p-2 items-center"
-			centerBase="hidden md:flex items-center"
-			padding="p-0"
-		> -->
 		<AppBar padding="p-1 sm:p-2 md:p-4" centerClasses="hidden md:flex">
 			{#snippet lead()}
 				<a href="/">

@@ -1,4 +1,6 @@
 <script lang="ts" generics="TData, TValue">
+	import { Trash2 } from 'lucide-svelte';
+
 	import {
 		type ColumnDef,
 		type PaginationState,
@@ -19,9 +21,10 @@
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
 		data: TData[];
+		actionDeleteString?: string;
 	};
 
-	let { data, columns }: DataTableProps<TData, TValue> = $props();
+	let { data, columns, actionDeleteString = '' }: DataTableProps<TData, TValue> = $props();
 
 	// this is confirming the columns are being passed in correctly
 	// console.log('Data table columns', columns[0].accessorKey, columns[1].accessorKey);
@@ -77,11 +80,11 @@
 
 <div class="flex items-center py-4">
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger>
+		<!-- <DropdownMenu.Trigger>
 			{#snippet child({ props })}
 				<Button {...props} variant="outline" class="ml-auto">Columns</Button>
 			{/snippet}
-		</DropdownMenu.Trigger>
+		</DropdownMenu.Trigger> -->
 		<DropdownMenu.Content align="end">
 			{#if table.getRowModel().rows.length > 0}
 				{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column.id)}
@@ -122,7 +125,22 @@
 				<Table.Row data-state={row.getIsSelected() && 'selected'}>
 					{#each row.getVisibleCells() as cell (cell.id)}
 						<Table.Cell>
-							<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							{#if actionDeleteString && cell.column.columnDef.accessorKey === 'db_id'}
+								<form method="POST" action={actionDeleteString}>
+									<input type="hidden" name="db_id" value={cell.row.original.db_id} />
+									<label class="inline-flex items-center">
+										<button
+											type="submit"
+											aria-label="Delete integration"
+											class="text-gray-400 hover:text-red-700"
+										>
+											<Trash2 size={20} />
+										</button>
+									</label>
+								</form>
+							{:else}
+								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							{/if}
 						</Table.Cell>
 					{/each}
 				</Table.Row>
@@ -136,5 +154,7 @@
 </div>
 
 <div class="flex items-center justify-end space-x-2 py-4">
-	<DataTablePagination {table} />
+	{#if table.getRowModel().rows.length > 10}
+		<DataTablePagination {table} />
+	{/if}
 </div>

@@ -81,13 +81,16 @@ services:
       clickhouse:
         condition: service_healthy
     healthcheck:
-      test: ['CMD-SHELL', 'wget --timeout=3 --tries=1 -qO- http://postback-api:8000/collect/health > /dev/null']
+      test:
+        [
+          'CMD-SHELL',
+          'wget --timeout=3 --tries=1 -qO- http://postback-api:8000/collect/health > /dev/null'
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
       - ../apps/postback-api:/app
-
 
   postback-test:
     container_name: postback-test
@@ -105,7 +108,7 @@ services:
   admin-db:
     container_name: admin-db
     image: postgres:17-bullseye
-    restart: always
+    restart: 'no'
     ports:
       - '5432:5432'
     environment:

@@ -5,40 +5,15 @@
 	import Sun from 'lucide-svelte/icons/sun';
 	import Moon from 'lucide-svelte/icons/moon';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
-	import LineChart from 'lucide-svelte/icons/chart-column';
-	import { Blocks, Settings } from 'lucide-svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
+	import NavTabs from '$lib/NavTabs.svelte';
 	let { children } = $props();
 </script>
 
 <ModeWatcher defaultMode={'dark'}></ModeWatcher>
 
 <header class="bg-background sticky top-0 z-30 flex h-16 items-center gap-4 border-b px-4 md:px-6">
-	<nav
-		class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
-	>
-		<a href="##" class="flex items-center gap-2 text-lg font-semibold md:text-base">
-			<span class="">OpenAttribution</span>
-		</a>
-
-		<a href="/" class="flex text-muted-foreground hover:text-foreground transition-colors"
-			><LineChart></LineChart> Dashboard
-		</a>
-		<a
-			href="/integrations"
-			class="flex text-muted-foreground hover:text-foreground transition-colors"
-		>
-			<Blocks></Blocks>
-			Integrations
-		</a>
-		<a
-			href="/settings/general"
-			class="flex text-muted-foreground hover:text-foreground transition-colors"
-		>
-			<Settings></Settings>
-			Settings
-		</a>
-	</nav>
+	<NavTabs />
 	<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
 		<div class="ml-auto flex-1 sm:flex-initial">
 			<div class="relative"></div>

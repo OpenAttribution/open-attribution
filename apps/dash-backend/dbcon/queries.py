@@ -32,15 +32,39 @@ INSERT_NETWORK = load_sql_file(
 DELETE_NETWORK = load_sql_file(
     "delete_network.sql",
 )
+DELETE_CLIENT_DOMAIN = load_sql_file(
+    "delete_client_domain.sql",
+)
 
 QUERY_APPS = load_sql_file(
     "apps.sql",
 )
+QUERY_APP = load_sql_file(
+    "app.sql",
+)
+QUERY_APP_LINKS = load_sql_file(
+    "app_links.sql",
+)
+QUERY_CLIENT_DOMAINS = load_sql_file(
+    "client_domains.sql",
+)
+INSERT_CLIENT_DOMAINS = load_sql_file(
+    "insert_client_domains.sql",
+)
+
 INSERT_APP = load_sql_file(
     "insert_app.sql",
 )
 DELETE_APP = load_sql_file(
     "delete_app.sql",
+)
+
+DELETE_APP_LINK = load_sql_file(
+    "delete_app_link.sql",
+)
+
+INSERT_APP_LINK = load_sql_file(
+    "insert_app_link.sql",
 )
 
 
@@ -54,14 +78,49 @@ def query_networks() -> pd.DataFrame:
     return df
 
 
-def insert_network(network_name: str, postback_id:str) -> None:
+def query_app_links() -> pd.DataFrame:
+    """Get all apps links."""
+    logger.info("Query all apps links.")
+    df = pd.read_sql(
+        QUERY_APP_LINKS,
+        con=DBCON.engine,
+    )
+    df["full_url"] = df["domain_url"] + "/" + df["share_slug"]
+    return df
+
+
+def query_client_domains() -> pd.DataFrame:
+    """Get all client domains."""
+    logger.info("Query all client domains.")
+    df = pd.read_sql(
+        QUERY_CLIENT_DOMAINS,
+        con=DBCON.engine,
+    )
+    return df
+
+
+def insert_client_domains(domain_url: str) -> None:
+    """Insert a new client domain."""
+    logger.info(f"Inserting new client domain: {domain_url}")
+
+    with ENGINE.connect() as connection:
+        connection.execute(INSERT_CLIENT_DOMAINS, {"domain_url": domain_url})
+        connection.commit()
+
+
+def insert_custom_network(network_name: str, postback_id: str) -> None:
     """Insert a new network."""
     logger.info(f"Inserting new network: {network_name} {postback_id=}")
 
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_NETWORK,
-            {"network_name": network_name, "status": "active", "postback_id": postback_id},
+            {
+                "network_name": network_name,
+                "status": "active",
+                "postback_id": postback_id,
+                "is_custom": True,
+            },
         )
         connection.commit()
 
@@ -75,13 +134,21 @@ def delete_network(network_id: int) -> None:
         connection.commit()
 
 
-def query_apps() -> pd.DataFrame:
-    """Get all networks."""
-    logger.info("Query all apps.")
-    df = pd.read_sql(
-        QUERY_APPS,
-        con=ENGINE,
-    )
+def query_apps(store_id: str | None = None) -> pd.DataFrame:
+    """Get all apps or a single app."""
+    logger.info(f"Query {'all' if store_id is None else f'app: {store_id}'} apps.")
+
+    if store_id is None:
+        df = pd.read_sql(
+            QUERY_APPS,
+            con=ENGINE,
+        )
+    else:
+        df = pd.read_sql(
+            QUERY_APP,
+            params={"store_id": store_id},
+            con=ENGINE,
+        )
     return df
 
 
@@ -98,11 +165,59 @@ def insert_app(app_name: str, store_id: str, store: int) -> None:
 
 
 def delete_app(app_id: int) -> None:
-    """Delete custom network."""
+    """Delete app."""
     logger.info(f"Delete app: {app_id}")
 
     with ENGINE.connect() as connection:
-        connection.execute(DELETE_NETWORK, {"app_id": app_id})
+        connection.execute(DELETE_APP, {"app_id": app_id})
+        connection.commit()
+
+
+def delete_app_link(link_id: int) -> None:
+    """Delete app link."""
+    logger.info(f"Delete app link: {link_id}")
+
+    with ENGINE.connect() as connection:
+        connection.execute(DELETE_APP_LINK, {"link_id": link_id})
+        connection.commit()
+
+
+def delete_client_domain(domain_id: int) -> None:
+    """Delete custom network."""
+    logger.info(f"Delete client domain: {domain_id}")
+
+    with ENGINE.connect() as connection:
+        connection.execute(DELETE_CLIENT_DOMAIN, {"id": domain_id})
+        connection.commit()
+
+
+def insert_app_link(
+    domain_id: int,
+    google_app_id: int | None,
+    apple_app_id: int | None,
+    share_slug: str,
+    network_id: int,
+    campaign_name: str,
+    ad_name: str | None,
+) -> None:
+    """Insert a new app link."""
+    logger.info(
+        f"Inserting new app link: {share_slug} {network_id} {campaign_name} {ad_name} {domain_id} {google_app_id} {apple_app_id}",
+    )
+
+    with ENGINE.connect() as connection:
+        connection.execute(
+            INSERT_APP_LINK,
+            {
+                "domain_id": domain_id,
+                "google_app_id": google_app_id,
+                "apple_app_id": apple_app_id,
+                "share_slug": share_slug,
+                "network_id": network_id,
+                "campaign_name": campaign_name,
+                "ad_name": ad_name,
+            },
+        )
         connection.commit()
 
 

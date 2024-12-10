@@ -16,12 +16,10 @@ Endpoint for Health Check
 
 """
 
-import datetime
 import json
-import uuid
 from typing import Annotated, Self
 
-from config import KAFKA_LOCATION, get_logger
+from config import CLICK_PRODUCER, EVENT_PRODUCER, get_logger
 from config.dimensions import (
     APP_EVENT_ID,
     APP_EVENT_REV,
@@ -52,78 +50,16 @@ from config.dimensions import (
     LINK_NETWORK,
     LINK_UID,
 )
-from confluent_kafka import KafkaException, Producer
+from confluent_kafka import KafkaException
 from detect.geo import get_geo
 from litestar import Controller, Request, get
 from litestar.exceptions import HTTPException
 from litestar.params import Parameter
 
+from api_app.tools import EMPTY_IFA, get_client_ip, is_valid_ifa, is_valid_uuid, now
+
 logger = get_logger(__name__)
 
-
-
-def is_valid_ifa(ifa:str|None)->bool:
-    """Check if a string is a valid ifa."""
-    if ifa is None:
-        return False
-    try:
-        uuid_obj = uuid.UUID(ifa)
-        return (
-            (uuid_obj.version == 4 # noqa: PLR2004
-            and str(uuid_obj) == ifa.lower())
-            or ifa == "00000000-0000-0000-0000-000000000000"
-        )
-    except ValueError:
-        return False
-
-def is_valid_uuid(val:str)->bool:
-    """Check if a string is a valid UUID."""
-    try:
-        uuid_obj = uuid.UUID(val)
-        return (
-            uuid_obj.version == 4 # noqa: PLR2004
-            and str(uuid_obj) == val.lower()
-        )
-    except ValueError:
-        return False
-
-
-
-# If inside docker: "bootstrap.servers": "kafka:9093",
-reg_config = {
-    "bootstrap.servers": KAFKA_LOCATION,
-}
-
-event_config = {
-    "bootstrap.servers": KAFKA_LOCATION,
-    "linger.ms": 1000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
-}
-reg_producer = Producer(reg_config)
-event_producer = Producer(event_config)
-
-
-def now() -> str:
-    """Return datetime in epoch milliseconds as integer."""
-    timestamp_with_ms_int = str(
-        int(datetime.datetime.now(datetime.UTC).timestamp() * 1000),
-    )
-    return timestamp_with_ms_int
-
-def get_client_ip(request: Request) -> str:
-    """
-
-    Get the real client IP, checking X-Forwarded-For header first.
-
-    If the X-Forwarded-For header is not present, return the client host.
-
-    Todo: This will need to be tested.
-
-    """
-    forwarded_for = request.headers.get("X-Forwarded-For")
-    if forwarded_for:
-        # Get the first IP in the chain
-        return forwarded_for.split(",")[0].strip()
-    return request.client.host
 
 class PostbackController(Controller):
     """
@@ -212,9 +148,13 @@ class PostbackController(Controller):
         client_host = get_client_ip(request)
 
         if not is_valid_ifa(ifa):
-            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+            raise HTTPException(
+                status_code=400, detail="Invalid ifa format, use a v4 UUID",
+            )
         if not is_valid_uuid(link_uid):
-            raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
+            raise HTTPException(
+                status_code=400, detail="Invalid link_uid format, use a v4 UUID",
+            )
 
         geo_data = get_geo(client_host)
         country_iso = geo_data.get("country_iso")
@@ -240,8 +180,8 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            reg_producer.produce("impressions", value=enc_data)
-            reg_producer.poll(0)
+            CLICK_PRODUCER.produce("impressions", value=enc_data)
+            CLICK_PRODUCER.poll(0)
         except KafkaException as ex:
             logger.exception("Write to Kafka Impressions failed.")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -315,11 +255,14 @@ class PostbackController(Controller):
         """
         client_host = get_client_ip(request)
 
-
         if not is_valid_ifa(ifa):
-            raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+            raise HTTPException(
+                status_code=400, detail="Invalid ifa format, use a v4 UUID",
+            )
         if not is_valid_uuid(link_uid):
-            raise HTTPException(status_code=400, detail="Invalid link_uid format, use a v4 UUID")
+            raise HTTPException(
+                status_code=400, detail="Invalid link_uid format, use a v4 UUID",
+            )
 
         geo_data = get_geo(client_host)
         country_iso = geo_data.get("country_iso")
@@ -345,8 +288,8 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            reg_producer.produce("clicks", value=enc_data)
-            reg_producer.poll(0)
+            CLICK_PRODUCER.produce("clicks", value=enc_data)
+            CLICK_PRODUCER.poll(0)
         except KafkaException as ex:
             logger.exception("Process click for kafka failed.")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -401,7 +344,7 @@ class PostbackController(Controller):
         1. Extracts the client's host information from the request.
         2. Constructs a data dictionary with the provided parameters and additional information like the client's IP address.
         3. Serializes the data dictionary into a JSON string and encodes it to UTF-8.
-        4. Produces a message with the encoded data to the "impressions" Kafka topic.
+        4. Produces a message with the encoded data to the "events" Kafka topic.
         5. Handles any KafkaException by logging an error message and raising an HTTPException.
 
         Exceptions
@@ -417,16 +360,21 @@ class PostbackController(Controller):
         """
         client_host = get_client_ip(request)
 
-
         if not is_valid_ifa(ifa):
             if ifa is None:
-                ifa = "00000000-0000-0000-0000-000000000000"
+                ifa = EMPTY_IFA
             else:
-                raise HTTPException(status_code=400, detail="Invalid ifa format, use a v4 UUID")
+                raise HTTPException(
+                    status_code=400, detail="Invalid ifa format, use a v4 UUID",
+                )
         if not is_valid_uuid(event_uid):
-            raise HTTPException(status_code=400, detail="Invalid event_uid format, use a v4 UUID")
+            raise HTTPException(
+                status_code=400, detail="Invalid event_uid format, use a v4 UUID",
+            )
         if not is_valid_uuid(oa_uid):
-            raise HTTPException(status_code=400, detail="Invalid oa_uid format, use a v4 UUID")
+            raise HTTPException(
+                status_code=400, detail="Invalid oa_uid format, use a v4 UUID",
+            )
 
         geo_data = get_geo(client_host)
         country_iso = geo_data.get("country_iso")
@@ -450,8 +398,8 @@ class PostbackController(Controller):
 
         try:
             enc_data = json.dumps(data).encode("utf-8")
-            event_producer.produce("events", value=enc_data)
-            event_producer.poll(0)
+            EVENT_PRODUCER.produce("events", value=enc_data)
+            EVENT_PRODUCER.poll(0)
         except KafkaException as ex:
             logger.exception("Processing event postback for kafka failed")
             raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
