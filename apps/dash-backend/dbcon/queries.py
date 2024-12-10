@@ -191,24 +191,28 @@ def delete_client_domain(domain_id: int) -> None:
 
 
 def insert_app_link(
+    domain_id: int,
+    google_app_id: int,
+    apple_app_id: int,
     share_slug: str,
     network_id: int,
     campaign_name: str,
     ad_name: str,
-    app_id: int,
 ) -> None:
     """Insert a new app link."""
     logger.info(
-        f"Inserting new app link: {share_slug} {network_id} {campaign_name} {ad_name} {app_id}",
+        f"Inserting new app link: {share_slug} {network_id} {campaign_name} {ad_name} {domain_id} {google_app_id} {apple_app_id}",
     )
 
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_APP_LINK,
             {
-                "app": app_id,
+                "domain_id": domain_id,
+                "google_app_id": google_app_id,
+                "apple_app_id": apple_app_id,
                 "share_slug": share_slug,
-                "network": network_id,
+                "network_id": network_id,
                 "campaign_name": campaign_name,
                 "ad_name": ad_name,
             },

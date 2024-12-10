@@ -31,15 +31,16 @@ lint.select = ["ALL"]
 target-version = 'py312'
 
 lint.ignore = [
-    "E501",   # line length
-    "W291",   # trailing space at end of line
-    "G",      # Ignore pyflake logging as it does not like f-strings in log messages.
-    "RET504", #Unnecessary assignment to variable before return, but I prefer for readability.
+    "E501",    # line length
+    "W291",    # trailing space at end of line
+    "G",       # Ignore pyflake logging as it does not like f-strings in log messages.
+    "RET504",  #Unnecessary assignment to variable before return, but I prefer for readability.
     "D203",
     "D212",
-    "PD901",  # Avoid using 'df', but this often is concise and informative when there is only one df in the function
-    "PD015",  # I like using pd.merge since it's more declarative for left / right than df.merge
-    "PD010",  # I am OK to use .pivot_table
+    "PD901",   # Avoid using 'df', but this often is concise and informative when there is only one df in the function
+    "PD015",   # I like using pd.merge since it's more declarative for left / right than df.merge
+    "PD010",   # I am OK to use .pivot_table
+    "PLR0913", # Too many arguments for function call. Good, but for API endpoints it's OK
 ]
 
 # Avoid trying to fix flake8-bugbear (`B`) violations.
@@ -48,10 +49,6 @@ lint.unfixable = ["B"]
 lint.fixable = ["ALL"]
 
 exclude = ["tests/*"]
-
-[tool.ruff.lint.per-file-ignores]
-"postbacks.py" = ["PLR0913"]
-"_simulate_network_calls.py" = ["PLR0913"]
 
 
 [tool.mypy]

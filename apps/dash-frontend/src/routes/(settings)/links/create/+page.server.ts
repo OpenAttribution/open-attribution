@@ -19,23 +19,21 @@ export const actions = {
 			});
 		}
 
-		const app_id = form.data.appId;
-		const store_id = form.data.storeId;
+		const android_app_id = form.data.googleAppId;
+		const ios_app_id = form.data.appleAppId;
+		const domain_id = form.data.domainId;
 		const share_slug = form.data.shareSlug;
 		const network_id = form.data.networkId;
 		const campaign_name = form.data.campaignName;
 		const ad_name = form.data.adName;
 
-		console.log(
-			`Create share link app:${app_id}, share:${share_slug}, network:${network_id}, campaign:${campaign_name}, ad:${ad_name}`
-		);
+		const apiUrl = `links/${domain_id}?google_app_id=${android_app_id}&apple_app_id=${ios_app_id}&share_slug=${share_slug}&network_id=${network_id}&campaign_name=${campaign_name}&ad_name=${ad_name}`;
 
-		const response = await fetch(
-			`http://dash-backend:8001/api/apps/${app_id}/links?share_slug=${share_slug}&network_id=${network_id}&campaign_name=${campaign_name}&ad_name=${ad_name}`,
-			{
-				method: 'POST'
-			}
-		);
+		console.log(`Create share link ${apiUrl}`);
+
+		const response = await fetch(`http://dash-backend:8001/api/${apiUrl}`, {
+			method: 'POST'
+		});
 
 		if (!response.ok) {
 			return message(
@@ -45,16 +43,17 @@ export const actions = {
 			);
 		}
 
-		throw redirect(302, `/settings/apps/${store_id}`);
+		throw redirect(302, `/links`);
 	}
 } satisfies Actions;
 
 export const load: PageServerLoad = async ({ parent }) => {
-	const { respApps, respNets } = await parent();
+	const { respApps, respNets, clientDomains } = await parent();
 
 	return {
 		respApps: respApps,
 		respNets: respNets,
+		clientDomains: clientDomains,
 		form: await superValidate(zod(linkSchema))
 	};
 };

@@ -1,12 +1,14 @@
 import { z } from 'zod';
 
 export const linkSchema = z.object({
-	appId: z.number(),
-	storeId: z.string(),
+	googleAppId: z.number(),
+	googleAppName: z.string(), // Used for display
+	appleAppId: z.number(),
+	appleAppName: z.string(), // Used for display
 	domainId: z.number(),
-	shareSlug: z.string().min(2).max(50),
+	shareSlug: z.string().min(1).max(50),
 	networkId: z.number(),
-	networkName: z.string(),
+	networkName: z.string(), // Used for display
 	campaignName: z.string().min(2).max(50),
 	adName: z.string().max(50).optional().default('')
 });

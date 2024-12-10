@@ -33,6 +33,36 @@ class LinkController(Controller):
         logger.info(f"{self.path} return {links_dict=}")
         return myresp
 
+    @post(path="/{domain_id:int}")
+    async def add_link(
+        self: Self,
+        domain_id: int,
+        google_app_id: int,
+        apple_app_id: int,
+        share_slug: str,
+        network_id: int,
+        campaign_name: str,
+        ad_name: str,
+    ) -> None:
+        """
+        Handle POST request for a new share link.
+
+        Returns
+        -------
+            Data for a new share link
+
+        """
+        logger.info(f"{self.path} links load")
+        dbcon.queries.insert_app_link(
+            domain_id=domain_id,
+            google_app_id=google_app_id,
+            apple_app_id=apple_app_id,
+            share_slug=share_slug,
+            network_id=network_id,
+            campaign_name=campaign_name,
+            ad_name=ad_name,
+        )
+
     @delete(path="/{link_id:int}")
     async def delete_link(self: Self, link_id: int) -> None:
         """

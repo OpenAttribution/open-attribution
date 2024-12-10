@@ -27,7 +27,20 @@
 </script>
 
 <form method="POST" use:enhance class="space-y-6 px-16" action="?/createLink">
-	<h2 class="h2">Create Link</h2>
+	<h2 class="h2">
+		Creating Share URL:
+		<span class="text-gray-500">
+			{#if !$formData.domain_url && !$formData.shareSlug}
+				https://
+			{/if}
+			{#if $formData.domain_url && !$formData.shareSlug}
+				https://{$formData.domain_url}/
+			{/if}
+			{#if $formData.domain_url && $formData.shareSlug}
+				https://{$formData.domain_url}/{$formData.shareSlug}
+			{/if}
+		</span>
+	</h2>
 	<div class="grid grid-cols-3 gap-6">
 		<div class="col-span-1 text-lg">Domain</div>
 		<Form.Field {form} name="domain" class="col-span-2">
@@ -60,19 +73,22 @@
 			</div>
 		</Form.Field>
 
-		<div class="col-span-1 text-lg">URL Share ID</div>
+		<div class="col-span-1 text-lg">
+			<div class="text-lg">URL Suffix</div>
+		</div>
 		<Form.Field {form} name="shareSlug" class="col-span-2">
 			<div class={mainRowClass}>
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<!-- <Form.Label class={labelClass}>URL Share ID</Form.Label> -->
 							<Input {...props} bind:value={$formData.shareSlug} />
+							<Form.Label class="text-sm">eg: {$formData.shareSlug} URL Share ID</Form.Label>
 						{/snippet}
 					</Form.Control>
 				</div>
 				<Form.Description class="col-span-8">
-					Your app link's URL ID. If your id is 'tiktoksocial' it will correspond to
+					Your app link's URL slug. This value must be urlsafe, and likely shorter is better for
+					sharing. If your slug is 'tiktoksocial' it will correspond to
 					'https://your.domain.com/s/tiktoksocial'. This will be tied this app but needs to be
 					unique across your selected domain.
 				</Form.Description>
@@ -86,7 +102,6 @@
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<!-- <Form.Label class={labelClass}>Network</Form.Label> -->
 							<Select.Root type="single" bind:value={$formData.network} name={props.name}>
 								<Select.Trigger {...props}>
 									{$formData.network ? $formData.network : 'Select a network to display'}
@@ -112,28 +127,25 @@
 			</div>
 		</Form.Field>
 
-		<div class="col-span-1 text-lg">Android App</div>
-		<Form.Field {form} name="androidAppId" class="col-span-2">
+		<div class="col-span-1 text-lg">Google Android App</div>
+		<Form.Field {form} name="googleAppId" class="col-span-2">
 			<div class={mainRowClass}>
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<!-- <Form.Label class={labelClass}>Android App</Form.Label> -->
-							<Select.Root type="single" bind:value={$formData.androidAppId} name={props.name}>
+							<Select.Root type="single" bind:value={$formData.googleAppId} name={props.name}>
 								<Select.Trigger {...props}>
-									{$formData.androidAppId ? $formData.androidAppId : 'Select an android app'}
+									<IconAndroid size="40" />
+									{$formData.googleAppId
+										? myApps.find((app: any) => app.id === $formData.googleAppId)?.name
+										: 'Select an android app'}
 								</Select.Trigger>
 								<Select.Content>
 									{#each myApps as app}
 										{#if app.store === 1}
-											<Select.Item value={app.name} label={app.name}>
+											<Select.Item value={app.id} label={app.name}>
 												<div class="flex items-center gap-2">
-													{#if app.store === 1}
-														<IconAndroid size="40" />
-													{/if}
-													{#if app.store === 2}
-														<IconIOS size="40" />
-													{/if}
+													<IconAndroid size="40" />
 													{app.name}
 												</div>
 											</Select.Item>
@@ -141,11 +153,11 @@
 									{/each}
 								</Select.Content>
 							</Select.Root>
-							<input
+							<!-- <input
 								type="hidden"
-								name="androidAppId"
-								value={myApps.find((n: any) => n.name === $formData.androidAppId)?.id ?? ''}
-							/>
+								name="googleAppId"
+								value={myApps.find((n: any) => n.id === $formData.googleAppId)?.id ?? ''}
+							/> -->
 						{/snippet}
 					</Form.Control>
 				</div>
@@ -159,27 +171,24 @@
 		</Form.Field>
 
 		<div class="col-span-1 text-lg">iOS App</div>
-		<Form.Field {form} name="iosAppId" class="col-span-2">
+		<Form.Field {form} name="appleAppId" class="col-span-2">
 			<div class={mainRowClass}>
 				<div class={inputClass}>
 					<Form.Control>
 						{#snippet children({ props })}
-							<!-- <Form.Label class={labelClass}>iOS App</Form.Label> -->
-							<Select.Root type="single" bind:value={$formData.iosAppId} name={props.name}>
+							<Select.Root type="single" bind:value={$formData.appleAppId} name={props.name}>
 								<Select.Trigger {...props}>
-									{$formData.iosAppId ? $formData.iosAppId : 'Select an iOS app'}
+									<IconIOS size="40" />
+									{$formData.appleAppId
+										? myApps.find((app: any) => app.id === $formData.appleAppId)?.name
+										: 'Select an iOS app'}
 								</Select.Trigger>
 								<Select.Content>
 									{#each myApps as app}
 										{#if app.store === 2}
-											<Select.Item value={app.name} label={app.name}>
+											<Select.Item value={app.id} label={app.name}>
 												<div class="flex items-center gap-2">
-													{#if app.store === 1}
-														<IconAndroid size="50" />
-													{/if}
-													{#if app.store === 2}
-														<IconIOS size="40" />
-													{/if}
+													<IconIOS size="40" />
 													{app.name}
 												</div>
 											</Select.Item>
@@ -187,11 +196,11 @@
 									{/each}
 								</Select.Content>
 							</Select.Root>
-							<input
+							<!-- <input
 								type="hidden"
-								name="iosAppId"
-								value={myApps.find((n: any) => n.name === $formData.iosAppId)?.id ?? ''}
-							/>
+								name="appleAppId"
+								value={myApps.find((n: any) => n.name === $formData.appleAppId)?.id ?? ''}
+							/> -->
 						{/snippet}
 					</Form.Control>
 				</div>
