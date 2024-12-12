@@ -19,8 +19,8 @@
 	<meta name="twitter:description" content={description} />
 </svelte:head>
 
-<div class="mx-8 md:mx-16 lg:mx-96">
-	<div class="card preset-outlined-primary-500 mt-8 p-4 text-center">
+<div class="mx-4 md:mx-16 lg:mx-96">
+	<div class="card preset-outlined-primary-500 mx-4 mt-8 p-4 text-center">
 		<h3 class="h3 text-primary-500">🏗️ Early Alpha: Under Construction 🏗️</h3>
 		<p class="">
 			This open source project is under construction in the very early alpha stages and is not yet
@@ -47,9 +47,9 @@
 				attribution rules.
 			</h4>
 
-			<div class="flex justify-center gap-2">
+			<div class="my-4 flex flex-col items-center justify-center gap-4">
 				<a href="/product">
-					<button type="button" class="btn preset-outlined-primary-500 mr-4 justify-center"
+					<button type="button" class="btn preset-outlined-primary-500 justify-center"
 						>Learn More</button
 					>
 				</a>
@@ -60,7 +60,7 @@
 		</div>
 	</div>
 
-	<div class="mx-8 grid grid-cols-2 gap-4 md:mx-16 lg:mx-32 lg:gap-16">
+	<div class="mx-4 grid grid-cols-1 gap-4 md:mx-16 md:mx-8 md:grid-cols-2 lg:mx-32 lg:gap-16">
 		<div class="card preset-filled-surface-100-900 p-4">
 			<div class="card-header">
 				<h3 class="h3 text-primary-900-100">Full Ownership & Privacy</h3>

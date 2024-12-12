@@ -22,16 +22,16 @@
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<header class="sticky top-0 z-10">
-		<AppBar padding="p-1 sm:p-2 md:p-4" centerClasses="hidden md:flex">
+		<AppBar padding="p-1 sm:p-2 md:p-4">
 			{#snippet lead()}
-				<a href="/">
-					<strong class="ml-4 justify-start break-words text-xl uppercase md:text-2xl"
+				<a href="/" class="md:ml-4">
+					<strong class="justify-start break-words text-xl uppercase md:text-2xl"
 						>Open Attribution</strong
 					>
 				</a>
 			{/snippet}
 
-			<div class="items-center justify-center">
+			<div class="items-center justify-center md:flex">
 				<NavTabs />
 			</div>
 
@@ -78,10 +78,12 @@
 	</main>
 
 	<!--  Mobile only footer -->
-	<footer class="bg-surface-50-950 sticky bottom-0 z-10">
+	<footer class="bg-surface-50-950 fixed bottom-0 z-10 w-full">
 		<AppBar padding="p-0">
-			<div class="inline-flex p-2 md:hidden">
-				<NavTabs />
+			<div class="flex w-full items-center justify-center p-2 md:hidden">
+				<div class="flex w-full justify-center">
+					<NavTabs />
+				</div>
 			</div>
 		</AppBar>
 	</footer>

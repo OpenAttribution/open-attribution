@@ -32,7 +32,7 @@
 
 		<div class={horizontalDivider}></div>
 		<a href="/docs" class={topBarFont}>
-			<p class={isHighlighted('/docs') ? topBarHighlightedFont : topBarFont}>Documentation</p>
+			<p class={isHighlighted('/docs') ? topBarHighlightedFont : topBarFont}>Docs</p>
 		</a>
 		<div class={horizontalDivider}></div>
 		<a href="/blog" class={topBarFont}>
