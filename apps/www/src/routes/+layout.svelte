@@ -31,7 +31,7 @@
 				</a>
 			{/snippet}
 
-			<div class="items-center justify-center md:flex">
+			<div class="hidden items-center justify-center md:flex">
 				<NavTabs />
 			</div>
 
