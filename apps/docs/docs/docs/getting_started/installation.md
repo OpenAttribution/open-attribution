@@ -20,19 +20,27 @@ git clone https://github.com/openattribution/open-attribution.git
 
 For development, requires building but many services are have hot reloading for immediate feedback when editing code. Runs random fake data to localhost:8000 which you can see immediately on http://localhost:5173 or in the various services logs. An overview of the services via Dozzle is available at http://localhost:8080.
 
+#### Dev: For developing and contributing to Open Attribution.
+
 ```sh
 docker compose -f ~/open-attribution/docker/docker-compose-dev.yml pull
 docker compose -f ~/open-attribution/docker/docker-compose-dev.yml up -d
 ```
 
-For regular use. Does not require building, instead using prebuilt images so much faster. No initial data or hot reloading.
+#### Main: This is for production use. You might wish to copy this file and modify it for your own use away from the repo.
 
 ```sh
 docker compose -f ~/open-attribution/docker/docker-compose.yml pull
 docker compose -f ~/open-attribution/docker/docker-compose.yml up -d
 ```
 
-This installs all the following services:
+If using main, or wanting to secure an instance of Open Attribtuion:
+
+1. Copy `.env-example` to `.env`
+2. Modify `.env` with your actual credentials
+3. Do not commit `.env` to version control
+
+Docker installs the following services:
 
 ### Services
 

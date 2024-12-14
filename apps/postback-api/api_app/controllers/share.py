@@ -33,6 +33,7 @@ from config.dimensions import (
     DB_STORE_ID,
 )
 from confluent_kafka import KafkaException
+from dbcon.queries import APP_LINKS
 from detect.geo import get_geo
 from litestar import BackgroundTask, Controller, RedirectResponse, Request, get
 from litestar.exceptions import HTTPException
@@ -150,12 +151,20 @@ class ShareController(Controller):
         # TODO: move this to process_share_link?
         client_host = get_client_ip(request)
 
-        # TODO: get the redirect url from the admin API?
-        redirect_url = f"https://example.com/s/{share_slug}"
+        if is_android_device(request):
+            redirect_url = APP_LINKS[share_slug]["google_redirect"]
+        elif is_ios_device(request):
+            redirect_url = APP_LINKS[share_slug]["apple_redirect"]
+        else:
+            # TODO: Needs a web landing page
+            raise HTTPException(status_code=400, detail="Unsupported device")
 
         return RedirectResponse(
             url=redirect_url,
             background=BackgroundTask(
-                process_share_link, share_slug, client_host, link_uid,
+                process_share_link,
+                share_slug,
+                client_host,
+                link_uid,
             ),
         )

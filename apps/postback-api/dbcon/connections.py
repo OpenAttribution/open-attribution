@@ -61,7 +61,7 @@ class PostgresCon:
                 self.db_uri,
                 connect_args={
                     "connect_timeout": 10,
-                    "application_name": "dash-backend",
+                    "application_name": "postback-api",
                 },
             )
             logger.info(f"Created PostgreSQL Engine {self.db_name}")
