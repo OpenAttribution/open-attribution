@@ -47,6 +47,7 @@ CREATE TABLE app_links (
     apple_app_id INTEGER NULL DEFAULT NULL,
     campaign_name VARCHAR(100) NOT NULL,
     ad_name VARCHAR(100) DEFAULT '',
+    web_landing_page VARCHAR(100) DEFAULT '',
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_domain) REFERENCES client_domains(id) ON DELETE CASCADE,

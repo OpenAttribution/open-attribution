@@ -26,6 +26,7 @@ export const actions = {
 		const network_id = form.data.networkId;
 		const campaign_name = form.data.campaignName;
 		const ad_name = form.data.adName;
+		const web_landing_page = form.data.webLandingPage;
 
 		console.log(`Form data: ${JSON.stringify(form.data)}`);
 
@@ -37,7 +38,8 @@ export const actions = {
 				share_slug: share_slug,
 				network_id: network_id,
 				campaign_name: campaign_name,
-				ad_name: ad_name
+				ad_name: ad_name,
+				web_landing_page: web_landing_page
 			})
 		});
 
