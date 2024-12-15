@@ -78,11 +78,7 @@ services:
     ports:
       - '8000:8000'
     env_file:
-      - .env.dev
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB}
-    #   POSTGRES_USER: ${POSTGRES_USER}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - .dev.env
     depends_on:
       clickhouse:
         condition: service_healthy
@@ -98,20 +94,20 @@ services:
     volumes:
       - ../apps/postback-api:/app
 
-  # postback-test:
-  #   container_name: postback-test
-  #   build:
-  #     context: ../apps/postback-api
-  #     dockerfile: Dockerfile.test
-  #   working_dir: /app
-  #   command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
-  #   depends_on:
-  #     postback-api:
-  #       condition: service_healthy
-  #   env_file:
-  #     - .env.dev
-  #   environment:
-  #     - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
+  postback-test:
+    container_name: postback-test
+    build:
+      context: ../apps/postback-api
+      dockerfile: Dockerfile.test
+    working_dir: /app
+    command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
+    depends_on:
+      postback-api:
+        condition: service_healthy
+    env_file:
+      - .dev.env
+    environment:
+      - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
 
   admin-db:
     container_name: admin-db
@@ -120,11 +116,7 @@ services:
     ports:
       - '5432:5432'
     env_file:
-      - .env.dev
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB}
-    #   POSTGRES_USER: ${POSTGRES_USER}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - .dev.env
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
@@ -142,11 +134,7 @@ services:
     ports:
       - '8001:8001'
     env_file:
-      - .env.dev
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB}
-    #   POSTGRES_USER: ${POSTGRES_USER}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - .dev.env
     command: litestar run --host 0.0.0.0 --port 8001 --reload
     working_dir: /app
     depends_on:

@@ -73,6 +73,8 @@ services:
     command: litestar run --host 0.0.0.0 --port 8000
     ports:
       - '8000:8000'
+    env_file:
+      - .production.env
     depends_on:
       clickhouse:
         condition: service_healthy
@@ -86,6 +88,8 @@ services:
     command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
     depends_on:
       - postback-api
+    env_file:
+      - .production.env
     environment:
       - TEST_HOST=${TEST_HOST:-http://demo.openattribution.dev}
 
@@ -93,9 +97,8 @@ services:
     container_name: admin-db
     image: postgres:17-bullseye
     restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_DB: admin_db
+    env_file:
+      - .production.env
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
@@ -110,6 +113,8 @@ services:
     image: openattribution/dash-backend:main
     ports:
       - '8001:8001'
+    env_file:
+      - .production.env
     command: litestar run --host 0.0.0.0 --port 8001
     working_dir: /app
     depends_on:

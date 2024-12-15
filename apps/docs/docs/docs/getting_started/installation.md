@@ -29,6 +29,8 @@ docker compose -f ~/open-attribution/docker/docker-compose-dev.yml up -d
 
 #### Main: This is for production use. You might wish to copy this file and modify it for your own use away from the repo.
 
+Copy `.production.env-exmaple` to `.production.env` and modify it with your preferred values.
+
 ```sh
 docker compose -f ~/open-attribution/docker/docker-compose.yml pull
 docker compose -f ~/open-attribution/docker/docker-compose.yml up -d

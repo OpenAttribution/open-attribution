@@ -73,6 +73,8 @@ services:
     command: litestar run --host 0.0.0.0 --port 8000
     ports:
       - '8000:8000'
+    env_file:
+      - .production.env
     depends_on:
       clickhouse:
         condition: service_healthy
@@ -81,9 +83,8 @@ services:
     container_name: admin-db
     image: postgres:17-bullseye
     restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_DB: admin_db
+    env_file:
+      - .production.env
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
@@ -93,12 +94,13 @@ services:
       - 'pgdata-volume:/var/lib/postgresql/data'
       - '../apps/admin-db/pg-init.sql:/docker-entrypoint-initdb.d/init.sql'
 
-
   dash-backend:
     container_name: dash-backend
     image: openattribution/dash-backend:main
     ports:
       - '8001:8001'
+    env_file:
+      - .production.env
     command: litestar run --host 0.0.0.0 --port 8001
     working_dir: /app
     depends_on:
