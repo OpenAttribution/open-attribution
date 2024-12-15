@@ -35,6 +35,7 @@ def get_app_links() -> dict[str, dict[str, str]]:
         QUERY_APP_LINKS,
         con=DBCON.engine,
     )
+    df["web_redirect"] = "https://" + df["web_landing_page"]
     df["google_redirect"] = (
         "https://play.google.com/store/apps/details?id=" + df["google_store_id"]
     )

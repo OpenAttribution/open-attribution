@@ -7,6 +7,7 @@ SELECT
     al.campaign_name,
     al.ad_name,
     al.created_at,
+    al.web_landing_page,
     ga.store_id as google_store_id,
     aa.store_id as apple_store_id
 FROM app_links al

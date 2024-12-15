@@ -82,7 +82,7 @@ def is_ios_device(request: Request) -> bool:
 def process_share_link(
     share_slug: str,
     request: Request,
-    redirected_store_id: StoreId,
+    redirected_store_id: OSID,
 ) -> None:
     """Process the share link in background."""
     client_host = get_client_ip(request)
@@ -90,9 +90,9 @@ def process_share_link(
 
     link_data = APP_LINKS_DF[share_slug]
 
-    if redirected_store_id == StoreId.ANDROID and link_data["google_store_id"]:
+    if redirected_store_id == OSID.ANDROID and link_data["google_store_id"]:
         app = link_data.get("google_store_id")
-    elif redirected_store_id == StoreId.IOS and link_data["apple_store_id"]:
+    elif redirected_store_id == OSID.IOS and link_data["apple_store_id"]:
         app = link_data.get("apple_store_id")
     else:
         app = ""

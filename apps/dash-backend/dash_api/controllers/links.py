@@ -49,7 +49,8 @@ class LinkController(Controller):
             "share_slug": string,
             "network_id": int,
             "campaign_name": string,
-            "ad_name": string | null
+            "ad_name": string | null,
+            "web_landing_page": string
         }
 
         """
@@ -62,6 +63,7 @@ class LinkController(Controller):
             google_app_id=data.google_app_id,
             apple_app_id=data.apple_app_id,
             ad_name=data.ad_name,
+            web_landing_page=data.web_landing_page,
         )
 
     @delete(path="/{link_id:int}")

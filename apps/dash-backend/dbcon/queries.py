@@ -199,6 +199,7 @@ def insert_app_link(
     network_id: int,
     campaign_name: str,
     ad_name: str | None,
+    web_landing_page: str,
 ) -> None:
     """Insert a new app link."""
     logger.info(
@@ -216,6 +217,7 @@ def insert_app_link(
                 "network_id": network_id,
                 "campaign_name": campaign_name,
                 "ad_name": ad_name,
+                "web_landing_page": web_landing_page,
             },
         )
         connection.commit()

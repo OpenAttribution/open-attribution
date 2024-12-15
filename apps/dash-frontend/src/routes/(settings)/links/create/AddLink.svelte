@@ -34,14 +34,18 @@
 			<Card.Title class="text-lg ">
 				Creating Share URL:
 				<span class="text-md text-gray-500 ml-2">
-					{#if !$formData.domain_url && !$formData.shareSlug}
+					{#if !$formData.domainId && !$formData.shareSlug}
 						https://
 					{/if}
-					{#if $formData.domain_url && !$formData.shareSlug}
-						https://{$formData.domain_url}/
+					{#if $formData.domainId && !$formData.shareSlug}
+						https://{$formData.domainId
+							? myDomains.find((domain: any) => domain.db_id === $formData.domainId)?.domain_url
+							: ''}
 					{/if}
-					{#if $formData.domain_url && $formData.shareSlug}
-						https://{$formData.domain_url}/{$formData.shareSlug}
+					{#if $formData.domainId && $formData.shareSlug}
+						https://{$formData.domainId
+							? myDomains.find((domain: any) => domain.db_id === $formData.domainId)?.domain_url
+							: ''}/{$formData.shareSlug}
 					{/if}
 				</span>
 			</Card.Title>
