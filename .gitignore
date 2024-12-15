@@ -1,5 +1,9 @@
 # Passwords
 .env
+.production.env
+.*.env
+!.env.example
+!dev.env
 
 # vscode
 .vscode/
