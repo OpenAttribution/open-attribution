@@ -17,6 +17,7 @@ HOME = pathlib.Path.home()
 TOP_CONFIGDIR = pathlib.Path(HOME, pathlib.Path(".config"))
 CONFIG_DIR = pathlib.Path(TOP_CONFIGDIR, pathlib.Path(PROJECT_NAME))
 LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
+MODULE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
 
 def is_docker() -> bool:

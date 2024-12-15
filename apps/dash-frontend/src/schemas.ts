@@ -46,8 +46,8 @@ export const domainSchema = z.object({
 		.string()
 		.min(2)
 		.max(50)
-		.regex(/^[a-zA-Z0-9-_]+$/, {
-			message: 'Domain can only contain alphanumeric characters, dashes, and underscores.'
+		.regex(/^[a-zA-Z0-9.-]+$/, {
+			message: 'Domain must be a valid top level domain or subdomain without special characters.'
 		})
 });
 export type DomainSchema = typeof domainSchema;

@@ -13,9 +13,9 @@ Endpoints for Share Links
 """
 
 import json
+from enum import Enum
 from typing import Self
 
-import requests
 from config import CLICK_PRODUCER, get_logger
 from config.dimensions import (
     DB_AD_ID,
@@ -33,35 +33,73 @@ from config.dimensions import (
     DB_STORE_ID,
 )
 from confluent_kafka import KafkaException
-from dbcon.queries import APP_LINKS
+from dbcon.queries import APP_LINKS_DF, APP_REDIRECT_LINKS
 from detect.geo import get_geo
-from litestar import BackgroundTask, Controller, RedirectResponse, Request, get
+from litestar import Controller, Request, get
+from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
+from litestar.response import Redirect
+from ua_parser import parse
 
 from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
 logger = get_logger(__name__)
 
 
-def get_admin_link_data(share_slug: str) -> dict:
-    """Get the link data from the admin API."""
-    response = requests.get(f"http://localhost:8001/links/{share_slug}", timeout=10)
-    response.raise_for_status()
-    return response.json()
+class OSID(Enum):
+    """Enum for store IDs."""
+
+    ANDROID = "android"
+    IOS = "ios"
+    MACOS = "macos"
+    WINDOWS = "windows"
 
 
-def process_share_link(share_slug: str, client_host: str, link_uid: str) -> None:
+class StoreId(Enum):
+    """Enum for store IDs."""
+
+    GOOGLE = "google"
+    APPLE = "apple"
+    WEB = "web"
+    ERROR = "error"
+
+
+# Define helper functions to determine the device type
+def is_android_device(request: Request) -> bool:
+    """Determine if the request is from an Android device."""
+    user_agent = request.headers.get("User-Agent", "")
+    parsed_ua = parse(user_agent)
+    return parsed_ua.os.family.lower() == "android"
+
+
+def is_ios_device(request: Request) -> bool:
+    """Determine if the request is from an iOS device."""
+    user_agent = request.headers.get("User-Agent", "")
+    parsed_ua = parse(user_agent)
+    return parsed_ua.os.family.lower() in {"ios", "iphone os"}
+
+
+def process_share_link(
+    share_slug: str,
+    request: Request,
+    redirected_store_id: StoreId,
+) -> None:
     """Process the share link in background."""
-    try:
-        link_data = get_admin_link_data(share_slug)
-    except requests.exceptions.RequestException as ex:
-        logger.exception("Failed to get link data from admin API.")
-        raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
+    client_host = get_client_ip(request)
+    link_uid = generate_link_uid()
+
+    link_data = APP_LINKS_DF[APP_LINKS_DF["url_slug"] == share_slug].to_dict()
+
+    if redirected_store_id == StoreId.ANDROID:
+        app = link_data.get("google_store_id")
+    elif redirected_store_id == StoreId.IOS:
+        app = link_data.get("apple_store_id")
+    else:
+        app = ""
 
     event_time = now()
     ifa = EMPTY_IFA
     source = link_data.get("network")
-    app = link_data.get("store_id")
     c = link_data.get("campaign")
     c_id = link_data.get("campaign_id")
     ad = link_data.get("ad")
@@ -91,10 +129,10 @@ def process_share_link(share_slug: str, client_host: str, link_uid: str) -> None
 
     try:
         enc_data = json.dumps(data).encode("utf-8")
-        CLICK_PRODUCER.produce("impressions", value=enc_data)
+        CLICK_PRODUCER.produce("clicks", value=enc_data)
         CLICK_PRODUCER.poll(0)
     except KafkaException as ex:
-        logger.exception("Write to Kafka Impressions failed.")
+        logger.exception("Write share to Kafka Clicks failed.")
         raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
 
 
@@ -117,7 +155,7 @@ class ShareController(Controller):
         share_slug: str,
     ) -> None:
         """
-        Record clicks on share links.
+        Redirect to the store ID's URL based on the device type.
 
         URL Path: GET s/{share_slug:str}
 
@@ -133,11 +171,9 @@ class ShareController(Controller):
 
         Behavior
         --------
-        1. Extracts the client's host information from the request.
-        2. Constructs a data dictionary with the provided parameters and additional information like the client's IP address.
-        3. Serializes the data dictionary into a JSON string and encodes it to UTF-8.
-        4. Produces a message with the encoded data to the "impressions" Kafka topic.
-
+        1. Determines the store ID to redirect to based on the device type.
+        2. Redirects to the store ID's URL.
+        3. Processes the share link in the background as a click event.
 
         Example Usage
         -------------
@@ -146,25 +182,46 @@ class ShareController(Controller):
         ```
 
         """
-        link_uid = generate_link_uid()
-
-        # TODO: move this to process_share_link?
-        client_host = get_client_ip(request)
-
         if is_android_device(request):
-            redirect_url = APP_LINKS[share_slug]["google_redirect"]
+            redirected_store_id = OSID.ANDROID
+            try:
+                redirect_url = APP_REDIRECT_LINKS[share_slug]["google_redirect"]
+            except KeyError:
+                logger.exception(f"No google redirect found for {share_slug}")
+                redirect_url = APP_REDIRECT_LINKS[share_slug]["web_redirect"]
+                redirected_store_id = StoreId.WEB
         elif is_ios_device(request):
-            redirect_url = APP_LINKS[share_slug]["apple_redirect"]
+            redirected_store_id = StoreId.APPLE
+            try:
+                redirect_url = APP_REDIRECT_LINKS[share_slug]["apple_redirect"]
+            except KeyError:
+                logger.exception(f"No apple redirect found for {share_slug}")
+                redirect_url = APP_REDIRECT_LINKS[share_slug]["web_redirect"]
+                redirected_store_id = StoreId.WEB
         else:
-            # TODO: Needs a web landing page
-            raise HTTPException(status_code=400, detail="Unsupported device")
+            logger.error(f"No redirect found for {share_slug}")
+            try:
+                redirect_url = APP_REDIRECT_LINKS[share_slug]["web_redirect"]
+                redirected_store_id = StoreId.WEB
+            except KeyError:
+                logger.exception(f"No web redirect found for {share_slug}")
+                redirected_store_id = StoreId.ERROR
+                return Redirect(
+                    path="/",
+                    background=BackgroundTask(
+                        process_share_link,
+                        share_slug,
+                        request,
+                        redirected_store_id,
+                    ),
+                )
 
-        return RedirectResponse(
-            url=redirect_url,
+        return Redirect(
+            path=redirect_url,
             background=BackgroundTask(
                 process_share_link,
                 share_slug,
-                client_host,
-                link_uid,
+                request,
+                redirected_store_id,
             ),
         )

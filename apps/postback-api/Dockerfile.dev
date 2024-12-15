@@ -2,7 +2,7 @@ FROM python:3.12-bookworm
 
 WORKDIR /app
 
-RUN pip install --upgrade uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0 geoip2==4.8.1
+RUN pip install --upgrade uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0 geoip2==4.8.1 "ua-parser[regex]"==1.0.0 pandas==2.2.3 sqlalchemy==2.0.35 psycopg2-binary==2.9.9
 
 # COPY . /app/
 

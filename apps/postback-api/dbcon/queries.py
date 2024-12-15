@@ -1,7 +1,6 @@
 """Query database for backend API."""
 
 import pathlib
-from functools import lru_cache
 from typing import cast
 
 import pandas as pd
@@ -29,8 +28,7 @@ QUERY_APP_LINKS = load_sql_file(
 )
 
 
-@lru_cache(maxsize=1)
-def query_app_links() -> dict[str, dict[str, str]]:
+def get_app_links() -> pd.DataFrame:
     """Get all app links."""
     logger.info("Query all app links.")
     df = pd.read_sql(
@@ -41,6 +39,14 @@ def query_app_links() -> dict[str, dict[str, str]]:
         "https://play.google.com/store/apps/details?id=" + df["google_store_id"]
     )
     df["apple_redirect"] = "https://apps.apple.com/-/app/-/id" + df["apple_store_id"]
+    return df
+
+
+def get_redirect_links() -> dict[str, dict[str, str]]:
+    """Get all redirect links in a dictionary."""
+    df = get_app_links()
+    if df.empty:
+        return {}
     app_links = df[["url_slug", "google_redirect", "apple_redirect"]].to_dict()
     return app_links
 
@@ -55,3 +61,6 @@ if DBCON.engine is None:
     raise ValueError(msg)
 
 ENGINE = cast(Engine, DBCON.engine)
+
+APP_REDIRECT_LINKS = get_redirect_links()
+APP_LINKS_DF = get_app_links()

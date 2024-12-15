@@ -6,8 +6,8 @@ SELECT
     al.campaign_name,
     al.ad_name,
     al.created_at,
-    ga.name as store_id as google_store_id,
-    aa.name as store_id as apple_store_id
+    ga.store_id as google_store_id,
+    aa.store_id as apple_store_id
 FROM app_links al
 LEFT JOIN networks n ON al.network = n.id
 LEFT JOIN client_domains d ON al.client_domain = d.id
