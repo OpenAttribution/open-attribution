@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "8ZKUDT7A65.com.ieesizaq.OpenAttribution"
+        ],
+        "components": [
+          {
+            "#": "no_universal_links",
+            "exclude": true
+          },
+          {
+            "/": "/oat/*"
+          }
+        ]
+      }
+    ]
+  }
+}

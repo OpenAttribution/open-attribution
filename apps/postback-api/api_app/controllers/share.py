@@ -193,7 +193,7 @@ class ShareController(Controller):
             try:
                 redirect_url = APP_LINKS_DF[share_slug]["google_redirect"]
             except KeyError:
-                logger.exception(f"No google redirect found for {share_slug}")
+                logger.info(f"No google redirect found for {share_slug}")
                 redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
                 redirected_store_id = StoreId.WEB
         elif is_ios_device(request):
@@ -201,26 +201,18 @@ class ShareController(Controller):
             try:
                 redirect_url = APP_LINKS_DF[share_slug]["apple_redirect"]
             except KeyError:
-                logger.exception(f"No apple redirect found for {share_slug}")
+                logger.info(f"No apple redirect found for {share_slug}")
                 redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
                 redirected_store_id = StoreId.WEB
         else:
-            logger.error(f"No redirect found for {share_slug}")
+            logger.info(f"No redirect found for {share_slug}")
             try:
                 redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
                 redirected_store_id = StoreId.WEB
             except KeyError:
-                logger.exception(f"No web redirect found for {share_slug}")
+                logger.warning(f"No web redirect found for {share_slug}")
+                redirect_url = "/"
                 redirected_store_id = StoreId.ERROR
-                return Redirect(
-                    path="/",
-                    background=BackgroundTask(
-                        process_share_link,
-                        share_slug,
-                        request,
-                        redirected_store_id,
-                    ),
-                )
 
         return Redirect(
             path=redirect_url,
