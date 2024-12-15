@@ -3,6 +3,7 @@
 import logging
 
 from api_app.controllers.postbacks import PostbackController
+from api_app.controllers.share import ShareController
 from detect.geo import update_geo_dbs
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
@@ -19,7 +20,8 @@ cors_config = CORSConfig(
 class MyOpenAPIController(OpenAPIController):
     """Set Docs path."""
 
-    path = "/collect/docs"  # NOTE: not working?
+    # Should this just move to docs?
+    path = "/collect/docs"  # NOTE: not working in prod? works in dev
 
 
 logging_config = LoggingConfig(
@@ -32,7 +34,7 @@ logging_config = LoggingConfig(
 update_geo_dbs()
 
 app = Litestar(
-    route_handlers=[PostbackController],
+    route_handlers=[PostbackController, ShareController],
     cors_config=cors_config,
     openapi_config=OpenAPIConfig(
         title="Open Attribution Postback API",

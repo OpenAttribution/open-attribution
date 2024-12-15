@@ -65,6 +65,7 @@ class LinkData:
     share_slug: str
     network_id: int
     campaign_name: str
+    web_landing_page: str
     google_app_id: int | None = field(default=None)
     apple_app_id: int | None = field(default=None)
     ad_name: str | None = field(default="")

@@ -1,6 +1,7 @@
 """Init functions for whole app."""
 
 import logging
+import os
 import pathlib
 import sys
 import types
@@ -91,3 +92,10 @@ sys.excepthook = handle_exception
 logger = get_logger(__name__)
 
 DATE_FORMAT = "%Y-%m-%d"
+
+# for non docker local development manually source contents of .env.dev
+# source ../../docker/.env.dev
+# or manually like export POSTGRES_USER=example
+POSTGRES_USER = os.environ["POSTGRES_USER"]
+POSTGRES_DB = os.environ["POSTGRES_DB"]
+POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]

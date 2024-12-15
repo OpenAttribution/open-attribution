@@ -77,6 +77,12 @@ services:
     working_dir: /app
     ports:
       - '8000:8000'
+    env_file:
+      - .env.dev
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_USER: ${POSTGRES_USER}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       clickhouse:
         condition: service_healthy
@@ -92,18 +98,20 @@ services:
     volumes:
       - ../apps/postback-api:/app
 
-  postback-test:
-    container_name: postback-test
-    build:
-      context: ../apps/postback-api
-      dockerfile: Dockerfile.test
-    working_dir: /app
-    command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
-    depends_on:
-      postback-api:
-        condition: service_healthy
-    environment:
-      - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
+  # postback-test:
+  #   container_name: postback-test
+  #   build:
+  #     context: ../apps/postback-api
+  #     dockerfile: Dockerfile.test
+  #   working_dir: /app
+  #   command: bash -c "python run_data_generation.py -i && python run_data_generation.py"
+  #   depends_on:
+  #     postback-api:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env.dev
+  #   environment:
+  #     - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
 
   admin-db:
     container_name: admin-db
@@ -111,9 +119,12 @@ services:
     restart: 'no'
     ports:
       - '5432:5432'
-    environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_DB: admin_db
+    env_file:
+      - .env.dev
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_USER: ${POSTGRES_USER}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
@@ -130,6 +141,12 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - '8001:8001'
+    env_file:
+      - .env.dev
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_USER: ${POSTGRES_USER}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command: litestar run --host 0.0.0.0 --port 8001 --reload
     working_dir: /app
     depends_on:

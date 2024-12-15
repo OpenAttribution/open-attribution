@@ -1,6 +1,7 @@
 """Initialize project settings and logging."""
 
 import logging
+import os
 import pathlib
 import sys
 from logging.handlers import RotatingFileHandler
@@ -17,6 +18,7 @@ HOME = pathlib.Path.home()
 TOP_CONFIGDIR = pathlib.Path(HOME, pathlib.Path(".config"))
 CONFIG_DIR = pathlib.Path(TOP_CONFIGDIR, pathlib.Path(PROJECT_NAME))
 LOG_DIR = pathlib.Path(CONFIG_DIR, pathlib.Path("logs"))
+MODULE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
 
 def is_docker() -> bool:
@@ -27,7 +29,7 @@ def is_docker() -> bool:
     )
 
 
-KAFKA_LOCATION = "kafka:9093" if is_docker() else "localhost:9092"
+KAFKA_LOCATION = "kafka:9093" if is_docker() else "localhost:9093"
 
 
 def handle_exception(
@@ -99,6 +101,13 @@ logger = get_logger(__name__)
 
 DATE_FORMAT = "%Y-%m-%d"
 
+# for non docker local development manually source contents of .env.dev
+# source ../../docker/.env.dev
+# or manually like export POSTGRES_USER=example
+POSTGRES_USER = os.environ["POSTGRES_USER"]
+POSTGRES_DB = os.environ["POSTGRES_DB"]
+POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
+
 
 # If inside docker: "bootstrap.servers": "kafka:9093",
 reg_config = {
@@ -109,5 +118,5 @@ event_config = {
     "bootstrap.servers": KAFKA_LOCATION,
     "linger.ms": 1000,  # This is to attempt to slow down events to allow clickhouse mv to process clicks. Should be handled some other way in ClickHouse?
 }
-CLICK_PRODUCER = Producer(reg_config)
+IMPRESSION_CLICK_PRODUCER = Producer(reg_config)
 EVENT_PRODUCER = Producer(event_config)

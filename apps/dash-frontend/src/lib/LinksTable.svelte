@@ -20,7 +20,7 @@
 		},
 		{ accessorKey: 'google_app_name', header: 'Google Play Store App' },
 		{ accessorKey: 'apple_app_name', header: 'Apple Store App' },
-
+		{ accessorKey: 'web_landing_page', header: 'Web Landing Page' },
 		{
 			accessorKey: 'campaign_name',
 			header: 'Campaign Name'

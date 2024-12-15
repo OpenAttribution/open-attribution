@@ -13,9 +13,10 @@ export const linkSchema = z.object({
 		.regex(/^[a-zA-Z0-9-_]+$/, {
 			message: 'Share slug can only contain alphanumeric characters, dashes, and underscores.'
 		}),
+	webLandingPage: z.string().min(2).max(50),
 	networkId: z.number(),
 	// networkName: z.string(), // Used for display
-	campaignName: z.string().min(2).max(50),
+	campaignName: z.string().min(2).max(100),
 	adName: z.string().max(50).optional().default('')
 });
 export type LinkSchema = typeof linkSchema;
@@ -46,8 +47,8 @@ export const domainSchema = z.object({
 		.string()
 		.min(2)
 		.max(50)
-		.regex(/^[a-zA-Z0-9-_]+$/, {
-			message: 'Domain can only contain alphanumeric characters, dashes, and underscores.'
+		.regex(/^[a-zA-Z0-9.-]+$/, {
+			message: 'Domain must be a valid top level domain or subdomain without special characters.'
 		})
 });
 export type DomainSchema = typeof domainSchema;

@@ -60,7 +60,7 @@ class PostgresCon:
                 self.db_uri,
                 connect_args={
                     "connect_timeout": 10,
-                    "application_name": "dash-backend",
+                    "application_name": "postback-api",
                 },
             )
             logger.info(f"Created PostgreSQL Engine {self.db_name}")
@@ -84,6 +84,7 @@ def get_db_connection() -> PostgresCon:
     """
     db_host = DB_HOST
     db_local_port = "5432"
+
     postgres_con = PostgresCon(
         POSTGRES_DB, db_host, db_local_port, POSTGRES_USER, POSTGRES_PASSWORD,
     )

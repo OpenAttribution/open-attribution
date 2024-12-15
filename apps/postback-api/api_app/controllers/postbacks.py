@@ -16,10 +16,9 @@ Endpoint for Health Check
 
 """
 
-import json
 from typing import Annotated, Self
 
-from config import CLICK_PRODUCER, EVENT_PRODUCER, get_logger
+from config import get_logger
 from config.dimensions import (
     APP_EVENT_ID,
     APP_EVENT_REV,
@@ -50,12 +49,13 @@ from config.dimensions import (
     LINK_NETWORK,
     LINK_UID,
 )
-from confluent_kafka import KafkaException
 from detect.geo import get_geo
 from litestar import Controller, Request, get
 from litestar.exceptions import HTTPException
 from litestar.params import Parameter
 
+from api_app.models import ClickData, EventData, ImpressionData
+from api_app.sendkafka import to_kafka
 from api_app.tools import EMPTY_IFA, get_client_ip, is_valid_ifa, is_valid_uuid, now
 
 logger = get_logger(__name__)
@@ -149,11 +149,13 @@ class PostbackController(Controller):
 
         if not is_valid_ifa(ifa):
             raise HTTPException(
-                status_code=400, detail="Invalid ifa format, use a v4 UUID",
+                status_code=400,
+                detail="Invalid ifa format, use a v4 UUID",
             )
         if not is_valid_uuid(link_uid):
             raise HTTPException(
-                status_code=400, detail="Invalid link_uid format, use a v4 UUID",
+                status_code=400,
+                detail="Invalid link_uid format, use a v4 UUID",
             )
 
         geo_data = get_geo(client_host)
@@ -178,13 +180,9 @@ class PostbackController(Controller):
             DB_RECEIVED_AT: now(),
         }
 
-        try:
-            enc_data = json.dumps(data).encode("utf-8")
-            CLICK_PRODUCER.produce("impressions", value=enc_data)
-            CLICK_PRODUCER.poll(0)
-        except KafkaException as ex:
-            logger.exception("Write to Kafka Impressions failed.")
-            raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
+        impression = ImpressionData(**data)
+
+        to_kafka(impression, "impressions")
 
     @get(path="clicks/{app:str}")
     async def clicks(
@@ -257,11 +255,13 @@ class PostbackController(Controller):
 
         if not is_valid_ifa(ifa):
             raise HTTPException(
-                status_code=400, detail="Invalid ifa format, use a v4 UUID",
+                status_code=400,
+                detail="Invalid ifa format, use a v4 UUID",
             )
         if not is_valid_uuid(link_uid):
             raise HTTPException(
-                status_code=400, detail="Invalid link_uid format, use a v4 UUID",
+                status_code=400,
+                detail="Invalid link_uid format, use a v4 UUID",
             )
 
         geo_data = get_geo(client_host)
@@ -285,14 +285,9 @@ class PostbackController(Controller):
             DB_CITY_NAME: city_name,
             DB_RECEIVED_AT: now(),
         }
+        click = ClickData(**data)
 
-        try:
-            enc_data = json.dumps(data).encode("utf-8")
-            CLICK_PRODUCER.produce("clicks", value=enc_data)
-            CLICK_PRODUCER.poll(0)
-        except KafkaException as ex:
-            logger.exception("Process click for kafka failed.")
-            raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
+        to_kafka(click, "clicks")
 
     @get(path="events/{app:str}")
     async def events(
@@ -365,15 +360,18 @@ class PostbackController(Controller):
                 ifa = EMPTY_IFA
             else:
                 raise HTTPException(
-                    status_code=400, detail="Invalid ifa format, use a v4 UUID",
+                    status_code=400,
+                    detail="Invalid ifa format, use a v4 UUID",
                 )
         if not is_valid_uuid(event_uid):
             raise HTTPException(
-                status_code=400, detail="Invalid event_uid format, use a v4 UUID",
+                status_code=400,
+                detail="Invalid event_uid format, use a v4 UUID",
             )
         if not is_valid_uuid(oa_uid):
             raise HTTPException(
-                status_code=400, detail="Invalid oa_uid format, use a v4 UUID",
+                status_code=400,
+                detail="Invalid oa_uid format, use a v4 UUID",
             )
 
         geo_data = get_geo(client_host)
@@ -395,14 +393,8 @@ class PostbackController(Controller):
             DB_CITY_NAME: city_name,
             DB_RECEIVED_AT: now(),
         }
-
-        try:
-            enc_data = json.dumps(data).encode("utf-8")
-            EVENT_PRODUCER.produce("events", value=enc_data)
-            EVENT_PRODUCER.poll(0)
-        except KafkaException as ex:
-            logger.exception("Processing event postback for kafka failed")
-            raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
+        event = EventData(**data)
+        to_kafka(event, "events")
 
     @get(path="health")
     async def health(self: Self) -> dict:
