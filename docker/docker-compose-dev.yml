@@ -108,6 +108,8 @@ services:
     depends_on:
       postback-api:
         condition: service_healthy
+    env_file:
+      - .env.dev
     environment:
       - TEST_HOST=${TEST_HOST:-http://postback-api:8000}
 

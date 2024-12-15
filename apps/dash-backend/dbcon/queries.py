@@ -222,7 +222,7 @@ def insert_app_link(
 
 
 logger.info("set db engine")
-DBCON = get_db_connection("admin-db")
+DBCON = get_db_connection()
 DBCON.set_engine()
 
 if DBCON.engine is None:

@@ -28,7 +28,7 @@ QUERY_APP_LINKS = load_sql_file(
 )
 
 
-def get_app_links() -> pd.DataFrame:
+def get_app_links() -> dict[str, dict[str, str]]:
     """Get all app links."""
     logger.info("Query all app links.")
     df = pd.read_sql(
@@ -39,20 +39,14 @@ def get_app_links() -> pd.DataFrame:
         "https://play.google.com/store/apps/details?id=" + df["google_store_id"]
     )
     df["apple_redirect"] = "https://apps.apple.com/-/app/-/id" + df["apple_store_id"]
-    return df
-
-
-def get_redirect_links() -> dict[str, dict[str, str]]:
-    """Get all redirect links in a dictionary."""
-    df = get_app_links()
     if df.empty:
         return {}
-    app_links = df[["url_slug", "google_redirect", "apple_redirect"]].to_dict()
+    app_links = df.set_index("share_slug").to_dict(orient="index")
     return app_links
 
 
 logger.info("set db engine")
-DBCON = get_db_connection("admin-db")
+DBCON = get_db_connection()
 DBCON.set_engine()
 
 if DBCON.engine is None:
@@ -62,5 +56,4 @@ if DBCON.engine is None:
 
 ENGINE = cast(Engine, DBCON.engine)
 
-APP_REDIRECT_LINKS = get_redirect_links()
 APP_LINKS_DF = get_app_links()

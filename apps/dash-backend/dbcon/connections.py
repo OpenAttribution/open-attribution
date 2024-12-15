@@ -1,10 +1,9 @@
 """Create SQLAlchemy database connection engine."""
 
-import os
 import sys
 from typing import Self
 
-from config import get_logger
+from config import POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, get_logger
 from sqlalchemy import Engine, create_engine
 
 logger = get_logger(__name__)
@@ -73,7 +72,7 @@ class PostgresCon:
             self.db_name = None
 
 
-def get_db_connection(db_name: str) -> PostgresCon:
+def get_db_connection() -> PostgresCon:
     """
     Return PostgresCon class.
 
@@ -85,8 +84,7 @@ def get_db_connection(db_name: str) -> PostgresCon:
     """
     db_host = DB_HOST
     db_local_port = "5432"
-    db_user = os.environ.get("POSTGRES_USER")
-    db_name = os.environ.get("POSTGRES_DB")
-    db_password = os.environ.get("POSTGRES_PASSWORD")
-    postgres_con = PostgresCon(db_name, db_host, db_local_port, db_user, db_password)
+    postgres_con = PostgresCon(
+        POSTGRES_DB, db_host, db_local_port, POSTGRES_USER, POSTGRES_PASSWORD,
+    )
     return postgres_con

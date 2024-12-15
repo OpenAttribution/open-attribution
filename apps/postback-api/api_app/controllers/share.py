@@ -16,7 +16,7 @@ import json
 from enum import Enum
 from typing import Self
 
-from config import CLICK_PRODUCER, get_logger
+from config import IMPRESSION_CLICK_PRODUCER, get_logger
 from config.dimensions import (
     DB_AD_ID,
     DB_AD_NAME,
@@ -33,7 +33,7 @@ from config.dimensions import (
     DB_STORE_ID,
 )
 from confluent_kafka import KafkaException
-from dbcon.queries import APP_LINKS_DF, APP_REDIRECT_LINKS
+from dbcon.queries import APP_LINKS_DF
 from detect.geo import get_geo
 from litestar import Controller, Request, get
 from litestar.background_tasks import BackgroundTask
@@ -88,21 +88,21 @@ def process_share_link(
     client_host = get_client_ip(request)
     link_uid = generate_link_uid()
 
-    link_data = APP_LINKS_DF[APP_LINKS_DF["url_slug"] == share_slug].to_dict()
+    link_data = APP_LINKS_DF[share_slug]
 
-    if redirected_store_id == StoreId.ANDROID:
+    if redirected_store_id == StoreId.ANDROID and link_data["google_store_id"]:
         app = link_data.get("google_store_id")
-    elif redirected_store_id == StoreId.IOS:
+    elif redirected_store_id == StoreId.IOS and link_data["apple_store_id"]:
         app = link_data.get("apple_store_id")
     else:
         app = ""
 
     event_time = now()
     ifa = EMPTY_IFA
-    source = link_data.get("network")
-    c = link_data.get("campaign")
+    source = link_data.get("network_postback_id")
+    c = link_data.get("campaign_name")
     c_id = link_data.get("campaign_id")
-    ad = link_data.get("ad")
+    ad = link_data.get("ad_name")
     ad_id = link_data.get("ad_id")
 
     geo_data = get_geo(client_host)
@@ -129,8 +129,8 @@ def process_share_link(
 
     try:
         enc_data = json.dumps(data).encode("utf-8")
-        CLICK_PRODUCER.produce("clicks", value=enc_data)
-        CLICK_PRODUCER.poll(0)
+        IMPRESSION_CLICK_PRODUCER.produce("clicks", value=enc_data)
+        IMPRESSION_CLICK_PRODUCER.poll(0)
     except KafkaException as ex:
         logger.exception("Write share to Kafka Clicks failed.")
         raise HTTPException(status_code=500, detail=ex.args[0].str()) from ex
@@ -182,26 +182,32 @@ class ShareController(Controller):
         ```
 
         """
+        if len(APP_LINKS_DF) == 0:
+            logger.error(
+                f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",
+            )
+            return Redirect(path="/")
+
         if is_android_device(request):
             redirected_store_id = OSID.ANDROID
             try:
-                redirect_url = APP_REDIRECT_LINKS[share_slug]["google_redirect"]
+                redirect_url = APP_LINKS_DF[share_slug]["google_redirect"]
             except KeyError:
                 logger.exception(f"No google redirect found for {share_slug}")
-                redirect_url = APP_REDIRECT_LINKS[share_slug]["web_redirect"]
+                redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
                 redirected_store_id = StoreId.WEB
         elif is_ios_device(request):
             redirected_store_id = StoreId.APPLE
             try:
-                redirect_url = APP_REDIRECT_LINKS[share_slug]["apple_redirect"]
+                redirect_url = APP_LINKS_DF[share_slug]["apple_redirect"]
             except KeyError:
                 logger.exception(f"No apple redirect found for {share_slug}")
-                redirect_url = APP_REDIRECT_LINKS[share_slug]["web_redirect"]
+                redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
                 redirected_store_id = StoreId.WEB
         else:
             logger.error(f"No redirect found for {share_slug}")
             try:
-                redirect_url = APP_REDIRECT_LINKS[share_slug]["web_redirect"]
+                redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
                 redirected_store_id = StoreId.WEB
             except KeyError:
                 logger.exception(f"No web redirect found for {share_slug}")

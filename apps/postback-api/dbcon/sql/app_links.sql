@@ -2,6 +2,7 @@ SELECT
     al.id as db_id,
     d.domain_url as domain_url,
     al.share_slug,
+    n.postback_id as network_postback_id,
     n.name as network_name,
     al.campaign_name,
     al.ad_name,
