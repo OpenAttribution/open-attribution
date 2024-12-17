@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<clickhouse>
+  <cache_size_to_ram_max_ratio>0.2</cache_size_to_ram_max_ratio>
+  <max_server_memory_usage_to_ram_ratio>0.8</max_server_memory_usage_to_ram_ratio>
+</clickhouse>
