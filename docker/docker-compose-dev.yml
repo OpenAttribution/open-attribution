@@ -65,6 +65,7 @@ services:
     volumes:
       - ../apps/analytics-db/create/:/my-tables/
       - ../apps/analytics-db/startup-scripts/:/docker-entrypoint-initdb.d/
+      - ../apps/analytics-db/config.xml:/etc/clickhouse-server/config.d/config.xml
       - 'clickhouse-volume:/var/lib/clickhouse'
       - 'clickhouse-log-volume:/var/log/clickhouse-server'
 

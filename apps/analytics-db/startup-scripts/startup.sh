@@ -56,7 +56,6 @@ for table in "${my_tables[@]}"; do
 
 		# Execute using heredoc syntax
 		clickhouse-client -n <<-EOSQL
-			SET allow_experimental_refreshable_materialized_view = 1;
 			${modified_sql}
 		EOSQL
 	else

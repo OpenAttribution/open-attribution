@@ -1,5 +1,5 @@
 CREATE MATERIALIZED VIEW daily_overview_mv
-REFRESH EVERY 5 SECOND
+REFRESH EVERY 1 MINUTE
 TO daily_overview
 AS
 WITH combined AS (
@@ -89,10 +89,10 @@ SELECT
     toDate(install_time) as on_date,
     store_id,
     'Organic' as network,
-    '' as campaign_name,
-    '' as campaign_id,
-    '' as ad_name,
-    '' as ad_id,
+    'Organic' as campaign_name,
+    'Organic' as campaign_id,
+    'Organic' as ad_name,
+    'Organic' as ad_id,
     ib.country_iso,
     0 AS impressions,
     0 AS clicks,

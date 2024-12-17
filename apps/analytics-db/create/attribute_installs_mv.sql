@@ -1,5 +1,5 @@
 CREATE MATERIALIZED VIEW attribute_installs_mv
-REFRESH EVERY 5 SECOND
+REFRESH EVERY 1 MINUTE
 TO attributed_installs
 AS
 SELECT * FROM attributed_clicks

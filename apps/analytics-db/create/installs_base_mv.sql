@@ -1,5 +1,5 @@
 CREATE MATERIALIZED VIEW installs_base_mv
-REFRESH EVERY 5 SECOND
+REFRESH EVERY 1 MINUTE
 TO installs_base AS
 WITH installs AS (
     SELECT 
