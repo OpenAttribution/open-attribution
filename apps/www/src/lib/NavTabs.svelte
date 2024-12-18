@@ -20,7 +20,11 @@
 
 <div class="flex flex-col">
 	<div class={bottomDivider}></div>
-	<div class="flex flex-row gap-2 md:gap-6 {mainClass} mx-2 place-content-center">
+	<div
+		class="flex flex-row gap-2 md:gap-6 {mainClass} justify-between p-2 md:place-content-center md:p-4"
+	>
+		<!-- <div class="flex flex-row {mainClass} justify-between p-2 md:p-4"> -->
+
 		<a href="/" class="hidden md:block">
 			<p class={isHighlighted('/') ? topBarHighlightedFont : topBarFont}>Home</p>
 		</a>
