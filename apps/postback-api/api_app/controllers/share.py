@@ -92,7 +92,7 @@ def get_redirect_url(
             logger.info(f"No apple redirect found for {share_slug}")
             redirect_url = app_links[share_slug]["web_redirect"]
     else:
-        logger.info(f"No redirect found for {share_slug}")
+        logger.info(f"No mobile OS detected for {share_slug}")
         detected_os = OSID.WEB
         try:
             redirect_url = app_links[share_slug]["web_redirect"]
@@ -115,7 +115,11 @@ async def process_share_link(
 
     app_links = await STORE.get("app_links")
 
-    link_data = app_links[share_slug]
+    try:
+        link_data = app_links[share_slug]
+    except KeyError:
+        logger.warning(f"No link associated with {share_slug}")
+        return
 
     if detected_os == OSID.ANDROID and link_data["google_store_id"]:
         app = link_data.get("google_store_id")
@@ -185,7 +189,7 @@ class ShareController(Controller):
         """
         Redirect to the store ID's URL based on the device type.
 
-        URL Path: GET s/{share_slug:str}
+        URL Path: GET api/links/share/{share_slug:str}
 
         Args:
         ----

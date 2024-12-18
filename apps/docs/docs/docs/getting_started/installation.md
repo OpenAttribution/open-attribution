@@ -114,6 +114,8 @@ The nginx proxy below does not include SSL, as that should be setup with certbot
 
 Example `nginx` config, to setup on the same machine, just replace the `server_name` with your domain:
 
+Redirects for Postbacks and Dashboard:
+
 ```nginx
 server {
 
@@ -121,6 +123,15 @@ server {
   server_name demo.openattribution.dev;
 
   add_header Access-Control-Allow-Origin '*';
+
+  # Forward to the postback-api
+  location /collect {
+    proxy_pass http://localhost:8000;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_hide_header 'Access-Control-Allow-Origin';
+  }
 
   # Forward to the dash-frontend
   location / {
@@ -131,14 +142,26 @@ server {
     proxy_hide_header 'Access-Control-Allow-Origin';
   }
 
-  # Forward to the postback-api
-   location /collect {
-    proxy_pass http://localhost:8000;
+}
+
+```
+
+Redirects for Share Links, more info in [Share Links](./getting_started/share_links.md)
+
+```nginx
+server {
+  server_name app.thirdgate.dev;
+
+  listen 80;
+
+  # Forward to postback-api share links endpoint
+  location / {
+    proxy_pass http://localhost:8000/api/links/share$request_uri;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_hide_header 'Access-Control-Allow-Origin';
   }
-}
 
+}
 ```

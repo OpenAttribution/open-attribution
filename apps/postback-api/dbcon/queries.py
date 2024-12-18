@@ -68,3 +68,4 @@ async def update_app_links_store() -> None:
     """Update the app links store."""
     app_links = await get_app_links()
     await STORE.set("app_links", app_links)
+    logger.info(f"app_links updated num: {len(app_links)}")
