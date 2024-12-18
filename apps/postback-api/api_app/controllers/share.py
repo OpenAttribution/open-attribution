@@ -47,16 +47,13 @@ from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
 logger = get_logger(__name__)
 
+STORE = MemoryStore()
 
-store = MemoryStore()
 
-
-def update_app_links_store() -> None:
+async def update_app_links_store() -> None:
     """Update the app links store."""
-    app_links = get_app_links()
-    store.set("app_links", app_links)
-    value = store.get("app_links")
-    logger.info(f"app_links set to: {value}")
+    app_links = await get_app_links()
+    await STORE.set("app_links", app_links)
 
 
 class OSID(Enum):
@@ -119,7 +116,7 @@ def get_redirect_url(
     return redirect_url, detected_os
 
 
-def process_share_link(
+async def process_share_link(
     share_slug: str,
     request: Request,
     detected_os: OSID,
@@ -128,7 +125,7 @@ def process_share_link(
     client_host = get_client_ip(request)
     link_uid = generate_link_uid()
 
-    app_links = store.get("app_links")
+    app_links = await STORE.get("app_links")
 
     link_data = app_links[share_slug]
 
@@ -225,7 +222,7 @@ class ShareController(Controller):
         ```
 
         """
-        app_links = store.get("app_links")
+        app_links = await STORE.get("app_links")
         if len(app_links) == 0:
             logger.error(
                 f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",
@@ -248,7 +245,7 @@ class ShareController(Controller):
             ),
         )
 
-    @post(path="/updatelinks")
+    @post(path="/update")
     async def update_links(self: Self) -> None:
         """
         Update the app links store based on app_links table in database.
@@ -258,5 +255,5 @@ class ShareController(Controller):
         - None: The function does not return any value.
 
         """
-        update_app_links_store()
+        await update_app_links_store()
         return {"status": "success"}

@@ -28,7 +28,7 @@ QUERY_APP_LINKS = load_sql_file(
 )
 
 
-def get_app_links() -> dict[str, dict[str, str]]:
+async def get_app_links() -> dict[str, dict[str, str]]:
     """Get all app links."""
     logger.info("Query all app links.")
     df = pd.read_sql(
@@ -56,5 +56,3 @@ if DBCON.engine is None:
     raise ValueError(msg)
 
 ENGINE = cast(Engine, DBCON.engine)
-
-APP_LINKS_DF = get_app_links()

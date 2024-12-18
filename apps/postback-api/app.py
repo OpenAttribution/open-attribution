@@ -4,11 +4,13 @@ import logging
 
 from api_app.controllers.postbacks import PostbackController
 from api_app.controllers.share import ShareController
+from dbcon.queries import get_app_links
 from detect.geo import update_geo_dbs
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig, OpenAPIController
+from litestar.stores.memory import MemoryStore
 
 cors_config = CORSConfig(
     allow_origins=[
@@ -33,6 +35,15 @@ logging_config = LoggingConfig(
 
 update_geo_dbs()
 
+STORE = MemoryStore()
+
+
+async def update_app_links_store() -> None:
+    """Update the app links store."""
+    app_links = await get_app_links()
+    await STORE.set("app_links", app_links)
+
+
 app = Litestar(
     route_handlers=[PostbackController, ShareController],
     cors_config=cors_config,
@@ -43,4 +54,5 @@ app = Litestar(
     ),
     logging_config=logging_config,
     debug=True,
+    on_startup=[update_app_links_store],
 )

@@ -1,4 +1,5 @@
 """Get geo data for an ip address."""
+
 import pathlib
 import tarfile
 import tempfile
@@ -9,11 +10,12 @@ from config import TOP_CONFIGDIR, get_logger
 
 logger = get_logger(__name__)
 
-GITSQUARED_GEOLITE2_RAW_DATA="https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/{db}.tar.gz"
+GITSQUARED_GEOLITE2_RAW_DATA = "https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/{db}.tar.gz"
 
-MAXMIND_GEO_DBS=["GeoLite2-City", "GeoLite2-ASN"]
+MAXMIND_GEO_DBS = ["GeoLite2-City", "GeoLite2-ASN"]
 
-def update_geo_dbs()->None:
+
+def update_geo_dbs() -> None:
     """Update the geo databases."""
     for db in MAXMIND_GEO_DBS:
         if pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").exists():
@@ -35,13 +37,14 @@ def update_geo_dbs()->None:
                     if pathlib.Path(member.name).suffix == ".mmdb":
                         with tar.extractfile(member) as r:
                             if r is not None:
-                                with pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").open("w+b") as w:
+                                with pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").open(
+                                    "w+b",
+                                ) as w:
                                     w.write(r.read())
                                 break  # Stop once the target file is written
 
 
-
-def lookup_ip(ip:str)->dict:
+def lookup_ip(ip: str) -> dict:
     """
     Lookup ip address.
 
@@ -69,21 +72,22 @@ def lookup_ip(ip:str)->dict:
         asn = response2.autonomous_system_number
         org = response2.autonomous_system_organization
     msg = {
-        "country_name":country_name,
-        "country_iso":country_code,
-        "state_name":state_name,
-        "state_iso":state_code,
-        "city_name":city_name,
-        "zip":zip_code,
-        "latitude":latitude,
-        "longitude":longitude,
-        "cidr":str(cidr),
-        "asn":asn,
-        "org":org,
+        "country_name": country_name,
+        "country_iso": country_code,
+        "state_name": state_name,
+        "state_iso": state_code,
+        "city_name": city_name,
+        "zip": zip_code,
+        "latitude": latitude,
+        "longitude": longitude,
+        "cidr": str(cidr),
+        "asn": asn,
+        "org": org,
     }
     return msg
 
-def get_geo(ip:str)->dict:
+
+def get_geo(ip: str) -> dict:
     """
     Get geo data for an ip address.
 
@@ -98,8 +102,5 @@ def get_geo(ip:str)->dict:
         msg = lookup_ip(ip)
     except Exception:
         logger.exception(f"failed to get geo info for {ip}")
-        msg = {"country_iso":"", "state_iso":"", "city_name":""}
+        msg = {"country_iso": "", "state_iso": "", "city_name": ""}
     return msg
-
-
-
