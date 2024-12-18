@@ -100,7 +100,7 @@ def get_geo(ip: str) -> dict:
     """
     try:
         msg = lookup_ip(ip)
-    except Exception:
-        logger.exception(f"failed to get geo info for {ip}")
+    except geoip2.errors.AddressNotFoundError:
+        logger.warning(f"failed to get geo info for {ip}")
         msg = {"country_iso": "", "state_iso": "", "city_name": ""}
     return msg

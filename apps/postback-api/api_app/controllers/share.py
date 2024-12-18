@@ -34,33 +34,21 @@ from config.dimensions import (
     DB_STORE_ID,
 )
 from confluent_kafka import KafkaException
-from dbcon.queries import get_app_links
+from dbcon.queries import STORE, update_app_links_store
 from detect.geo import get_geo
 from litestar import Controller, Request, get, post
 from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
 from litestar.response import Redirect
-from litestar.stores.memory import MemoryStore
 from ua_parser import parse
 
 from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
 logger = get_logger(__name__)
 
-STORE = MemoryStore()
-
-
-async def update_app_links_store() -> None:
-    """Update the app links store."""
-    app_links = await get_app_links()
-    await STORE.set("app_links", app_links)
-
 
 class OSID(Enum):
     """Enum for store IDs."""
-
-    # TODO: Extend this or make new class for StoreId that was redirected to
-    # TODO: Add MACOS and WINDOWS, store in click links
 
     ANDROID = "android"
     IOS = "ios"
@@ -246,7 +234,7 @@ class ShareController(Controller):
         )
 
     @post(path="/update")
-    async def update_links(self: Self) -> None:
+    async def update_links(self: Self) -> dict:
         """
         Update the app links store based on app_links table in database.
 
