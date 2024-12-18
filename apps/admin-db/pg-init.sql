@@ -16,7 +16,7 @@ CREATE TABLE apps (
     store INTEGER NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     store_id VARCHAR(100) UNIQUE NOT NULL,
-    bundle_id VARCHAR(100) UNIQUE NOT NULL,
+    bundle_id VARCHAR(100) NULL,
     apple_team_id VARCHAR(25) NULL,
     google_sha256_fingerprints VARCHAR(64)[] NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

@@ -25,17 +25,18 @@ export const actions = {
 
 		console.log(`Create app Name: ${app_name}, ${app_store}, ${store_id}`);
 
-		const response = await fetch(
-			`http://dash-backend:8001/api/apps/${store_id}?app_name=${app_name}&store=${app_store}`,
-			{
-				method: 'POST',
-				body: JSON.stringify({
-					apple_team_id: apple_team_id,
-					bundle_id: bundle_id,
-					google_sha256_fingerprints: google_sha256_fingerprints
-				})
-			}
-		);
+		const response = await fetch(`http://dash-backend:8001/api/apps/${store_id}`, {
+			method: 'POST',
+			body: JSON.stringify({
+				app_name: app_name,
+				store: app_store,
+				apple_team_id: apple_team_id,
+				bundle_id: bundle_id,
+				google_sha256_fingerprints: Array.isArray(google_sha256_fingerprints)
+					? google_sha256_fingerprints
+					: [google_sha256_fingerprints]
+			})
+		});
 
 		if (!response.ok) {
 			return message(
