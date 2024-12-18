@@ -51,6 +51,15 @@ export const actions = {
 			);
 		}
 
+		// NOTE This is to the postback-api (not dash-backend) to update the app links stored in memory.
+		const postbackapi_response = await fetch(`http://postback-api:8000/api/links/update`, {
+			method: 'POST'
+		});
+
+		if (!response.ok) {
+			console.log(`Failed to update app links: ${response.status}`);
+		}
+
 		throw redirect(302, `/links`);
 	}
 } satisfies Actions;

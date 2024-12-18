@@ -4,6 +4,7 @@ import logging
 
 from api_app.controllers.postbacks import PostbackController
 from api_app.controllers.share import ShareController
+from dbcon.queries import update_app_links_store
 from detect.geo import update_geo_dbs
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
@@ -33,6 +34,7 @@ logging_config = LoggingConfig(
 
 update_geo_dbs()
 
+
 app = Litestar(
     route_handlers=[PostbackController, ShareController],
     cors_config=cors_config,
@@ -43,4 +45,5 @@ app = Litestar(
     ),
     logging_config=logging_config,
     debug=True,
+    on_startup=[update_app_links_store],
 )

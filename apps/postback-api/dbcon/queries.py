@@ -5,6 +5,7 @@ from typing import cast
 
 import pandas as pd
 from config import MODULE_DIR, get_logger
+from litestar.stores.memory import MemoryStore
 from sqlalchemy import Engine, text
 
 from dbcon.connections import get_db_connection
@@ -28,7 +29,7 @@ QUERY_APP_LINKS = load_sql_file(
 )
 
 
-def get_app_links() -> dict[str, dict[str, str]]:
+async def get_app_links() -> dict[str, dict[str, str]]:
     """Get all app links."""
     logger.info("Query all app links.")
     df = pd.read_sql(
@@ -42,7 +43,9 @@ def get_app_links() -> dict[str, dict[str, str]]:
     df["apple_redirect"] = "https://apps.apple.com/-/app/-/id" + df["apple_store_id"]
     if df.empty:
         return {}
-    app_links = df.set_index("share_slug").to_dict(orient="index")
+    app_links = df.set_index("share_slug").to_dict(
+        orient="index",
+    )
     return app_links
 
 
@@ -55,6 +58,13 @@ if DBCON.engine is None:
     logger.error(msg)
     raise ValueError(msg)
 
+
 ENGINE = cast(Engine, DBCON.engine)
 
-APP_LINKS_DF = get_app_links()
+STORE = MemoryStore()
+
+
+async def update_app_links_store() -> None:
+    """Update the app links store."""
+    app_links = await get_app_links()
+    await STORE.set("app_links", app_links)

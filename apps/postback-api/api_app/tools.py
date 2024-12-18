@@ -58,8 +58,9 @@ def get_client_ip(request: Request) -> str:
 
     """
     forwarded_for = request.headers.get("X-Forwarded-For")
+    ip_host: str = request.client.host
     if forwarded_for:
         # Get the first IP in the chain
         ip_str: str = forwarded_for.split(",")[0].strip()
         return ip_str
-    return request.client.host
+    return ip_host
