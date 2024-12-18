@@ -52,6 +52,7 @@ store = MemoryStore()
 
 
 def update_app_links_store() -> None:
+    """Update the app links store."""
     app_links = get_app_links()
     store.set("app_links", app_links)
     value = store.get("app_links")
