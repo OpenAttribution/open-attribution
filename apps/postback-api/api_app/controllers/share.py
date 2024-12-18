@@ -8,7 +8,8 @@ that checks if the user has already installed the app.
 
 Endpoints for Share Links
 =========
-/s/
+GET /api/links/share/{share_slug:str}
+POST /api/links/update
 
 """
 
@@ -33,12 +34,13 @@ from config.dimensions import (
     DB_STORE_ID,
 )
 from confluent_kafka import KafkaException
-from dbcon.queries import APP_LINKS_DF
+from dbcon.queries import get_app_links
 from detect.geo import get_geo
-from litestar import Controller, Request, get
+from litestar import Controller, Request, get, post
 from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
 from litestar.response import Redirect
+from litestar.stores.memory import MemoryStore
 from ua_parser import parse
 
 from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
@@ -46,20 +48,24 @@ from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 logger = get_logger(__name__)
 
 
+store = MemoryStore()
+
+
+def update_app_links_store() -> None:
+    app_links = get_app_links()
+    store.set("app_links", app_links)
+    value = store.get("app_links")
+    logger.info(f"app_links set to: {value}")
+
+
 class OSID(Enum):
     """Enum for store IDs."""
 
+    # TODO: Extend this or make new class for StoreId that was redirected to
+    # TODO: Add MACOS and WINDOWS, store in click links
+
     ANDROID = "android"
     IOS = "ios"
-    MACOS = "macos"
-    WINDOWS = "windows"
-
-
-class StoreId(Enum):
-    """Enum for store IDs."""
-
-    GOOGLE = "google"
-    APPLE = "apple"
     WEB = "web"
     ERROR = "error"
 
@@ -79,20 +85,55 @@ def is_ios_device(request: Request) -> bool:
     return parsed_ua.os.family.lower() in {"ios", "iphone os"}
 
 
+def get_redirect_url(
+    app_links: dict,
+    share_slug: str,
+    request: Request,
+) -> tuple[str, OSID]:
+    """Get the redirect URL and store ID based on the device type."""
+    if is_android_device(request):
+        detected_os = OSID.ANDROID
+        try:
+            redirect_url = app_links[share_slug]["google_redirect"]
+        except KeyError:
+            logger.info(f"No google redirect found for {share_slug}")
+            redirect_url = app_links[share_slug]["web_redirect"]
+    elif is_ios_device(request):
+        detected_os = OSID.IOS
+        try:
+            redirect_url = app_links[share_slug]["apple_redirect"]
+        except KeyError:
+            logger.info(f"No apple redirect found for {share_slug}")
+            redirect_url = app_links[share_slug]["web_redirect"]
+    else:
+        logger.info(f"No redirect found for {share_slug}")
+        detected_os = OSID.WEB
+        try:
+            redirect_url = app_links[share_slug]["web_redirect"]
+        except KeyError:
+            logger.warning(f"No web redirect found for {share_slug}")
+            redirect_url = "/"
+            detected_os = OSID.ERROR
+
+    return redirect_url, detected_os
+
+
 def process_share_link(
     share_slug: str,
     request: Request,
-    redirected_store_id: OSID,
+    detected_os: OSID,
 ) -> None:
     """Process the share link in background."""
     client_host = get_client_ip(request)
     link_uid = generate_link_uid()
 
-    link_data = APP_LINKS_DF[share_slug]
+    app_links = store.get("app_links")
 
-    if redirected_store_id == OSID.ANDROID and link_data["google_store_id"]:
+    link_data = app_links[share_slug]
+
+    if detected_os == OSID.ANDROID and link_data["google_store_id"]:
         app = link_data.get("google_store_id")
-    elif redirected_store_id == OSID.IOS and link_data["apple_store_id"]:
+    elif detected_os == OSID.IOS and link_data["apple_store_id"]:
         app = link_data.get("apple_store_id")
     else:
         app = ""
@@ -142,18 +183,19 @@ class ShareController(Controller):
 
     Endpoints for Share Links
     =========
-    /s
+    GET /api/links/share/{share_slug:str} (redirects to the store ID's URL based on the device type)
+    POST /api/links/update (Refreshes the app links store based on app_links table in database)
 
     """
 
-    path = "s"
+    path = "api/links"
 
-    @get(path="{share_slug:str}")
+    @get(path="share/{share_slug:str}")
     async def shared_link(
         self: Self,
         request: Request,
         share_slug: str,
-    ) -> None:
+    ) -> Redirect:
         """
         Redirect to the store ID's URL based on the device type.
 
@@ -167,7 +209,7 @@ class ShareController(Controller):
 
         Returns:
         -------
-        - None: The function does not return any value.
+        - Redirect: Redirects to the store ID's URL based on the device type.
 
         Behavior
         --------
@@ -182,37 +224,18 @@ class ShareController(Controller):
         ```
 
         """
-        if len(APP_LINKS_DF) == 0:
+        app_links = store.get("app_links")
+        if len(app_links) == 0:
             logger.error(
                 f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",
             )
             return Redirect(path="/")
 
-        if is_android_device(request):
-            redirected_store_id = OSID.ANDROID
-            try:
-                redirect_url = APP_LINKS_DF[share_slug]["google_redirect"]
-            except KeyError:
-                logger.info(f"No google redirect found for {share_slug}")
-                redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
-                redirected_store_id = StoreId.WEB
-        elif is_ios_device(request):
-            redirected_store_id = StoreId.APPLE
-            try:
-                redirect_url = APP_LINKS_DF[share_slug]["apple_redirect"]
-            except KeyError:
-                logger.info(f"No apple redirect found for {share_slug}")
-                redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
-                redirected_store_id = StoreId.WEB
-        else:
-            logger.info(f"No redirect found for {share_slug}")
-            try:
-                redirect_url = APP_LINKS_DF[share_slug]["web_redirect"]
-                redirected_store_id = StoreId.WEB
-            except KeyError:
-                logger.warning(f"No web redirect found for {share_slug}")
-                redirect_url = "/"
-                redirected_store_id = StoreId.ERROR
+        redirect_url, detected_os = get_redirect_url(
+            app_links,
+            share_slug,
+            request,
+        )
 
         return Redirect(
             path=redirect_url,
@@ -220,6 +243,19 @@ class ShareController(Controller):
                 process_share_link,
                 share_slug,
                 request,
-                redirected_store_id,
+                detected_os,
             ),
         )
+
+    @post(path="/updatelinks")
+    async def update_links(self: Self) -> None:
+        """
+        Update the app links store based on app_links table in database.
+
+        Returns
+        -------
+        - None: The function does not return any value.
+
+        """
+        update_app_links_store()
+        return {"status": "success"}
