@@ -24,6 +24,7 @@ def load_sql_file(file_name: str) -> str:
         return mytxt
 
 
+QUERY_APPS = load_sql_file("apps.sql")
 QUERY_APP_LINKS = load_sql_file(
     "app_links.sql",
 )
@@ -49,6 +50,16 @@ async def get_app_links() -> dict[str, dict[str, str]]:
     return app_links
 
 
+async def get_apps() -> pd.DataFrame:
+    """Get all apps."""
+    logger.info("Query all apps.")
+    df = pd.read_sql(
+        QUERY_APPS,
+        con=DBCON.engine,
+    )
+    return df
+
+
 logger.info("set db engine")
 DBCON = get_db_connection()
 DBCON.set_engine()
@@ -69,3 +80,32 @@ async def update_app_links_store() -> None:
     app_links = await get_app_links()
     await STORE.set("app_links", app_links)
     logger.info(f"app_links updated num: {len(app_links)}")
+
+
+async def update_apps_well_known_store() -> None:
+    """Update the apps well-known store."""
+    apps = await get_apps()
+    if apps.empty:
+        logger.warning("No apps found")
+        await STORE.set("android_apps", {})
+        await STORE.set("ios_apps", {})
+        return
+
+    android_apps = {}
+    for _, app in apps[apps["store"] == 1].iterrows():
+        package_name = app.store_id
+        google_sha256_cert_fingerprints = app.google_sha256_fingerprints
+        android_apps[package_name] = {
+            "sha256_cert_fingerprints": google_sha256_cert_fingerprints,
+        }
+    await STORE.set("android_apps", android_apps)
+
+    ios_apps = {}
+    for _, app in apps[apps["store"] == 2].iterrows():
+        bundle_id = app.store_id
+        apple_team_id = app.apple_team_id
+        ios_apps[bundle_id] = {
+            "apple_team_id": apple_team_id,
+        }
+    await STORE.set("ios_apps", ios_apps)
+    logger.info(f"apps updated num: {apps.shape[0]}")

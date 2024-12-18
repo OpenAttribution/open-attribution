@@ -4,7 +4,8 @@ import logging
 
 from api_app.controllers.postbacks import PostbackController
 from api_app.controllers.share import ShareController
-from dbcon.queries import update_app_links_store
+from api_app.controllers.well_known import WellKnownController
+from dbcon.queries import update_app_links_store, update_apps_well_known_store
 from detect.geo import update_geo_dbs
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
@@ -32,11 +33,9 @@ logging_config = LoggingConfig(
     },
 )
 
-update_geo_dbs()
-
 
 app = Litestar(
-    route_handlers=[PostbackController, ShareController],
+    route_handlers=[PostbackController, ShareController, WellKnownController],
     cors_config=cors_config,
     openapi_config=OpenAPIConfig(
         title="Open Attribution Postback API",
@@ -45,5 +44,5 @@ app = Litestar(
     ),
     logging_config=logging_config,
     debug=True,
-    on_startup=[update_app_links_store],
+    on_startup=[update_app_links_store, update_apps_well_known_store, update_geo_dbs],
 )
