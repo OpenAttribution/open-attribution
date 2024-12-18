@@ -24,6 +24,18 @@ export type LinkSchema = typeof linkSchema;
 export const appSchema = z.object({
 	appName: z.string().min(2).max(50),
 	storeId: z.string().min(2).max(50),
+	bundleId: z.string().min(2).max(100).optional().nullable().default(null),
+	appleTeamId: z.string().min(2).max(25).optional().nullable().default(null),
+	googleSha256Fingerprints: z
+		.string()
+		.min(64)
+		.max(98)
+		.regex(/^[a-fA-F0-9.:-]+$/, {
+			message: 'Google SHA256 Fingerprints must be a valid SHA256 hash.'
+		})
+		.optional()
+		.nullable()
+		.default(null),
 	appStore: z.enum(['ios', 'android'], {
 		required_error: 'You need to select an app store.'
 	})

@@ -19,13 +19,21 @@ export const actions = {
 		const store_id = form.data.storeId;
 		const app_name = form.data.appName;
 		const app_store = form.data.appStore;
+		const apple_team_id = form.data.appleTeamId;
+		const bundle_id = form.data.bundleId;
+		const google_sha256_fingerprints = form.data.googleSha256Fingerprints;
 
 		console.log(`Create app Name: ${app_name}, ${app_store}, ${store_id}`);
 
 		const response = await fetch(
 			`http://dash-backend:8001/api/apps/${store_id}?app_name=${app_name}&store=${app_store}`,
 			{
-				method: 'POST'
+				method: 'POST',
+				body: JSON.stringify({
+					apple_team_id: apple_team_id,
+					bundle_id: bundle_id,
+					google_sha256_fingerprints: google_sha256_fingerprints
+				})
 			}
 		);
 
