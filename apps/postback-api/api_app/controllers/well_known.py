@@ -71,7 +71,7 @@ class WellKnownController(Controller):
     Endpoints for well-known
     =========
     GET /.well-known/apple-app-site-association
-    GET /.well-known/AssetLinks.json
+    GET /.well-known/assetlinks.json
     """
 
     path = "/.well-known"
@@ -114,9 +114,9 @@ class WellKnownController(Controller):
                 ],
             ),
         )
-        aasa_dict = aasa_data.to_dict()
+        # aasa_dict = aasa_data.to_dict()
 
-        return aasa_dict
+        return aasa_data
 
     @get(path="assetlinks.json")
     async def assetlinks_json(

@@ -79,6 +79,8 @@ services:
     depends_on:
       clickhouse:
         condition: service_healthy
+    volumes:
+      - 'postback-api-volume:/root/.config/geo-data'
 
   admin-db:
     container_name: admin-db
@@ -127,3 +129,4 @@ volumes:
   clickhouse-log-volume:
   clickhouse-volume:
   pgdata-volume:
+  postback-api-volume:
