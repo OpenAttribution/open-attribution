@@ -102,9 +102,11 @@ async def update_apps_well_known_store() -> None:
 
     ios_apps = {}
     for _, app in apps[apps["store"] == 2].iterrows():
-        bundle_id = app.store_id
+        store_id = app.store_id
+        bundle_id = app.bundle_id
         apple_team_id = app.apple_team_id
-        ios_apps[bundle_id] = {
+        ios_apps[store_id] = {
+            "bundle_id": bundle_id,
             "apple_team_id": apple_team_id,
         }
     await STORE.set("ios_apps", ios_apps)
