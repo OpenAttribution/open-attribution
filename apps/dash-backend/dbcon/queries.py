@@ -152,14 +152,28 @@ def query_apps(store_id: str | None = None) -> pd.DataFrame:
     return df
 
 
-def insert_app(app_name: str, store_id: str, store: int) -> None:
+def insert_app(
+    app_name: str,
+    store_id: str,
+    store: int,
+    bundle_id: str | None,
+    apple_team_id: str | None,
+    google_sha256_fingerprints: str | None,
+) -> None:
     """Insert a new network."""
     logger.info(f"Inserting new app: {app_name}")
 
     with ENGINE.connect() as connection:
         connection.execute(
             INSERT_APP,
-            {"app_name": app_name, "store_id": store_id, "store": store},
+            {
+                "app_name": app_name,
+                "store_id": store_id,
+                "store": store,
+                "bundle_id": bundle_id,
+                "apple_team_id": apple_team_id,
+                "google_sha256_fingerprints": google_sha256_fingerprints,
+            },
         )
         connection.commit()
 

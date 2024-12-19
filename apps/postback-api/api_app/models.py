@@ -1,6 +1,8 @@
 """API models for return types."""
 
-from dataclasses import make_dataclass
+from dataclasses import dataclass, make_dataclass
+from enum import Enum
+from typing import Self
 
 from config.dimensions import (
     APP_EVENT_ID,
@@ -56,6 +58,21 @@ event_fields = [
 ]
 
 
+class AppStores(str, Enum):
+    """Enum for receivable store names."""
+
+    IOS = ("ios", 2)
+    ANDROID = ("android", 1)
+
+    def __new__(cls, value: str, db_id: int) -> Self:
+        """Create a new instance of the enum."""
+        obj = str.__new__(cls, value)
+        obj._value_ = value
+        obj.store_name = value
+        obj.db_id = db_id
+        return obj
+
+
 # Create a dataclass dynamically
 ImpressionData = make_dataclass(
     "ImpressionData",  # Name of the dataclass
@@ -71,3 +88,79 @@ EventData = make_dataclass(
     "EventData",  # Name of the dataclass
     [(field, str) for field in event_fields],
 )
+
+
+@dataclass
+class GoogleAssetLink:
+    """Represents an asset link in the assetlinks.json file."""
+
+    relation: list[str]
+    target: dict[str, str]
+
+
+@dataclass
+class AppleAppSiteAssociationComponent:
+    """Represents a component in the apple-app-site-association file."""
+
+    path: str  # Representing the "/" key in the JSON
+    id: str | None = None  # Representing the "#" key in the JSON
+    comment: str | None = None
+    exclude: bool | None = None
+
+    def to_dict(self) -> dict:
+        """Return the dictionary representation of the AppleAppSiteAssociationComponent."""
+        data: dict[str, str | bool | None] = {}
+        if self.path is not None:
+            data["/"] = self.path
+        if self.comment is not None:
+            data["comment"] = self.comment
+        if self.exclude is not None:
+            data["exclude"] = self.exclude
+        if self.id is not None:
+            data["#"] = self.id
+        return data
+
+
+@dataclass
+class Detail:
+    """
+    Represents a detail in the apple-app-site-association file.
+
+    Works for multiple apps.
+
+    team_app_ids: list[str] are a concatenation of the team ID and the app Bundle.
+    """
+
+    team_app_ids: list[str]
+    components: list[AppleAppSiteAssociationComponent]
+
+    def to_dict(self) -> dict:
+        """Return dictionary representation of Detail section."""
+        return {
+            "team_app_ids": self.team_app_ids,
+            "components": [component.to_dict() for component in self.components],
+        }
+
+
+@dataclass
+class Applinks:
+    """Represents the applinks section in the apple-app-site-association file."""
+
+    details: list[Detail]
+
+    def to_dict(self) -> dict:
+        """Return the dictionary representation of the Applinks."""
+        return {"details": [detail.to_dict() for detail in self.details]}
+
+
+@dataclass
+class AppleAASA:
+    """Represents the apple-app-site-association file."""
+
+    applinks: Applinks
+
+    def to_dict(self) -> dict:
+        """Return the dictionary representation of the AppLinkConfig."""
+        return {
+            "applinks": self.applinks.to_dict(),
+        }

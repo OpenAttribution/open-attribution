@@ -52,6 +52,17 @@ class App:
 
 
 @dataclass
+class AppData:
+    """App data."""
+
+    app_name: str
+    store: str
+    bundle_id: str | None = None
+    apple_team_id: str | None = None
+    google_sha256_fingerprints: list[str] | None = None
+
+
+@dataclass
 class AppLinks:
     """All app links."""
 

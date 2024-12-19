@@ -3,15 +3,13 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as RadioGroup from '$lib/components/ui/radio-group';
-	import { appSchema, type AppSchema } from '$schemas';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { appSchema } from '$schemas';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Loader } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 
-	// export let data: SuperValidated<Infer<AppSchema>>;
 	let { data } = $props();
-	type Message = { status: 'error' | 'success' | 'warning'; text: string };
 	const form = superForm(data, {
 		validators: zodClient(appSchema),
 
@@ -68,6 +66,34 @@
 			<Form.Description>Select the app store.</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
+		{#if $formData.appStore === 'ios'}
+			<Form.Field {form} name="appleTeamId">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Apple Team ID</Form.Label>
+						<Input {...props} bind:value={$formData.appleTeamId} />
+					{/snippet}
+				</Form.Control>
+			</Form.Field>
+			<Form.Field {form} name="bundleId">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Bundle ID</Form.Label>
+						<Input {...props} bind:value={$formData.bundleId} />
+					{/snippet}
+				</Form.Control>
+			</Form.Field>
+		{/if}
+		{#if $formData.appStore === 'android'}
+			<Form.Field {form} name="googleSha256Fingerprints">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Google SHA256 Fingerprints</Form.Label>
+						<Input {...props} bind:value={$formData.googleSha256Fingerprints} />
+					{/snippet}
+				</Form.Control>
+			</Form.Field>
+		{/if}
 		<Button type="submit" class="w-full">Submit</Button>
 		{#if $delayed}
 			<Loader></Loader>

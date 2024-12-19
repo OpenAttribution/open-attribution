@@ -17,8 +17,10 @@ MAXMIND_GEO_DBS = ["GeoLite2-City", "GeoLite2-ASN"]
 
 def update_geo_dbs() -> None:
     """Update the geo databases."""
+    geo_data_dir = pathlib.Path(f"{TOP_CONFIGDIR}/geo-data")
+    geo_data_dir.mkdir(parents=True, exist_ok=True)
     for db in MAXMIND_GEO_DBS:
-        if pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").exists():
+        if pathlib.Path(f"{geo_data_dir}/{db}.mmdb").exists():
             logger.info(f"{db}.mmdb found")
             continue
         logger.info(f"{db}: Unable to find {db}.mmdb file")
@@ -30,14 +32,14 @@ def update_geo_dbs() -> None:
             # Write the downloaded content to the temp file
             with pathlib.Path(mytmp.name).open("w+b") as f:
                 f.write(response.content)
-            logger.info(f"{db}: Write {db}.mmdb to {TOP_CONFIGDIR}")
+            logger.info(f"{db}: Write {db}.mmdb to {geo_data_dir}")
             # Open the tar file and extract the desired member
             with tarfile.open(mytmp.name, "r:gz") as tar:
                 for member in tar.getmembers():
                     if pathlib.Path(member.name).suffix == ".mmdb":
                         with tar.extractfile(member) as r:
                             if r is not None:
-                                with pathlib.Path(f"{TOP_CONFIGDIR}/{db}.mmdb").open(
+                                with pathlib.Path(f"{geo_data_dir}/{db}.mmdb").open(
                                     "w+b",
                                 ) as w:
                                     w.write(r.read())
@@ -55,7 +57,8 @@ def lookup_ip(ip: str) -> dict:
         dict: A dictionary containing the geo data for the ip address.
 
     """
-    with geoip2.database.Reader(f"{TOP_CONFIGDIR}/GeoLite2-City.mmdb") as reader:
+    geo_data_dir = pathlib.Path(f"{TOP_CONFIGDIR}/geo-data")
+    with geoip2.database.Reader(f"{geo_data_dir}/GeoLite2-City.mmdb") as reader:
         response = reader.city(ip)
         country_code = response.country.iso_code
         country_name = response.country.name
@@ -67,7 +70,7 @@ def lookup_ip(ip: str) -> dict:
         longitude = response.location.longitude
         cidr = response.traits.network
 
-    with geoip2.database.Reader(f"{TOP_CONFIGDIR}/GeoLite2-ASN.mmdb") as reader2:
+    with geoip2.database.Reader(f"{geo_data_dir}/GeoLite2-ASN.mmdb") as reader2:
         response2 = reader2.asn(ip)
         asn = response2.autonomous_system_number
         org = response2.autonomous_system_organization

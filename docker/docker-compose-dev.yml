@@ -94,8 +94,7 @@ services:
       retries: 5
     volumes:
       - ../apps/postback-api:/app
-      - ../apps/postback-api/dev-tools/GeoLite2-City_DEV_COPY.mmdb:/root/.config/GeoLite2-City.mmdb
-      - ../apps/postback-api/dev-tools/GeoLite2-ASN_DEV_COPY.mmdb:/root/.config/GeoLite2-ASN.mmdb
+      - 'postback-api-volume:/root/.config/geo-data'
 
   postback-test:
     container_name: postback-test
@@ -179,3 +178,4 @@ volumes:
   clickhouse-log-volume:
   clickhouse-volume:
   pgdata-volume:
+  postback-api-volume:

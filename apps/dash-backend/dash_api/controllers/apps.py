@@ -8,7 +8,7 @@ import dbcon.queries
 from config import get_logger
 from litestar import Controller, delete, get, post
 
-from dash_api.models import App, Apps
+from dash_api.models import App, AppData, Apps
 
 logger = get_logger(__name__)
 
@@ -63,21 +63,44 @@ class AppController(Controller):
     async def add_app(
         self: Self,
         store_id: str,
-        app_name: str,
-        store: StoreEnum,
+        data: AppData,
     ) -> None:
-        """Create an app."""
+        """
+        Create an app.
+
+        Request body should contain:
+        {
+            "app_name": string,
+            "store": string,
+            "bundle_id": string | null,
+            "apple_team_id": string | null,
+            "google_sha256_fingerprints": list[string] | null,
+        }
+        """
+        app_name = data.app_name
+        bundle_id = data.bundle_id
+        apple_team_id = data.apple_team_id
+        google_sha256_fingerprints = data.google_sha256_fingerprints
+
         logger.info(f"{self.path} apps add {app_name=}")
 
-        if store == StoreEnum.ANDROID:
+        if data.store == StoreEnum.ANDROID:
             store_db_id = 1
-        if store == StoreEnum.IOS:
+        if data.store == StoreEnum.IOS:
             store_db_id = 2
+
+        if google_sha256_fingerprints:
+            google_sha256_fingerprints = [
+                x.replace(":", "") for x in google_sha256_fingerprints
+            ]
 
         dbcon.queries.insert_app(
             app_name=app_name,
             store_id=store_id,
             store=store_db_id,
+            bundle_id=bundle_id,
+            apple_team_id=apple_team_id,
+            google_sha256_fingerprints=google_sha256_fingerprints,
         )
 
     @delete(path="/{app_id:int}")

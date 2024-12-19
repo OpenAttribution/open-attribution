@@ -5,5 +5,8 @@
 
   <!-- https://clickhouse.com/docs/en/operations/server-configuration-parameters/settings#max_server_memory_usage_to_ram_ratio -->
   <!-- On hosts with low RAM and swap, you possibly need setting max_server_memory_usage_to_ram_ratio larger than 1. -->
-  <max_server_memory_usage_to_ram_ratio replace="replace">0.95</max_server_memory_usage_to_ram_ratio>
+  <max_server_memory_usage_to_ram_ratio replace="replace">2</max_server_memory_usage_to_ram_ratio>
+
+  <!-- Reduce the mark cache size to 1GB (default is ~5GB) -->
+  <!-- <mark_cache_size>1073741824</mark_cache_size> -->
 </clickhouse>

@@ -12,8 +12,6 @@ server {
 
   listen 80;
 
-  add_header Access-Control-Allow-Origin '*';
-
   # One option for sharing. Requires at least something set as the suffix
   location / {
     proxy_pass http://localhost:8000/api/links/share$request_uri;
@@ -25,3 +23,8 @@ server {
 
 }
 ```
+
+
+https://openattribution.dev/.well-known/apple-app-site-association
+
+https://beasting.app/.well-known/assetlinks.json
