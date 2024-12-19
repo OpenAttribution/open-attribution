@@ -1,6 +1,8 @@
 """API models for return types."""
 
 from dataclasses import dataclass, make_dataclass
+from enum import Enum
+from typing import Self
 
 from config.dimensions import (
     APP_EVENT_ID,
@@ -54,6 +56,21 @@ event_fields = [
     DB_CITY_NAME,
     DB_RECEIVED_AT,
 ]
+
+
+class AppStores(str, Enum):
+    """Enum for receivable store names."""
+
+    IOS = ("ios", 2)
+    ANDROID = ("android", 1)
+
+    def __new__(cls, value: str, db_id: int) -> Self:
+        """Create a new instance of the enum."""
+        obj = str.__new__(cls, value)
+        obj._value_ = value
+        obj.store_name = value
+        obj.db_id = db_id
+        return obj
 
 
 # Create a dataclass dynamically

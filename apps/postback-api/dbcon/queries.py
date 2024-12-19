@@ -4,6 +4,7 @@ import pathlib
 from typing import cast
 
 import pandas as pd
+from api_app.models import AppStores
 from config import MODULE_DIR, get_logger
 from litestar.stores.memory import MemoryStore
 from sqlalchemy import Engine, text
@@ -92,7 +93,7 @@ async def update_apps_well_known_store() -> None:
         return
 
     android_apps = {}
-    for _, app in apps[apps["store"] == 1].iterrows():
+    for _, app in apps[apps["store"] == AppStores.ANDROID.db_id].iterrows():
         package_name = app.store_id
         google_sha256_cert_fingerprints = app.google_sha256_fingerprints
         android_apps[package_name] = {
@@ -101,7 +102,7 @@ async def update_apps_well_known_store() -> None:
     await STORE.set("android_apps", android_apps)
 
     ios_apps = {}
-    for _, app in apps[apps["store"] == 2].iterrows():
+    for _, app in apps[apps["store"] == AppStores.IOS.db_id].iterrows():
         store_id = app.store_id
         bundle_id = app.bundle_id
         apple_team_id = app.apple_team_id
