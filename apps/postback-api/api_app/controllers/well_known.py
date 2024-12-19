@@ -132,12 +132,20 @@ class WellKnownController(Controller):
             sha_256_cert_fingerprints = android_apps[package_name][
                 "sha256_cert_fingerprints"
             ]
+
+            # Split string into pairs of characters
+            formatted_shas = []
+            for sha in sha_256_cert_fingerprints:
+                split_sha = [sha[i : i + 2] for i in range(0, len(sha), 2)]
+                formatted_sha = ":".join(split_sha)
+                formatted_shas.append(formatted_sha)
+
             asset_link = GoogleAssetLink(
                 relation=["delegate_permission/common.handle_all_urls"],
                 target={
                     "namespace": "android_app",
                     "package_name": package_name,
-                    "sha256_cert_fingerprints": sha_256_cert_fingerprints,
+                    "sha256_cert_fingerprints": formatted_shas,
                 },
             )
             asset_links.append(asset_link)
