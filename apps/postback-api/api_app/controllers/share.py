@@ -40,7 +40,7 @@ from litestar import Controller, Request, get, post
 from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
 from litestar.response import Redirect
-from ua_parser import parse
+import ua_parser
 
 from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
@@ -56,17 +56,24 @@ class OSID(Enum):
     ERROR = "error"
 
 
-# Define helper functions to determine the device type
 def is_android_device(user_agent: str) -> bool:
     """Determine if the request is from an Android device."""
-    parsed_ua = parse(user_agent)
-    return parsed_ua.os.family.lower() == "android"
+    try:
+        parsed_ua = ua_parser.parse(user_agent)
+        return parsed_ua.os.family.lower() == "android"
+    except Exception as e:
+        logger.exception(f"Error parsing user agent: {e}")
+        return False
 
 
 def is_ios_device(user_agent: str) -> bool:
     """Determine if the request is from an iOS device."""
-    parsed_ua = parse(user_agent)
-    return parsed_ua.os.family.lower() in {"ios", "iphone os"}
+    try:
+        parsed_ua = ua_parser.parse(user_agent)
+        return parsed_ua.os.family.lower() in {"ios", "iphone os"}
+    except Exception as e:
+        logger.exception(f"Error parsing user agent: {e}")
+        return False
 
 
 def get_redirect_url(
