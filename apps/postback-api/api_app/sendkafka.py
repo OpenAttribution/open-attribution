@@ -1,13 +1,13 @@
-import json
+"""Send data to kafka."""
 
+import json
+from dataclasses import asdict
+
+from config import EVENT_PRODUCER, IMPRESSION_CLICK_PRODUCER, get_logger
 from confluent_kafka import KafkaException
 from litestar.exceptions import HTTPException
 
-from dataclasses import asdict
-
-from config import IMPRESSION_CLICK_PRODUCER, EVENT_PRODUCER, get_logger
-
-from api_app.models import ClickData, ImpressionData, EventData
+from api_app.models import ClickData, EventData, ImpressionData
 
 logger = get_logger(__name__)
 

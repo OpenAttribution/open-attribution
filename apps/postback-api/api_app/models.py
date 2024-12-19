@@ -86,12 +86,13 @@ class AppleAppSiteAssociationComponent:
     """Represents a component in the apple-app-site-association file."""
 
     path: str  # Representing the "/" key in the JSON
+    id: str  # Representing the "#" key in the JSON
     comment: str | None = None
     exclude: bool | None = None
-    id: str | None = None  # Representing the "#" key in the JSON
 
     def to_dict(self) -> dict:
-        data = {}
+        """Return the dictionary representation of the AppleAppSiteAssociationComponent."""
+        data: dict[str, str | bool | None] = {}
         if self.path is not None:
             data["/"] = self.path
         if self.comment is not None:
@@ -117,7 +118,7 @@ class Detail:
     components: list[AppleAppSiteAssociationComponent]
 
     def to_dict(self) -> dict:
-        """Returns the dictionary representation of the Detail."""
+        """Return dictionary representation of Detail section."""
         return {
             "team_app_ids": self.team_app_ids,
             "components": [component.to_dict() for component in self.components],
@@ -131,7 +132,7 @@ class Applinks:
     details: list[Detail]
 
     def to_dict(self) -> dict:
-        """Returns the dictionary representation of the Applinks."""
+        """Return the dictionary representation of the Applinks."""
         return {"details": [detail.to_dict() for detail in self.details]}
 
 
@@ -142,7 +143,7 @@ class AppleAASA:
     applinks: Applinks
 
     def to_dict(self) -> dict:
-        """Returns the dictionary representation of the AppLinkConfig."""
+        """Return the dictionary representation of the AppLinkConfig."""
         return {
             "applinks": self.applinks.to_dict(),
         }
