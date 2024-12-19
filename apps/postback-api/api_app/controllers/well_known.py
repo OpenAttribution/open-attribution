@@ -79,7 +79,7 @@ class WellKnownController(Controller):
     @get(path="apple-app-site-association")
     async def apple_app_site_association(
         self: Self,
-    ) -> AppleAASA:
+    ) -> dict:
         """
         Return the apple-app-site-association file.
 
@@ -90,33 +90,31 @@ class WellKnownController(Controller):
         if len(ios_apps) == 0:
             raise HTTPException(status_code=404, detail="No ios apps found")
 
+        details: list[Detail] = []
         for store_id in ios_apps:
             bundle_id = ios_apps[store_id]["bundle_id"]
             team_id = ios_apps[store_id]["apple_team_id"]
             aasa_app_id = f"{team_id}.{bundle_id}"
+            details.append(
+                Detail(
+                    team_app_ids=[aasa_app_id],
+                    components=[
+                        AppleAppSiteAssociationComponent(
+                            path="/oat/*",
+                            comment="Matches paths under /oat/.",
+                        ),
+                    ],
+                ),
+            )
 
         aasa_data = AppleAASA(
             applinks=Applinks(
-                details=[
-                    Detail(
-                        team_app_ids=[aasa_app_id],
-                        components=[
-                            AppleAppSiteAssociationComponent(
-                                id="no_universal_links",
-                                exclude=True,
-                            ),
-                            AppleAppSiteAssociationComponent(
-                                path="/oat/*",
-                                comment="Matches paths under /oat/.",
-                            ),
-                        ],
-                    ),
-                ],
+                details=details,
             ),
         )
-        # aasa_dict = aasa_data.to_dict()
+        aasa_dict = aasa_data.to_dict()
 
-        return aasa_data
+        return aasa_dict
 
     @get(path="assetlinks.json")
     async def assetlinks_json(

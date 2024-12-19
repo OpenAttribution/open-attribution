@@ -32,9 +32,11 @@ export const actions = {
 				store: app_store,
 				apple_team_id: apple_team_id,
 				bundle_id: bundle_id,
-				google_sha256_fingerprints: Array.isArray(google_sha256_fingerprints)
-					? google_sha256_fingerprints
-					: [google_sha256_fingerprints]
+				google_sha256_fingerprints: google_sha256_fingerprints
+					? Array.isArray(google_sha256_fingerprints)
+						? google_sha256_fingerprints
+						: [google_sha256_fingerprints]
+					: null
 			})
 		});
 
@@ -43,6 +45,14 @@ export const actions = {
 				form,
 				`Server failed to save the app (${response.status}): ${(await response.text()) || 'Unknown error'}`,
 				{ status: 500 }
+			);
+		}
+
+		const update_apps_response = await fetch(`http://postback-api:8000/.well-known/updateapps`);
+
+		if (!update_apps_response.ok) {
+			console.log(
+				`Server failed to update apps (${update_apps_response.status}): ${(await update_apps_response.text()) || 'Unknown error'}`
 			);
 		}
 

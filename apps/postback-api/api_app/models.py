@@ -103,7 +103,7 @@ class AppleAppSiteAssociationComponent:
     """Represents a component in the apple-app-site-association file."""
 
     path: str  # Representing the "/" key in the JSON
-    id: str  # Representing the "#" key in the JSON
+    id: str | None = None  # Representing the "#" key in the JSON
     comment: str | None = None
     exclude: bool | None = None
 
