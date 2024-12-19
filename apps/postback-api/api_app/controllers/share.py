@@ -57,16 +57,14 @@ class OSID(Enum):
 
 
 # Define helper functions to determine the device type
-def is_android_device(request: Request) -> bool:
+def is_android_device(user_agent: str) -> bool:
     """Determine if the request is from an Android device."""
-    user_agent = request.headers.get("User-Agent", "")
     parsed_ua = parse(user_agent)
     return parsed_ua.os.family.lower() == "android"
 
 
-def is_ios_device(request: Request) -> bool:
+def is_ios_device(user_agent: str) -> bool:
     """Determine if the request is from an iOS device."""
-    user_agent = request.headers.get("User-Agent", "")
     parsed_ua = parse(user_agent)
     return parsed_ua.os.family.lower() in {"ios", "iphone os"}
 
@@ -77,14 +75,16 @@ def get_redirect_url(
     request: Request,
 ) -> tuple[str, OSID]:
     """Get the redirect URL and store ID based on the device type."""
-    if is_android_device(request):
+    user_agent = request.headers.get("User-Agent", "")
+    logger.info(f"User-Agent: {user_agent}")
+    if is_android_device(user_agent):
         detected_os = OSID.ANDROID
         try:
             redirect_url = app_links[share_slug]["google_redirect"]
         except KeyError:
             logger.info(f"No google redirect found for {share_slug}")
             redirect_url = app_links[share_slug]["web_redirect"]
-    elif is_ios_device(request):
+    elif is_ios_device(user_agent):
         detected_os = OSID.IOS
         try:
             redirect_url = app_links[share_slug]["apple_redirect"]
