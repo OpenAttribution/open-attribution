@@ -106,6 +106,7 @@ def get_redirect_url(
             redirect_url = "/"
             detected_os = OSID.ERROR
 
+    logger.info(f"Redirect URL: {redirect_url=} {detected_os=}")
     return redirect_url, detected_os
 
 
