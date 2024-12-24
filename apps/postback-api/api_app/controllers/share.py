@@ -17,6 +17,7 @@ import json
 from enum import Enum
 from typing import Self
 
+import ua_parser
 from config import IMPRESSION_CLICK_PRODUCER, get_logger
 from config.dimensions import (
     DB_AD_ID,
@@ -40,7 +41,6 @@ from litestar import Controller, Request, get, post
 from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
 from litestar.response import Redirect
-import ua_parser
 
 from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
@@ -86,28 +86,27 @@ def get_redirect_url(
     logger.info(f"User-Agent: {user_agent}")
     if is_android_device(user_agent):
         detected_os = OSID.ANDROID
-        try:
+        if app_links[share_slug]["google_redirect"]:
             redirect_url = app_links[share_slug]["google_redirect"]
-        except KeyError:
-            logger.info(f"No google redirect found for {share_slug}")
+        else:
             redirect_url = app_links[share_slug]["web_redirect"]
     elif is_ios_device(user_agent):
         detected_os = OSID.IOS
-        try:
+        if app_links[share_slug]["apple_redirect"]:
             redirect_url = app_links[share_slug]["apple_redirect"]
-        except KeyError:
-            logger.info(f"No apple redirect found for {share_slug}")
+        else:
             redirect_url = app_links[share_slug]["web_redirect"]
     else:
         logger.info(f"No mobile OS detected for {share_slug}")
         detected_os = OSID.WEB
-        try:
+        if app_links[share_slug]["web_redirect"]:
             redirect_url = app_links[share_slug]["web_redirect"]
-        except KeyError:
+        else:
             logger.warning(f"No web redirect found for {share_slug}")
             redirect_url = "/"
             detected_os = OSID.ERROR
 
+    logger.info(f"Redirect URL: {redirect_url=} {detected_os=}")
     return redirect_url, detected_os
 
 
