@@ -45,6 +45,7 @@ async def get_app_links() -> dict[str, dict[str, str]]:
     df["apple_redirect"] = "https://apps.apple.com/-/app/-/id" + df["apple_store_id"]
     if df.empty:
         return {}
+    df = df.where(pd.notna(df), None)
     app_links = df.set_index("share_slug").to_dict(
         orient="index",
     )
