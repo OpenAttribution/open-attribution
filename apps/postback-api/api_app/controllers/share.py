@@ -63,7 +63,7 @@ DETECT_APP_HTML = """
                     const intentUri = `intent://{hostname}/{slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;`
 
                     // Try to open the app
-                    window.location.href = intentUri;
+                    window.location = intentUri;
 
                     // If the app is not installed, redirect to the Play Store after a short delay
                     setTimeout(function() {{
@@ -296,19 +296,26 @@ class ShareController(Controller):
 
         if "detect-app-page" in redirect_url:
             intent_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
-            # html_content = DETECT_APP_HTML.format(
-            #     hostname=request.base_url.hostname,
-            #     slug=share_slug,
-            #     google_store_id=google_store_id,
-            # )
-            return Redirect(
-                path=intent_uri,
-                headers={
-                    "Random-Header": str(100),
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
+            html_content = DETECT_APP_HTML.format(
+                hostname=request.base_url.hostname,
+                slug=share_slug,
+                google_store_id=google_store_id,
             )
+            return Response(
+                content=html_content,
+                media_type="text/html",
+                # headers={
+                #     "content-type": "application/binary",
+                #     "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                # },
+            )
+            # return Redirect(
+            #     path=intent_uri,
+            #     headers={
+            #         "content-type": "application/binary",
+            #         "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+            #     },
+            # )
 
         return Redirect(
             path=redirect_url,
