@@ -60,7 +60,7 @@ DETECT_APP_HTML = """
                     const slug = urlParams.get('slug');
 
                     // Define the intent URI for your app
-                    const intentUri = `intent://app.thirdgate.dev/${slug}#Intent;scheme=https;package=com.yourapp.package;end`;
+                    const intentUri = `intent://app.thirdgate.dev/${slug}#Intent;scheme=https;package=dev.thirdgate.hackernews;end`;
 
                     // Try to open the app
                     window.location.href = intentUri;
