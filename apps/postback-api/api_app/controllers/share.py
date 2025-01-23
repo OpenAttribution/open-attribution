@@ -301,7 +301,13 @@ class ShareController(Controller):
             #     slug=share_slug,
             #     google_store_id=google_store_id,
             # )
-            return Redirect(path=intent_uri)
+            return Redirect(
+                path=intent_uri,
+                headers={
+                    "Random-Header": str(100),
+                    "content-type": "application/binary",
+                },
+            )
 
         return Redirect(
             path=redirect_url,
