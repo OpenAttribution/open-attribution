@@ -37,7 +37,7 @@ from config.dimensions import (
 from confluent_kafka import KafkaException
 from dbcon.queries import STORE, update_app_links_store
 from detect.geo import get_geo
-from litestar import Controller, Request, get, post
+from litestar import Controller, Request, Response, get, post
 from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
 from litestar.response import Redirect
@@ -76,6 +76,17 @@ def is_ios_device(user_agent: str) -> bool:
         return False
 
 
+def is_facebook_referer(request: Request) -> bool:
+    """Check if the request is coming from Facebook or Messenger."""
+    referer = request.headers.get("Referer", "")
+    return "m.facebook.com" in referer or "facebook.com" in referer
+
+
+def is_facebook_user_agent(user_agent: str) -> bool:
+    """Check if the User-Agent contains FB_IAB (Facebook in-app browser)."""
+    return "FB_IAB" in user_agent
+
+
 def get_redirect_url(
     app_links: dict,
     share_slug: str,
@@ -84,9 +95,20 @@ def get_redirect_url(
     """Get the redirect URL and store ID based on the device type."""
     user_agent = request.headers.get("User-Agent", "")
     logger.info(f"User-Agent: {user_agent}")
+
+    # Check if the request is from Facebook or Messenger
+    is_facebook = is_facebook_referer(request) or is_facebook_user_agent(user_agent)
+
     if is_android_device(user_agent):
         detected_os = OSID.ANDROID
-        if app_links[share_slug]["google_redirect"]:
+        if is_facebook:
+            # Redirect to the detection page for Facebook/Messenger
+            logger.info("detected facebook")
+            redirect_url = (
+                f"https://app.thirdgate.dev/detect-app-page?slug={share_slug}"
+            )
+        # Use the normal redirect for non-Facebook/Messenger requests
+        elif app_links[share_slug]["google_redirect"]:
             redirect_url = app_links[share_slug]["google_redirect"]
         else:
             redirect_url = app_links[share_slug]["web_redirect"]
@@ -255,3 +277,62 @@ class ShareController(Controller):
         """
         await update_app_links_store()
         return {"status": "success"}
+
+    @get(path="detect-app-page")
+    async def detect_app_page(
+        self: Self,
+        request: Request,
+    ) -> Response:
+        """
+        Serve the HTML page for detecting if the app is installed.
+
+        Behavior:
+        1. Returns an HTML page with JavaScript to detect the app and redirect accordingly.
+
+        Example Usage:
+        -------------
+        ```
+        GET https://app.thirdgate.dev/api/links/detect-app-page?slug=test
+        ```
+        """
+        # Extract the slug from the query parameters
+        slug = request.query_params.get("slug", "")
+
+        # Define the HTML content
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Open App</title>
+            <script>
+                function openApp() {{
+                    // Get the slug from the query parameters
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const slug = urlParams.get('slug');
+
+                    // Define the intent URI for your app
+                    const intentUri = `intent://app.thirdgate.dev/${slug}#Intent;scheme=https;package=com.yourapp.package;end`;
+
+                    // Try to open the app
+                    window.location.href = intentUri;
+
+                    // If the app is not installed, redirect to the Play Store after a short delay
+                    setTimeout(function() {{
+                        window.location.href = `https://play.google.com/store/apps/details?id=com.yourapp.package`;
+                    }}, 500); // Adjust the delay as needed
+                }}
+
+                // Call the function when the page loads
+                window.onload = openApp;
+            </script>
+        </head>
+        <body>
+            <p>Redirecting to the app...</p>
+        </body>
+        </html>
+        """
+
+        # Return the HTML response
+        return Response(content=html_content, media_type="text/html")
