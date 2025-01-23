@@ -46,6 +46,41 @@ from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
 logger = get_logger(__name__)
 
+DETECT_APP_HTML = """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Open App</title>
+            <script>
+                function openApp() {{
+                    // Get the slug from the query parameters
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const slug = urlParams.get('slug');
+
+                    // Define the intent URI for your app
+                    const intentUri = `intent://app.thirdgate.dev/${slug}#Intent;scheme=https;package=com.yourapp.package;end`;
+
+                    // Try to open the app
+                    window.location.href = intentUri;
+
+                    // If the app is not installed, redirect to the Play Store after a short delay
+                    setTimeout(function() {{
+                        window.location.href = `https://play.google.com/store/apps/details?id=com.yourapp.package`;
+                    }}, 500); // Adjust the delay as needed
+                }}
+
+                // Call the function when the page loads
+                window.onload = openApp;
+            </script>
+        </head>
+        <body>
+            <p>Redirecting to the app...</p>
+        </body>
+        </html>
+"""
+
 
 class OSID(Enum):
     """Enum for store IDs."""
@@ -213,7 +248,7 @@ class ShareController(Controller):
         self: Self,
         request: Request,
         share_slug: str,
-    ) -> Redirect:
+    ) -> Redirect | Response:
         """
         Redirect to the store ID's URL based on the device type.
 
@@ -254,6 +289,10 @@ class ShareController(Controller):
             share_slug,
             request,
         )
+
+        if redirect_url.contains("detect-app-page"):
+            html_content = DETECT_APP_HTML.format(slug=share_slug)
+            return Response(content=html_content, media_type="text/html")
 
         return Redirect(
             path=redirect_url,
@@ -299,40 +338,7 @@ class ShareController(Controller):
         slug = request.query_params.get("slug", "")
 
         # Define the HTML content
-        html_content = f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Open App</title>
-            <script>
-                function openApp() {{
-                    // Get the slug from the query parameters
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const slug = urlParams.get('slug');
-
-                    // Define the intent URI for your app
-                    const intentUri = `intent://app.thirdgate.dev/${slug}#Intent;scheme=https;package=com.yourapp.package;end`;
-
-                    // Try to open the app
-                    window.location.href = intentUri;
-
-                    // If the app is not installed, redirect to the Play Store after a short delay
-                    setTimeout(function() {{
-                        window.location.href = `https://play.google.com/store/apps/details?id=com.yourapp.package`;
-                    }}, 500); // Adjust the delay as needed
-                }}
-
-                // Call the function when the page loads
-                window.onload = openApp;
-            </script>
-        </head>
-        <body>
-            <p>Redirecting to the app...</p>
-        </body>
-        </html>
-        """
+        html_content = DETECT_APP_HTML.format(slug=slug)
 
         # Return the HTML response
         return Response(content=html_content, media_type="text/html")
