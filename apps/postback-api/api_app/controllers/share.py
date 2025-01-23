@@ -60,15 +60,15 @@ DETECT_APP_HTML = """
                     const slug = urlParams.get('slug');
 
                     // Define the intent URI for your app
-                    const intentUri = `intent://app.thirdgate.dev/${slug}#Intent;scheme=https;package=com.thirdgate.hackernews;end`;
+                    const intentUri = `intent://app.thirdgate.dev/#Intent;scheme=https;package=com.thirdgate.hackernews;end`;
 
                     // Try to open the app
                     window.location.href = intentUri;
 
                     // If the app is not installed, redirect to the Play Store after a short delay
                     setTimeout(function() {{
-                        window.location.href = `https://play.google.com/store/apps/details?id=com.yourapp.package`;
-                    }}, 500); // Adjust the delay as needed
+                        window.location.href = `https://play.google.com/store/apps/details?id=com.thirdgate.hackernews`;
+                    }}, 1000); // Adjust the delay as needed
                 }}
 
                 // Call the function when the page loads
