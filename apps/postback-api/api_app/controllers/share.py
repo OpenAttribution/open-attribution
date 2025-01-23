@@ -290,7 +290,7 @@ class ShareController(Controller):
             request,
         )
 
-        if redirect_url.contains("detect-app-page"):
+        if "detect-app-page" in redirect_url:
             html_content = DETECT_APP_HTML.format(slug=share_slug)
             return Response(content=html_content, media_type="text/html")
 
