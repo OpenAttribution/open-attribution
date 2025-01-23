@@ -68,7 +68,7 @@ DETECT_APP_HTML = """
                     // If the app is not installed, redirect to the Play Store after a short delay
                     setTimeout(function() {{
                         window.location.href = `https://play.google.com/store/apps/details?id=com.thirdgate.hackernews`;
-                    }}, 5000); // Adjust the delay as needed
+                    }}, 15000); // Facebook pops up a question to leave Messenger, this delay is time that shows before redirec to store
                 }}
 
                 // Call the function when the page loads
