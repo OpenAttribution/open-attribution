@@ -60,7 +60,7 @@ DETECT_APP_HTML = """
                     const slug = urlParams.get('slug');
 
                     // Define the intent URI for your app
-                    const intentUri = `intent://app.thirdgate.dev/#Intent;scheme=https;package=com.thirdgate.hackernews;end`;
+                    const intentUri = `intent://{{hostname}}/{{slug}}#Intent;package={{android_package}};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{{android_package}};end;`
 
                     // Try to open the app
                     window.location.href = intentUri;
@@ -278,6 +278,7 @@ class ShareController(Controller):
 
         """
         app_links = await STORE.get("app_links")
+        google_store_id = await STORE.get("google_store_id")
         if len(app_links) == 0:
             logger.error(
                 f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",
@@ -291,7 +292,11 @@ class ShareController(Controller):
         )
 
         if "detect-app-page" in redirect_url:
-            html_content = DETECT_APP_HTML.format(slug=share_slug)
+            html_content = DETECT_APP_HTML.format(
+                hostname=request.base_url.hostname,
+                slug=share_slug,
+                android_package=google_store_id,
+            )
             return Response(content=html_content, media_type="text/html")
 
         return Redirect(
