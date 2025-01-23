@@ -139,9 +139,7 @@ def get_redirect_url(
         if is_facebook:
             # Redirect to the detection page for Facebook/Messenger
             logger.info("detected facebook")
-            redirect_url = (
-                f"https://app.thirdgate.dev/detect-app-page?slug={share_slug}"
-            )
+            redirect_url = "detect-app-page"
         # Use the normal redirect for non-Facebook/Messenger requests
         elif app_links[share_slug]["google_redirect"]:
             redirect_url = app_links[share_slug]["google_redirect"]
@@ -278,12 +276,17 @@ class ShareController(Controller):
 
         """
         app_links = await STORE.get("app_links")
-        google_store_id = await STORE.get("google_store_id")
+
         if len(app_links) == 0:
             logger.error(
                 f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",
             )
             return Redirect(path="/")
+
+        try:
+            google_store_id = app_links[share_slug]["google_store_id"]
+        except KeyError:
+            google_store_id = ""
 
         redirect_url, detected_os = get_redirect_url(
             app_links,
