@@ -60,14 +60,14 @@ DETECT_APP_HTML = """
                     const slug = urlParams.get('slug');
 
                     // Define the intent URI for your app
-                    const intentUri = `intent://{{hostname}}/{{slug}}#Intent;package={{android_package}};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{{android_package}};end;`
+                    const intentUri = `intent://{hostname}/{slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;`
 
                     // Try to open the app
                     window.location.href = intentUri;
 
                     // If the app is not installed, redirect to the Play Store after a short delay
                     setTimeout(function() {{
-                        window.location.href = `https://play.google.com/store/apps/details?id=com.thirdgate.hackernews`;
+                        window.location.href = `https://play.google.com/store/apps/details?id={google_store_id}`;
                     }}, 15000); // Facebook pops up a question to leave Messenger, this delay is time that shows before redirec to store
                 }}
 
@@ -295,7 +295,7 @@ class ShareController(Controller):
             html_content = DETECT_APP_HTML.format(
                 hostname=request.base_url.hostname,
                 slug=share_slug,
-                android_package=google_store_id,
+                google_store_id=google_store_id,
             )
             return Response(content=html_content, media_type="text/html")
 
