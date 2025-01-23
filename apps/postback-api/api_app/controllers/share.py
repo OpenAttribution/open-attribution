@@ -324,29 +324,3 @@ class ShareController(Controller):
         """
         await update_app_links_store()
         return {"status": "success"}
-
-    @get(path="detect-app-page")
-    async def detect_app_page(
-        self: Self,
-        request: Request,
-    ) -> Response:
-        """
-        Serve the HTML page for detecting if the app is installed.
-
-        Behavior:
-        1. Returns an HTML page with JavaScript to detect the app and redirect accordingly.
-
-        Example Usage:
-        -------------
-        ```
-        GET https://app.thirdgate.dev/api/links/detect-app-page?slug=test
-        ```
-        """
-        # Extract the slug from the query parameters
-        slug = request.query_params.get("slug", "")
-
-        # Define the HTML content
-        html_content = DETECT_APP_HTML.format(slug=slug)
-
-        # Return the HTML response
-        return Response(content=html_content, media_type="text/html")
