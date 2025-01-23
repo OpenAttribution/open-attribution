@@ -306,6 +306,7 @@ class ShareController(Controller):
                 headers={
                     "Random-Header": str(100),
                     "content-type": "application/binary",
+                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
                 },
             )
 
