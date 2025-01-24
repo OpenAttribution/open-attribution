@@ -302,7 +302,7 @@ class ShareController(Controller):
                 intent_uri=intent_uri,
                 slug=share_slug,
                 google_store_id=google_store_id,
-                delay_ms=1500,
+                delay_ms=15000,
             )
             return Response(
                 content=html_content,
