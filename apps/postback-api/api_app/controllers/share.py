@@ -54,24 +54,24 @@ DETECT_APP_HTML = """
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Open App</title>
             <script>
-                function openApp() {{
-                    // Get the slug from the query parameters
+                function openApp() {
                     const urlParams = new URLSearchParams(window.location.search);
                     const slug = urlParams.get('slug');
+                    const intentUri = `{intent_uri}`;
+                    const storeUrl = `https://play.google.com/store/apps/details?id={google_store_id}`;
 
-                    // Define the intent URI for your app
-                    const intentUri = `{intent_uri}`
+                    let redirectTimeout = setTimeout(() => {
+                        window.location = storeUrl;
+                    }, {delay_ms}); // Adjust delay based on testing (1.5 seconds here)
 
-                    // Try to open the app
+                    window.addEventListener('blur', () => {
+                        clearTimeout(redirectTimeout);
+                    });
+
+                    // Attempt to open the app
                     window.location = intentUri;
+                }
 
-                    // If the app is not installed, redirect to the Play Store after a short delay
-                    setTimeout(function() {{
-                        window.location = `https://play.google.com/store/apps/details?id={google_store_id}`;
-                    }}, {delay_ms}); // Facebook pops up a question to leave Messenger, this delay is time that shows before redirec to store
-                }}
-
-                // Call the function when the page loads
                 window.onload = openApp;
             </script>
         </head>
