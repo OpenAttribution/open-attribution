@@ -54,23 +54,23 @@ DETECT_APP_HTML = """
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Open App</title>
             <script>
-                function openApp() {
+                function openApp() {{
                     const urlParams = new URLSearchParams(window.location.search);
                     const slug = urlParams.get('slug');
                     const intentUri = `{intent_uri}`;
                     const storeUrl = `https://play.google.com/store/apps/details?id={google_store_id}`;
 
-                    let redirectTimeout = setTimeout(() => {
+                    let redirectTimeout = setTimeout(() => {{
                         window.location = storeUrl;
-                    }, {delay_ms}); // Adjust delay based on testing (1.5 seconds here)
+                    }}, {delay_ms}); // Adjust delay based on testing (1.5 seconds here)
 
-                    window.addEventListener('blur', () => {
+                    window.addEventListener('blur', () => {{
                         clearTimeout(redirectTimeout);
-                    });
+                    }});
 
                     // Attempt to open the app
                     window.location = intentUri;
-                }
+                }}
 
                 window.onload = openApp;
             </script>
