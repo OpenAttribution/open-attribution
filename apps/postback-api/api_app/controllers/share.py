@@ -62,7 +62,7 @@ DETECT_APP_HTML = """
 
                     let redirectTimeout = setTimeout(() => {{
                         window.location = intentUri;
-                    }}, {delay_ms}); // Adjust delay based on testing (1.5 seconds here)
+                    }}, {delay_ms});
 
                     window.addEventListener('blur', () => {{
                         clearTimeout(redirectTimeout);
@@ -302,7 +302,7 @@ class ShareController(Controller):
                 intent_uri=intent_uri,
                 slug=share_slug,
                 google_store_id=google_store_id,
-                delay_ms=15000,
+                delay_ms=1500,
             )
             return Response(
                 content=html_content,
