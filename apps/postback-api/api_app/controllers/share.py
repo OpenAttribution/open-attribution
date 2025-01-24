@@ -63,7 +63,7 @@ DETECT_APP_HTML = """
                     // 2. If the intent fails (no app), fallback to Play Store after micro-delay
                     //    This uses requestAnimationFrame to avoid blocking the main thread
                     requestAnimationFrame(() => {{
-                        window.location.href = `{market_uri}`;
+                        window.location.href = `{store_uri}`;
                     }});
                 }}
 
