@@ -61,15 +61,15 @@ DETECT_APP_HTML = """
                     const storeUrl = `https://play.google.com/store/apps/details?id={google_store_id}`;
 
                     let redirectTimeout = setTimeout(() => {{
-                        window.location = storeUrl;
+                        window.location = intentUri;
                     }}, {delay_ms}); // Adjust delay based on testing (1.5 seconds here)
 
                     window.addEventListener('blur', () => {{
                         clearTimeout(redirectTimeout);
                     }});
 
-                    // Attempt to open the app
-                    window.location = intentUri;
+                    // Fallback to storeUrl
+                    window.location = storeUrl;
                 }}
 
                 window.onload = openApp;
