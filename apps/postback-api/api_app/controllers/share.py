@@ -54,36 +54,25 @@ DETECT_APP_HTML = """
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Open App</title>
             <script>
-                     function openApp() {{
-            const urlParams = new URLSearchParams(window.location.search);
-            const slug = urlParams.get('slug');
-            const appUri = `{app_uri}`;  // App's intent URI
-            const storeUri = `{store_uri}`; // Play Store intent URI (market://...)
+
+
+            function openApp() {{   
+                    // 1. First, try to open the app via intent URI
+                    window.location.href = `{intent_uri}`;
             
-            // Timeout identifiers
-            let fastFallbackTimeout, finalFallbackTimeout;
-
-            // Phase 1: Immediate app intent attempt
-            window.location = appUri;
-
-            // Phase 2: Fast fallback (app not installed)
-            fastFallbackTimeout = setTimeout(() => {{
-                window.location = storeUri; 
-            }}, 1500); // 1.5s for immediate failure (no app)
-
-            // Phase 3: Final fallback (user ignored dialog)
-            finalFallbackTimeout = setTimeout(() => {{
-                window.location = storeUri;
-            }}, 15000); // 15s total for user interaction
-
-            // Cancel all timeouts if app opens successfully
-            window.addEventListener('blur', () => {{
-                clearTimeout(fastFallbackTimeout);
-                clearTimeout(finalFallbackTimeout);
-            }});
-        }}
+                    // 2. If the intent fails (no app), fallback to Play Store after micro-delay
+                    //    This uses requestAnimationFrame to avoid blocking the main thread
+                    requestAnimationFrame(() => {{
+                        window.location.href = `{market_uri}`;
+                    }});
+                }}
 
                 window.onload = openApp;
+
+
+
+
+
             </script>
         </head>
         <body>
