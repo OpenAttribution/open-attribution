@@ -58,7 +58,7 @@ DETECT_APP_HTML = """
 
             function openApp() {{   
                     // 1. First, try to open the app via intent URI
-                    window.location.href = `{intent_uri}`;
+                    window.location.href = `{app_uri}`;
             
                     // 2. If the intent fails (no app), fallback to Play Store after micro-delay
                     //    This uses requestAnimationFrame to avoid blocking the main thread
@@ -68,9 +68,6 @@ DETECT_APP_HTML = """
                 }}
 
                 window.onload = openApp;
-
-
-
 
 
             </script>
