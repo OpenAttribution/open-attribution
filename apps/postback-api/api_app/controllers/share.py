@@ -310,7 +310,7 @@ class ShareController(Controller):
             app_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
             html_content = DETECT_APP_HTML.format(
                 app_uri=app_uri,
-                market_uri=store_uri,
+                store_uri=store_uri,
                 google_store_id=google_store_id,
                 delay_ms=1500,
             )
