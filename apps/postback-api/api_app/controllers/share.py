@@ -60,7 +60,7 @@ DETECT_APP_HTML = """
                     const slug = urlParams.get('slug');
 
                     // Define the intent URI for your app
-                    const intentUri = `intent://{hostname}/{slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;`
+                    const intentUri = `{intent_uri}`
 
                     // Try to open the app
                     window.location = intentUri;
@@ -68,7 +68,7 @@ DETECT_APP_HTML = """
                     // If the app is not installed, redirect to the Play Store after a short delay
                     setTimeout(function() {{
                         window.location = `https://play.google.com/store/apps/details?id={google_store_id}`;
-                    }}, 1000); // Facebook pops up a question to leave Messenger, this delay is time that shows before redirec to store
+                    }}, {delay_ms}); // Facebook pops up a question to leave Messenger, this delay is time that shows before redirec to store
                 }}
 
                 // Call the function when the page loads
@@ -295,28 +295,26 @@ class ShareController(Controller):
         )
 
         if "detect-app-page" in redirect_url:
+            # intent_uri = f"market://details?id={google_store_id}"
             intent_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
-            intent_uri = f"market://details?id={google_store_id}"
             html_content = DETECT_APP_HTML.format(
                 hostname=request.base_url.hostname,
+                intent_uri=intent_uri,
                 slug=share_slug,
                 google_store_id=google_store_id,
+                delay_ms=15000,
             )
-            # return Response(
-            #     content=html_content,
-            #     media_type="text/html",
-            #     # headers={
-            #     #     "content-type": "application/binary",
-            #     #     "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-            #     # },
+            return Response(
+                content=html_content,
+                media_type="text/html",
+            )
+            # return Redirect(
+            #     path=intent_uri,
+            #     headers={
+            #         "content-type": "application/binary",
+            #         "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+            #     },
             # )
-            return Redirect(
-                path=intent_uri,
-                headers={
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
-            )
 
         return Redirect(
             path=redirect_url,
