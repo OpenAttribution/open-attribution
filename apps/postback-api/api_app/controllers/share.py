@@ -54,23 +54,34 @@ DETECT_APP_HTML = """
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Open App</title>
             <script>
-                function openApp() {{
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const slug = urlParams.get('slug');
-                    const intentUri = `{intent_uri}`;
-                    const storeUrl = `https://play.google.com/store/apps/details?id={google_store_id}`;
+                     function openApp() {{
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            const appUri = `{app_uri}`;  // App's intent URI
+            const storeUri = `{store_uri}`; // Play Store intent URI (market://...)
+            
+            // Timeout identifiers
+            let fastFallbackTimeout, finalFallbackTimeout;
 
-                    let redirectTimeout = setTimeout(() => {{
-                        window.location = intentUri;
-                    }}, {delay_ms});
+            // Phase 1: Immediate app intent attempt
+            window.location = appUri;
 
-                    window.addEventListener('blur', () => {{
-                        clearTimeout(redirectTimeout);
-                    }});
+            // Phase 2: Fast fallback (app not installed)
+            fastFallbackTimeout = setTimeout(() => {{
+                window.location = storeUri; 
+            }}, 1500); // 1.5s for immediate failure (no app)
 
-                    // Fallback to storeUrl
-                    window.location = storeUrl;
-                }}
+            // Phase 3: Final fallback (user ignored dialog)
+            finalFallbackTimeout = setTimeout(() => {{
+                window.location = storeUri;
+            }}, 15000); // 15s total for user interaction
+
+            // Cancel all timeouts if app opens successfully
+            window.addEventListener('blur', () => {{
+                clearTimeout(fastFallbackTimeout);
+                clearTimeout(finalFallbackTimeout);
+            }});
+        }}
 
                 window.onload = openApp;
             </script>
@@ -295,12 +306,11 @@ class ShareController(Controller):
         )
 
         if "detect-app-page" in redirect_url:
-            # intent_uri = f"market://details?id={google_store_id}"
-            intent_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
+            store_uri = f"market://details?id={google_store_id}"
+            app_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
             html_content = DETECT_APP_HTML.format(
-                hostname=request.base_url.hostname,
-                intent_uri=intent_uri,
-                slug=share_slug,
+                app_uri=app_uri,
+                market_uri=store_uri,
                 google_store_id=google_store_id,
                 delay_ms=1500,
             )
@@ -309,7 +319,7 @@ class ShareController(Controller):
                 media_type="text/html",
             )
             # return Redirect(
-            #     path=intent_uri,
+            #     path=app_uri,
             #     headers={
             #         "content-type": "application/binary",
             #         "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
