@@ -286,9 +286,53 @@ class ShareController(Controller):
             request,
         )
 
+        store_uri = f"market://details?id={google_store_id}"
+        store_url = f"https://play.google.com/store/apps/details?id={google_store_id}"
+        app_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
+
+        if share_slug == "redirect_to_market_uri":
+            return Redirect(
+                path=store_uri,
+                headers={
+                    "content-type": "application/binary",
+                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                },
+            )
+
+        if share_slug == "redirect_to_store_url":
+            return Redirect(
+                path=store_url,
+                headers={
+                    "content-type": "application/binary",
+                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                },
+            )
+
+        if share_slug == "html_with_market_uri":
+            html_content = DETECT_APP_HTML.format(
+                app_uri=app_uri,
+                store_uri=store_uri,
+                google_store_id=google_store_id,
+                delay_ms=1500,
+            )
+            return Response(
+                content=html_content,
+                media_type="text/html",
+            )
+
+        if share_slug == "html_with_store_url":
+            html_content = DETECT_APP_HTML.format(
+                app_uri=app_uri,
+                store_url=store_url,
+                google_store_id=google_store_id,
+                delay_ms=1500,
+            )
+            return Response(
+                content=html_content,
+                media_type="text/html",
+            )
+
         if "detect-app-page" in redirect_url:
-            store_uri = f"market://details?id={google_store_id}"
-            app_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
             html_content = DETECT_APP_HTML.format(
                 app_uri=app_uri,
                 store_uri=store_uri,
