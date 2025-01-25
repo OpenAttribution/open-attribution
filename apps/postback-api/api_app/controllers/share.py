@@ -76,17 +76,6 @@ def is_ios_device(user_agent: str) -> bool:
         return False
 
 
-def is_facebook_referer(request: Request) -> bool:
-    """Check if the request is coming from Facebook or Messenger."""
-    referer = request.headers.get("Referer", "")
-    return "m.facebook.com" in referer or "facebook.com" in referer
-
-
-def is_facebook_user_agent(user_agent: str) -> bool:
-    """Check if the User-Agent contains FB_IAB (Facebook in-app browser)."""
-    return "FB_IAB" in user_agent
-
-
 def get_redirect_url(
     app_links: dict,
     share_slug: str,
