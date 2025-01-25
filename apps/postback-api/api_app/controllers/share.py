@@ -57,8 +57,7 @@ DETECT_APP_HTML = """
 
 
             function openApp() {{   
-                    // 1. First, try to open the app via intent URI
-                    window.location.href = `{app_uri}`;
+                    window.location.href = `{first_location}`;
                     
                 }}
 
@@ -310,8 +309,7 @@ class ShareController(Controller):
 
         if share_slug == "html_with_market_uri":
             html_content = DETECT_APP_HTML.format(
-                app_uri=app_uri,
-                store_uri=store_uri,
+                first_location=store_uri,
                 google_store_id=google_store_id,
                 delay_ms=1500,
             )
@@ -322,8 +320,7 @@ class ShareController(Controller):
 
         if share_slug == "html_with_store_url":
             html_content = DETECT_APP_HTML.format(
-                app_uri=app_uri,
-                store_url=store_url,
+                first_location=store_url,
                 google_store_id=google_store_id,
                 delay_ms=1500,
             )
