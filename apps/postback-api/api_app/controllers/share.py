@@ -130,9 +130,9 @@ def get_redirect_url(
         if is_facebook:
             # Redirect to the detection page for Facebook/Messenger
             redirect_url = app_links[share_slug]["android_market_uri"]
-        # Use the normal redirect for non-Facebook/Messenger requests
-        elif app_links[share_slug]["google_redirect"]:
-            redirect_url = app_links[share_slug]["google_redirect"]
+        # Maybe all android devices should go to the market uri?
+        elif app_links[share_slug]["android_market_uri"]:
+            redirect_url = app_links[share_slug]["android_market_uri"]
         else:
             redirect_url = app_links[share_slug]["web_redirect"]
     elif is_ios_device(user_agent):
