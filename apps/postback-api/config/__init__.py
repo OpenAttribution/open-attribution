@@ -76,7 +76,6 @@ def get_logger(mod_name: str, log_name: str = "dash") -> logging.Logger:
             rotate_handler,
         ],
     )
-    logger = logging.getLogger(mod_name)
     # create logger
     logger = logging.getLogger(mod_name)
     logger.setLevel(logging.INFO)

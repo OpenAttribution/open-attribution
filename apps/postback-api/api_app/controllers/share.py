@@ -84,10 +84,12 @@ def get_redirect_url(
     """Get the redirect URL and store ID based on the device type."""
     user_agent = request.headers.get("User-Agent", "")
     logger.info(f"User-Agent: {user_agent}")
+
     if is_android_device(user_agent):
         detected_os = OSID.ANDROID
-        if app_links[share_slug]["google_redirect"]:
-            redirect_url = app_links[share_slug]["google_redirect"]
+        # Maybe all android devices should go to the market uri?
+        if app_links[share_slug]["android_market_uri"]:
+            redirect_url = app_links[share_slug]["android_market_uri"]
         else:
             redirect_url = app_links[share_slug]["web_redirect"]
     elif is_ios_device(user_agent):
@@ -221,6 +223,7 @@ class ShareController(Controller):
 
         """
         app_links = await STORE.get("app_links")
+
         if len(app_links) == 0:
             logger.error(
                 f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",

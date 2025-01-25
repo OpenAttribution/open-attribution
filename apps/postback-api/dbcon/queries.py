@@ -43,6 +43,14 @@ async def get_app_links() -> dict[str, dict[str, str]]:
         "https://play.google.com/store/apps/details?id=" + df["google_store_id"]
     )
     df["apple_redirect"] = "https://apps.apple.com/-/app/-/id" + df["apple_store_id"]
+    # Add the android market uri
+    # url= maps to the app link verified domain url to open app when installed
+    df["android_market_uri"] = (
+        "market://details?id="
+        + df["google_store_id"]
+        + "&url=https://"
+        + df["domain_url"]
+    )
     if df.empty:
         return {}
     df = df.where(pd.notna(df), None)
