@@ -129,8 +129,7 @@ def get_redirect_url(
         detected_os = OSID.ANDROID
         if is_facebook:
             # Redirect to the detection page for Facebook/Messenger
-            logger.info("detected facebook")
-            redirect_url = "detect-app-page"
+            redirect_url = app_links[share_slug]["android_market_uri"]
         # Use the normal redirect for non-Facebook/Messenger requests
         elif app_links[share_slug]["google_redirect"]:
             redirect_url = app_links[share_slug]["google_redirect"]
@@ -274,110 +273,11 @@ class ShareController(Controller):
             )
             return Redirect(path="/")
 
-        try:
-            google_store_id = app_links[share_slug]["google_store_id"]
-        except KeyError:
-            google_store_id = ""
-
         redirect_url, detected_os = get_redirect_url(
             app_links,
             share_slug,
             request,
         )
-
-        store_uri = f"market://details?id={google_store_id}"
-        store_uri_with_url = (
-            f"market://details?id={google_store_id}&url=https://app.thirdgate.dev/"
-        )
-        store_url = f"https://play.google.com/store/apps/details?id={google_store_id}"
-        app_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
-        # plain_app_uri = (
-        #     "hackernewsthirdgate://"  # This would only work when app installed
-        # )
-
-        if share_slug == "redirect_to_market_uri":
-            return Redirect(
-                path=store_uri,
-                headers={
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
-            )
-
-        if share_slug == "redirect_to_market_uri_with_url":
-            return Redirect(
-                path=store_uri_with_url,
-                headers={
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
-            )
-
-        if share_slug == "redirect_to_store_url":
-            return Redirect(
-                path=store_url,
-                headers={
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
-            )
-        if share_slug == "redirect_to_app_uri":
-            return Redirect(
-                path=app_uri,
-                headers={
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
-            )
-
-        if share_slug == "html_with_market_uri":
-            html_content = DETECT_APP_HTML.format(
-                first_location=store_uri,
-            )
-            return Response(
-                content=html_content,
-                media_type="text/html",
-            )
-
-        if share_slug == "html_with_store_url":
-            html_content = DETECT_APP_HTML.format(
-                first_location=store_url,
-            )
-            return Response(
-                content=html_content,
-                media_type="text/html",
-            )
-
-        if share_slug == "html_with_app_uri":
-            html_content = DETECT_APP_HTML.format(
-                first_location=app_uri,
-            )
-            return Response(
-                content=html_content,
-                headers={
-                    "content-type": "application/binary",
-                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                },
-            )
-
-        if "detect-app-page" in redirect_url:
-            html_content = DETECT_APP_HTML.format(
-                app_uri=app_uri,
-                store_uri=store_uri,
-                google_store_id=google_store_id,
-                delay_ms=1500,
-            )
-            return Response(
-                content=html_content,
-                media_type="text/html",
-            )
-            # return Redirect(
-            #     path=app_uri,
-            #     headers={
-            #         "content-type": "application/binary",
-            #         "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-            #     },
-            # )
 
         return Redirect(
             path=redirect_url,
