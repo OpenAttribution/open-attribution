@@ -46,32 +46,6 @@ from api_app.tools import EMPTY_IFA, generate_link_uid, get_client_ip, now
 
 logger = get_logger(__name__)
 
-DETECT_APP_HTML = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Open App</title>
-            <script>
-
-
-            function openApp() {{   
-                    window.location.href = `{first_location}`;
-                    
-                }}
-
-                window.onload = openApp;
-
-
-            </script>
-        </head>
-        <body>
-            <p>Redirecting to the app...</p>
-        </body>
-        </html>
-"""
-
 
 class OSID(Enum):
     """Enum for store IDs."""
@@ -122,16 +96,10 @@ def get_redirect_url(
     user_agent = request.headers.get("User-Agent", "")
     logger.info(f"User-Agent: {user_agent}")
 
-    # Check if the request is from Facebook or Messenger
-    is_facebook = is_facebook_referer(request) or is_facebook_user_agent(user_agent)
-
     if is_android_device(user_agent):
         detected_os = OSID.ANDROID
-        if is_facebook:
-            # Redirect to the detection page for Facebook/Messenger
-            redirect_url = app_links[share_slug]["android_market_uri"]
         # Maybe all android devices should go to the market uri?
-        elif app_links[share_slug]["android_market_uri"]:
+        if app_links[share_slug]["android_market_uri"]:
             redirect_url = app_links[share_slug]["android_market_uri"]
         else:
             redirect_url = app_links[share_slug]["web_redirect"]
