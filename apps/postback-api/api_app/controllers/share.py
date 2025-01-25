@@ -286,12 +286,27 @@ class ShareController(Controller):
         )
 
         store_uri = f"market://details?id={google_store_id}"
+        store_uri_with_url = (
+            f"market://details?id={google_store_id}&url=https://app.thirdgate.dev/"
+        )
         store_url = f"https://play.google.com/store/apps/details?id={google_store_id}"
         app_uri = f"intent://{request.base_url.hostname}/{share_slug}#Intent;package={google_store_id};action=android.intent.action.VIEW;scheme=https;S.browser_fallback_url=https://play.google.com/store/apps/details%3Fid%3D{google_store_id};end;"
+        # plain_app_uri = (
+        #     "hackernewsthirdgate://"  # This would only work when app installed
+        # )
 
         if share_slug == "redirect_to_market_uri":
             return Redirect(
                 path=store_uri,
+                headers={
+                    "content-type": "application/binary",
+                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                },
+            )
+
+        if share_slug == "redirect_to_market_uri_with_url":
+            return Redirect(
+                path=store_uri_with_url,
                 headers={
                     "content-type": "application/binary",
                     "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
@@ -306,12 +321,18 @@ class ShareController(Controller):
                     "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
                 },
             )
+        if share_slug == "redirect_to_app_uri":
+            return Redirect(
+                path=app_uri,
+                headers={
+                    "content-type": "application/binary",
+                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                },
+            )
 
         if share_slug == "html_with_market_uri":
             html_content = DETECT_APP_HTML.format(
                 first_location=store_uri,
-                google_store_id=google_store_id,
-                delay_ms=1500,
             )
             return Response(
                 content=html_content,
@@ -321,12 +342,22 @@ class ShareController(Controller):
         if share_slug == "html_with_store_url":
             html_content = DETECT_APP_HTML.format(
                 first_location=store_url,
-                google_store_id=google_store_id,
-                delay_ms=1500,
             )
             return Response(
                 content=html_content,
                 media_type="text/html",
+            )
+
+        if share_slug == "html_with_app_uri":
+            html_content = DETECT_APP_HTML.format(
+                first_location=app_uri,
+            )
+            return Response(
+                content=html_content,
+                headers={
+                    "content-type": "application/binary",
+                    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                },
             )
 
         if "detect-app-page" in redirect_url:
