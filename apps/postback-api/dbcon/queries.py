@@ -46,7 +46,10 @@ async def get_app_links() -> dict[str, dict[str, str]]:
     # Add the android market uri
     # url= maps to the app link verified domain url to open app when installed
     df["android_market_uri"] = (
-        "market://details?id=" + df["google_store_id"] + "&url=" + df["domain_url"]
+        "market://details?id="
+        + df["google_store_id"]
+        + "&url=https://"
+        + df["domain_url"]
     )
     if df.empty:
         return {}
