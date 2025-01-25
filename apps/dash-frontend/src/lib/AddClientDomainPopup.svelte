@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MediaQuery } from 'runed';
+	import { browser } from '$app/environment';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
@@ -7,12 +7,20 @@
 	import CreateDomainForm from '$lib/CreateDomainForm.svelte';
 
 	let open = false;
-	const isDesktop = new MediaQuery('(min-width: 768px)');
+	let isDesktop = false;
+
+	// Only run this code on the client side
+	$: if (browser) {
+		isDesktop = window.innerWidth >= 768;
+		window.addEventListener('resize', () => {
+			isDesktop = window.innerWidth >= 768;
+		});
+	}
 
 	export let data;
 </script>
 
-{#if isDesktop.matches}
+{#if isDesktop}
 	<Dialog.Root bind:open>
 		<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Add Client Domain</Dialog.Trigger
 		>
