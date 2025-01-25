@@ -37,7 +37,7 @@ from config.dimensions import (
 from confluent_kafka import KafkaException
 from dbcon.queries import STORE, update_app_links_store
 from detect.geo import get_geo
-from litestar import Controller, Request, Response, get, post
+from litestar import Controller, Request, get, post
 from litestar.background_tasks import BackgroundTask
 from litestar.exceptions import HTTPException
 from litestar.response import Redirect
@@ -193,7 +193,7 @@ class ShareController(Controller):
         self: Self,
         request: Request,
         share_slug: str,
-    ) -> Redirect | Response:
+    ) -> Redirect:
         """
         Redirect to the store ID's URL based on the device type.
 
