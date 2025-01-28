@@ -50,6 +50,8 @@ async def get_app_links() -> dict[str, dict[str, str]]:
         + df["google_store_id"]
         + "&url=https://"
         + df["domain_url"]
+        + "/"
+        + df["share_slug"]
     )
     if df.empty:
         return {}
