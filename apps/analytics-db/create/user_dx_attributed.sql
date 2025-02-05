@@ -1,12 +1,15 @@
-CREATE TABLE user_dx_attributed?
+CREATE TABLE user_dx_attributed
 (
-  `campaign_id` String,
-  `campaign_name` String,
-  `campaign_sub_id` String,
-  `campaign_sub_id_2` String,
-  `campaign_sub_id_3` String,
-  `campaign_sub_id_4` String,
-  `campaign_sub_id_5` String,
+  `install_date` Date,
+  `store_id` LowCardinality(String),
+  `network` LowCardinality(String),
+  `campaign_name` LowCardinality(String),
+  `campaign_id` LowCardinality(String),
+  `ad_name` LowCardinality(String),
+  `ad_id` LowCardinality(String),
+  `country_iso` LowCardinality(String),
+  `state_iso` LowCardinality(String),
+  `city_name` String,
   `dx_1` Int32,
   `dx_2` Int32,
   `dx_3` Int32,
@@ -22,4 +25,4 @@ CREATE TABLE user_dx_attributed?
   `dx_365` Int32
 )
 ENGINE = AggregatingMergeTree
-ORDER BY (install_date, oa_uid, dx);
+ORDER BY (install_date, store_id, network, campaign_name, campaign_id, ad_name, ad_id, country_iso, state_iso, city_name);

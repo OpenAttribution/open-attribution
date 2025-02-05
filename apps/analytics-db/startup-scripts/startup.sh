@@ -42,6 +42,8 @@ my_tables=(
 	"user_daily_app_opens_mv"
 	"user_dx_activity"
 	"user_dx_activity_mv"
+	"user_dx_attributed"
+	"user_dx_attributed_mv"
 )
 
 # Loop through each SQL file in the directory and execute it
