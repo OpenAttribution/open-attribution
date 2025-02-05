@@ -67,6 +67,27 @@
 		)
 	);
 
+	// Define metrics array at the top level
+	const metrics = [
+		'impressions',
+		'clicks',
+		'installs',
+		'revenue',
+		'dx_1',
+		'dx_2',
+		'dx_3',
+		'dx_4',
+		'dx_5',
+		'dx_6',
+		'dx_7',
+		'dx_15',
+		'dx_30',
+		'dx_60',
+		'dx_90',
+		'dx_180',
+		'dx_365'
+	] as const;
+
 	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
 		const columnATitle =
 			tableDimensions.find((dim) => dim.value === myGroupByDimA)?.label || myGroupByDimA;
@@ -110,6 +131,58 @@
 			{
 				accessorKey: 'revenue',
 				header: 'Revenue'
+			},
+			{
+				accessorKey: 'dx_1',
+				header: 'dx_1'
+			},
+			{
+				accessorKey: 'dx_2',
+				header: 'dx_2'
+			},
+			{
+				accessorKey: 'dx_3',
+				header: 'dx_3'
+			},
+			{
+				accessorKey: 'dx_4',
+				header: 'dx_4'
+			},
+			{
+				accessorKey: 'dx_5',
+				header: 'dx_5'
+			},
+			{
+				accessorKey: 'dx_6',
+				header: 'dx_6'
+			},
+			{
+				accessorKey: 'dx_7',
+				header: 'dx_7'
+			},
+			{
+				accessorKey: 'dx_15',
+				header: 'dx_15'
+			},
+			{
+				accessorKey: 'dx_30',
+				header: 'dx_30'
+			},
+			{
+				accessorKey: 'dx_60',
+				header: 'dx_60'
+			},
+			{
+				accessorKey: 'dx_90',
+				header: 'dx_90'
+			},
+			{
+				accessorKey: 'dx_180',
+				header: 'dx_180'
+			},
+			{
+				accessorKey: 'dx_365',
+				header: 'dx_365'
 			}
 		];
 
@@ -294,35 +367,33 @@
 		dimensionA: string,
 		dimensionB: string
 	) {
-		// console.log('GROUPING', dimensionA, dimensionB);
-
 		const groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
 			const groupKey = `${keyA}|${keyB}`;
 
 			if (!acc[groupKey]) {
+				// Create initial object with dimensions
 				acc[groupKey] = {
 					[dimensionA]: keyA,
-					[dimensionB]: keyB,
-					impressions: 0,
-					clicks: 0,
-					installs: 0,
-					revenue: 0
-				};
+					[dimensionB]: keyB
+				} as GroupedEntry;
+
+				// Initialize all metrics to 0
+				metrics.forEach((metric) => {
+					acc[groupKey][metric] = 0;
+				});
 			}
 
-			acc[groupKey].impressions += curr.impressions || 0;
-			acc[groupKey].clicks += curr.clicks || 0;
-			acc[groupKey].installs += curr.installs || 0;
-			acc[groupKey].revenue += curr.revenue || 0;
+			// Sum up all metrics
+			metrics.forEach((metric) => {
+				acc[groupKey][metric] += curr[metric] || 0;
+			});
 
 			return acc;
 		}, {});
 
-		const myfinalData = Object.values(groupedData);
-		// console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, myfinalData.length);
-		return myfinalData;
+		return Object.values(groupedData);
 	}
 
 	function groupByDimensionsPlot(

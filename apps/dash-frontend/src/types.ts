@@ -36,6 +36,19 @@ export interface OverviewEntry {
 	clicks: number;
 	installs: number;
 	revenue: number;
+	dx_1: number;
+	dx_2: number;
+	dx_3: number;
+	dx_4: number;
+	dx_5: number;
+	dx_6: number;
+	dx_7: number;
+	dx_15: number;
+	dx_30: number;
+	dx_60: number;
+	dx_90: number;
+	dx_180: number;
+	dx_365: number;
 }
 
 export interface GroupedEntry {
@@ -44,6 +57,19 @@ export interface GroupedEntry {
 	clicks: number;
 	installs: number;
 	revenue: number;
+	dx_1: number;
+	dx_2: number;
+	dx_3: number;
+	dx_4: number;
+	dx_5: number;
+	dx_6: number;
+	dx_7: number;
+	dx_15: number;
+	dx_30: number;
+	dx_60: number;
+	dx_90: number;
+	dx_180: number;
+	dx_365: number;
 }
 
 export interface GroupedPlotEntry {
