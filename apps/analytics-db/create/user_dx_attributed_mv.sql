@@ -1,4 +1,6 @@
-CREATE MATERIALIZED VIEW user_dx_attributed_mv TO user_dx_attributed
+CREATE MATERIALIZED VIEW user_dx_attributed_mv 
+REFRESH EVERY 1 MINUTE
+TO user_dx_attributed
 AS 
 SELECT 
     uda.install_date,

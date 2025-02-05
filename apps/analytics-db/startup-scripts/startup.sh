@@ -36,14 +36,14 @@ my_tables=(
 	"attributed_clicks_mv"
 	"attributed_impressions_mv"
 	"attributed_installs_mv"
-	"daily_overview"
-	"daily_overview_mv"
 	"user_daily_app_opens"
 	"user_daily_app_opens_mv"
 	"user_dx_activity"
 	"user_dx_activity_mv"
 	"user_dx_attributed"
 	"user_dx_attributed_mv"
+	"daily_overview"
+	"daily_overview_mv"
 )
 
 # Loop through each SQL file in the directory and execute it
