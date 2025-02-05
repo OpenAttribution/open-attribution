@@ -19,7 +19,6 @@ from config.dimensions import (
 logger = get_logger(__name__)
 
 
-
 def impression(
     myapp: str,
     mycampaign: str,
@@ -42,7 +41,13 @@ def impression(
 
 
 def click(
-    myapp: str, mycampaign: str, myifa: str, mynetwork: str, myad: str, endpoint: str, headers: dict,
+    myapp: str,
+    mycampaign: str,
+    myifa: str,
+    mynetwork: str,
+    myad: str,
+    endpoint: str,
+    headers: dict,
 ) -> None:
     impression_or_click(
         mytype="clicks",
@@ -83,9 +88,23 @@ def impression_or_click(
     logger.info(f"GET {response.status_code} {mytype.upper()} {url=} {uid=} ")
 
 
-def make_inapp_request(myapp: str, event_id: str, myifa: str, my_oa_uid: str, headers: dict, endpoint: str) -> None:
+def make_inapp_request(
+    myapp: str,
+    event_id: str,
+    myifa: str,
+    my_oa_uid: str,
+    headers: dict,
+    endpoint: str,
+    offset_days: int = 0,
+) -> None:
     tmstmp: str = str(
-        round(datetime.datetime.now(datetime.UTC).timestamp() * 1000),
+        round(
+            (
+                datetime.datetime.now(datetime.UTC)
+                + datetime.timedelta(days=offset_days)
+            ).timestamp()
+            * 1000,
+        ),
     )
     uid = str(uuid.uuid4())
     params = {

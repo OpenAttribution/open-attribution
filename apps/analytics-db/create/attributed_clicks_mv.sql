@@ -20,8 +20,8 @@ merged_click_event AS (
             click.ad_name,
             click.ad_id,
             click.country_iso as country_iso,
-            click.state_iso,
-            click.city_name,
+            click.state_iso as state_iso,
+            click.city_name as city_name,
             click.link_uid,
             ROW_NUMBER() OVER (
                 PARTITION BY app.oa_uid,

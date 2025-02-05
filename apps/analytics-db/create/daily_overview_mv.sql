@@ -83,32 +83,6 @@ GROUP BY
             ad_id,
             country_iso
 )
-UNION ALL
-(
-SELECT 
-    toDate(install_time) as on_date,
-    store_id,
-    'Organic' as network,
-    'Organic' as campaign_name,
-    'Organic' as campaign_id,
-    'Organic' as ad_name,
-    'Organic' as ad_id,
-    ib.country_iso,
-    0 AS impressions,
-    0 AS clicks,
-    count() AS installs,
-    0 AS revenue
-FROM installs_base ib WHERE ib.oa_uid not in (SELECT oa_uid FROM attributed_installs)
-GROUP BY
-    toDate(install_time) AS on_date,
-    store_id,
-    network,
-    campaign_name,
-    campaign_id,
-    ad_name,
-    ad_id,
-    country_iso
-)
 )
 SELECT
     on_date,

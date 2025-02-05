@@ -7,7 +7,7 @@ CREATE TABLE attributed_installs
     client_ip String DEFAULT '',
     attribution_type LowCardinality(String),
     attribution_event_time DateTime64(3, Utc),
-    link_uid UUID,
+    link_uid UUID DEFAULT '00000000-0000-0000-0000-000000000000',
     oa_uid UUID,
     event_uid UUID,
     network LowCardinality(String) DEFAULT '',
@@ -18,7 +18,6 @@ CREATE TABLE attributed_installs
     country_iso LowCardinality(String) DEFAULT '',
     state_iso LowCardinality(String) DEFAULT '',
     city_name LowCardinality(String) DEFAULT '',
-    revenue Nullable (Decimal (9, 4)) DEFAULT 0
 )
 ENGINE = MergeTree()
 PRIMARY KEY (store_id, ifa, oa_uid)
