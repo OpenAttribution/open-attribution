@@ -20,7 +20,6 @@ CAMPAIGNS = ["CampaignA", "CampaignB"]
 ADS = ["Hi!", "NewVideo123"]
 
 INSTALL_RATE = 0.3
-INSTALL_RATE_ORGANIC = 0.7
 CLICK_THROUGH_RATE = 0.5
 APP_OPEN_RATE = 0.4
 
@@ -44,7 +43,7 @@ def main(endpoint: str) -> None:
     while True:
         for network in NETWORKS:
             for app in APPS:
-                if network == "ORGANIC" and random.random() < INSTALL_RATE_ORGANIC:
+                if network == "ORGANIC":
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
                     oa_uid = str(uuid.uuid4())
