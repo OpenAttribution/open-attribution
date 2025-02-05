@@ -1,14 +1,12 @@
 CREATE TABLE user_dx_attributed?
 (
-  `install_date` Date, <- installs_base
-  
-  `campaign_id` String, <- attributed_installs coalesce "Organic"
-  `campaign_name` String, <- attributed_installs coalesce "Organic"
-  `campaign_sub_id` String, <- attributed_installs coalesce "Organic"
-  `campaign_sub_id_2` String, <- attributed_installs coalesce "Organic"
-  `campaign_sub_id_3` String, <- attributed_installs coalesce "Organic"
-  `campaign_sub_id_4` String, <- attributed_installs coalesce "Organic"
-  `campaign_sub_id_5` String, <- attributed_installs coalesce "Organic"
+  `campaign_id` String,
+  `campaign_name` String,
+  `campaign_sub_id` String,
+  `campaign_sub_id_2` String,
+  `campaign_sub_id_3` String,
+  `campaign_sub_id_4` String,
+  `campaign_sub_id_5` String,
   `dx_1` Int32,
   `dx_2` Int32,
   `dx_3` Int32,
@@ -25,10 +23,3 @@ CREATE TABLE user_dx_attributed?
 )
 ENGINE = AggregatingMergeTree
 ORDER BY (install_date, oa_uid, dx);
-
-
-Next step: I want to make a new table:
-
-include all the install data
-
-this table can remove the install_date column? Because why have it, go through all the effort of the JOIN and have no data, just need to do the same JOIN again for next table.
