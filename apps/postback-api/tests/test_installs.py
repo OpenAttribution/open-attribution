@@ -34,6 +34,59 @@ NUM_INSTALLS = 3
 
 
 ALL_TESTS = {
+    "test_retention": {
+        "1c_1e_d1-d365": {
+            "events": [
+                "click",
+                "app_open",
+                "app_open_d1",
+                "app_open_d2",
+                "app_open_d3",
+                "app_open_d4",
+                "app_open_d5",
+                "app_open_d6",
+                "app_open_d7",
+                "app_open_d15",
+                "app_open_d30",
+                "app_open_d60",
+                "app_open_d90",
+                "app_open_d180",
+                "app_open_d365",
+            ],
+            "is_attributable": True,
+        },
+        "1i_1e_d1-d365": {
+            "events": [
+                "impression",
+                "app_open",
+                "app_open_d1",
+                "app_open_d2",
+                "app_open_d3",
+                "app_open_d4",
+                "app_open_d5",
+                "app_open_d6",
+                "app_open_d7",
+                "app_open_d15",
+                "app_open_d30",
+                "app_open_d60",
+                "app_open_d90",
+                "app_open_d180",
+                "app_open_d365",
+            ],
+            "is_attributable": True,
+        },
+        "1i_1c_1e_d1_d3_d7": {
+            "events": [
+                "impression",
+                "click",
+                "app_open",
+                "app_open_d1",
+                "app_open_d3",
+                "app_open_d7",
+            ],
+            "is_attributable": True,
+        },
+    },
     "test_installs": {
         "1i_1c_1e": {
             "events": ["impression", "click", "app_open"],
@@ -301,7 +354,7 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
     """
     # Execute the query and fetch the data as pandas df
     client = create_client(host="clickhouse")
-    df = client.query_df(
+    df: pd.DataFrame = client.query_df(
         query_template,
         parameters={"campaign_name": campaign, "table": table, "bad_name": bad_name},
     )
@@ -410,9 +463,106 @@ def check_install_results(run_tests: dict, time_part: str) -> None:
             logger.info(f"{row.campaign_name=} check: {row}")
 
 
+def manage_item(
+    campaign: str,
+    network: str,
+    my_events: list[str],
+    endpoint: str,
+    test: dict,
+    _total_impressions: int,
+    _total_clicks: int,
+    _total_events: int,
+) -> tuple[int, int, int]:
+    """Manage event id."""
+    ifa = str(uuid.uuid4())  # User start
+    oa_uid = str(uuid.uuid4())  # User start
+    headers = {
+        "X-Forwarded-For": generate_random_ip(),
+        "X-Real-IP": generate_random_ip(),
+    }
+    ad = secrets.choice(ADS)
+
+    for idx, item in enumerate(my_events):
+        if item in ["impression", "click"]:
+            if "app_open" in test["events"][:idx]:
+                my_campaign = campaign + NOT_ATTRIBUTABLE_SUFFIX
+            else:
+                my_campaign = campaign
+            if item == "impression":
+                impression(
+                    myapp=APP,
+                    mycampaign=my_campaign,
+                    mynetwork=network,
+                    myifa=ifa,
+                    myad=ad,
+                    headers=headers,
+                    endpoint=endpoint,
+                )
+                _total_impressions += 1
+            elif item == "click":
+                click(
+                    myapp=APP,
+                    mycampaign=my_campaign,
+                    mynetwork=network,
+                    myifa=ifa,
+                    myad=ad,
+                    headers=headers,
+                    endpoint=endpoint,
+                )
+                _total_clicks += 1
+        else:
+            if network == "test_retention" and "_d" in item:
+                event_id = item.split("_d")[0]
+                days = int(item.split("_d")[1])
+            else:
+                event_id = item
+                days = 0
+            make_inapp_request(
+                event_id=event_id,
+                myapp=APP,
+                myifa=ifa,
+                my_oa_uid=oa_uid,
+                headers=headers,
+                endpoint=endpoint,
+                offset_days=days,
+            )
+            _total_events += 1
+    return _total_impressions, _total_clicks, _total_events
+
+
+def run_test(endpoint: str, run_tests: dict, time_part: str, network: str) -> None:
+    """Run tests and check results."""
+    for _campaign, test in run_tests.items():
+        if isinstance(test["events"], list):
+            my_events: list[str] = test["events"]
+        else:
+            logger.warning(
+                f"campaign test: {_campaign} is incorrectly formatted, events must be a list.",
+            )
+            continue
+        _total_impressions = 0
+        _total_clicks = 0
+        _total_events = 0
+        campaign = _campaign + "_" + time_part
+        for _ in range(NUM_INSTALLS):
+            _total_impressions, _total_clicks, _total_events = manage_item(
+                campaign=campaign,
+                network=network,
+                endpoint=endpoint,
+                my_events=my_events,
+                test=test,
+                _total_impressions=_total_impressions,
+                _total_clicks=_total_clicks,
+                _total_events=_total_events,
+            )
+        logger.info(
+            f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
+        )
+
+
 def main(endpoint: str, test_names: list[str] | None = None) -> None:
     """Run tests and check results."""
-    time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%Y%m%d%H%M_%S")
+    time_part = datetime.datetime.now(tz=datetime.UTC).strftime("%m%d%H%M_%S")
     for network, tests in ALL_TESTS.items():
         if test_names:
             run_tests = {key: tests[key] for key in test_names if key in tests}
@@ -425,68 +575,13 @@ def main(endpoint: str, test_names: list[str] | None = None) -> None:
             logger.info(f"tests filtered to {len(run_tests)} out of {len(tests)}.")
         else:
             run_tests = tests
-        for _campaign, test in run_tests.items():
-            if isinstance(test["events"], list):
-                my_events: list[str] = test["events"]
-            else:
-                logger.warning(
-                    f"campaign test: {_campaign} is incorrectly formatted, events must be a list.",
-                )
-                continue
-            _total_impressions = 0
-            _total_clicks = 0
-            _total_events = 0
-            campaign = _campaign + "_" + time_part
-            for _ in range(NUM_INSTALLS):
-                ifa = str(uuid.uuid4())  # User start
-                oa_uid = str(uuid.uuid4())  # User start
-                headers = {
-                    "X-Forwarded-For": generate_random_ip(),
-                    "X-Real-IP": generate_random_ip(),
-                }
-                ad = secrets.choice(ADS)
-                for idx, item in enumerate(my_events):
-                    if item in ["impression", "click"]:
-                        if "app_open" in test["events"][:idx]:
-                            my_campaign = campaign + NOT_ATTRIBUTABLE_SUFFIX
-                        else:
-                            my_campaign = campaign
-                        if item == "impression":
-                            impression(
-                                myapp=APP,
-                                mycampaign=my_campaign,
-                                mynetwork=network,
-                                myifa=ifa,
-                                myad=ad,
-                                headers=headers,
-                                endpoint=endpoint,
-                            )
-                            _total_impressions += 1
-                        elif item == "click":
-                            click(
-                                myapp=APP,
-                                mycampaign=my_campaign,
-                                mynetwork=network,
-                                myifa=ifa,
-                                myad=ad,
-                                headers=headers,
-                                endpoint=endpoint,
-                            )
-                            _total_clicks += 1
-                    else:
-                        time.sleep(0.5)  # Simulate delay
-                        make_inapp_request(
-                            event_id=item,
-                            myapp=APP,
-                            myifa=ifa,
-                            my_oa_uid=oa_uid,
-                            headers=headers,
-                            endpoint=endpoint,
-                        )
-                        _total_events += 1
-            logger.info(
-                f"{campaign} index:{_} impressions:{_total_impressions} clicks: {_total_clicks} events:{_total_events} ",
-            )
+        run_test(
+            endpoint=endpoint,
+            run_tests=run_tests,
+            time_part=time_part,
+            network=network,
+        )
+
     logger.info("Pause before checking")
     time.sleep(20)
     check_install_results(run_tests=run_tests, time_part=time_part)
