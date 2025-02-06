@@ -52,7 +52,7 @@ export interface OverviewEntry {
 }
 
 export interface GroupedEntry {
-	[key: string]: string | number;
+	[key: string]: number | string;
 	impressions: number;
 	clicks: number;
 	installs: number;

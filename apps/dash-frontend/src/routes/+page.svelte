@@ -23,33 +23,19 @@
 
 	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	import type { OverviewEntry } from '$types';
 
 	import { type PageData } from './$types';
 	import Multiselect from '$lib/Multiselect.svelte';
 
-	// MOVE TO CONSTANTS?
-	const metrics = [
-		'impressions',
-		'clicks',
-		'installs',
-		'revenue',
-		'dx_1',
-		'dx_2',
-		'dx_3',
-		'dx_4',
-		'dx_5',
-		'dx_6',
-		'dx_7',
-		'dx_15',
-		'dx_30',
-		'dx_60',
-		'dx_90',
-		'dx_180',
-		'dx_365'
-	] as const;
+	import {
+		rawMetricsList,
+		retainedUserMetricList,
+		retentionLables,
+		baseMetricsLabels
+	} from '$lib/constants';
 
 	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
@@ -115,79 +101,27 @@
 		// 	}));
 
 		// Add the metric columns
-		const metricColumns = [
-			{
-				accessorKey: 'impressions',
-				header: 'Impressions'
-			},
-			{
-				accessorKey: 'clicks',
-				header: 'Clicks'
-			},
-			{
-				accessorKey: 'installs',
-				header: 'Installs'
-			},
-			{
-				accessorKey: 'revenue',
-				header: 'Revenue'
-			},
-			{
-				accessorKey: 'dx_1',
-				header: 'dx_1'
-			},
-			{
-				accessorKey: 'dx_2',
-				header: 'dx_2'
-			},
-			{
-				accessorKey: 'dx_3',
-				header: 'dx_3'
-			},
-			{
-				accessorKey: 'dx_4',
-				header: 'dx_4'
-			},
-			{
-				accessorKey: 'dx_5',
-				header: 'dx_5'
-			},
-			{
-				accessorKey: 'dx_6',
-				header: 'dx_6'
-			},
-			{
-				accessorKey: 'dx_7',
-				header: 'dx_7'
-			},
-			{
-				accessorKey: 'dx_15',
-				header: 'dx_15'
-			},
-			{
-				accessorKey: 'dx_30',
-				header: 'dx_30'
-			},
-			{
-				accessorKey: 'dx_60',
-				header: 'dx_60'
-			},
-			{
-				accessorKey: 'dx_90',
-				header: 'dx_90'
-			},
-			{
-				accessorKey: 'dx_180',
-				header: 'dx_180'
-			},
-			{
-				accessorKey: 'dx_365',
-				header: 'dx_365'
+		const metricColumns = baseMetricsLabels.map((metric) => ({
+			accessorKey: metric.value,
+			header: metric.label,
+			cell: (props: any) => {
+				const value = props.getValue();
+				return value ? formatNumber(value) : '0';
 			}
-		];
+		}));
+
+		const retentionColumns = retentionLables.map((metric) => ({
+			accessorKey: metric.value,
+			header: metric.label,
+			visible: false,
+			cell: (props: any) => {
+				const value = props.getValue();
+				return value ? `${(value * 100).toFixed(2)}%` : '0.00%';
+			}
+		}));
 
 		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
-		const myCols = [...selectedDimensionColumns, ...metricColumns];
+		const myCols = [...selectedDimensionColumns, ...metricColumns, ...retentionColumns];
 		console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}
@@ -332,14 +266,14 @@
 		filterNetworks = event.detail;
 		// Create a new URL object from the current location const url = new URL(window.location.href);
 		// Get the existing query params
-		const params = new URLSearchParams($page.url.search);
+		const params = new URLSearchParams(page.url.search);
 
 		// Set or update the 'networks' query parameter
 		// TODO I think not currently being used to check for networks!
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
-		goto(`${$page.url.pathname}?${params.toString()}`, {
+		goto(`${page.url.pathname}?${params.toString()}`, {
 			invalidateAll: true,
 			replaceState: true
 		});
@@ -367,7 +301,7 @@
 		dimensionA: string,
 		dimensionB: string
 	) {
-		const groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
+		let groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
 			const groupKey = `${keyA}|${keyB}`;
@@ -380,18 +314,25 @@
 				} as GroupedEntry;
 
 				// Initialize all metrics to 0
-				metrics.forEach((metric) => {
+				rawMetricsList.forEach((metric) => {
 					acc[groupKey][metric] = 0;
 				});
 			}
 
 			// Sum up all metrics
-			metrics.forEach((metric) => {
-				acc[groupKey][metric] += curr[metric] || 0;
+			rawMetricsList.forEach((metric) => {
+				acc[groupKey][metric] = (acc[groupKey][metric] as number) + ((curr[metric] as number) || 0);
 			});
 
 			return acc;
 		}, {});
+
+		Object.values(groupedData).forEach((curr) => {
+			// Calculate retention percentages
+			retainedUserMetricList.forEach((metric) => {
+				curr['ret_' + metric] = (curr[metric] as number) / curr['installs'];
+			});
+		});
 
 		return Object.values(groupedData);
 	}

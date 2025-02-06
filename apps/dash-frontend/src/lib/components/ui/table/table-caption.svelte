@@ -1,16 +1,13 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
-	import type { WithElementRef } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		children,
-		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLElement>> = $props();
+	type $$Props = HTMLAttributes<HTMLTableCaptionElement>;
+
+	let className: $$Props['class'] = undefined;
+	export { className as class };
 </script>
 
-<caption bind:this={ref} class={cn('text-muted-foreground mt-4 text-sm', className)} {...restProps}>
-	{@render children?.()}
+<caption class={cn('text-muted-foreground mt-4 text-sm', className)} {...$$restProps}>
+	<slot />
 </caption>
