@@ -355,6 +355,62 @@
 		return Object.values(groupedData);
 	}
 
+	function groupByForBasicMetric(
+		myFilteredData: OverviewEntry[],
+		dimension: string,
+		metric: string
+	) {
+		return myFilteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
+			const onDate = curr['on_date'] as string;
+			const dimensionValue = curr[dimension] as string;
+			const metricValue = (curr[metric] as number) || 0;
+
+			// Initialize the on_date if not present
+			if (!acc[onDate]) {
+				acc[onDate] = {};
+			}
+
+			// Add metric value for dimension
+			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
+
+			return acc;
+		}, {});
+	}
+
+	function groupByForComplexMetric(
+		myFilteredData: OverviewEntry[],
+		dimension: string,
+		metric: string
+	) {
+		// NEED TO GROUP BY AND SUM d1_x THEN divide by installs
+		const dx_metric = metric.replace('ret_', '');
+		let myGrouped = myFilteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
+			const onDate = curr['on_date'] as string;
+			const dimensionValue = curr[dimension] as string;
+			const metricValue = (curr[dx_metric] as number) || 0;
+			const installsValue = (curr['installs'] as number) || 0;
+
+			// Initialize the on_date if not present
+			if (!acc[onDate]) {
+				acc[onDate] = {};
+			}
+
+			// Add metric value for dimension
+			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
+			acc[onDate]['installs'] = (acc[onDate]['installs'] || 0) + installsValue;
+			return acc;
+		}, {});
+
+		// Divide all values by installs
+		Object.keys(myGrouped).forEach((date) => {
+			Object.keys(myGrouped[date]).forEach((dimension) => {
+				myGrouped[date][dimension] = myGrouped[date][dimension] / myGrouped[date]['installs'];
+			});
+		});
+
+		return myGrouped;
+	}
+
 	function groupByDimensionsPlot(
 		filteredData: DatesOverviewEntry[],
 		dimension: string,
@@ -388,22 +444,14 @@
 			currentDate.setDate(currentDate.getDate() + 1);
 		}
 
-		// Step 1: Group by on_date and dimension
-		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
-			const onDate = curr['on_date'] as string;
-			const dimensionValue = curr[dimension] as string;
-			const metricValue = (curr[metric] as number) || 0;
+		let groupedData: Record<string, Record<string, number>> = {};
+		if (metric.startsWith('ret_')) {
+			groupedData = groupByForComplexMetric(filteredData, dimension, metric);
+		} else {
+			groupedData = groupByForBasicMetric(filteredData, dimension, metric);
+		}
 
-			// Initialize the on_date if not present
-			if (!acc[onDate]) {
-				acc[onDate] = {};
-			}
-
-			// Add metric value for dimension
-			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
-
-			return acc;
-		}, {});
+		// Step 1: Group by on_date and dimension SINGLE metric
 
 		// Step 2: Ensure all dates exist in groupedData with zero values
 		const allDimensionValues = new Set<string>();
@@ -614,7 +662,7 @@
 						<Select.Content>
 							<Select.Group>
 								<Select.GroupHeading>Metric</Select.GroupHeading>
-								{#each baseMetricsLabels as metric}
+								{#each [...baseMetricsLabels, ...retentionLables] as metric}
 									<Select.Item value={metric.value} label={metric.label}>{metric.label}</Select.Item
 									>
 								{/each}
