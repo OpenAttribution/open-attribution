@@ -30,6 +30,27 @@
 	import { type PageData } from './$types';
 	import Multiselect from '$lib/Multiselect.svelte';
 
+	// MOVE TO CONSTANTS?
+	const metrics = [
+		'impressions',
+		'clicks',
+		'installs',
+		'revenue',
+		'dx_1',
+		'dx_2',
+		'dx_3',
+		'dx_4',
+		'dx_5',
+		'dx_6',
+		'dx_7',
+		'dx_15',
+		'dx_30',
+		'dx_60',
+		'dx_90',
+		'dx_180',
+		'dx_365'
+	] as const;
+
 	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
 
@@ -66,27 +87,6 @@
 			groupByDimA
 		)
 	);
-
-	// Define metrics array at the top level
-	const metrics = [
-		'impressions',
-		'clicks',
-		'installs',
-		'revenue',
-		'dx_1',
-		'dx_2',
-		'dx_3',
-		'dx_4',
-		'dx_5',
-		'dx_6',
-		'dx_7',
-		'dx_15',
-		'dx_30',
-		'dx_60',
-		'dx_90',
-		'dx_180',
-		'dx_365'
-	] as const;
 
 	function getColumns(myGroupByDimA: string, myGroupByDimB: string) {
 		const columnATitle =
