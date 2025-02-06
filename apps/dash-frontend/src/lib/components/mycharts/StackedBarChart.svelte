@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BarChart } from 'layerchart';
+	import { BarChart, Spline } from 'layerchart';
 
 	import type { GroupedPlotEntry } from '$types';
 
@@ -7,7 +7,7 @@
 	// const edgyColors = ['#dc8a78','#8839ef','#179299','#ea76cb','#fe640b', '#209fb5'];
 	const keyColors = catppMocha;
 
-	let { plotData = [] as GroupedPlotEntry[] } = $props();
+	let { plotData = [] as GroupedPlotEntry[], lineData = [] as GroupedPlotEntry[] } = $props();
 
 	interface SeriesEntry {
 		key: string;
@@ -45,16 +45,39 @@
 	let seriesKeys = $derived(generateSeriesKeys(plotData, keyColors));
 </script>
 
-<div class="h-[300px] p-4 border rounded">
-	<BarChart
+<div class="h-[400px] grid grid-stack p-4 border rounded">
+	<!-- <BarChart
 		data={plotData}
 		x="on_date"
 		series={seriesKeys}
 		seriesLayout="stack"
+		grid={false}
 		props={{
 			// xAxis: { format: 'date' },
 			yAxis: { format: 'metric' }
 		}}
-		legend={{ placement: 'top-right', classes: { root: 'mt-2' } }}
-	/>
+		legend={{ placement: 'top-right' }}
+	/> -->
+
+	<!-- Second chart (line), responsible for tooltip -->
+	<!-- y={['installs']} -->
+	<!-- y="impressions" -->
+	<!-- yDomain={null} -->
+	<!-- yNice={4} -->
+	<!-- padding={{ left: 16, bottom: 16 }} -->
+	<!-- tooltip={{ mode: 'band' }} -->
+	<BarChart
+		data={lineData}
+		x="on_date"
+		series={seriesKeys}
+		props={{
+			xAxis: { ticks: 10, rule: true }
+		}}
+	>
+		<svelte:fragment slot="aboveMarks">
+			{#each seriesKeys as key}
+				<Spline y={key.key} color={key.color} />
+			{/each} -->
+		</svelte:fragment>
+	</BarChart>
 </div>

@@ -40,11 +40,13 @@
 	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
 	const pageDefaultPlotBarMetric = 'installs';
+	const pageDefaultPlotLineMetric = 'impressions';
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);
 	// let plotBarBy = $state(pageDefaultDimA);
 	let plotBarMetric = $state(pageDefaultPlotBarMetric);
+	let plotLineMetric = $state(pageDefaultPlotLineMetric);
 
 	interface Props {
 		data: PageData;
@@ -70,11 +72,19 @@
 		)
 	);
 
-	let finalPlotData = $derived(
+	let finalBarPlotData = $derived(
 		getFinalPlotData(
 			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
 			groupByDimA,
 			plotBarMetric
+		)
+	);
+
+	let finalLinePlotData = $derived(
+		getFinalPlotData(
+			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
+			groupByDimA,
+			plotLineMetric
 		)
 	);
 
@@ -288,6 +298,7 @@
 	let titleGroupByB = $derived(lookupDimensionTitle(groupByDimB));
 
 	let titleBarMetric = $derived(lookupMetricTitle(plotBarMetric));
+	let titleLineMetric = $derived(lookupMetricTitle(plotLineMetric));
 
 	function lookupDimensionTitle(dimension: string) {
 		let myTitle = tableDimensions.find((dim) => dim.value === dimension)?.label || dimension;
@@ -596,6 +607,20 @@
 							</Select.Group>
 						</Select.Content>
 					</Select.Root>
+					<Select.Root type="single" name="plotLineMetric" bind:value={plotLineMetric}>
+						<Select.Trigger class="w-[180px]">
+							{titleLineMetric}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.GroupHeading>Metric</Select.GroupHeading>
+								{#each baseMetricsLabels as metric}
+									<Select.Item value={metric.value} label={metric.label}>{metric.label}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+					</Select.Root>
 				</div>
 			</Card.Header>
 
@@ -604,7 +629,7 @@
 					Loading...
 				{:then plotData}
 					{#if plotData.dates_overview && plotData.dates_overview.length > 0}
-						<StackedBar plotData={finalPlotData}></StackedBar>
+						<StackedBar plotData={finalBarPlotData} lineData={finalLinePlotData}></StackedBar>
 					{:else}
 						Loading...
 					{/if}
