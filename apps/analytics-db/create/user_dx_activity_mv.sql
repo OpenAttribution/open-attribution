@@ -1,7 +1,6 @@
 CREATE MATERIALIZED VIEW user_dx_activity_mv 
 REFRESH EVERY 1 MINUTE
 TO user_dx_activity
-
 AS 
 SELECT 
     toDate(ib.install_time) as install_date,

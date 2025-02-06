@@ -101,8 +101,8 @@ logger = get_logger(__name__)
 DATE_FORMAT = "%Y-%m-%d"
 
 # for non docker local development manually source contents of .dev.env
-# source ../../docker/.dev.env
-# or manually like export POSTGRES_USER=example
+# ../../docker/.dev.env
+# manually like export POSTGRES_USER=postgres
 POSTGRES_USER = os.environ["POSTGRES_USER"]
 POSTGRES_DB = os.environ["POSTGRES_DB"]
 POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
