@@ -12,26 +12,26 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@internationalized/date": "^3.6.0",
+		"@internationalized/date": "^3.7.0",
 		"@sveltejs/adapter-node": "^5.2.9",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@types/d3-scale-chromatic": "^3.0.3",
 		"@vincjo/datatables": "^2.0.5",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.0.0-next.69",
-		"formsnap": "^2.0.0-next.1",
+		"bits-ui": "^1.0.0-next.86",
+		"formsnap": "^1.0.1",
 		"globals": "^15.0.0",
 		"lucide-svelte": "^0.474.0",
 		"postcss": "^8.4.47",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
-		"sveltekit-superforms": "^2.21.1",
+		"sveltekit-superforms": "^2.23.1",
 		"tailwindcss": "^3.4.13",
 		"typescript": "^5.0.0",
 		"vaul-svelte": "^1.0.0-next.3",
 		"vite": "^6.0.0",
-		"zod": "^3.23.8"
+		"zod": "^3.24.1"
 	},
 	"type": "module",
 	"dependencies": {
