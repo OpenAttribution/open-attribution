@@ -39,9 +39,12 @@
 
 	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
+	const pageDefaultPlotBarMetric = 'installs';
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);
+	// let plotBarBy = $state(pageDefaultDimA);
+	let plotBarMetric = $state(pageDefaultPlotBarMetric);
 
 	interface Props {
 		data: PageData;
@@ -70,7 +73,8 @@
 	let finalPlotData = $derived(
 		getFinalPlotData(
 			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
-			groupByDimA
+			groupByDimA,
+			plotBarMetric
 		)
 	);
 
@@ -91,14 +95,6 @@
 				header: columnBTitle
 			}
 		];
-
-		// // Create columns for all remaining dimensions
-		// const remainingDimensionColumns = tableDimensions
-		// 	.filter((dim) => dim.value !== myGroupByDimA && dim.value !== myGroupByDimB)
-		// 	.map((dim) => ({
-		// 		accessorKey: dim.value,
-		// 		header: dim.label
-		// 	}));
 
 		// Add the metric columns
 		const metricColumns = baseMetricsLabels.map((metric) => ({
@@ -226,10 +222,14 @@
 		return myReturnedFinalData;
 	}
 
-	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
+	function getFinalPlotData(
+		myData: DatesOverviewEntry[],
+		groupByKey: string = 'network',
+		metric: string = 'installs'
+	) {
 		let myReturnedFinalPlotData: GroupedPlotEntry[] = [];
 		if (myData && myData.length > 0) {
-			myReturnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
+			myReturnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, metric);
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
 			myReturnedFinalPlotData = [];
@@ -284,11 +284,18 @@
 		filterApps = event.detail;
 	}
 
-	let titleGroupByA = $derived(handleGroupByChange(groupByDimA));
-	let titleGroupByB = $derived(handleGroupByChange(groupByDimB));
+	let titleGroupByA = $derived(lookupDimensionTitle(groupByDimA));
+	let titleGroupByB = $derived(lookupDimensionTitle(groupByDimB));
 
-	function handleGroupByChange(dimension: string) {
+	let titleBarMetric = $derived(lookupMetricTitle(plotBarMetric));
+
+	function lookupDimensionTitle(dimension: string) {
 		let myTitle = tableDimensions.find((dim) => dim.value === dimension)?.label || dimension;
+		return myTitle;
+	}
+
+	function lookupMetricTitle(metric: string) {
+		let myTitle = baseMetricsLabels.find((m) => m.value === metric)?.label || metric;
 		return myTitle;
 	}
 
@@ -339,13 +346,13 @@
 
 	function groupByDimensionsPlot(
 		filteredData: DatesOverviewEntry[],
-		dimensionB: string,
+		dimension: string,
 		metric: string
 	): GroupedPlotEntry[] {
-		// Step 1: Group by on_date and dimensionB
+		// Step 1: Group by on_date and dimension
 		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
 			const onDate = curr['on_date'] as string;
-			const dimensionValue = curr[dimensionB] as string;
+			const dimensionValue = curr[dimension] as string;
 			const metricValue = (curr[metric] as number) || 0;
 
 			// Initialize the on_date if not present
@@ -353,13 +360,13 @@
 				acc[onDate] = {};
 			}
 
-			// Add metric value for dimensionB
+			// Add metric value for dimension
 			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
 
 			return acc;
 		}, {});
 
-		// Step 2: Pivot dimensionB into columns
+		// Step 2: Pivot dimension into columns
 		const pivotedData = Object.entries(groupedData).map(([on_date, dimensionValues]) => {
 			return {
 				on_date,
@@ -515,7 +522,40 @@
 		</div>
 
 		<Card.Root class="xl:col-span-2">
-			<Card.Header class="flex flex-row items-center">Installs by Network</Card.Header>
+			<Card.Header class="flex flex-row items-center">
+				<div class="flex flex-row items-center gap-2">
+					<Select.Root type="single" name="plotBarBy" bind:value={groupByDimA}>
+						<Select.Trigger class="w-[180px]">
+							{titleGroupByA}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.GroupHeading>Group By</Select.GroupHeading>
+								{#each tableDimensions as dimension}
+									<Select.Item value={dimension.value} label={dimension.label}
+										>{dimension.label}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+					</Select.Root>
+					<Select.Root type="single" name="plotBarMetric" bind:value={plotBarMetric}>
+						<Select.Trigger class="w-[180px]">
+							{titleBarMetric}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.GroupHeading>Metric</Select.GroupHeading>
+								{#each baseMetricsLabels as metric}
+									<Select.Item value={metric.value} label={metric.label}>{metric.label}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+					</Select.Root>
+				</div>
+			</Card.Header>
+
 			<Card.Content>
 				{#await data.respData}
 					Loading...

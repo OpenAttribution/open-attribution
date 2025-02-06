@@ -3,7 +3,7 @@
 
 	import type { GroupedPlotEntry } from '$types';
 
-	const catppMocha = ['#f5e0dc', '#cba6f7', '#94e2d5', '#f5c2e7', '#f9e2af', '#74c7ec'];
+	const catppMocha = ['#74c7ec', '#f5e0dc', '#cba6f7', '#94e2d5', '#f5c2e7', '#f9e2af'];
 	// const edgyColors = ['#dc8a78','#8839ef','#179299','#ea76cb','#fe640b', '#209fb5'];
 	const keyColors = catppMocha;
 
@@ -16,21 +16,33 @@
 	}
 
 	function generateSeriesKeys(plotData: GroupedPlotEntry[], keyColors: string[]): SeriesEntry[] {
+		// Get unique keys excluding 'on_date'
 		const uniqueKeys = Array.from(
 			new Set(
 				plotData.flatMap((plotRow) => Object.keys(plotRow).filter((key) => key !== 'on_date'))
 			)
 		);
-		const seriesKeys = uniqueKeys.slice(0, keyColors.length).map((key, index) => ({
+
+		// Calculate total value for each key
+		const keyTotals = uniqueKeys.map((key) => ({
 			key,
-			label: key.charAt(0).toUpperCase() + key.slice(1),
+			total: plotData.reduce((sum, row) => sum + (Number(row[key]) || 0), 0)
+		}));
+
+		// Sort by total value in ascending order instead of descending
+		keyTotals.sort((a, b) => b.total - a.total);
+
+		// Map to final format, using only as many keys as we have colors
+		const seriesKeys = keyTotals.slice(0, keyColors.length).map((entry, index) => ({
+			key: entry.key,
+			label: entry.key.charAt(0).toUpperCase() + entry.key.slice(1),
 			color: keyColors[index]
 		}));
 
 		return seriesKeys;
 	}
 
-	const seriesKeys = generateSeriesKeys(plotData, keyColors);
+	let seriesKeys = $derived(generateSeriesKeys(plotData, keyColors));
 </script>
 
 <div class="h-[300px] p-4 border rounded">
