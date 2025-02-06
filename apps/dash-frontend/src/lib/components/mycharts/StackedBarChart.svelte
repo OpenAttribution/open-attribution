@@ -46,18 +46,17 @@
 </script>
 
 <div class="h-[400px] grid grid-stack p-4 border rounded">
-	<!-- <BarChart
+	<BarChart
 		data={plotData}
 		x="on_date"
 		series={seriesKeys}
 		seriesLayout="stack"
 		grid={false}
 		props={{
-			// xAxis: { format: 'date' },
 			yAxis: { format: 'metric' }
 		}}
 		legend={{ placement: 'top-right' }}
-	/> -->
+	/>
 
 	<!-- Second chart (line), responsible for tooltip -->
 	<!-- y={['installs']} -->
@@ -77,7 +76,7 @@
 		<svelte:fragment slot="aboveMarks">
 			{#each seriesKeys as key}
 				<Spline y={key.key} color={key.color} />
-			{/each} -->
+			{/each}
 		</svelte:fragment>
 	</BarChart>
 </div>
