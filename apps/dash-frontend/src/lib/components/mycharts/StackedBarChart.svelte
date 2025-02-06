@@ -45,13 +45,15 @@
 	let seriesKeys = $derived(generateSeriesKeys(plotData, keyColors));
 </script>
 
-<div class="h-[400px] grid grid-stack p-4 border rounded">
+<div class="h-[400px] grid [&>*]:col-start-1 [&>*]:row-start-1 p-4 border rounded">
 	<BarChart
 		data={plotData}
 		x="on_date"
 		series={seriesKeys}
 		seriesLayout="stack"
 		grid={false}
+		axis={false}
+		padding={{ left: 16, bottom: 16 }}
 		props={{
 			yAxis: { format: 'metric' }
 		}}
@@ -59,21 +61,17 @@
 	/>
 
 	<!-- Second chart (line), responsible for tooltip -->
-	<!-- y={['installs']} -->
-	<!-- y="impressions" -->
-	<!-- yDomain={null} -->
-	<!-- yNice={4} -->
-	<!-- padding={{ left: 16, bottom: 16 }} -->
-	<!-- tooltip={{ mode: 'band' }} -->
 	<BarChart
 		data={lineData}
 		x="on_date"
 		series={seriesKeys}
+		yDomain={null}
+		padding={{ left: 16, bottom: 16 }}
 		props={{
-			xAxis: { ticks: 10, rule: true }
+			xAxis: { rule: true }
 		}}
 	>
-		<svelte:fragment slot="aboveMarks">
+		<svelte:fragment slot="marks">
 			{#each seriesKeys as key}
 				<Spline y={key.key} color={key.color} />
 			{/each}
