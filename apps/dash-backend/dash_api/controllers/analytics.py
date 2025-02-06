@@ -89,7 +89,6 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                     ORDER BY
                         on_date
                     WITH FILL
-                    FROM toDate(%(start_date)s) TO toDate(%(end_date)s) STEP INTERVAL 1 DAY
     """
     # Execute the query and fetch the data as pandas df
     df = client.query_df(

@@ -349,6 +349,34 @@
 		dimension: string,
 		metric: string
 	): GroupedPlotEntry[] {
+		const userStartDate = page.url.searchParams.get('start') || '';
+		const userEndDate = page.url.searchParams.get('end') || '';
+
+		let startDate = '';
+		let endDate = '';
+
+		if (userStartDate && userStartDate < filteredData[0]['on_date']) {
+			startDate = userStartDate;
+		} else {
+			startDate = filteredData[0]['on_date'] as string;
+		}
+
+		if (userEndDate && userEndDate > filteredData[filteredData.length - 1]['on_date']) {
+			endDate = userEndDate;
+		} else {
+			endDate = filteredData[filteredData.length - 1]['on_date'] as string;
+		}
+
+		// Generate array of all dates between start and end
+		const dates: string[] = [];
+		const currentDate = new Date(startDate);
+		const lastDate = new Date(endDate);
+
+		while (currentDate <= lastDate) {
+			dates.push(currentDate.toISOString().split('T')[0]);
+			currentDate.setDate(currentDate.getDate() + 1);
+		}
+
 		// Step 1: Group by on_date and dimension
 		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
 			const onDate = curr['on_date'] as string;
@@ -366,16 +394,31 @@
 			return acc;
 		}, {});
 
-		// Step 2: Pivot dimension into columns
-		const pivotedData = Object.entries(groupedData).map(([on_date, dimensionValues]) => {
+		// Step 2: Ensure all dates exist in groupedData with zero values
+		const allDimensionValues = new Set<string>();
+		Object.values(groupedData).forEach((dimensionValues) => {
+			Object.keys(dimensionValues).forEach((dim) => allDimensionValues.add(dim));
+		});
+
+		// Create complete dataset with all dates
+		const completeData = dates.reduce<Record<string, Record<string, number>>>((acc, date) => {
+			acc[date] = acc[date] || {};
+			// Initialize all dimension values to 0 for this date
+			allDimensionValues.forEach((dim) => {
+				acc[date][dim] = groupedData[date]?.[dim] || 0;
+			});
+			return acc;
+		}, {});
+
+		// Step 3: Pivot dimension into columns
+		const pivotedData = Object.entries(completeData).map(([on_date, dimensionValues]) => {
 			return {
 				on_date,
 				...dimensionValues
 			};
 		});
 
-		// console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
-		return pivotedData;
+		return pivotedData.sort((a, b) => a.on_date.localeCompare(b.on_date));
 	}
 
 	function formatNumber(num: number) {
