@@ -80,11 +80,9 @@
 	<!--  Mobile only footer -->
 	<footer class="bg-surface-50-950 fixed bottom-0 z-10 w-full">
 		<AppBar padding="p-0">
-			<!-- <div class="flex w-full p-2 md:hidden"> -->
-			<!-- <div class="flex w-full justify-between"> -->
-			<NavTabs />
-			<!-- </div> -->
-			<!-- </div> -->
-		</AppBar>
+			<div class="md:hidden">
+				<NavTabs />
+			</div></AppBar
+		>
 	</footer>
 </div>
