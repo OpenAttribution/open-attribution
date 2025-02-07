@@ -472,9 +472,6 @@
 			groupedData = groupByForBasicMetric(filteredData, dimension, metric);
 		}
 
-		// Step 1: Group by on_date and dimension SINGLE metric
-
-		// Step 2: Ensure all dates exist in groupedData with zero values
 		const allDimensionValues = new Set<string>();
 		Object.values(groupedData).forEach((dimensionValues) => {
 			Object.keys(dimensionValues).forEach((dim) => allDimensionValues.add(dim));
@@ -490,7 +487,6 @@
 			return acc;
 		}, {});
 
-		// Step 3: Pivot dimension into columns
 		const pivotedData = Object.entries(completeData).map(([on_date, dimensionValues]) => {
 			return {
 				on_date,
