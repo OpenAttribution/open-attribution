@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BarChart, Spline } from 'layerchart';
+	import { BarChart, Spline, Tooltip } from 'layerchart';
 
 	import type { GroupedPlotEntry } from '$types';
 
@@ -75,6 +75,20 @@
 			{#each seriesKeys as key}
 				<Spline y={key.key} color={key.color} />
 			{/each}
+		</svelte:fragment>
+
+		<svelte:fragment slot="tooltip">
+			<Tooltip.Root let:data>
+				<Tooltip.Header>
+					<!-- {formatDate(data.date, PeriodType.Day)} -->
+					{data.on_date}
+				</Tooltip.Header>
+				<Tooltip.List>
+					{#each seriesKeys as key}
+						<Tooltip.Item label={key.label} value={`bar=${data[key.key]}, line=${data[key.key]}`} />
+					{/each}
+				</Tooltip.List>
+			</Tooltip.Root>
 		</svelte:fragment>
 	</BarChart>
 </div>

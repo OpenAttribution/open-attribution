@@ -382,33 +382,53 @@
 		dimension: string,
 		metric: string
 	) {
-		// NEED TO GROUP BY AND SUM d1_x THEN divide by installs
+		// Remove 'ret_' prefix from metric name, so we can use it as a dimension
 		const dx_metric = metric.replace('ret_', '');
-		let myGrouped = myFilteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
-			const onDate = curr['on_date'] as string;
+
+		// First, group by date and dimension, summing any flat metrics
+		const grouped = myFilteredData.reduce<{
+			[date: string]: {
+				[dimension: string]: {
+					metricSum: number;
+					installsSum: number;
+				};
+			};
+		}>((acc, curr) => {
+			const onDate = curr.on_date;
 			const dimensionValue = curr[dimension] as string;
 			const metricValue = (curr[dx_metric] as number) || 0;
-			const installsValue = (curr['installs'] as number) || 0;
+			const installsValue = curr.installs || 0;
 
-			// Initialize the on_date if not present
+			// Initialize nested objects if they don't exist
 			if (!acc[onDate]) {
 				acc[onDate] = {};
 			}
+			if (!acc[onDate][dimensionValue]) {
+				acc[onDate][dimensionValue] = {
+					metricSum: 0,
+					installsSum: 0
+				};
+			}
 
-			// Add metric value for dimension
-			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
-			acc[onDate]['installs'] = (acc[onDate]['installs'] || 0) + installsValue;
+			// Sum up the values
+			acc[onDate][dimensionValue].metricSum += metricValue;
+			acc[onDate][dimensionValue].installsSum += installsValue;
+
 			return acc;
 		}, {});
 
-		// Divide all values by installs
-		Object.keys(myGrouped).forEach((date) => {
-			Object.keys(myGrouped[date]).forEach((dimension) => {
-				myGrouped[date][dimension] = myGrouped[date][dimension] / myGrouped[date]['installs'];
-			});
-		});
+		// Calculate final metrics by dividing sums
+		const result: Record<string, Record<string, number>> = {};
 
-		return myGrouped;
+		for (const date in grouped) {
+			result[date] = {};
+			for (const dim in grouped[date]) {
+				const { metricSum, installsSum } = grouped[date][dim];
+				result[date][dim] = installsSum > 0 ? metricSum / installsSum : 0;
+			}
+		}
+
+		return result;
 	}
 
 	function groupByDimensionsPlot(
@@ -447,6 +467,7 @@
 		let groupedData: Record<string, Record<string, number>> = {};
 		if (metric.startsWith('ret_')) {
 			groupedData = groupByForComplexMetric(filteredData, dimension, metric);
+			console.log('groupedData=', groupedData);
 		} else {
 			groupedData = groupByForBasicMetric(filteredData, dimension, metric);
 		}
