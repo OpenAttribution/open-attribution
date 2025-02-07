@@ -24,6 +24,27 @@ else:
     client = clickhouse_connect.create_client(host="clickhouse")
 
 
+METRICS = [
+    "impressions",
+    "clicks",
+    "installs",
+    "revenue",
+    "dx_1",
+    "dx_2",
+    "dx_3",
+    "dx_4",
+    "dx_5",
+    "dx_6",
+    "dx_7",
+    "dx_15",
+    "dx_30",
+    "dx_60",
+    "dx_90",
+    "dx_180",
+    "dx_365",
+]
+
+
 def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
     """Query the main overview data."""
     query_template = """SELECT
@@ -38,7 +59,20 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                         sum(impressions) as impressions,
                         sum(clicks) as clicks,
                         sum(installs) as installs,
-                        sum(revenue) as revenue
+                        sum(revenue) as revenue,
+                        sum(dx_1) as dx_1,
+                        sum(dx_2) as dx_2,
+                        sum(dx_3) as dx_3,
+                        sum(dx_4) as dx_4,
+                        sum(dx_5) as dx_5,
+                        sum(dx_6) as dx_6,
+                        sum(dx_7) as dx_7,
+                        sum(dx_15) as dx_15,
+                        sum(dx_30) as dx_30,
+                        sum(dx_60) as dx_60,
+                        sum(dx_90) as dx_90,
+                        sum(dx_180) as dx_180,
+                        sum(dx_365) as dx_365
                     FROM
                         daily_overview
                     WHERE
@@ -55,7 +89,6 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                     ORDER BY
                         on_date
                     WITH FILL
-                    FROM toDate(%(start_date)s) TO toDate(%(end_date)s) STEP INTERVAL 1 DAY
     """
     # Execute the query and fetch the data as pandas df
     df = client.query_df(
@@ -127,7 +160,7 @@ class OverviewController(Controller):
                     "country_iso",
                 ],
                 dropna=False,
-            )[["impressions", "clicks", "installs", "revenue"]]
+            )[METRICS]
             .sum()
             .reset_index()
         )
@@ -145,7 +178,7 @@ class OverviewController(Controller):
                     "ad_id",
                 ],
                 dropna=False,
-            )[["impressions", "clicks", "installs", "revenue"]]
+            )[METRICS]
             .sum()
             .reset_index()
         )

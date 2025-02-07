@@ -12,7 +12,7 @@ from tests._simulate_network_calls import impression_or_click, make_inapp_reques
 
 logger = get_logger(__name__)
 
-NETWORKS = ["google", "ironsource", "meta"]
+NETWORKS = ["google", "ironsource", "meta", "ORGANIC"]
 APPS = ["com.example.one", "com.game.eg.gg", "id123456789", "123456789"]
 
 CAMPAIGNS = ["CampaignA", "CampaignB"]
@@ -21,7 +21,8 @@ ADS = ["Hi!", "NewVideo123"]
 
 INSTALL_RATE = 0.3
 CLICK_THROUGH_RATE = 0.5
-D1_APP_OPEN_RATE = 0.4
+APP_OPEN_RATE = 0.4
+
 
 def generate_random_ip() -> str:
     """
@@ -33,8 +34,7 @@ def generate_random_ip() -> str:
     """
     # Avoid reserved ranges by using common public IP ranges
     first_octet = random.choice([203, 8, 34, 50, 66, 98, 172, 177, 178])
-    return f"{first_octet}.{random.randint(0,255)}.{random.randint(0,255)}.{random.randint(0,255)}"
-
+    return f"{first_octet}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
 
 
 def main(endpoint: str) -> None:
@@ -43,15 +43,15 @@ def main(endpoint: str) -> None:
     while True:
         for network in NETWORKS:
             for app in APPS:
-                if random.random() < INSTALL_RATE:
+                if network == "ORGANIC":
                     # Simulate organic install and return
                     ifa = str(uuid.uuid4())
                     oa_uid = str(uuid.uuid4())
                     random_ip = generate_random_ip()
                     headers = {
                         "X-Forwarded-For": random_ip,
-        "X-Real-IP": random_ip,
-    }
+                        "X-Real-IP": random_ip,
+                    }
                     make_inapp_request(
                         event_id="app_open",
                         myapp=app,
@@ -66,8 +66,8 @@ def main(endpoint: str) -> None:
                     random_ip = generate_random_ip()
                     headers = {
                         "X-Forwarded-For": random_ip,
-        "X-Real-IP": random_ip,
-    }
+                        "X-Real-IP": random_ip,
+                    }
                     for ad in ADS:
                         impression_or_click(
                             mytype="impressions",
@@ -81,7 +81,6 @@ def main(endpoint: str) -> None:
                         )
                         # Decide if a click should be generated
                         if random.random() < CLICK_THROUGH_RATE:
-                            oa_uid = str(uuid.uuid4())
                             time.sleep(random.uniform(0.1, 1.0))
                             impression_or_click(
                                 mytype="clicks",
@@ -93,13 +92,17 @@ def main(endpoint: str) -> None:
                                 headers=headers,
                                 endpoint=endpoint,
                             )
-                            if random.random() < D1_APP_OPEN_RATE:
-                                time.sleep(random.uniform(0.1, 1.0))
-                                make_inapp_request(
-                                    event_id="app_open",
-                                    myapp=app,
-                                    myifa=ifa,
-                                    my_oa_uid=oa_uid,
-                                    headers=headers,
-                                    endpoint=endpoint,
-                                )
+                            # Simulate INSTALL and APP_OPEN
+                            oa_uid = str(uuid.uuid4())
+                            for i in range(10):
+                                if random.random() < APP_OPEN_RATE * (1 - 0.1 * i):
+                                    time.sleep(random.uniform(5, 6))
+                                    make_inapp_request(
+                                        event_id="app_open",
+                                        myapp=app,
+                                        myifa=ifa,
+                                        my_oa_uid=oa_uid,
+                                        headers=headers,
+                                        endpoint=endpoint,
+                                        offset_days=i,
+                                    )

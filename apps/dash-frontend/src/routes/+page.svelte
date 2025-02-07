@@ -23,18 +23,30 @@
 
 	import StackedBar from '$lib/components/mycharts/StackedBarChart.svelte';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	import type { OverviewEntry } from '$types';
 
 	import { type PageData } from './$types';
 	import Multiselect from '$lib/Multiselect.svelte';
 
+	import {
+		rawMetricsList,
+		retainedUserMetricList,
+		retentionLables,
+		baseMetricsLabels
+	} from '$lib/constants';
+
 	const pageDefaultDimA = 'network_name';
 	const pageDefaultDimB = 'campaign_name';
+	const pageDefaultPlotBarMetric = 'installs';
+	const pageDefaultPlotLineMetric = 'impressions';
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);
+	// let plotBarBy = $state(pageDefaultDimA);
+	let plotBarMetric = $state(pageDefaultPlotBarMetric);
+	let plotLineMetric = $state(pageDefaultPlotLineMetric);
 
 	interface Props {
 		data: PageData;
@@ -60,10 +72,19 @@
 		)
 	);
 
-	let finalPlotData = $derived(
+	let finalBarPlotData = $derived(
 		getFinalPlotData(
 			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
-			groupByDimA
+			groupByDimA,
+			plotBarMetric
+		)
+	);
+
+	let finalLinePlotData = $derived(
+		getFinalPlotData(
+			getFilteredPlotData(data.respData.dates_overview, filterNetworks, filterApps),
+			groupByDimA,
+			plotLineMetric
 		)
 	);
 
@@ -85,36 +106,28 @@
 			}
 		];
 
-		// // Create columns for all remaining dimensions
-		// const remainingDimensionColumns = tableDimensions
-		// 	.filter((dim) => dim.value !== myGroupByDimA && dim.value !== myGroupByDimB)
-		// 	.map((dim) => ({
-		// 		accessorKey: dim.value,
-		// 		header: dim.label
-		// 	}));
-
 		// Add the metric columns
-		const metricColumns = [
-			{
-				accessorKey: 'impressions',
-				header: 'Impressions'
-			},
-			{
-				accessorKey: 'clicks',
-				header: 'Clicks'
-			},
-			{
-				accessorKey: 'installs',
-				header: 'Installs'
-			},
-			{
-				accessorKey: 'revenue',
-				header: 'Revenue'
+		const metricColumns = baseMetricsLabels.map((metric) => ({
+			accessorKey: metric.value,
+			header: metric.label,
+			cell: (props: any) => {
+				const value = props.getValue();
+				return value ? formatNumber(value) : '0';
 			}
-		];
+		}));
+
+		const retentionColumns = retentionLables.map((metric) => ({
+			accessorKey: metric.value,
+			header: metric.label,
+			visible: false,
+			cell: (props: any) => {
+				const value = props.getValue();
+				return value ? `${(value * 100).toFixed(2)}%` : '0.00%';
+			}
+		}));
 
 		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
-		const myCols = [...selectedDimensionColumns, ...metricColumns];
+		const myCols = [...selectedDimensionColumns, ...metricColumns, ...retentionColumns];
 		console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}
@@ -219,10 +232,14 @@
 		return myReturnedFinalData;
 	}
 
-	function getFinalPlotData(myData: DatesOverviewEntry[], groupByKey: string = 'network') {
+	function getFinalPlotData(
+		myData: DatesOverviewEntry[],
+		groupByKey: string = 'network',
+		metric: string = 'installs'
+	) {
 		let myReturnedFinalPlotData: GroupedPlotEntry[] = [];
 		if (myData && myData.length > 0) {
-			myReturnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, 'installs');
+			myReturnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, metric);
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
 			myReturnedFinalPlotData = [];
@@ -259,14 +276,14 @@
 		filterNetworks = event.detail;
 		// Create a new URL object from the current location const url = new URL(window.location.href);
 		// Get the existing query params
-		const params = new URLSearchParams($page.url.search);
+		const params = new URLSearchParams(page.url.search);
 
 		// Set or update the 'networks' query parameter
 		// TODO I think not currently being used to check for networks!
 		params.set('networks', filterNetworks.join(','));
 
 		// Navigate to the new URL, keeping other query parameters intact
-		goto(`${$page.url.pathname}?${params.toString()}`, {
+		goto(`${page.url.pathname}?${params.toString()}`, {
 			invalidateAll: true,
 			replaceState: true
 		});
@@ -277,11 +294,19 @@
 		filterApps = event.detail;
 	}
 
-	let titleGroupByA = $derived(handleGroupByChange(groupByDimA));
-	let titleGroupByB = $derived(handleGroupByChange(groupByDimB));
+	let titleGroupByA = $derived(lookupDimensionTitle(groupByDimA));
+	let titleGroupByB = $derived(lookupDimensionTitle(groupByDimB));
 
-	function handleGroupByChange(dimension: string) {
+	let titleBarMetric = $derived(lookupMetricTitle(plotBarMetric));
+	let titleLineMetric = $derived(lookupMetricTitle(plotLineMetric));
+
+	function lookupDimensionTitle(dimension: string) {
 		let myTitle = tableDimensions.find((dim) => dim.value === dimension)?.label || dimension;
+		return myTitle;
+	}
+
+	function lookupMetricTitle(metric: string) {
+		let myTitle = baseMetricsLabels.find((m) => m.value === metric)?.label || metric;
 		return myTitle;
 	}
 
@@ -294,46 +319,50 @@
 		dimensionA: string,
 		dimensionB: string
 	) {
-		// console.log('GROUPING', dimensionA, dimensionB);
-
-		const groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
+		let groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
 			const groupKey = `${keyA}|${keyB}`;
 
 			if (!acc[groupKey]) {
+				// Create initial object with dimensions
 				acc[groupKey] = {
 					[dimensionA]: keyA,
-					[dimensionB]: keyB,
-					impressions: 0,
-					clicks: 0,
-					installs: 0,
-					revenue: 0
-				};
+					[dimensionB]: keyB
+				} as GroupedEntry;
+
+				// Initialize all metrics to 0
+				rawMetricsList.forEach((metric) => {
+					acc[groupKey][metric] = 0;
+				});
 			}
 
-			acc[groupKey].impressions += curr.impressions || 0;
-			acc[groupKey].clicks += curr.clicks || 0;
-			acc[groupKey].installs += curr.installs || 0;
-			acc[groupKey].revenue += curr.revenue || 0;
+			// Sum up all metrics
+			rawMetricsList.forEach((metric) => {
+				acc[groupKey][metric] = (acc[groupKey][metric] as number) + ((curr[metric] as number) || 0);
+			});
 
 			return acc;
 		}, {});
 
-		const myfinalData = Object.values(groupedData);
-		// console.log('GROUPING: FINAL DATA ROWS:', dimensionA, dimensionB, myfinalData.length);
-		return myfinalData;
+		Object.values(groupedData).forEach((curr) => {
+			// Calculate retention percentages
+			retainedUserMetricList.forEach((metric) => {
+				curr['ret_' + metric] = (curr[metric] as number) / curr['installs'];
+			});
+		});
+
+		return Object.values(groupedData);
 	}
 
-	function groupByDimensionsPlot(
-		filteredData: DatesOverviewEntry[],
-		dimensionB: string,
+	function groupByForBasicMetric(
+		myFilteredData: OverviewEntry[],
+		dimension: string,
 		metric: string
-	): GroupedPlotEntry[] {
-		// Step 1: Group by on_date and dimensionB
-		const groupedData = filteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
+	) {
+		return myFilteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
 			const onDate = curr['on_date'] as string;
-			const dimensionValue = curr[dimensionB] as string;
+			const dimensionValue = curr[dimension] as string;
 			const metricValue = (curr[metric] as number) || 0;
 
 			// Initialize the on_date if not present
@@ -341,22 +370,131 @@
 				acc[onDate] = {};
 			}
 
-			// Add metric value for dimensionB
+			// Add metric value for dimension
 			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
 
 			return acc;
 		}, {});
+	}
 
-		// Step 2: Pivot dimensionB into columns
-		const pivotedData = Object.entries(groupedData).map(([on_date, dimensionValues]) => {
+	function groupByForComplexMetric(
+		myFilteredData: OverviewEntry[],
+		dimension: string,
+		metric: string
+	) {
+		// Remove 'ret_' prefix from metric name, so we can use it as a dimension
+		const dx_metric = metric.replace('ret_', '');
+
+		// First, group by date and dimension, summing any flat metrics
+		const grouped = myFilteredData.reduce<{
+			[date: string]: {
+				[dimension: string]: {
+					metricSum: number;
+					installsSum: number;
+				};
+			};
+		}>((acc, curr) => {
+			const onDate = curr.on_date;
+			const dimensionValue = curr[dimension] as string;
+			const metricValue = (curr[dx_metric] as number) || 0;
+			const installsValue = curr.installs || 0;
+
+			// Initialize nested objects if they don't exist
+			if (!acc[onDate]) {
+				acc[onDate] = {};
+			}
+			if (!acc[onDate][dimensionValue]) {
+				acc[onDate][dimensionValue] = {
+					metricSum: 0,
+					installsSum: 0
+				};
+			}
+
+			// Sum up the values
+			acc[onDate][dimensionValue].metricSum += metricValue;
+			acc[onDate][dimensionValue].installsSum += installsValue;
+
+			return acc;
+		}, {});
+
+		// Calculate final metrics by dividing sums
+		const result: Record<string, Record<string, number>> = {};
+
+		for (const date in grouped) {
+			result[date] = {};
+			for (const dim in grouped[date]) {
+				const { metricSum, installsSum } = grouped[date][dim];
+				result[date][dim] = installsSum > 0 ? metricSum / installsSum : 0;
+			}
+		}
+
+		return result;
+	}
+
+	function groupByDimensionsPlot(
+		filteredData: DatesOverviewEntry[],
+		dimension: string,
+		metric: string
+	): GroupedPlotEntry[] {
+		const userStartDate = page.url.searchParams.get('start') || '';
+		const userEndDate = page.url.searchParams.get('end') || '';
+
+		let startDate = '';
+		let endDate = '';
+
+		if (userStartDate && userStartDate < filteredData[0]['on_date']) {
+			startDate = userStartDate;
+		} else {
+			startDate = filteredData[0]['on_date'] as string;
+		}
+
+		if (userEndDate && userEndDate > filteredData[filteredData.length - 1]['on_date']) {
+			endDate = userEndDate;
+		} else {
+			endDate = filteredData[filteredData.length - 1]['on_date'] as string;
+		}
+
+		// Generate array of all dates between start and end
+		const dates: string[] = [];
+		const currentDate = new Date(startDate);
+		const lastDate = new Date(endDate);
+
+		while (currentDate <= lastDate) {
+			dates.push(currentDate.toISOString().split('T')[0]);
+			currentDate.setDate(currentDate.getDate() + 1);
+		}
+
+		let groupedData: Record<string, Record<string, number>> = {};
+		if (metric.startsWith('ret_')) {
+			groupedData = groupByForComplexMetric(filteredData, dimension, metric);
+			console.log('groupedData=', groupedData);
+		} else {
+			groupedData = groupByForBasicMetric(filteredData, dimension, metric);
+		}
+
+		const allDimensionValues = new Set<string>();
+		Object.values(groupedData).forEach((dimensionValues) => {
+			Object.keys(dimensionValues).forEach((dim) => allDimensionValues.add(dim));
+		});
+
+		// Create complete dataset with all dates
+		const completeData = dates.reduce<Record<string, Record<string, number>>>((acc, date) => {
+			acc[date] = acc[date] || {};
+			// Initialize all dimension values to 0 for this date
+			allDimensionValues.forEach((dim) => {
+				acc[date][dim] = groupedData[date]?.[dim] || 0;
+			});
+			return acc;
+		}, {});
+
+		const pivotedData = Object.entries(completeData).map(([on_date, dimensionValues]) => {
 			return {
 				on_date,
 				...dimensionValues
 			};
 		});
 
-		// console.log('GROUPING: FINAL PIVOTED DATA ROWS:', pivotedData);
-		return pivotedData;
+		return pivotedData.sort((a, b) => a.on_date.localeCompare(b.on_date));
 	}
 
 	function formatNumber(num: number) {
@@ -503,13 +641,60 @@
 		</div>
 
 		<Card.Root class="xl:col-span-2">
-			<Card.Header class="flex flex-row items-center">Installs by Network</Card.Header>
+			<Card.Header class="flex flex-row items-center">
+				<div class="flex flex-row items-center gap-2">
+					<Select.Root type="single" name="plotBarBy" bind:value={groupByDimA}>
+						<Select.Trigger class="w-[180px]">
+							{titleGroupByA}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.GroupHeading>Group By</Select.GroupHeading>
+								{#each tableDimensions as dimension}
+									<Select.Item value={dimension.value} label={dimension.label}
+										>{dimension.label}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+					</Select.Root>
+					<Select.Root type="single" name="plotBarMetric" bind:value={plotBarMetric}>
+						<Select.Trigger class="w-[180px]">
+							{titleBarMetric}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.GroupHeading>Metric</Select.GroupHeading>
+								{#each baseMetricsLabels as metric}
+									<Select.Item value={metric.value} label={metric.label}>{metric.label}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+					</Select.Root>
+					<Select.Root type="single" name="plotLineMetric" bind:value={plotLineMetric}>
+						<Select.Trigger class="w-[180px]">
+							{titleLineMetric}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.GroupHeading>Metric</Select.GroupHeading>
+								{#each [...baseMetricsLabels, ...retentionLables] as metric}
+									<Select.Item value={metric.value} label={metric.label}>{metric.label}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+					</Select.Root>
+				</div>
+			</Card.Header>
+
 			<Card.Content>
 				{#await data.respData}
 					Loading...
 				{:then plotData}
 					{#if plotData.dates_overview && plotData.dates_overview.length > 0}
-						<StackedBar plotData={finalPlotData}></StackedBar>
+						<StackedBar plotData={finalBarPlotData} lineData={finalLinePlotData}></StackedBar>
 					{:else}
 						Loading...
 					{/if}

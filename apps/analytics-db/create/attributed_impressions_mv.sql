@@ -21,8 +21,8 @@ merged_impression_event AS (
             impression.ad_name,
             impression.ad_id,
             impression.country_iso as country_iso,
-            impression.state_iso,
-            impression.city_name,
+            impression.state_iso as state_iso,
+            impression.city_name as city_name,
             impression.link_uid,
             ROW_NUMBER() OVER (
                 PARTITION BY app.oa_uid,
