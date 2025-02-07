@@ -47,6 +47,7 @@ export const baseMetricsList = baseMetricsLabels.map(
 	(metric) => metric.value
 ) satisfies readonly string[];
 
+
 // Can be summed and divided freely, ie sum(impressions) / sum(clicks) = ctr
 export const rawMetricsList = [...retainedUserMetricList, ...baseMetricsList] as const;
 
