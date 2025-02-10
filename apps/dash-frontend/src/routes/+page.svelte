@@ -250,7 +250,7 @@
 	) {
 		let myReturnedFinalPlotData: GroupedPlotEntry[] = [];
 		if (myData && myData.length > 0) {
-			myReturnedFinalPlotData = groupByDimensionsPlot(myData, groupByKey, metric);
+			myReturnedFinalPlotData = plotGroupByDimensions(myData, groupByKey, metric);
 		} else {
 			console.log('PLOT finalPlotData was given empty list');
 			myReturnedFinalPlotData = [];
@@ -366,7 +366,7 @@
 		return Object.values(groupedData);
 	}
 
-	function groupByForBasicMetric(
+	function plotGroupByForBasicMetric(
 		myFilteredData: OverviewEntry[],
 		dimension: string,
 		metric: string
@@ -388,7 +388,7 @@
 		}, {});
 	}
 
-	function groupByForComplexMetric(
+	function plotGroupByForComplexMetric(
 		myFilteredData: OverviewEntry[],
 		dimension: string,
 		metric: string
@@ -442,7 +442,7 @@
 		return result;
 	}
 
-	function groupByDimensionsPlot(
+	function plotGroupByDimensions(
 		filteredData: DatesOverviewEntry[],
 		dimension: string,
 		metric: string
@@ -477,10 +477,10 @@
 
 		let groupedData: Record<string, Record<string, number>> = {};
 		if (metric.startsWith('ret_')) {
-			groupedData = groupByForComplexMetric(filteredData, dimension, metric);
+			groupedData = plotGroupByForComplexMetric(filteredData, dimension, metric);
 			console.log('groupedData=', groupedData);
 		} else {
-			groupedData = groupByForBasicMetric(filteredData, dimension, metric);
+			groupedData = plotGroupByForBasicMetric(filteredData, dimension, metric);
 		}
 
 		const allDimensionValues = new Set<string>();
