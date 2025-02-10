@@ -98,11 +98,17 @@
 		const selectedDimensionColumns = [
 			{
 				accessorKey: myGroupByDimA,
-				header: columnATitle
+				header: columnATitle,
+				meta: {
+					hidden: false
+				}
 			},
 			{
 				accessorKey: myGroupByDimB,
-				header: columnBTitle
+				header: columnBTitle,
+				meta: {
+					hidden: false
+				}
 			}
 		];
 
@@ -110,6 +116,9 @@
 		const metricColumns = baseMetricsLabels.map((metric) => ({
 			accessorKey: metric.value,
 			header: metric.label,
+			meta: {
+				hidden: false
+			},
 			cell: (props: any) => {
 				const value = props.getValue();
 				return value ? formatNumber(value) : '0';
@@ -119,7 +128,9 @@
 		const retentionColumns = retentionLables.map((metric) => ({
 			accessorKey: metric.value,
 			header: metric.label,
-			visible: false,
+			meta: {
+				hidden: true
+			},
 			cell: (props: any) => {
 				const value = props.getValue();
 				return value ? `${(value * 100).toFixed(2)}%` : '0.00%';
@@ -128,7 +139,7 @@
 
 		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
 		const myCols = [...selectedDimensionColumns, ...metricColumns, ...retentionColumns];
-		console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
+		// console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}
 

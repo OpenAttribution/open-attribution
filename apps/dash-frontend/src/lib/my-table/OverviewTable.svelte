@@ -29,7 +29,18 @@
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
 	let columnFilters = $state<ColumnFiltersState>([]);
-	let columnVisibility = $state<VisibilityState>({});
+	let columnVisibility = $state<VisibilityState>(
+		Object.fromEntries(
+			columns.flatMap((column) => {
+				// this means hiding columns only works when defined with an accessorKey. Maybe slightly brittle...
+				if ('accessorKey' in column && typeof column.accessorKey === 'string') {
+					return [[column.accessorKey, !column.meta?.hidden] as const];
+				}
+
+				return [];
+			})
+		)
+	);
 
 	const table = createSvelteTable({
 		get data() {
@@ -91,7 +102,7 @@
 						checked={column.getIsVisible()}
 						onCheckedChange={(value) => column.toggleVisibility(!!value)}
 					>
-						{column.id}
+						{column.columnDef.header}
 					</DropdownMenu.CheckboxItem>
 				{/each}
 			{/if}
