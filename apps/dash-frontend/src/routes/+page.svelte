@@ -33,6 +33,7 @@
 	import {
 		rawMetricsList,
 		retainedUserMetricList,
+		specialMetricsLabels,
 		retentionLables,
 		baseMetricsLabels
 	} from '$lib/constants';
@@ -125,6 +126,41 @@
 			}
 		}));
 
+		// const specialColumns = [
+		// 	{
+		// 		accessorKey: 'CTR',
+		// 		header: 'CTR',
+		// 		meta: { hidden: false },
+		// 		cell: (props: any) => {
+		// 			const value = props.getValue();
+		// 			return value ? `${(value * 100).toFixed(2)}%` : '0.00%';
+		// 		}
+		// 	},
+		// 	{
+		// 		accessorKey: 'IPM',
+		// 		header: 'IPM',
+		// 		meta: { hidden: false },
+		// 		cell: (props: any) => {
+		// 			const value = props.getValue();
+		// 			return value ? formatNumber(value) : '0';
+		// 		}
+		// 	}
+		// ];
+
+		const specialColumns = specialMetricsLabels.map((metric) => ({
+			accessorKey: metric.value,
+			header: metric.label,
+			meta: { hidden: false },
+			cell: (props: any) => {
+				const value = props.getValue();
+				return value
+					? metric.value === 'ctr'
+						? `${(value * 100).toFixed(2)}%`
+						: formatNumber(value)
+					: '0';
+			}
+		}));
+
 		const retentionColumns = retentionLables.map((metric) => ({
 			accessorKey: metric.value,
 			header: metric.label,
@@ -138,7 +174,12 @@
 		}));
 
 		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
-		const myCols = [...selectedDimensionColumns, ...metricColumns, ...retentionColumns];
+		const myCols = [
+			...selectedDimensionColumns,
+			...metricColumns,
+			...specialColumns,
+			...retentionColumns
+		];
 		// console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}
@@ -363,6 +404,12 @@
 			});
 		});
 
+		Object.values(groupedData).forEach((curr) => {
+			// Calculate retention percentages
+			curr['ctr'] = (curr['clicks'] as number) / curr['impressions'];
+			curr['ipm'] = (curr['installs'] / curr['impressions']) * 1000;
+		});
+
 		return Object.values(groupedData);
 	}
 
@@ -388,7 +435,73 @@
 		}, {});
 	}
 
-	function plotGroupByForComplexMetric(
+	function plotGroupByForSpecialMetric(
+		myFilteredData: OverviewEntry[],
+		dimension: string,
+		metric: string
+	) {
+		let numerator = '';
+		let denominator = '';
+
+		if (metric === 'ctr') {
+			numerator = 'clicks';
+			denominator = 'impressions';
+		} else if (metric === 'ipm') {
+			numerator = 'installs';
+			denominator = 'impressions';
+		}
+
+		// First, group by date and dimension, summing any flat metrics
+		const grouped = myFilteredData.reduce<{
+			[date: string]: {
+				[dimension: string]: {
+					numeratorSum: number;
+					denominatorSum: number;
+				};
+			};
+		}>((acc, curr) => {
+			const onDate = curr.on_date;
+			const dimensionValue = curr[dimension] as string;
+			const numeratorValue = (curr[numerator] as number) || 0;
+			const denominatorValue = (curr[denominator] as number) || 0;
+
+			// Initialize nested objects if they don't exist
+			if (!acc[onDate]) {
+				acc[onDate] = {};
+			}
+			if (!acc[onDate][dimensionValue]) {
+				acc[onDate][dimensionValue] = {
+					numeratorSum: 0,
+					denominatorSum: 0
+				};
+			}
+
+			// Sum up the values
+			acc[onDate][dimensionValue].numeratorSum += numeratorValue;
+			acc[onDate][dimensionValue].denominatorSum += denominatorValue;
+
+			return acc;
+		}, {});
+
+		// Calculate final metrics by dividing sums
+		const result: Record<string, Record<string, number>> = {};
+
+		for (const date in grouped) {
+			result[date] = {};
+			for (const dim in grouped[date]) {
+				const { numeratorSum, denominatorSum } = grouped[date][dim];
+				if (metric === 'ctr') {
+					result[date][dim] = denominatorSum > 0 ? numeratorSum / denominatorSum : 0;
+				} else if (metric === 'ipm') {
+					result[date][dim] = numeratorSum > 0 ? (numeratorSum / denominatorSum) * 1000 : 0;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	function plotGroupByForRetentionMetric(
 		myFilteredData: OverviewEntry[],
 		dimension: string,
 		metric: string
@@ -477,8 +590,10 @@
 
 		let groupedData: Record<string, Record<string, number>> = {};
 		if (metric.startsWith('ret_')) {
-			groupedData = plotGroupByForComplexMetric(filteredData, dimension, metric);
+			groupedData = plotGroupByForRetentionMetric(filteredData, dimension, metric);
 			console.log('groupedData=', groupedData);
+		} else if (metric === 'ctr' || metric === 'ipm') {
+			groupedData = plotGroupByForSpecialMetric(filteredData, dimension, metric);
 		} else {
 			groupedData = plotGroupByForBasicMetric(filteredData, dimension, metric);
 		}
@@ -690,7 +805,7 @@
 						<Select.Content>
 							<Select.Group>
 								<Select.GroupHeading>Metric</Select.GroupHeading>
-								{#each [...baseMetricsLabels, ...retentionLables] as metric}
+								{#each [...baseMetricsLabels, ...specialMetricsLabels, ...retentionLables] as metric}
 									<Select.Item value={metric.value} label={metric.label}>{metric.label}</Select.Item
 									>
 								{/each}

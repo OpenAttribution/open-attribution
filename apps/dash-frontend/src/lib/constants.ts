@@ -43,10 +43,14 @@ export const baseMetricsLabels = [
 	{ value: 'revenue', label: 'Revenue' }
 ] as const;
 
+export const specialMetricsLabels = [
+	{ value: 'ctr', label: 'CTR' },
+	{ value: 'ipm', label: 'IPM' }
+] as const;
+
 export const baseMetricsList = baseMetricsLabels.map(
 	(metric) => metric.value
 ) satisfies readonly string[];
-
 
 // Can be summed and divided freely, ie sum(impressions) / sum(clicks) = ctr
 export const rawMetricsList = [...retainedUserMetricList, ...baseMetricsList] as const;
@@ -56,4 +60,8 @@ export const retentionLables = retainedUserMetricList.map((metric) => ({
 	label: `${metric.toUpperCase().replace('DX_', 'D')} Retention`
 }));
 
-export const tableMetrics = [...baseMetricsLabels, ...retentionLables] as const;
+export const tableMetrics = [
+	...baseMetricsLabels,
+	...specialMetricsLabels,
+	...retentionLables
+] as const;
