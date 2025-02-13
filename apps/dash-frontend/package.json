@@ -13,17 +13,17 @@
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.7.0",
-		"@layerstack/tailwind": "^0.0.11",
+		"@layerstack/tailwind": "^0.0.12",
 		"@sveltejs/adapter-node": "^5.2.9",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@types/d3-scale-chromatic": "^3.0.3",
 		"@vincjo/datatables": "^2.0.5",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.0.0-next.91",
+		"bits-ui": "^1.1.0",
 		"formsnap": "^2.0.0",
 		"globals": "^15.0.0",
-		"lucide-svelte": "^0.474.0",
+		"lucide-svelte": "^0.475.0",
 		"postcss": "^8.4.47",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
@@ -32,7 +32,7 @@
 		"typescript": "^5.0.0",
 		"vaul-svelte": "^1.0.0-next.3",
 		"vite": "^6.0.0",
-		"zod": "^3.24.1"
+		"zod": "^3.24.2"
 	},
 	"type": "module",
 	"dependencies": {
@@ -41,7 +41,7 @@
 		"d3-array": "^3.2.4",
 		"d3-scale": "^4.0.2",
 		"d3-scale-chromatic": "^3.1.0",
-		"layerchart": "^0.93.7",
+		"layerchart": "^0.97.1",
 		"mode-watcher": "^0.5.0",
 		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^3.0.0",
