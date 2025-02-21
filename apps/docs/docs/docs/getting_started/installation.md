@@ -46,15 +46,10 @@ Docker installs the following services:
 
 ### Services
 
-#### Zookeeper
-
-- Image: `docker.io/bitnami/zookeeper:3.9.2`
-
 #### Kafka
 
 - Image: `docker.io/bitnami/kafka:3.6.2`
 - Ports: 9092 (internal), 9093 (external)
-- Depends on Zookeeper
 
 #### analytics-db: (ClickHouse)
 
