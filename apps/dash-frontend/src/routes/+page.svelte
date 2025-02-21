@@ -3,7 +3,6 @@
 	import CreditCard from 'lucide-svelte/icons/credit-card';
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
 	import Users from 'lucide-svelte/icons/users';
-	import { Label } from '$lib/components/ui/label/index.js';
 
 	import SimplePlot from '$lib/components/SimplePlot.svelte';
 
@@ -14,14 +13,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import DateRangePicker from '$lib/DateRangePicker.svelte';
-	import type {
-		MyDateRange,
-		NetworkEntry,
-		AppEntry,
-		GroupedEntry,
-		GroupedPlotEntry,
-		DatesOverviewEntry
-	} from '$types';
+	import type { MyDateRange, NetworkEntry, AppEntry, GroupedEntry } from '$types';
 	import { goto } from '$app/navigation';
 
 	import { page } from '$app/state';
@@ -77,7 +69,6 @@
 		const columnBTitle =
 			tableDimensions.find((dim) => dim.value === myGroupByDimB)?.label || myGroupByDimB;
 
-		// Create columns for the selected dimensions first
 		const selectedDimensionColumns = [
 			{
 				accessorKey: myGroupByDimA,
@@ -95,7 +86,6 @@
 			}
 		];
 
-		// Add the metric columns
 		const metricColumns = baseMetricsLabels.map((metric) => ({
 			accessorKey: metric.value,
 			header: metric.label,
@@ -107,27 +97,6 @@
 				return value ? formatNumber(value) : '0';
 			}
 		}));
-
-		// const specialColumns = [
-		// 	{
-		// 		accessorKey: 'CTR',
-		// 		header: 'CTR',
-		// 		meta: { hidden: false },
-		// 		cell: (props: any) => {
-		// 			const value = props.getValue();
-		// 			return value ? `${(value * 100).toFixed(2)}%` : '0.00%';
-		// 		}
-		// 	},
-		// 	{
-		// 		accessorKey: 'IPM',
-		// 		header: 'IPM',
-		// 		meta: { hidden: false },
-		// 		cell: (props: any) => {
-		// 			const value = props.getValue();
-		// 			return value ? formatNumber(value) : '0';
-		// 		}
-		// 	}
-		// ];
 
 		const specialColumns = specialMetricsLabels.map((metric) => ({
 			accessorKey: metric.value,
@@ -155,14 +124,12 @@
 			}
 		}));
 
-		// const myCols = [...selectedDimensionColumns, ...remainingDimensionColumns, ...metricColumns];
 		const myCols = [
 			...selectedDimensionColumns,
 			...metricColumns,
 			...specialColumns,
 			...retentionColumns
 		];
-		// console.log('Data table columns:', myCols.map((col) => col.accessorKey).join(', '));
 		return myCols;
 	}
 
@@ -181,7 +148,6 @@
 				revenue: 0
 			};
 
-			// Loop over each entry and sum up the values for each field
 			for (const entry of newData) {
 				fieldsToSum.forEach((field) => {
 					const value = entry[field];
@@ -211,10 +177,8 @@
 		myFilterNetworks: string[],
 		myFilterApps: string[]
 	) {
-		// console.log('DATA FILTER START:', myData.length);
 		let myFilteredData: OverviewEntry[] = [];
 		if (myData && myData.length > 0) {
-			// console.log('DATA FILTER LOOP:', myData.length);
 			myFilteredData = myData.filter((item) => {
 				const networkMatch =
 					myFilterNetworks.length === 0 || myFilterNetworks.includes(item.network);
@@ -222,7 +186,6 @@
 				return networkMatch && appMatch;
 			});
 		} else {
-			// console.log('DATA FILTER FAIL');
 			myFilteredData = myData;
 		}
 		// console.log('DATA FILTER END:', myFilteredData.length);
@@ -230,17 +193,12 @@
 	}
 
 	function getFinalData(myData: OverviewEntry[], myGroupByDimA: string, myGroupByDimB: string) {
-		// console.log('DATA FINAL START:', myData.length);
 		let myReturnedFinalData: GroupedEntry[] = [];
 		if (myData && myData.length > 0) {
-			// console.log('DATA FINAL LOOP:', myData.length);
 			myReturnedFinalData = groupByDimensions(myData, myGroupByDimA, myGroupByDimB);
-			// console.log('DATA FINAL LOOP END:', myReturnedFinalData.length);
 		} else {
-			// console.log('DATA finalData was given empty list');
 			myReturnedFinalData = myData;
 		}
-		// console.log('DATA FINAL END:', myReturnedFinalData.length);
 		return myReturnedFinalData;
 	}
 
@@ -248,7 +206,7 @@
 		let myOptions;
 
 		myOptions = myRows
-			.filter((row) => row.network) // Ensures only rows with a network are processed
+			.filter((row) => row.network)
 			.map((row) => ({
 				value: row.network,
 				label: row.network_name || row.network
@@ -271,8 +229,6 @@
 	function handleNetChange(event: CustomEvent<string[]>) {
 		console.log('SELECT net options:', event.detail);
 		filteredNetworks = event.detail;
-		// Create a new URL object from the current location const url = new URL(window.location.href);
-		// Get the existing query params
 		const params = new URLSearchParams(page.url.search);
 
 		// Set or update the 'networks' query parameter

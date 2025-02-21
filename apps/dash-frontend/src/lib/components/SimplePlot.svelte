@@ -64,7 +64,6 @@
 		if (myData && myData.length > 0) {
 			myReturnedFinalPlotData = plotGroupByDimensions(myData, groupByKey, metric);
 		} else {
-			console.log('PLOT finalPlotData was given empty list');
 			myReturnedFinalPlotData = [];
 		}
 		return myReturnedFinalPlotData;
@@ -76,7 +75,7 @@
 		myFilterApps: string[]
 	) {
 		let myFilteredData: DatesOverviewEntry[] = [];
-		console.log('PLOT FILTER START myData=', myData.length);
+		// console.log('PLOT FILTER START myData=', myData.length);
 		if (myData && myData.length > 0) {
 			myFilteredData = myData.filter((item) => {
 				const networkMatch =
@@ -85,10 +84,8 @@
 				return networkMatch && appMatch;
 			});
 		} else {
-			// console.log('PLOT FILTER FAIL myData=', myData);
 			myFilteredData = myData;
 		}
-		console.log('PLOT FILTER END myFilteredData=', myFilteredData.length);
 		return myFilteredData;
 	}
 
@@ -370,7 +367,12 @@
 			Loading...
 		{:then plotData}
 			{#if plotData.dates_overview && plotData.dates_overview.length > 0}
-				<StackedBar plotData={finalBarPlotData} lineData={finalLinePlotData}></StackedBar>
+				<StackedBar
+					barData={finalBarPlotData}
+					lineData={finalLinePlotData}
+					{titleBarMetric}
+					{titleLineMetric}
+				></StackedBar>
 			{:else}
 				Loading...
 			{/if}
