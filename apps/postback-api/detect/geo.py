@@ -26,7 +26,10 @@ def update_geo_dbs() -> None:
         logger.info(f"{db}: Unable to find {db}.mmdb file")
         logger.info(f"{db}: Downloading {db}.tar.gz")
         url = GITSQUARED_GEOLITE2_RAW_DATA.format(db=db)
-        response = requests.get(url, timeout=10)
+        response = requests.get(
+            url,
+            timeout=10,
+        )
         logger.info(f"{db}: Unzipping {db}.tar.gz")
         with tempfile.NamedTemporaryFile(delete=True) as mytmp:  # Temp file context
             # Write the downloaded content to the temp file

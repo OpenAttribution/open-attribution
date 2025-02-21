@@ -64,6 +64,8 @@ for table in "${my_tables[@]}"; do
 		clickhouse-client -n <<-EOSQL
 			${modified_sql}
 		EOSQL
+
+		sleep 1
 	else
 		echo "No SQL files found in $INIT_SQL_DIR"
 		exit 1

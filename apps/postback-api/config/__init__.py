@@ -29,7 +29,7 @@ def is_docker() -> bool:
     )
 
 
-KAFKA_LOCATION = "kafka:9093" if is_docker() else "localhost:9093"
+KAFKA_LOCATION = "kafka:9092" if is_docker() else "localhost:9092"
 
 
 def handle_exception(
@@ -108,7 +108,7 @@ POSTGRES_DB = os.environ["POSTGRES_DB"]
 POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
 
 
-# If inside docker: "bootstrap.servers": "kafka:9093",
+# If inside docker: "bootstrap.servers": "kafka:9092",
 reg_config = {
     "bootstrap.servers": KAFKA_LOCATION,
 }
