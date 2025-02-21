@@ -7,6 +7,8 @@
 	// const edgyColors = ['#dc8a78','#8839ef','#179299','#ea76cb','#fe640b', '#209fb5'];
 	const keyColors = catppMocha;
 
+	import { curveCatmullRom } from 'd3-shape';
+
 	let { plotData = [] as GroupedPlotEntry[], lineData = [] as GroupedPlotEntry[] } = $props();
 
 	interface SeriesEntry {
@@ -35,7 +37,7 @@
 		// Map to final format, using only as many keys as we have colors
 		const seriesKeys = keyTotals.slice(0, keyColors.length).map((entry, index) => ({
 			key: entry.key,
-			label: entry.key.charAt(0).toUpperCase() + entry.key.slice(1),
+			label: entry.key.charAt(0).toUpperCase() + entry.key.slice(1) || entry.key,
 			color: keyColors[index]
 		}));
 
@@ -73,7 +75,7 @@
 	>
 		<svelte:fragment slot="marks">
 			{#each seriesKeys as key}
-				<Spline y={key.key} color={key.color} />
+				<Spline y={key.key} color={key.color} curve={curveCatmullRom} />
 			{/each}
 		</svelte:fragment>
 

@@ -94,12 +94,19 @@
 
 	function plotGroupByForBasicMetric(
 		myFilteredData: OverviewEntry[],
-		dimension: string,
+		groupByKey: string,
 		metric: string
 	) {
 		return myFilteredData.reduce<Record<string, Record<string, number>>>((acc, curr) => {
 			const onDate = curr['on_date'] as string;
-			const dimensionValue = curr[dimension] as string;
+
+			let groupByValue = '';
+			if (groupByKey == '') {
+				groupByValue = metric;
+			} else {
+				groupByValue = curr[groupByKey] as string;
+			}
+
 			const metricValue = (curr[metric] as number) || 0;
 
 			// Initialize the on_date if not present
@@ -108,7 +115,7 @@
 			}
 
 			// Add metric value for dimension
-			acc[onDate][dimensionValue] = (acc[onDate][dimensionValue] || 0) + metricValue;
+			acc[onDate][groupByValue] = (acc[onDate][groupByValue] || 0) + metricValue;
 
 			return acc;
 		}, {});
@@ -236,7 +243,7 @@
 
 	function plotGroupByDimensions(
 		filteredData: DatesOverviewEntry[],
-		dimension: string,
+		groupByKey: string,
 		metric: string
 	): GroupedPlotEntry[] {
 		const userStartDate = page.url.searchParams.get('start') || '';
@@ -269,12 +276,11 @@
 
 		let groupedData: Record<string, Record<string, number>> = {};
 		if (metric.startsWith('ret_')) {
-			groupedData = plotGroupByForRetentionMetric(filteredData, dimension, metric);
-			console.log('groupedData=', groupedData);
+			groupedData = plotGroupByForRetentionMetric(filteredData, groupByKey, metric);
 		} else if (metric === 'ctr' || metric === 'ipm') {
-			groupedData = plotGroupByForSpecialMetric(filteredData, dimension, metric);
+			groupedData = plotGroupByForSpecialMetric(filteredData, groupByKey, metric);
 		} else {
-			groupedData = plotGroupByForBasicMetric(filteredData, dimension, metric);
+			groupedData = plotGroupByForBasicMetric(filteredData, groupByKey, metric);
 		}
 
 		const allDimensionValues = new Set<string>();
