@@ -27,9 +27,18 @@ event_id: The event ID, such as "oa_app_open", "revenue" or "install" or "my_lev
 event_time: The timestamp of the event in milliseconds since epoch.
 revenue: The revenue of the event.
 
-App Open Example:
-```
-https://demo.openattribution.dev/collect/events/123456789?ifa=00000000-0000-0000-0000-000000000000&event_time=1732003510046&event_uid=5730a99e-b009-41da-9d52-1315e26941c1&event_id=app_open&oa_uid=3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2
-```
 
+#### Sample post back payload
+This is a sample of the minimum required postback by the OpenAttribution server. The empty IFA.
 
+```http
+POST https://demo.openattribution.dev/collect/events/com.example.app HTTP/1.1
+Content-Type: application/json
+
+{
+  "ifa": "00000000-0000-0000-0000-000000000000",
+  "event_time": 1732003510046,
+  "event_uid": "5730a99e-b009-41da-9d52-1315e26941c1",
+  "event_id": "app_open",
+  "oa_uid": "3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2"
+}

@@ -4,9 +4,7 @@ An open source Mobile Measurement Platform (MMP) for tracking your mobile advert
 
 ## 🏗️🏗️🏗️ Under Construction 🏗️🏗️🏗️
 
-If you're insterested in this project please feel free to reach out for collaboartion or more information.
-
-[Chat on Discord](https://discord.gg/Z5ueYE3Ct3)
+If you're interested in this project please feel free to reach out for collaboration or more information. [Chat on Discord](https://discord.gg/Z5ueYE3Ct3). OpenAttribution is aiming to have an alpha MVP but is not yet ready for production use. We would love if you could help with testing!
 
 ## Description
 
@@ -28,15 +26,15 @@ If you're insterested in this project please feel free to reach out for collaboa
    2. `apps/dash-frontend`
    3. `apps/backend-db`
 
-## True ownership of your mobile app's data
+## Goal: True ownership of your mobile app's data
 
-Own your advertising data without giving it over to a 3rd party processor. Our goal is to give developers their own ad tracking data. When users click on an app ad it's OK for the app to be tracking that data but user's don't want that data to be then passed on to other third parties.
+Own your advertising data without giving it over to a 3rd party data collector. Our goal is to give developers their own ad tracking software so that they don't need to rely on a 3rd party. When users click on an app ad it goes to your domain.
 
 Paying someone else to hold and manage your app's data takes power away from app creators. Open Attribution is a suite of open source tools so that you can manage your advertising data ownership.
 
 ## Open Source Community
 
-Open Attribution is committed to building a community of developers who work together to build a secure ecosystem. The goal of having this as Open Source is to enable a community of advertisers who control the tracking of their adverstising campaigns and data.
+Open Attribution is committed to building a community of developers who work together to build a secure ecosystem. The goal of having this as Open Source is to enable a community of advertisers who control the tracking of their advertising campaigns and data.
 
 ## Interested in getting involved?
 
