@@ -6,6 +6,7 @@ export default defineConfig({
 	server: {
 		port: 5173,
 		host: '0.0.0.0',
-		strictPort: true // Prevent fallback to another port if this one is taken
+		strictPort: true, // Prevent fallback to another port if this one is taken
+		allowedHosts: true
 	}
 });
