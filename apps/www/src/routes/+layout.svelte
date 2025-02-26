@@ -5,7 +5,7 @@
 	import githubIcon from '$lib/assets/github-mark-white.svg?raw';
 	import discordIcon from '$lib/assets/discord-logo-white.svg?raw';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -15,8 +15,8 @@
 </script>
 
 <svelte:head>
-	<link rel="canonical" href={$page.url.href} />
-	<meta property="og:url" content={$page.url.href} />
+	<link rel="canonical" href={page.url.href} />
+	<meta property="og:url" content={page.url.href} />
 	<meta property="og:type" content="website" />
 </svelte:head>
 
@@ -39,32 +39,38 @@
 				<div class="flex flex-col gap-2 md:gap-4 lg:flex-row">
 					<a
 						class="btn preset-outlined-primary-900-100 p-2 md:p-4"
-						href="mailto:hello@openattribution.dev"
+						href="https://github.com/OpenAttribution/open-attribution"
+						target="_blank"
+						rel="noreferrer"
 					>
-						Email Contact
+						<div class="flex items-center gap-2">
+							<div class="h-4 w-4 md:h-8 md:w-8 md:p-1">
+								{@html githubIcon}
+							</div>
+							<p class="text-center text-sm md:text-base">Star on GitHub</p>
+						</div>
 					</a>
 					<div class="grid grid-cols-2 gap-2 md:gap-4">
+						<a
+							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
+							href="mailto:hello@openattribution.dev"
+						>
+							<p class="text-center text-sm md:text-base">Email</p>
+						</a>
+
 						<a
 							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
 							href="https://discord.gg/Z5ueYE3Ct3"
 							target="_blank"
 							rel="noreferrer"
 						>
-							<div class="flex h-4 w-full items-center md:h-8">
-								{@html discordIcon}
-							</div>
-						</a>
-						<a
-							class="btn preset-outlined-tertiary-500 p-2 md:p-4"
-							href="https://github.com/OpenAttribution/open-attribution"
-							target="_blank"
-							rel="noreferrer"
-						>
-							<div class="flex items-center gap-2">
-								<div class="h-4 w-4 md:h-8 md:w-8 md:p-1">
-									{@html githubIcon}
-								</div>
-								<h6 class="h6 text-center">GitHub</h6>
+							<div class="gap1 flex items-center justify-center p-1 md:gap-2">
+								<span class="flex items-center gap-1">
+									<div class="h-4 w-4 md:h-8 md:w-8">
+										{@html discordIcon}
+									</div>
+									<p class="text-center text-sm md:text-base">Discord</p>
+								</span>
 							</div>
 						</a>
 					</div>

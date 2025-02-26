@@ -29,20 +29,21 @@
 			<p class={isHighlighted('/') ? topBarHighlightedFont : topBarFont}>Home</p>
 		</a>
 		<div class="hidden md:block {horizontalDivider}"></div>
-
 		<a href="/product" class={topBarFont}>
 			<p class={isHighlighted('/product') ? topBarHighlightedFont : topBarFont}>Product</p>
 		</a>
-
 		<div class={horizontalDivider}></div>
 		<a href="/docs" class={topBarFont}>
 			<p class={isHighlighted('/docs') ? topBarHighlightedFont : topBarFont}>Docs</p>
 		</a>
 		<div class={horizontalDivider}></div>
+		<a href="/pricing" class={topBarFont}>
+			<p class={isHighlighted('/pricing') ? topBarHighlightedFont : topBarFont}>Pricing</p>
+		</a>
+		<div class={horizontalDivider}></div>
 		<a href="/blog" class={topBarFont}>
 			<p class={isHighlighted('/blog') ? topBarHighlightedFont : topBarFont}>Blog</p>
 		</a>
-
 		<div class={horizontalDivider}></div>
 		<a href="/about" class={topBarFont}>
 			<p class={isHighlighted('/about') ? topBarHighlightedFont : topBarFont}>About</p>
