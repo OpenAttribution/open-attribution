@@ -12,5 +12,5 @@
 @config '../tailwind.config.ts';
 
 a {
-	color: text-tertiary-700-300;
+	color: var(--color-tertiary-700-300);
 }
