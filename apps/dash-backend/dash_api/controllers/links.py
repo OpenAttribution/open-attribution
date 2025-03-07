@@ -96,8 +96,7 @@ class LinkController(Controller):
         domain_url = domain_url.replace("https://", "")
         domain_url = domain_url.replace("http://", "")
         domain_url = domain_url.replace("www.", "")
-        if domain_url.endswith("/"):
-            domain_url = domain_url[:-1]
+        domain_url = domain_url.removesuffix("/")
         dbcon.queries.insert_client_domains(domain_url=domain_url)
 
     @delete(path="/domains/{domain_id:int}")
