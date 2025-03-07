@@ -42,6 +42,10 @@ my_tables=(
 	"user_dx_activity_mv"
 	"user_dx_attributed"
 	"user_dx_attributed_mv"
+	"user_daily_events"
+	"user_daily_events_mv"
+	"user_daily_events_attributed"
+	"user_daily_events_attributed_mv"
 	"daily_overview"
 	"daily_overview_mv"
 )
