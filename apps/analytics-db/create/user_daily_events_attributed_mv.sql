@@ -19,7 +19,7 @@ FROM user_daily_events uda
 LEFT JOIN attributed_installs ai ON uda.oa_uid = ai.oa_uid
 GROUP BY 
     uda.event_date,
-    uda.event_id;
+    uda.event_id,
     ai.store_id,
     ai.network,
     ai.campaign_name,
@@ -28,5 +28,5 @@ GROUP BY
     ai.ad_id,
     ai.country_iso,
     ai.state_iso,
-    ai.city_name,
-ORDER BY event_date, event_id, store_id, network, campaign_name, campaign_id, ad_name, ad_id, country_iso, state_iso, city_name;
+    ai.city_name
+;

@@ -17,6 +17,7 @@ WITH combined AS (
             0 AS clicks,
             0 AS installs,
             0 AS revenue,
+            0 AS dau,
             0 AS dx_1,
             0 AS dx_2,
             0 AS dx_3,
@@ -57,6 +58,7 @@ UNION ALL
             count() AS clicks,
             0 AS installs,
             0 AS revenue,
+            0 AS dau,
             0 AS dx_1,
             0 AS dx_2,
             0 AS dx_3,
@@ -97,6 +99,7 @@ SELECT
             0 AS clicks,
             count() AS installs,
             0 AS revenue,
+            0 AS dau,
             0 AS dx_1,
             0 AS dx_2,
             0 AS dx_3,
@@ -155,6 +158,48 @@ FROM
     user_dx_attributed
 GROUP BY
     install_date AS on_date,
+    store_id,
+    network,
+    campaign_name,
+    campaign_id,
+    ad_name,
+    ad_id,
+    country_iso
+)
+UNION ALL
+(
+SELECT
+    event_date AS on_date,
+    store_id,
+    network,
+    campaign_name,
+    campaign_id,
+    ad_name,
+    ad_id,
+    country_iso,
+    0 AS impressions,
+    0 AS clicks,
+    0 AS installs,
+    0 AS revenue,
+    sum(event_count) AS dau,
+    0 AS dx_1,
+    0 AS dx_2,
+    0 AS dx_3,
+    0 AS dx_4,
+    0 AS dx_5,
+    0 AS dx_6,
+    0 AS dx_7,
+    0 AS dx_15,
+    0 AS dx_30,
+    0 AS dx_60,
+    0 AS dx_90,
+    0 AS dx_180,
+    0 AS dx_365
+FROM
+    user_daily_events_attributed
+WHERE event_id = 'app_open'
+GROUP BY
+    event_date AS on_date,
     store_id,
     network,
     campaign_name,
