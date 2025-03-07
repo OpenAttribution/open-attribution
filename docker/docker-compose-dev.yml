@@ -4,6 +4,7 @@
 #   Stop:           docker compose stop
 #   Pull New:           docker compose pull
 #   Destroy:        docker compose -f ~/open-attribution/docker/docker-compose.yml down -v --remove-orphans
+#   Reset kafka:    sudo docker exec -it kafka kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group clickhouse --reset-offsets --to-earliest --execute --all-topics
 
 name: openattribution
 
