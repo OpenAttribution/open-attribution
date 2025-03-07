@@ -101,7 +101,7 @@ def make_inapp_request(
         round(
             (
                 datetime.datetime.now(datetime.UTC)
-                + datetime.timedelta(days=offset_days)
+                - datetime.timedelta(days=offset_days)
             ).timestamp()
             * 1000,
         ),

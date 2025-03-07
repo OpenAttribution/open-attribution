@@ -3,6 +3,7 @@
 #   Down:           docker compose down
 #   Stop:           docker compose stop
 #   Pull New:           docker compose pull
+#   Delete the clickhouse Kafka consumer, when clickhouse recreated will use any kafka logs: sudo docker exec -it kafka kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete --group clickhouse
 #   Destroy:        docker compose -f ~/open-attribution/docker/docker-compose.yml down -v --remove-orphans
 
 name: openattribution

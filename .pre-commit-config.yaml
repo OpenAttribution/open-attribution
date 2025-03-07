@@ -2,13 +2,13 @@ repos:
   ### PYTHON
   # Ruff
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.8.1
+    rev: v0.9.9
     hooks:
       - id: ruff
         args: [--fix]
   # Mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.15.0
     hooks:
       - id: mypy
         args: [--namespace-packages, --explicit-package-bases]
@@ -21,7 +21,7 @@ repos:
       - id: hadolint-docker
   ### SHELL
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.10.0-1
+    rev: v3.11.0-1
     hooks:
       - id: shfmt
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -31,7 +31,7 @@ repos:
         args: ['-x']
   ### JS / YML
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.4.1
+    rev: v3.5.3
     hooks:
       - id: prettier
         args: ['--config', '.prettierrc', '--ignore-unknown', '--write', '--check']
@@ -43,7 +43,7 @@ repos:
           - prettier
           - prettier-plugin-svelte
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.16.0
+    rev: v9.21.0
     hooks:
       - id: eslint
         name: eslint

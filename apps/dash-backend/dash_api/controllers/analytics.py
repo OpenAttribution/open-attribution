@@ -29,6 +29,7 @@ METRICS = [
     "clicks",
     "installs",
     "revenue",
+    "dau",
     "dx_1",
     "dx_2",
     "dx_3",
@@ -60,6 +61,7 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                         sum(clicks) as clicks,
                         sum(installs) as installs,
                         sum(revenue) as revenue,
+                        sum(dau) as dau,
                         sum(dx_1) as dx_1,
                         sum(dx_2) as dx_2,
                         sum(dx_3) as dx_3,
@@ -91,7 +93,7 @@ def query_campaign_overview(start_date: str, end_date: str) -> pd.DataFrame:
                     WITH FILL
     """
     # Execute the query and fetch the data as pandas df
-    df = client.query_df(
+    df: pd.DataFrame = client.query_df(
         query_template,
         parameters={"start_date": start_date, "end_date": end_date},
     )
