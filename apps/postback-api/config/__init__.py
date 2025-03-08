@@ -107,6 +107,8 @@ POSTGRES_USER = os.environ["POSTGRES_USER"]
 POSTGRES_DB = os.environ["POSTGRES_DB"]
 POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
 
+CLICKHOUSE_USER = os.environ["CLICKHOUSE_USER"]
+CLICKHOUSE_PASSWORD = os.environ["CLICKHOUSE_PASSWORD"]
 
 # If inside docker: "bootstrap.servers": "kafka:9092",
 reg_config = {

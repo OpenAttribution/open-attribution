@@ -6,8 +6,8 @@ import time
 import uuid
 
 import pandas as pd
-from clickhouse_connect import create_client
-from config import get_logger
+from clickhouse_connect import get_client
+from config import CLICKHOUSE_PASSWORD, CLICKHOUSE_USER, get_logger
 
 from tests._simulate_network_calls import click, impression, make_inapp_request
 from tests.generate_impressions_and_clicks import generate_random_ip
@@ -353,7 +353,10 @@ def query_campaign(table: str, campaign: str) -> pd.DataFrame:
         campaign_name = %(campaign_name)s OR campaign_name = %(bad_name)s
     """
     # Execute the query and fetch the data as pandas df
-    client = create_client(host="clickhouse")
+    client = get_client(
+        host="clickhouse", user=CLICKHOUSE_USER, password=CLICKHOUSE_PASSWORD,
+    )
+
     df: pd.DataFrame = client.query_df(
         query_template,
         parameters={"campaign_name": campaign, "table": table, "bad_name": bad_name},
