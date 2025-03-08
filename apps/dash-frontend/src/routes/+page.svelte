@@ -259,11 +259,51 @@
 		[groupKey: string]: GroupedEntry;
 	}
 
+	function getNumberOfDays(startDate, endDate) {
+		// If either date is empty, return 0
+		if (!startDate || !endDate) {
+			return 0;
+		}
+
+		try {
+			// Convert string dates to Date objects
+			const start = new Date(startDate);
+			const end = new Date(endDate);
+
+			// Check if dates are valid
+			if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+				return 0;
+			}
+
+			// Ensure start date is before end date
+			if (start > end) {
+				return 0;
+			}
+
+			// Calculate difference in milliseconds
+			const diffInMs = end - start;
+
+			// Convert to days (milliseconds in a day = 1000 * 60 * 60 * 24)
+			const daysDifference = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+			// Add 1 to include both start and end dates
+			return daysDifference + 1;
+		} catch (error) {
+			console.error('Error calculating dates:', error);
+			return 0;
+		}
+	}
+
 	function groupByDimensions(
 		myFilteredData: OverviewEntry[],
 		dimensionA: string,
 		dimensionB: string
 	) {
+		const userStartDate = page.url.searchParams.get('start') || '';
+		const userEndDate = page.url.searchParams.get('end') || '';
+
+		const numDates = getNumberOfDays(userStartDate, userEndDate);
+
 		let groupedData = myFilteredData.reduce<GroupedData>((acc, curr) => {
 			const keyA = curr[dimensionA] as string;
 			const keyB = curr[dimensionB] as string;
@@ -301,6 +341,7 @@
 			// Calculate retention percentages
 			curr['ctr'] = (curr['clicks'] as number) / curr['impressions'];
 			curr['ipm'] = (curr['installs'] / curr['impressions']) * 1000;
+			curr['dau'] = curr['dau'] / numDates;
 		});
 
 		return Object.values(groupedData);
