@@ -41,8 +41,8 @@ export const baseMetricsLabels = [
 	{ value: 'clicks', label: 'Clicks' },
 	{ value: 'installs', label: 'Installs' },
 	{ value: 'revenue', label: 'Revenue' },
-	{ value: 'dau', label: 'DAU' },
-	{ value: 'user_sessions', label: 'Sessions' }
+	{ value: 'user_sessions', label: 'Sessions' },
+	{ value: 'dau', label: 'DAU' }
 ] as const;
 
 export const specialMetricsLabels = [
