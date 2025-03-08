@@ -5,7 +5,7 @@ from typing import Self
 
 import clickhouse_connect
 import pandas as pd
-from config import get_logger
+from config import CLICKHOUSE_PASSWORD, CLICKHOUSE_USER, get_logger
 from dbcon.queries import query_apps, query_networks
 from litestar import Controller, get
 from litestar.exceptions import HTTPException
@@ -19,9 +19,17 @@ logger = get_logger(__name__)
 # When testing locally, this needs to be localhost
 # When running in docker, it needs to be clickhouse
 if hasattr(sys, "ps1"):
-    client = clickhouse_connect.create_client(host="localhost")
+    client = clickhouse_connect.create_client(
+        host="localhost",
+        user=CLICKHOUSE_USER,
+        password=CLICKHOUSE_PASSWORD,
+    )
 else:
-    client = clickhouse_connect.create_client(host="clickhouse")
+    client = clickhouse_connect.create_client(
+        host="clickhouse",
+        user=CLICKHOUSE_USER,
+        password=CLICKHOUSE_PASSWORD,
+    )
 
 
 METRICS = [
@@ -131,6 +139,14 @@ class OverviewController(Controller):
 
         apps_df = query_apps().rename(columns={"name": "app_name"})
         networks_df = query_networks().rename(columns={"name": "network_name"})
+
+        if df.empty:
+            return OverviewData(
+                overview=[],
+                dates_overview=[],
+                networks=networks_df.to_dict(orient="records"),
+                store_ids=apps_df.to_dict(orient="records"),
+            )
 
         df = df.merge(apps_df, left_on="store_id", right_on="store_id", how="left")
         df = df.merge(

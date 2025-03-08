@@ -6,7 +6,7 @@ WORKDIR /app
 # COPY . /app
 
 # hadolint ignore=DL3042
-RUN pip install uvicorn==0.27.0.post1 "litestar[standard]"==2.5.3 confluent_kafka==2.3.0 clickhouse_connect==0.7.0 requests==2.32.3 pandas==2.2.3
+RUN pip install uvicorn==0.34.0 "litestar[standard]"==2.15.1 confluent_kafka==2.3.0 clickhouse_connect==0.8.15 requests==2.32.3 pandas==2.2.3
 
 COPY . /app/
 
