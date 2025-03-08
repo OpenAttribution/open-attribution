@@ -12,6 +12,7 @@ CREATE TABLE daily_overview
     clicks SimpleAggregateFunction(Sum, UInt64),
     installs SimpleAggregateFunction(Sum, UInt64),
     revenue Nullable (SimpleAggregateFunction (Sum, Decimal (38, 4))) DEFAULT 0,
+    user_sessions SimpleAggregateFunction(Sum, UInt64),
     dau SimpleAggregateFunction(Sum, UInt64),
     dx_1 SimpleAggregateFunction(Sum, UInt64),
     dx_2 SimpleAggregateFunction(Sum, UInt64),

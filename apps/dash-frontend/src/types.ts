@@ -36,6 +36,7 @@ export interface OverviewEntry {
 	clicks: number;
 	installs: number;
 	revenue: number;
+	user_sessions: number;
 	dau: number;
 	dx_1: number;
 	dx_2: number;
@@ -58,6 +59,7 @@ export interface GroupedEntry {
 	clicks: number;
 	installs: number;
 	revenue: number;
+	user_sessions: number;
 	dau: number;
 	dx_1: number;
 	dx_2: number;

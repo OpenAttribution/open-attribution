@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BarChart, LineChart, Spline, Tooltip } from 'layerchart';
+	import { BarChart, Spline, Tooltip } from 'layerchart';
 
 	import type { GroupedPlotEntry } from '$types';
 
@@ -70,7 +70,20 @@
 			yAxis: { format: 'metric' }
 		}}
 		legend={{ placement: 'top-right' }}
-	></BarChart>
+	>
+		<svelte:fragment slot="tooltip">
+			<Tooltip.Root let:data>
+				<Tooltip.Header>
+					{data.on_date}
+				</Tooltip.Header>
+				<Tooltip.List>
+					{#each seriesKeysBar as key}
+						<Tooltip.Item label={key.label} value={`(bar) ${data[key.key]}`} />
+					{/each}
+				</Tooltip.List>
+			</Tooltip.Root>
+		</svelte:fragment>
+	</BarChart>
 
 	<!-- Second chart (line), responsible for tooltip -->
 	<BarChart
