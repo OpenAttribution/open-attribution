@@ -14,7 +14,8 @@ SELECT
     ai.country_iso,
     ai.state_iso,
     ai.city_name,
-    sum(uda.event_count) as event_count
+    sum(uda.event_count) as event_count,
+    count(distinct uda.oa_uid) as unique_users
 FROM user_daily_events uda
 LEFT JOIN attributed_installs ai ON uda.oa_uid = ai.oa_uid
 GROUP BY 
