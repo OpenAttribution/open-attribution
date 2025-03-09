@@ -290,7 +290,9 @@
 			acc[date] = acc[date] || {};
 			// Initialize all dimension values to 0 for this date
 			allDimensionValues.forEach((dim) => {
-				acc[date][dim] = groupedData[date]?.[dim] || 0;
+				if (dim != '') {
+					acc[date][dim] = groupedData[date]?.[dim] || 0;
+				}
 			});
 			return acc;
 		}, {});
@@ -301,7 +303,6 @@
 				...dimensionValues
 			};
 		});
-
 		return pivotedData.sort((a, b) => a.on_date.localeCompare(b.on_date));
 	}
 </script>
@@ -372,6 +373,7 @@
 					lineData={finalLinePlotData}
 					{titleBarMetric}
 					{titleLineMetric}
+					{groupByDimA}
 				></StackedBar>
 			{:else}
 				Loading...
