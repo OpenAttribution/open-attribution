@@ -48,7 +48,8 @@
 	);
 
 	function lookupMetricTitle(metric: string) {
-		let myTitle = baseMetricsLabels.find((m) => m.value === metric)?.label || metric;
+		const allLabels = [...baseMetricsLabels, ...specialMetricsLabels, ...retentionLables];
+		let myTitle = allLabels.find((m) => m.value === metric)?.label || metric;
 		return myTitle;
 	}
 
