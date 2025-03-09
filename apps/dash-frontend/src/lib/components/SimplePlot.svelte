@@ -21,7 +21,7 @@
 	let titleGroupByA = $derived(lookupDimensionTitle(groupByDimA));
 
 	const pageDefaultPlotBarMetric = 'installs';
-	const pageDefaultPlotLineMetric = 'impressions';
+	const pageDefaultPlotLineMetric = 'dau';
 
 	let plotLineMetric = $state(pageDefaultPlotLineMetric);
 	let plotBarMetric = $state(pageDefaultPlotBarMetric);
@@ -48,7 +48,8 @@
 	);
 
 	function lookupMetricTitle(metric: string) {
-		let myTitle = baseMetricsLabels.find((m) => m.value === metric)?.label || metric;
+		const allLabels = [...baseMetricsLabels, ...specialMetricsLabels, ...retentionLables];
+		let myTitle = allLabels.find((m) => m.value === metric)?.label || metric;
 		return myTitle;
 	}
 
@@ -290,7 +291,9 @@
 			acc[date] = acc[date] || {};
 			// Initialize all dimension values to 0 for this date
 			allDimensionValues.forEach((dim) => {
-				acc[date][dim] = groupedData[date]?.[dim] || 0;
+				if (dim != '') {
+					acc[date][dim] = groupedData[date]?.[dim] || 0;
+				}
 			});
 			return acc;
 		}, {});
@@ -301,7 +304,6 @@
 				...dimensionValues
 			};
 		});
-
 		return pivotedData.sort((a, b) => a.on_date.localeCompare(b.on_date));
 	}
 </script>
@@ -372,6 +374,7 @@
 					lineData={finalLinePlotData}
 					{titleBarMetric}
 					{titleLineMetric}
+					{groupByDimA}
 				></StackedBar>
 			{:else}
 				Loading...

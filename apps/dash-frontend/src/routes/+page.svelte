@@ -31,8 +31,8 @@
 		baseMetricsLabels
 	} from '$lib/constants';
 
-	const pageDefaultDimA = 'network_name';
-	const pageDefaultDimB = 'campaign_name';
+	const pageDefaultDimA = 'app_name';
+	const pageDefaultDimB = 'network_name';
 
 	let groupByDimA = $state(pageDefaultDimA);
 	let groupByDimB = $state(pageDefaultDimB);

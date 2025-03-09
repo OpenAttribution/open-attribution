@@ -16,7 +16,7 @@
 	});
 
 	let value: DateRange = $state({
-		start: today(getLocalTimeZone()).add({ days: -7 }),
+		start: today(getLocalTimeZone()).add({ days: -14 }),
 		end: today(getLocalTimeZone())
 	});
 

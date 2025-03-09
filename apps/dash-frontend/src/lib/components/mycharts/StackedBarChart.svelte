@@ -4,7 +4,7 @@
 	import type { GroupedPlotEntry } from '$types';
 
 	const catppMocha = ['#74c7ec', '#f5e0dc', '#cba6f7', '#94e2d5', '#f5c2e7', '#f9e2af'];
-	// const edgyColors = ['#8839ef', '#179299', '#dc8a78', '#ea76cb', '#fe640b', '#209fb5'];
+	const edgyColors = ['#8839ef', '#179299', '#dc8a78', '#ea76cb', '#fe640b', '#209fb5'];
 	const keyColors = catppMocha;
 
 	import { curveCatmullRom } from 'd3-shape';
@@ -13,7 +13,8 @@
 		barData = [] as GroupedPlotEntry[],
 		lineData = [] as GroupedPlotEntry[],
 		titleBarMetric,
-		titleLineMetric
+		titleLineMetric,
+		groupByDimA
 	} = $props();
 
 	interface SeriesEntry {
@@ -54,7 +55,17 @@
 	}
 
 	let seriesKeysBar = $derived(generateSeriesKeys(barData, keyColors, titleBarMetric));
-	let seriesKeysLine = $derived(generateSeriesKeys(lineData, keyColors, titleLineMetric));
+
+	let keyLineColors = $derived(getKeyLineColors());
+
+	function getKeyLineColors() {
+		if (groupByDimA && groupByDimA != '') {
+			return keyColors;
+		} else {
+			return edgyColors;
+		}
+	}
+	let seriesKeysLine = $derived(generateSeriesKeys(lineData, keyLineColors, titleLineMetric));
 </script>
 
 <div class="h-[400px] grid [&>*]:col-start-1 [&>*]:row-start-1 p-4 border rounded">
@@ -70,20 +81,7 @@
 			yAxis: { format: 'metric' }
 		}}
 		legend={{ placement: 'top-right' }}
-	>
-		<svelte:fragment slot="tooltip">
-			<Tooltip.Root let:data>
-				<Tooltip.Header>
-					{data.on_date}
-				</Tooltip.Header>
-				<Tooltip.List>
-					{#each seriesKeysBar as key}
-						<Tooltip.Item label={key.label} value={`(bar) ${data[key.key]}`} />
-					{/each}
-				</Tooltip.List>
-			</Tooltip.Root>
-		</svelte:fragment>
-	</BarChart>
+	></BarChart>
 
 	<!-- Second chart (line), responsible for tooltip -->
 	<BarChart
@@ -99,8 +97,12 @@
 	>
 		<svelte:fragment slot="marks">
 			{#each seriesKeysLine as key}
-				{console.log(key)}
-				<Spline y={key.key} color={key.color} curve={curveCatmullRom} strokeWidth={3} />
+				<Spline
+					y={key.key}
+					style={`stroke: ${key.color}`}
+					curve={curveCatmullRom}
+					strokeWidth={3}
+				/>
 			{/each}
 		</svelte:fragment>
 
@@ -110,9 +112,26 @@
 					{data.on_date}
 				</Tooltip.Header>
 				<Tooltip.List>
-					{#each seriesKeysLine as key}
-						<Tooltip.Item label={key.label} value={`(line) ${data[key.key]}`} />
-					{/each}
+					{#if groupByDimA && groupByDimA != ''}
+						{#each seriesKeysLine as key}
+							<Tooltip.Item
+								label={key.label}
+								value={`${titleLineMetric}: ${data[key.key]} ${titleBarMetric}: ${barData.find((row) => row.on_date === data.on_date)?.[key.key]}`}
+								color={key.color}
+							/>
+						{/each}
+					{:else}
+						{#each seriesKeysLine as key}
+							<Tooltip.Item label={key.label} value={`${data[key.key]}`} color={key.color} />
+						{/each}
+						{#each seriesKeysBar as key}
+							<Tooltip.Item
+								label={key.label}
+								value={`${barData.find((row) => row.on_date === data.on_date)?.[key.key]}`}
+								color={key.color}
+							/>
+						{/each}
+					{/if}
 				</Tooltip.List>
 			</Tooltip.Root>
 		</svelte:fragment>
