@@ -21,7 +21,7 @@
 	let titleGroupByA = $derived(lookupDimensionTitle(groupByDimA));
 
 	const pageDefaultPlotBarMetric = 'installs';
-	const pageDefaultPlotLineMetric = 'impressions';
+	const pageDefaultPlotLineMetric = 'dau';
 
 	let plotLineMetric = $state(pageDefaultPlotLineMetric);
 	let plotBarMetric = $state(pageDefaultPlotBarMetric);
