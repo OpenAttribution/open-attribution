@@ -23,6 +23,8 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LOG_RETENTION_HOURS=672
+      - KAFKA_CFG_LOG_RETENTION_BYTES=10737418240 # 10GB, keep until official backup
     healthcheck:
       test: ['CMD-SHELL', 'kafka-topics.sh --bootstrap-server localhost:9092 --list']
       interval: 30s
