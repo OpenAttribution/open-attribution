@@ -9,7 +9,7 @@ authors:
 categories:
   - Updates
 ---
-``
+
 # First Retention Metrics & Plans for GDC 2025
 
 I started working on an MVP for retention metrics since the `app_open` was the first event added to the Android SDK. I decided to do the retention calculations in ClickHouse materialized views which keeps with the current flow.
