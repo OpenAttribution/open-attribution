@@ -228,6 +228,7 @@ class ShareController(Controller):
             logger.error(
                 f"Redirect links empty! Set share link on dashboard. No redirect found for {share_slug}",
             )
+            # TODO: Attempts to redirect ot the root of the share url with possibly no landing page
             return Redirect(path="/")
 
         redirect_url, detected_os = get_redirect_url(

@@ -1,3 +1,4 @@
+-- NOTE: This has a sibling query in dash-backend
 SELECT 
     al.id as db_id,
     d.domain_url as domain_url,

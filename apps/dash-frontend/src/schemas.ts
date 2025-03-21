@@ -13,7 +13,11 @@ export const linkSchema = z.object({
 		.regex(/^[a-zA-Z0-9-_]+$/, {
 			message: 'Share slug can only contain alphanumeric characters, dashes, and underscores.'
 		}),
-	webLandingPage: z.string().min(2).max(1000),
+	webLandingPage: z
+		.string()
+		.min(2)
+		.max(1000)
+		.transform((val) => val.replace(/^https?:\/\//, '').replace(/^http?:\/\//, '')),
 	networkId: z.number(),
 	// networkName: z.string(), // Used for display
 	campaignName: z.string().min(2).max(100),
