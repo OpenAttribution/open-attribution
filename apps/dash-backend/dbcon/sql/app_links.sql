@@ -1,3 +1,4 @@
+-- NOTE: This has a sibling query in postback-api
 SELECT 
     al.id as db_id,
     d.domain_url as domain_url,
