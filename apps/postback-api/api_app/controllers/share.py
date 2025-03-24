@@ -61,8 +61,8 @@ def is_android_device(user_agent: str) -> bool:
     try:
         parsed_ua = ua_parser.parse(user_agent)
         return parsed_ua.os.family.lower() == "android"
-    except Exception as e:
-        logger.exception(f"Error parsing user agent: {e}")
+    except Exception:
+        logger.exception("Error parsing user agent")
         return False
 
 
@@ -71,16 +71,15 @@ def is_ios_device(user_agent: str) -> bool:
     try:
         parsed_ua = ua_parser.parse(user_agent)
         return parsed_ua.os.family.lower() in {"ios", "iphone os"}
-    except Exception as e:
-        logger.exception(f"Error parsing user agent: {e}")
+    except Exception:
+        logger.exception("Error parsing user agent")
         return False
 
 
 def get_redirect_url(
-    app_links: dict,
-    share_slug: str,
+    link_data: dict,
     request: Request,
-) -> str:
+) -> tuple[str, str | None]:
     """Get the redirect URL and store ID based on the device type."""
     user_agent = request.headers.get("User-Agent", "")
     logger.info(f"User-Agent: {user_agent}")
@@ -88,53 +87,55 @@ def get_redirect_url(
     if is_android_device(user_agent):
         detected_os = OSID.ANDROID
         # Maybe all android devices should go to the market uri?
-        if app_links[share_slug]["android_market_uri"]:
-            redirect_url = app_links[share_slug]["android_market_uri"]
+        if link_data["android_market_uri"]:
+            redirect_url = link_data["android_market_uri"]
         else:
-            redirect_url = app_links[share_slug]["web_redirect"]
+            redirect_url = link_data["web_redirect"]
+        try:
+            store_id = link_data["google_store_id"]
+        except KeyError:
+            store_id = None
     elif is_ios_device(user_agent):
         detected_os = OSID.IOS
-        if app_links[share_slug]["apple_redirect"]:
-            redirect_url = app_links[share_slug]["apple_redirect"]
+        if link_data["apple_redirect"]:
+            redirect_url = link_data["apple_redirect"]
         else:
-            redirect_url = app_links[share_slug]["web_redirect"]
+            redirect_url = link_data["web_redirect"]
+        try:
+            store_id = link_data["apple_store_id"]
+        except KeyError:
+            store_id = None
     else:
-        logger.info(f"No mobile OS detected for {share_slug}")
+        logger.info("No mobile OS detected!")
         detected_os = OSID.WEB
-        if app_links[share_slug]["web_redirect"]:
-            redirect_url = app_links[share_slug]["web_redirect"]
+        if link_data["web_redirect"]:
+            redirect_url = link_data["web_redirect"]
+            if "play.google.com/store/apps/details?id=" in redirect_url:
+                detected_os = OSID.ANDROID
+                store_id = link_data["google_store_id"]
+            elif "apps.apple.com/app/id" in redirect_url:
+                detected_os = OSID.IOS
+                store_id = link_data["apple_store_id"]
+            else:
+                store_id = None
         else:
-            logger.warning(f"No web redirect found for {share_slug}")
+            logger.error("No web redirect found!")
             redirect_url = "/"
+            store_id = None
             detected_os = OSID.ERROR
 
-    logger.info(f"Redirect URL: {redirect_url=} {detected_os=}")
-    return redirect_url
+    logger.info(f"Redirect URL: {redirect_url=} {detected_os=} {store_id=}")
+    return redirect_url, store_id
 
 
-async def process_share_link(
-    share_slug: str,
+async def process_as_click(
+    link_data: dict,
     request: Request,
-    redirect_url: str,
+    store_id: str | None,
 ) -> None:
     """Process the share link in background."""
     client_host = get_client_ip(request)
     link_uid = generate_link_uid()
-
-    app_links = await STORE.get("app_links")
-
-    try:
-        link_data = app_links[share_slug]
-    except KeyError:
-        logger.warning(f"No link associated with {share_slug}")
-        return
-
-    if "play.google.com/store/apps/details?id=" in redirect_url:
-        app = link_data.get("google_store_id")
-    elif "apps.apple.com/app/id" in redirect_url:
-        app = link_data.get("apple_store_id")
-    else:
-        app = ""
 
     event_time = now()
     ifa = EMPTY_IFA
@@ -152,7 +153,7 @@ async def process_share_link(
     data = {
         "event_time": event_time,
         DB_NETWORK: source,
-        DB_STORE_ID: app,
+        DB_STORE_ID: store_id,
         DB_C: c,
         DB_C_ID: c_id,
         DB_AD_NAME: ad,
@@ -231,19 +232,24 @@ class ShareController(Controller):
             # TODO: Attempts to redirect ot the root of the share url with possibly no landing page
             return Redirect(path="/")
 
-        redirect_url = get_redirect_url(
-            app_links,
-            share_slug,
+        try:
+            link_data = app_links[share_slug]
+        except KeyError:
+            logger.warning(f"No link associated with {share_slug}")
+            return Redirect(path="/")
+
+        redirect_url, store_id = get_redirect_url(
+            link_data,
             request,
         )
 
         return Redirect(
             path=redirect_url,
             background=BackgroundTask(
-                process_share_link,
-                share_slug,
+                process_as_click,
+                link_data,
                 request,
-                redirect_url,
+                store_id,
             ),
         )
 
