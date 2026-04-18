@@ -29,10 +29,15 @@ class TestServerIssuedOaUid(unittest.TestCase):
         "api_app.controllers.postbacks.get_geo",
         return_value={"country_iso": "", "state_iso": "", "city_name": ""},
     )
+    @patch(
+        "api_app.controllers.postbacks.issue_oa_uid_for_first_open",
+        return_value="3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2",
+    )
     @patch("api_app.controllers.postbacks.to_kafka")
     def test_first_app_open_without_oa_uid_returns_server_generated_id(
         self,
         to_kafka_mock: Mock,
+        issue_oa_uid_mock: Mock,
         _get_geo_mock: Mock,
     ) -> None:
         """The first app_open may omit oa_uid and receive one from the server."""
@@ -50,6 +55,11 @@ class TestServerIssuedOaUid(unittest.TestCase):
         body = response.json()
         self.assertIn("oa_uid", body)
         self.assertEqual(str(UUID(body["oa_uid"])), body["oa_uid"])
+        issue_oa_uid_mock.assert_called_once_with(
+            event_uid=payload["event_uid"],
+            store_id="com.example.app",
+            ifa=payload["ifa"],
+        )
         event_data, topic = to_kafka_mock.call_args.args
         self.assertEqual(topic, "events")
         self.assertEqual(event_data.oa_uid, body["oa_uid"])

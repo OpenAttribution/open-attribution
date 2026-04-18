@@ -29,6 +29,8 @@ QUERY_APPS = load_sql_file("apps.sql")
 QUERY_APP_LINKS = load_sql_file(
     "app_links.sql",
 )
+QUERY_OA_UID_ISSUANCE = load_sql_file("query_oa_uid_issuance.sql")
+INSERT_OA_UID_ISSUANCE = load_sql_file("insert_oa_uid_issuance.sql")
 
 
 async def get_app_links() -> dict[str, dict[str, str]]:
@@ -70,6 +72,37 @@ async def get_apps() -> pd.DataFrame:
         con=DBCON.engine,
     )
     return df
+
+
+def query_oa_uid_issuance(event_uid: str) -> str | None:
+    """Return any oa_uid already issued for a first app_open event."""
+    with ENGINE.connect() as connection:
+        result = connection.execute(
+            QUERY_OA_UID_ISSUANCE,
+            {"event_uid": event_uid},
+        ).scalar_one_or_none()
+    return result
+
+
+def insert_oa_uid_issuance(
+    event_uid: str,
+    oa_uid: str,
+    store_id: str,
+    ifa: str,
+) -> str | None:
+    """Insert a new issuance record, unless another request already did so."""
+    with ENGINE.connect() as connection:
+        result = connection.execute(
+            INSERT_OA_UID_ISSUANCE,
+            {
+                "event_uid": event_uid,
+                "oa_uid": oa_uid,
+                "store_id": store_id,
+                "ifa": ifa,
+            },
+        ).scalar_one_or_none()
+        connection.commit()
+    return result
 
 
 logger.info("set db engine")

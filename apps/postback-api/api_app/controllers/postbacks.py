@@ -53,10 +53,10 @@ from litestar.exceptions import HTTPException
 from litestar.params import Parameter
 
 from api_app.models import ClickData, EventData, ImpressionData, RequestEventData
+from api_app.oa_uid import issue_oa_uid_for_first_open
 from api_app.sendkafka import to_kafka
 from api_app.tools import (
     EMPTY_IFA,
-    generate_oa_uid,
     get_client_ip,
     is_valid_ifa,
     is_valid_uuid,
@@ -370,7 +370,11 @@ class PostbackController(Controller):
                     status_code=400,
                     detail="Missing oa_uid, only first app_open may omit it",
                 )
-            oa_uid = generate_oa_uid()
+            oa_uid = issue_oa_uid_for_first_open(
+                event_uid=data.event_uid,
+                store_id=app,
+                ifa=ifa,
+            )
         elif not is_valid_uuid(oa_uid):
             raise HTTPException(
                 status_code=400,
