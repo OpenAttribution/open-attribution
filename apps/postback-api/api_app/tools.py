@@ -13,6 +13,11 @@ def generate_link_uid() -> str:
     return str(uuid.uuid4())
 
 
+def generate_oa_uid() -> str:
+    """Generate a random OpenAttribution user id."""
+    return str(uuid.uuid4())
+
+
 def is_valid_ifa(ifa: str | None) -> bool:
     """Check if a string is a valid ifa."""
     if ifa is None:

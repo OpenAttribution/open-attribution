@@ -37,7 +37,14 @@ Content-Type: application/json
   "ifa": "00000000-0000-0000-0000-000000000000",
   "event_time": 1732003510046,
   "event_uid": "5730a99e-b009-41da-9d52-1315e26941c1",
-  "event_id": "app_open",
+  "event_id": "app_open"
+}
+```
+
+The server response can then return an `oa_uid` for the SDK to store and reuse:
+
+```json
+{
   "oa_uid": "3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2"
 }
 ```

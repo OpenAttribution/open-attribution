@@ -60,6 +60,16 @@ CREATE TABLE app_links (
 );
 
 
+CREATE TABLE oa_uid_issuances (
+    id SERIAL PRIMARY KEY,
+    event_uid UUID UNIQUE NOT NULL,
+    oa_uid UUID NOT NULL,
+    store_id VARCHAR(100) NOT NULL,
+    ifa UUID NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
 INSERT INTO networks (name, postback_id, status, is_custom) VALUES
 ('Google','google', 'inactive', FALSE),
 ('Meta', 'meta', 'inactive', FALSE),
@@ -69,5 +79,4 @@ INSERT INTO networks (name, postback_id, status, is_custom) VALUES
 ('ironSource', 'ironsource', 'inactive', FALSE),
 ('Social Media Posts', 'customsocial', 'inactive', TRUE)
 ;
-
 

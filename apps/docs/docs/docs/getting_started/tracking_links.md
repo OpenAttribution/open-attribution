@@ -19,7 +19,8 @@ ifa: The IFA (Identifier for Advertisers) of the user.
 event_id: The event ID from the attribution platform.
 event_time: The timestamp of the event in milliseconds since epoch.
 link_uid: The unique identifier for the link.
-oa_uid: The unique identifier for the user.
+oa_uid: The unique identifier for the user. This can be omitted for the first
+app_open so the server can create and return one.
 
 ### In App IDs
 event_uid: The unique identifier for the event. This is a randomly generated UUID to deduplicate events.
@@ -39,6 +40,14 @@ Content-Type: application/json
   "ifa": "00000000-0000-0000-0000-000000000000",
   "event_time": 1732003510046,
   "event_uid": "5730a99e-b009-41da-9d52-1315e26941c1",
-  "event_id": "app_open",
+  "event_id": "app_open"
+}
+```
+
+Sample response for the first app_open:
+
+```json
+{
   "oa_uid": "3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2"
 }
+```
