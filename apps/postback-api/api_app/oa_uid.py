@@ -3,6 +3,11 @@
 from api_app.tools import generate_oa_uid
 
 
+def normalize_oa_uid_result(result: object | None) -> str | None:
+    """Normalize persisted oa_uid values to strings at the boundary."""
+    return None if result is None else str(result)
+
+
 def query_issued_oa_uid(event_uid: str) -> str | None:
     """Return any oa_uid already issued for this event uid."""
     from dbcon.queries import query_oa_uid_issuance

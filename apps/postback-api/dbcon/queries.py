@@ -4,6 +4,7 @@ import pathlib
 from typing import cast
 
 import pandas as pd
+from api_app.oa_uid import normalize_oa_uid_result
 from api_app.models import AppStores
 from config import MODULE_DIR, get_logger
 from litestar.stores.memory import MemoryStore
@@ -81,7 +82,7 @@ def query_oa_uid_issuance(event_uid: str) -> str | None:
             QUERY_OA_UID_ISSUANCE,
             {"event_uid": event_uid},
         ).scalar_one_or_none()
-    return result
+    return normalize_oa_uid_result(result)
 
 
 def insert_oa_uid_issuance(
@@ -102,7 +103,7 @@ def insert_oa_uid_issuance(
             },
         ).scalar_one_or_none()
         connection.commit()
-    return result
+    return normalize_oa_uid_result(result)
 
 
 logger.info("set db engine")

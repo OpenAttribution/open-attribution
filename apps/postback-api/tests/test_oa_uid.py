@@ -2,6 +2,7 @@
 
 import os
 import unittest
+from uuid import UUID
 from unittest.mock import patch
 
 os.environ.setdefault("POSTGRES_USER", "postgres")
@@ -10,7 +11,7 @@ os.environ.setdefault("POSTGRES_PASSWORD", "postgres")
 os.environ.setdefault("CLICKHOUSE_USER", "default")
 os.environ.setdefault("CLICKHOUSE_PASSWORD", "password")
 
-from api_app.oa_uid import issue_oa_uid_for_first_open
+from api_app.oa_uid import issue_oa_uid_for_first_open, normalize_oa_uid_result
 
 
 class TestIssueOaUidForFirstOpen(unittest.TestCase):
@@ -93,6 +94,21 @@ class TestIssueOaUidForFirstOpen(unittest.TestCase):
         self.assertEqual(oa_uid, "3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2")
         insert_mock.assert_called_once()
         self.assertEqual(query_mock.call_count, 2)
+
+
+class TestNormalizeOaUidResult(unittest.TestCase):
+    """Verify DB helper boundaries always normalize UUID values to strings."""
+
+    def test_normalize_oa_uid_result_returns_none_for_none(self) -> None:
+        """None should remain None."""
+        self.assertIsNone(normalize_oa_uid_result(None))
+
+    def test_normalize_oa_uid_result_converts_uuid_to_string(self) -> None:
+        """UUID objects should be converted to string values."""
+        result = normalize_oa_uid_result(
+            UUID("3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2"),
+        )
+        self.assertEqual(result, "3bd9e091-fa6e-4b91-8dd1-503f8d4fe8f2")
 
 
 if __name__ == "__main__":
